@@ -1,30 +1,6 @@
-# Interval Timer App - Specs (SDD)
+# Roadmap y Grafo de Dependencias
 
-Especificaciones del proyecto siguiendo Spec Driven Development. Ver `AGENTS.md` para instrucciones
-de uso con agentes de IA.
-
-## Estructura
-
-```
-specs/
-  _global/                          <- Documentos transversales (leer primero)
-    00-how-to-use-these-specs.md
-    01-vision-and-principles.md
-    02-architecture-and-structure.md
-    03-conventions.md
-    04-design-system.md
-    05-data-model.md
-    06-roadmap-and-dependencies.md
-  features/                          <- Una carpeta por feature (31 features)
-    01-interval-timer-core/
-      requirements.md
-      design.md
-      tasks.md
-    ... (30 mas)
-AGENTS.md                            <- Punto de entrada para agentes de IA
-```
-
-## Indice rapido de features
+## Indice completo de features
 
 | ID | Feature | Fase | Prerequisitos |
 |---|---|---|---|
@@ -60,8 +36,70 @@ AGENTS.md                            <- Punto de entrada para agentes de IA
 | F30 | [Onboarding](../specs/features/30-onboarding/requirements.md) | Fase 7 · Calidad y Pulido | F01 |
 | F31 | [Accesibilidad](../specs/features/31-accessibility/requirements.md) | Fase 7 · Calidad y Pulido | F01 |
 
-## Por donde empezar
+## Orden de implementacion sugerido (por fase)
 
-1. `specs/_global/00-how-to-use-these-specs.md`
-2. `specs/_global/01-vision-and-principles.md`
-3. `specs/features/01-interval-timer-core/requirements.md` (primera feature a implementar)
+- **Fase 0 - Fundacion:** F01, F02, F03, F04.
+- **Fase 1 - Personalizacion y monetizacion:** F05, F06, F07.
+- **Fase 2 - Profundidad de entrenamiento:** F08, F09, F10, F11.
+- **Fase 3 - Seguimiento y motivacion:** F12, F13, F14, F15, F16.
+- **Fase 4 - Audio y experiencia:** F17, F18, F19, F20, F21 (F21 es fase futura/spike).
+- **Fase 5 - Descubrimiento de contenido:** F22, F23, F24.
+- **Fase 6 - Social (futuro, requiere backend real):** F25, F26.
+- **Fase 7 - Calidad y pulido:** F27, F28, F29, F30, F31.
+
+**Nota:** F30 (Onboarding) y F27 (Dark Mode) conviene adelantarlas si el lanzamiento a stores es
+inminente, aunque esten en "Fase 7" - el orden de fases es tematico, no estrictamente cronologico.
+
+## Grafo de dependencias (pegar en https://mermaid.live anteponiendo `graph TD`)
+
+```
+[inicio] --> F01
+F01 --> F02
+F01 --> F03
+F01 --> F04
+F01 --> F05
+F03 --> F05
+F01 --> F06
+F02 --> F07
+F01 --> F08
+F05 --> F08
+F05 --> F09
+F04 --> F09
+F01 --> F10
+F01 --> F11
+F05 --> F11
+F04 --> F12
+F12 --> F13
+F04 --> F14
+F04 --> F15
+F04 --> F16
+F12 --> F16
+F01 --> F17
+F01 --> F18
+F01 --> F19
+F01 --> F20
+F19 --> F20
+F01 --> F21
+F19 --> F21
+F03 --> F22
+F03 --> F23
+F03 --> F24
+F05 --> F24
+F05 --> F25
+F06 --> F25
+F25 --> F26
+F12 --> F26
+F01 --> F27
+F01 --> F28
+F04 --> F29
+F12 --> F29
+F01 --> F30
+F01 --> F31
+```
+
+## Como agregar una nueva feature al roadmap
+
+1. Asignar el siguiente ID disponible (`F32`, etc.).
+2. Crear carpeta `specs/features/NN-slug/` con los 3 archivos usando las existentes como referencia.
+3. Declarar sus prerequisitos reales.
+4. Actualizar la tabla de este archivo y el grafo de dependencias.
