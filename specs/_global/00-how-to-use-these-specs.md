@@ -22,6 +22,16 @@ de forma que el orden de implementacion no sea arbitrario. Ver `06-roadmap-and-d
 3. Ejecutar `tasks.md` como checklist, marcando cada item al completarlo.
 4. Antes de dar la feature por terminada, verificar la Definition of Done al final de `tasks.md`.
 
+## Auditoria y correccion de specs (antes de implementar)
+
+Antes de codear una feature cuyas specs no fueron revisadas:
+
+1. **Auditar** siguiendo `07-sdd-feature-audit.md` (solo lectura, una feature por sesion).
+2. Tras confirmacion del equipo, **corregir** siguiendo `08-sdd-feature-correction.md`.
+3. Usar `01-interval-timer-core` como referencia de calidad alcanzada.
+
+Ver tambien la seccion homonima en `AGENTS.md` (raiz del repo).
+
 ## Esto es agnostico al agente, pero...
 
 La metodologia (requirements -> design -> tasks) funciona igual sin importar que agente los lea:

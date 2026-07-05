@@ -2,6 +2,14 @@
   "$schema": "https://opencode.ai/config.json",
   "instructions": [
     "AGENTS.md",
-    "specs/_global/*.md"
+    "specs/_global/00-how-to-use-these-specs.md",
+    "specs/_global/01-vision-and-principles.md",
+    "specs/_global/02-architecture-and-structure.md",
+    "specs/_global/03-conventions.md",
+    "specs/_global/04-design-system.md",
+    "specs/_global/05-data-model.md",
+    "specs/_global/06-roadmap-and-dependencies.md",
+    "specs/_global/07-sdd-feature-audit.md",
+    "specs/_global/08-sdd-feature-correction.md"
   ]
 }

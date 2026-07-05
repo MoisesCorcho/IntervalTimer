@@ -10,6 +10,19 @@ Este proyecto usa Spec Driven Development (SDD). Antes de implementar cualquier 
 4. No implementes una feature cuyos prerequisitos no esten completos.
 5. Al completar tasks, marca los checkboxes en el `tasks.md` correspondiente.
 
+## Auditoria y correccion SDD de features
+
+Para revisar o corregir specs de una feature sin repetir el prompt completo en el chat:
+
+| Accion del usuario | Documento a cargar | Modo |
+|---|---|---|
+| *audita F0N*, *revisar specs*, *verificar SDD* | `specs/_global/07-sdd-feature-audit.md` | Solo lectura — no editar archivos |
+| *corrige F0N*, *aplicar fixes*, *proceder* (tras auditoria) | `specs/_global/08-sdd-feature-correction.md` | Editar `requirements/design/tasks` de la feature |
+
+- Auditar **una feature por sesion** salvo que el usuario pida otro alcance.
+- Tras auditar, esperar confirmacion antes de corregir.
+- Gold standard de calidad: `specs/features/01-interval-timer-core/` (referencia post-correccion).
+
 Si usas Claude Code, copia este archivo a `CLAUDE.md` (`cp AGENTS.md CLAUDE.md`). Si usas Gemini CLI,
 copialo a `GEMINI.md`. El contenido de `specs/` es el mismo para cualquier agente.
 
@@ -34,3 +47,5 @@ Kiro, que usa `.kiro/specs/`). Ambas leen este `AGENTS.md` automaticamente en la
 @specs/_global/04-design-system.md
 @specs/_global/05-data-model.md
 @specs/_global/06-roadmap-and-dependencies.md
+@specs/_global/07-sdd-feature-audit.md
+@specs/_global/08-sdd-feature-correction.md
