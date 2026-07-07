@@ -1,6 +1,6 @@
 # Requirements: Constructor de Entrenamientos por Ejercicios
 
-> Estado: No iniciada
+> Estado: En progreso
 
 **ID:** F32 &nbsp;|&nbsp; **Slug:** `32-workout-exercise-builder` &nbsp;|&nbsp; **Fase:** Fase 1 · Personalizacion
 
@@ -109,7 +109,7 @@ DONDE el usuario esta en el dialogo de confirmacion de eliminacion, CUANDO cance
 | Algoritmo de aplanado (R8) | Por cada ejercicio en orden de `position`, por cada set de 1 a `sets`: (1) intervalo `work` con nombre del ejercicio y `workSeconds`; (2) si el set no es el ultimo, intervalo `rest` con nombre `"Descanso"` y `restSeconds`. Sin descanso tras el ultimo set del ejercicio. |
 | `restSeconds = 0` | Permitido: el intervalo de descanso se omite (avance inmediato al siguiente set). |
 | Identificador en sesion (F01/F04) | Al aplanar, `SessionCompletedEvent.routineId` usa el `workoutId` como referencia de origen; el snapshot de sesion guarda el nombre del entrenamiento (F04). |
-| Entrenamiento activo | Clave `active_workout_id` en `shared_preferences`; independiente de `active_routine_id` de F05. |
+| Entrenamiento activo | Clave `active_workout_id` en drift (`app_preferences`); independiente de `active_routine_id` de F05. |
 | Colores en intervalos aplanados | Trabajo: color `work` por defecto de tema; descanso: color `rest` por defecto (`04-design-system.md`). |
 | Media / animaciones de ejercicio | Fuera de alcance (F03 catalogo empaquetado). F32 solo usa nombre textual. |
 

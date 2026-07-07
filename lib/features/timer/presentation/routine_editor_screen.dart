@@ -9,6 +9,7 @@ import 'package:interval_timer/data/models/routine_item.dart';
 import 'package:interval_timer/features/timer/application/routine_editor_controller.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
+import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 import 'package:interval_timer/features/timer/presentation/widgets/interval_form.dart';
 import 'package:interval_timer/shared/widgets/interval_color_badge.dart';
 
@@ -96,9 +97,15 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
 
     ref.listen(routineEditorProvider, (_, next) {
       final routine = next.valueOrNull;
-      if (routine != null) {
-        ref.read(timerControllerProvider.notifier).bindRoutine(routine);
+      if (routine == null) return;
+
+      final activeWorkoutId = ref.read(activeWorkoutIdProvider).valueOrNull;
+      final timerRoutine = ref.read(timerControllerProvider).routine;
+      if (activeWorkoutId != null && timerRoutine?.id == activeWorkoutId) {
+        return;
       }
+
+      ref.read(timerControllerProvider.notifier).bindRoutine(routine);
     });
 
     return Scaffold(

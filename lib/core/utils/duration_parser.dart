@@ -1,5 +1,5 @@
 /// Parses mm:ss duration strings. Returns seconds or null if invalid.
-int? parseDurationMmSs(String input) {
+int? parseDurationMmSs(String input, {bool allowZero = false}) {
   final trimmed = input.trim();
   if (trimmed.isEmpty) return null;
 
@@ -13,7 +13,8 @@ int? parseDurationMmSs(String input) {
   if (minutes < 0 || minutes > 99) return null;
 
   final total = minutes * 60 + seconds;
-  if (total < 1 || total > 5999) return null;
+  final minTotal = allowZero ? 0 : 1;
+  if (total < minTotal || total > 5999) return null;
   return total;
 }
 

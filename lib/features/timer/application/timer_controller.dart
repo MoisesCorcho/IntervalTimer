@@ -41,6 +41,28 @@ class TimerController extends Notifier<TimerState> {
     state = state.copyWith(routine: routine);
   }
 
+  /// Loads a flattened F32 workout into memory without persisting intervals.
+  ///
+  /// [workoutId] is used as [SessionCompletedEvent.routineId] and
+  /// [SessionCancelledEvent.routineId] when the session originates from F32.
+  void loadFlattenedWorkout({
+    required String workoutId,
+    required String workoutName,
+    required List<Interval> flattened,
+  }) {
+    if (state.status != TimerStatus.idle) return;
+
+    final routine = Routine(
+      id: workoutId,
+      name: workoutName,
+      createdAt: DateTime.now().toUtc(),
+      items: [
+        for (final interval in flattened) RoutineItem.interval(interval),
+      ],
+    );
+    state = state.copyWith(routine: routine);
+  }
+
   bool start() {
     final routine = state.routine;
     if (routine == null || routine.items.isEmpty) return false;

@@ -47,8 +47,9 @@ class WorkoutExercise {
 |---|---|---|
 | `workouts` | `id` TEXT PK, `name` TEXT, `created_at` INTEGER, `updated_at` INTEGER | timestamps UTC ms |
 | `workout_exercises` | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `name` TEXT, `sets` INTEGER, `work_seconds` INTEGER, `rest_seconds` INTEGER | indice unico `(workout_id, position)` |
+| `app_preferences` | `key` TEXT PK, `value` TEXT nullable | key-value drift; F32 usa clave `active_workout_id` |
 
-**Preferencias:** `active_workout_id` (String UUID) en `shared_preferences`.
+**Preferencias F32:** clave `active_workout_id` (String UUID) en tabla drift `app_preferences` via `PreferencesRepository`. No usa `shared_preferences` (evita fallos de build Kotlin en Windows con proyecto y pub cache en discos distintos); comportamiento identico al spec original.
 
 ### Servicio de aplanado (R8)
 

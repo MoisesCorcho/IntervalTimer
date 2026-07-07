@@ -159,6 +159,7 @@ WorkoutExercise {
 |---|---|---|
 | `workouts` | `id` TEXT PK, `name` TEXT, `created_at` INTEGER, `updated_at` INTEGER | timestamps UTC ms |
 | `workout_exercises` | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `name` TEXT, `sets` INTEGER, `work_seconds` INTEGER, `rest_seconds` INTEGER | indice unico `(workout_id, position)` |
+| `app_preferences` | `key` TEXT PK, `value` TEXT nullable | key-value; F32 schema v3 |
 
 ### Aplanado a `Interval` (F01) — solo en memoria
 
@@ -169,11 +170,13 @@ Por cada `WorkoutExercise` en orden de `position`, por cada set de 1 a `sets`:
 
 Implementacion: `WorkoutFlattener` en `features/workout_builder/domain/`. Ver `32-workout-exercise-builder/design.md`.
 
-### Preferencias F32 (`shared_preferences`)
+### Preferencias F32 (drift `app_preferences`)
 
 | Clave | Tipo | Uso |
 |---|---|---|
 | `active_workout_id` | String (UUID) | Ultimo entrenamiento cargado en `TimerController` via aplanado |
+
+Persistencia via `PreferencesRepository` en `data/repositories/`. Misma semantica que `shared_preferences`; almacenamiento unificado en SQLite para evitar dependencia nativa adicional en Android.
 
 ### F32 vs F01 / F05
 
