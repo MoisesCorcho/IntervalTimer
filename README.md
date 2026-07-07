@@ -1,7 +1,170 @@
-# Interval Timer App - Specs (SDD)
+# Interval Timer App
 
-Especificaciones del proyecto siguiendo Spec Driven Development. Ver `AGENTS.md` para instrucciones
-de uso con agentes de IA.
+App Flutter para entrenamientos con intervalos. El proyecto sigue **Spec Driven Development (SDD)** —
+ver `AGENTS.md` para instrucciones de uso con agentes de IA.
+
+## Desarrollo
+
+### Requisitos previos
+
+| Herramienta | Version minima | Notas |
+|---|---|---|
+| [Flutter SDK](https://docs.flutter.dev/get-started/install) | 3.29+ (Dart **3.12+**) | El proyecto declara `sdk: ^3.12.2` en `pubspec.yaml` |
+| Git | cualquiera reciente | — |
+| Android Studio / SDK | para correr en Android | Emulador o dispositivo fisico con depuracion USB |
+| Xcode + CocoaPods | solo macOS, para iOS | Requerido para builds en iPhone/iPad |
+| Visual Studio 2022 | solo Windows, para desktop | Workload "Desktop development with C++" |
+
+Verificar que el entorno esta listo:
+
+```bash
+flutter doctor
+```
+
+`flutter doctor` debe mostrar al menos un dispositivo disponible (emulador, fisico o Windows desktop).
+
+### Primer arranque
+
+```bash
+# 1. Clonar el repositorio
+git clone <url-del-repo>
+cd interval_timer
+
+# 2. Instalar dependencias de Dart/Flutter
+flutter pub get
+
+# 3. Generar codigo (drift, freezed) — obligatorio antes del primer run
+dart run build_runner build --delete-conflicting-outputs
+```
+
+### Correr la app
+
+Listar dispositivos disponibles:
+
+```bash
+flutter devices
+```
+
+Ejecutar en el dispositivo por defecto:
+
+```bash
+flutter run
+```
+
+Ejecutar en una plataforma especifica:
+
+```bash
+flutter run -d windows    # Windows desktop
+flutter run -d android    # Android (emulador o fisico)
+flutter run -d chrome     # Web (experimental, no es target principal)
+```
+
+Modo debug con hot reload activo (por defecto). Atajos utiles durante `flutter run`:
+
+| Tecla | Accion |
+|---|---|
+| `r` | Hot reload — recarga cambios en UI/logica sin reiniciar |
+| `R` | Hot restart — reinicia el estado de la app |
+| `q` | Salir |
+
+Para un build de release en Android:
+
+```bash
+flutter run --release -d android
+```
+
+### Code generation
+
+El proyecto usa `build_runner` para generar archivos de **drift** (base de datos) y **freezed** (modelos).
+Regenerar despues de cambiar tablas drift, modelos freezed o anotaciones:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
+Modo watch (regenera automaticamente mientras desarrollas):
+
+```bash
+dart run build_runner watch --delete-conflicting-outputs
+```
+
+### Tests y analisis estatico
+
+```bash
+flutter test              # Ejecutar todos los tests
+flutter test test/ruta/al_test.dart   # Un archivo especifico
+flutter analyze           # Linter y analisis estatico (flutter_lints)
+```
+
+### Limpiar cache y builds
+
+Usar estos comandos cuando haya errores de compilacion extranos, dependencias desactualizadas o codigo
+generado inconsistente.
+
+**Limpieza ligera** (la mayoria de los casos):
+
+```bash
+flutter clean
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+```
+
+**Limpieza de codigo generado** (si `build_runner` falla o genera archivos corruptos):
+
+```bash
+dart run build_runner clean
+dart run build_runner build --delete-conflicting-outputs
+```
+
+**Limpieza profunda** (cuando lo anterior no alcanza):
+
+```bash
+flutter clean
+# Borrar caches locales del proyecto (PowerShell en Windows)
+Remove-Item -Recurse -Force .dart_tool, build -ErrorAction SilentlyContinue
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+```
+
+**Reparar cache global de paquetes** (ultimo recurso, tarda varios minutos):
+
+```bash
+flutter pub cache repair
+flutter pub get
+```
+
+#### Cuando limpiar
+
+| Situacion | Comando recomendado |
+|---|---|
+| Cambiaste `pubspec.yaml` o version de Flutter | `flutter clean` + `flutter pub get` |
+| Modificaste tablas drift o modelos freezed | `build_runner build --delete-conflicting-outputs` |
+| Hot reload no refleja cambios estructurales | Hot restart (`R`) o `flutter run` de nuevo |
+| Errores de plugins nativos (sqlite3, etc.) | Limpieza ligera completa |
+| Errores persistentes de dependencias | Limpieza profunda o `pub cache repair` |
+
+### Estructura del codigo
+
+```
+lib/
+  app/                  # Router (go_router), shell de la app
+  core/                 # Constantes, tema, utilidades transversales
+  data/
+    local/              # Tablas drift, database.dart
+    models/             # Entidades de dominio (freezed)
+    repositories/       # Acceso a persistencia
+  features/<feature>/   # Logica y UI por feature (application/, presentation/)
+  shared/widgets/       # Widgets reutilizables
+test/                   # Tests unitarios y de widget (espejo de lib/)
+specs/                  # Especificaciones SDD (ver seccion siguiente)
+```
+
+Convenciones de branches y commits: `feature/<NN>-<slug>`, `feat(F01): descripcion` — ver
+`specs/_global/03-conventions.md`.
+
+---
+
+## Specs (SDD)
 
 ## Estructura
 
