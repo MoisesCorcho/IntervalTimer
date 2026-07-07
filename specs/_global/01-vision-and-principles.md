@@ -32,7 +32,8 @@ Delimita que implementa cada feature para evitar solapamientos (especialmente F0
 |---|---|---|
 | Fase 0 | **F01** | Motor del timer + **una rutina activa** (draft): crear/editar intervalos, ejecutar sesion, persistir en drift. Sin biblioteca multi-rutina. |
 | Fase 0 | **F03** | Catalogo de rutinas preestablecidas (assets); cargar preset en el timer. |
-| Fase 1 | **F05** | Biblioteca multi-rutina: crear, duplicar (incl. presets), reordenar, eliminar. |
+| Fase 1 | **F32** | Apartado Entrenamientos: ejercicios con sets, duracion trabajo/descanso; aplanado al timer. |
+| Fase 1 | **F05** | Biblioteca multi-rutina: intervalos planos; duplicar presets (incl. F03); reordenar; eliminar. |
 | Fase 7 | **F30** | Onboarding guiado para cumplir principio 3 en <30s. |
 
 **F01 no debe** implementar lista de rutinas, duplicacion ni drag & drop — eso es F05.

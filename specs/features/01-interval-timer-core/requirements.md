@@ -18,6 +18,7 @@ Motor central del temporizador: creacion de intervalos (nombre, duracion, color)
 - F03 - Sesiones Preestablecidas con Animacion/Video
 - F04 - Calendario e Historial de Sesiones
 - F05 - Editor de Rutinas Propias
+- F32 - Constructor de Entrenamientos por Ejercicios
 - F06 - Capa Pro / Compras In-App
 - F08 - Repeticion de Circuitos (Rounds)
 - F10 - Modo por Repeticiones
