@@ -94,6 +94,7 @@ lib/
     preset_routines/        # F03
     calendar_history/       # F04
     routine_builder/        # F05
+    workout_builder/        # F32
     pro/                    # F06
     circuit_rounds/         # F08
     progression/            # F09

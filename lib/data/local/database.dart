@@ -2,22 +2,47 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:interval_timer/data/local/tables/app_preferences_table.dart';
 import 'package:interval_timer/data/local/tables/intervals_table.dart';
 import 'package:interval_timer/data/local/tables/routine_items_table.dart';
 import 'package:interval_timer/data/local/tables/routines_table.dart';
+import 'package:interval_timer/data/local/tables/workout_exercises_table.dart';
+import 'package:interval_timer/data/local/tables/workouts_table.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Intervals, Routines, RoutineItems])
+@DriftDatabase(
+  tables: [
+    Intervals,
+    Routines,
+    RoutineItems,
+    Workouts,
+    WorkoutExercises,
+    AppPreferences,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   AppDatabase.forTesting(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          if (from < 2) {
+            await migrator.createTable(workouts);
+            await migrator.createTable(workoutExercises);
+          }
+          if (from < 3) {
+            await migrator.createTable(appPreferences);
+          }
+        },
+      );
 
   Future<List<IntervalRow>> getAllIntervals() => select(intervals).get();
 
@@ -48,6 +73,24 @@ class AppDatabase extends _$AppDatabase {
         await into(routineItems).insert(item);
       }
     });
+  }
+
+  Future<List<WorkoutRow>> getAllWorkoutRows() {
+    return (select(workouts)
+          ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
+        .get();
+  }
+
+  Future<WorkoutRow?> getWorkoutRow(String id) {
+    return (select(workouts)..where((t) => t.id.equals(id)))
+        .getSingleOrNull();
+  }
+
+  Future<List<WorkoutExerciseRow>> getWorkoutExerciseRows(String workoutId) {
+    return (select(workoutExercises)
+          ..where((t) => t.workoutId.equals(workoutId))
+          ..orderBy([(t) => OrderingTerm.asc(t.position)]))
+        .get();
   }
 }
 

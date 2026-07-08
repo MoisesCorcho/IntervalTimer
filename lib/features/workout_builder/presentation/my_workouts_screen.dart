@@ -1,0 +1,269 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/data/models/workout.dart';
+import 'package:interval_timer/features/timer/application/timer_providers.dart';
+import 'package:interval_timer/features/timer/application/timer_state.dart';
+import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
+import 'package:interval_timer/features/workout_builder/domain/workout_flattener.dart';
+import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
+import 'package:interval_timer/features/workout_builder/presentation/widgets/delete_workout_dialog.dart';
+
+class MyWorkoutsScreen extends ConsumerStatefulWidget {
+  const MyWorkoutsScreen({super.key});
+
+  @override
+  ConsumerState<MyWorkoutsScreen> createState() => _MyWorkoutsScreenState();
+}
+
+class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
+  String? _actionError;
+
+  Future<void> _showCreateDialog() async {
+    final controller = TextEditingController();
+    String? nameError;
+
+    final created = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            title: const Text(UiStrings.createWorkout),
+            content: TextField(
+              key: const Key('workout_name_field'),
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: UiStrings.workoutName,
+                errorText: nameError,
+              ),
+              maxLength: WorkoutValidators.maxWorkoutNameLength + 1,
+              autofocus: true,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text(UiStrings.cancel),
+              ),
+              FilledButton(
+                key: const Key('create_workout_confirm'),
+                onPressed: () {
+                  nameError =
+                      WorkoutValidators.validateWorkoutName(controller.text);
+                  if (nameError != null) {
+                    setDialogState(() {});
+                    return;
+                  }
+                  Navigator.pop(context, true);
+                },
+                child: const Text(UiStrings.save),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    if (created != true || !mounted) return;
+
+    final workout =
+        await ref.read(workoutsListProvider.notifier).createWorkout(
+              controller.text,
+            );
+    if (workout != null && mounted) {
+      context.push('/workouts/${workout.id}/edit');
+    }
+  }
+
+  Future<void> _trainWorkout(Workout workout) async {
+    if (workout.exercises.isEmpty) {
+      setState(() => _actionError = UiStrings.emptyWorkoutStart);
+      return;
+    }
+
+    setState(() => _actionError = null);
+
+    final flattened = flattenWorkout(
+      workout,
+      workColorArgb: AppTheme.workColor.toARGB32(),
+      restColorArgb: AppTheme.restColor.toARGB32(),
+    );
+
+    ref.read(timerControllerProvider.notifier).loadFlattenedWorkout(
+          workoutId: workout.id,
+          workoutName: workout.name,
+          flattened: flattened,
+        );
+    await ref
+        .read(activeWorkoutIdProvider.notifier)
+        .setActiveWorkoutId(workout.id);
+
+    final started = ref.read(timerControllerProvider.notifier).start();
+    if (!mounted) return;
+    if (started) {
+      context.go('/execute');
+    } else {
+      setState(() => _actionError = UiStrings.emptyWorkoutStart);
+    }
+  }
+
+  Future<void> _duplicateWorkout(Workout workout) async {
+    final copy =
+        await ref.read(workoutsListProvider.notifier).duplicateWorkout(
+              workout.id,
+            );
+    if (copy != null && mounted) {
+      context.push('/workouts/${copy.id}/edit');
+    } else if (mounted) {
+      _showPersistenceError(() => _duplicateWorkout(workout));
+    }
+  }
+
+  Future<void> _deleteWorkout(Workout workout) async {
+    final timerStatus = ref.read(timerControllerProvider).status;
+    if (timerStatus == TimerStatus.running ||
+        timerStatus == TimerStatus.paused) {
+      setState(() => _actionError = UiStrings.deleteBlockedDuringSession);
+      return;
+    }
+
+    final confirmed = await showDeleteWorkoutDialog(context);
+    if (confirmed != true) return;
+
+    final deleted =
+        await ref.read(workoutsListProvider.notifier).deleteWorkout(workout.id);
+    if (!deleted && mounted) {
+      _showPersistenceError(() => _deleteWorkout(workout));
+    }
+  }
+
+  void _showPersistenceError(VoidCallback onRetry) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(UiStrings.persistenceError),
+        action: SnackBarAction(
+          label: UiStrings.retry,
+          onPressed: onRetry,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final workoutsAsync = ref.watch(workoutsListProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text(UiStrings.workoutsTitle)),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _showCreateDialog,
+        icon: const Icon(Icons.add),
+        label: const Text(UiStrings.createWorkout),
+      ),
+      body: workoutsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(UiStrings.persistenceError),
+              const SizedBox(height: AppTheme.spacingMd),
+              FilledButton(
+                onPressed: () => ref.invalidate(workoutsListProvider),
+                child: const Text(UiStrings.retry),
+              ),
+            ],
+          ),
+        ),
+        data: (workouts) {
+          if (workouts.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.spacingLg),
+                child: Text(
+                  UiStrings.emptyWorkoutsHint,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
+
+          return Column(
+            children: [
+              if (_actionError != null)
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.spacingMd),
+                  child: Text(
+                    _actionError!,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppTheme.spacingMd,
+                    AppTheme.spacingMd,
+                    AppTheme.spacingMd,
+                    88,
+                  ),
+                  itemCount: workouts.length,
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(height: AppTheme.spacingSm),
+                  itemBuilder: (context, index) {
+                    final workout = workouts[index];
+                    final countLabel = UiStrings.exerciseCountLabel
+                        .replaceAll('{count}', '${workout.exercises.length}');
+
+                    return Card(
+                      child: ListTile(
+                        title: Text(workout.name),
+                        subtitle: Text(countLabel),
+                        isThreeLine: true,
+                        trailing: PopupMenuButton<String>(
+                          onSelected: (action) {
+                            switch (action) {
+                              case 'train':
+                                _trainWorkout(workout);
+                              case 'edit':
+                                context.push('/workouts/${workout.id}/edit');
+                              case 'duplicate':
+                                _duplicateWorkout(workout);
+                              case 'delete':
+                                _deleteWorkout(workout);
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            const PopupMenuItem(
+                              value: 'train',
+                              child: Text(UiStrings.train),
+                            ),
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Text(UiStrings.edit),
+                            ),
+                            const PopupMenuItem(
+                              value: 'duplicate',
+                              child: Text(UiStrings.duplicate),
+                            ),
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Text(UiStrings.delete),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}

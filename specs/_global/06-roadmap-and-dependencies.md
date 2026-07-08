@@ -35,6 +35,7 @@
 | F29 | [Backup y Exportacion de Datos](../features/29-backup-export/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F04, F12 |
 | F30 | [Onboarding](../features/30-onboarding/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
 | F31 | [Accesibilidad](../features/31-accessibility/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
+| F32 | [Constructor de Entrenamientos por Ejercicios](../features/32-workout-exercise-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01 |
 
 Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `requirements.md`.
 
@@ -45,6 +46,13 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - **F01:** motor del timer + una rutina activa (draft); CRUD de intervalos dentro de esa rutina.
 - **F05:** biblioteca multi-rutina; duplicar presets (requiere F03); reordenar; eliminar.
 - F05 depende de F03 porque la duplicacion de rutinas preestablecidas requiere el catalogo `PresetRoutine`.
+
+### F32 vs F01 / F05 (entrenamientos estructurados)
+
+- **F32:** apartado **Entrenamientos** — modelo ejercicio + sets + duracion trabajo/descanso; aplanado efimero a intervalos para F01.
+- **F05:** rutinas con intervalos planos (sin entidad ejercicio+sets).
+- F32 **no depende** de F03 ni F05; solo de F01 para ejecutar el timer.
+- Priorizar F32 si el flujo principal del producto es crear entrenamientos con ejercicios; F05 queda para usuarios avanzados que prefieren intervalos sueltos.
 
 ### F01 vs F04 (eventos de sesion)
 
@@ -61,7 +69,7 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 ## Orden de implementacion sugerido (por fase)
 
 - **Fase 0 - Fundacion:** F01, luego F02 / F03 / F04 en paralelo (migraciones drift coordinadas).
-- **Fase 1 - Personalizacion y monetizacion:** F05, F06, F07.
+- **Fase 1 - Personalizacion y monetizacion:** F32, F05, F06, F07 (F32 puede implementarse antes que F05; no comparten prerequisitos).
 - **Fase 2 - Profundidad de entrenamiento:** F08, F09, F10, F11.
 - **Fase 3 - Seguimiento y motivacion:** F12, F13, F14, F15, F16.
 - **Fase 4 - Audio y experiencia:** F17, F18, F19, F20, F21 (F21 es fase futura/spike).
@@ -128,6 +136,7 @@ F04 --> F29
 F12 --> F29
 F01 --> F30
 F01 --> F31
+F01 --> F32
 ```
 
 ## Como agregar una nueva feature al roadmap
