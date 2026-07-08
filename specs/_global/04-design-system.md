@@ -68,8 +68,17 @@ Aplicar cuando el usuario no elige color explicito. Valores ARGB; override permi
 | `IntervalColorBadge` | `shared/widgets/` | Indicador de color + nombre |
 | `CountdownRing` | `shared/widgets/` | Visualizacion circular del tiempo restante (default en ejecucion) |
 | `ProgressBar` | `shared/widgets/` | Barra lineal alternativa; preferir en F31 si ring no es accesible |
+| `NumberStepper` | `shared/widgets/` | Entero con botones ± (sets, etc.) — F33; sin teclado; touch >= 48dp |
+| `DurationStepper` | `shared/widgets/` | Duracion mm:ss con ± min (1) y ± seg (5) — F33; valor en segundos; sin teclado |
 | `FavoriteToggleButton` | `shared/widgets/` | F24 |
 | `ProGate` | `shared/widgets/` | Wrapper premium F06 |
+
+### NumberStepper y DurationStepper (F33)
+
+- **NumberStepper:** valor `int` controlado por el padre (`value` + `onChanged`); `min`/`max`/`step`; botones deshabilitados en bordes; display no editable.
+- **DurationStepper:** valor total en segundos; grupos de control de minutos (±1 min) y segundos (±5 s); display con `formatDurationMmSs`; clamp a `minSeconds`/`maxSeconds`.
+- **Apariencia:** contenedor unificado con tokens de tema (`radius`, `spacing`, `colorScheme`); no usar `TextField` plano como look final.
+- **Consumers obligatorios F33:** formulario de ejercicio (F32) y de intervalo (F01).
 
 ### CountdownRing vs ProgressBar
 

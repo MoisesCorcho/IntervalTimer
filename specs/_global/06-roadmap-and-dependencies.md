@@ -36,6 +36,7 @@
 | F30 | [Onboarding](../features/30-onboarding/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
 | F31 | [Accesibilidad](../features/31-accessibility/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
 | F32 | [Constructor de Entrenamientos por Ejercicios](../features/32-workout-exercise-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01 |
+| F33 | [Controles Numericos y de Duracion (Steppers Premium)](../features/33-premium-numeric-steppers/requirements.md) | Fase 7 · Calidad y Pulido | En progreso | F01, F32 |
 
 Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `requirements.md`.
 
@@ -53,6 +54,13 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - **F05:** rutinas con intervalos planos (sin entidad ejercicio+sets).
 - F32 **no depende** de F03 ni F05; solo de F01 para ejecutar el timer.
 - Priorizar F32 si el flujo principal del producto es crear entrenamientos con ejercicios; F05 queda para usuarios avanzados que prefieren intervalos sueltos.
+
+### F33 vs F01 / F32 (steppers de formulario)
+
+- **F33:** widgets compartidos `NumberStepper` / `DurationStepper` (sin teclado; min ±1, seg ±5, sets ±1) y migracion de formularios de F32 y F01.
+- No introduce persistencia; depende de F01 y F32 porque esos forms son los consumers obligatorios.
+- Puede adelantarse dentro de Fase 7 apenas F01 y F32 tengan formularios estables en codigo.
+- F05 y otros forms futuros pueden reutilizar los widgets sin ser prerequisito de F33.
 
 ### F01 vs F04 (eventos de sesion)
 
@@ -75,7 +83,7 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - **Fase 4 - Audio y experiencia:** F17, F18, F19, F20, F21 (F21 es fase futura/spike).
 - **Fase 5 - Descubrimiento de contenido:** F22, F23, F24.
 - **Fase 6 - Social (futuro, requiere backend real):** F25, F26.
-- **Fase 7 - Calidad y pulido:** F27, F28, F29, F30, F31.
+- **Fase 7 - Calidad y pulido:** F27, F28, F29, F30, F31, F33.
 
 **Nota:** F30 (Onboarding) y F27 (Dark Mode) conviene adelantarlas si el lanzamiento a stores es
 inminente — el orden de fases es tematico, no estrictamente cronologico.
@@ -137,11 +145,13 @@ F12 --> F29
 F01 --> F30
 F01 --> F31
 F01 --> F32
+F01 --> F33
+F32 --> F33
 ```
 
 ## Como agregar una nueva feature al roadmap
 
-1. Asignar el siguiente ID disponible (`F32`, etc.).
+1. Asignar el siguiente ID disponible (`F34`, etc.).
 2. Crear carpeta `specs/features/NN-slug/` con los 3 archivos usando las existentes como referencia.
 3. Declarar sus prerequisitos reales.
 4. Actualizar la tabla de este archivo (con columna Estado) y el grafo de dependencias.
