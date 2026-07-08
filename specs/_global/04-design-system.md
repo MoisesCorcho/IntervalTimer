@@ -69,16 +69,16 @@ Aplicar cuando el usuario no elige color explicito. Valores ARGB; override permi
 | `CountdownRing` | `shared/widgets/` | Visualizacion circular del tiempo restante (default en ejecucion) |
 | `ProgressBar` | `shared/widgets/` | Barra lineal alternativa; preferir en F31 si ring no es accesible |
 | `NumberStepper` | `shared/widgets/` | Entero con botones ± (sets, etc.) — F33; sin teclado; touch >= 48dp |
-| `DurationStepper` | `shared/widgets/` | Duracion mm:ss con ± min (1) y ± seg (5) — F33; valor en segundos; sin teclado |
+| `IntervalDurationPicker` / `DurationStepper` | `shared/widgets/` | Duracion mm:ss con pickers verticales min/seg (chevron ±, long-press auto-repeat) — F33 UX update; valor en segundos; sin teclado |
 | `FavoriteToggleButton` | `shared/widgets/` | F24 |
 | `ProGate` | `shared/widgets/` | Wrapper premium F06 |
 
-### NumberStepper y DurationStepper (F33)
+### NumberStepper e IntervalDurationPicker (F33 UX)
 
-- **NumberStepper:** valor `int` controlado por el padre (`value` + `onChanged`); `min`/`max`/`step`; botones deshabilitados en bordes; display no editable.
-- **DurationStepper:** valor total en segundos; grupos de control de minutos (±1 min) y segundos (±5 s); display con `formatDurationMmSs`; clamp a `minSeconds`/`maxSeconds`.
-- **Apariencia:** contenedor unificado con tokens de tema (`radius`, `spacing`, `colorScheme`); no usar `TextField` plano como look final.
-- **Consumers obligatorios F33:** formulario de ejercicio (F32) y de intervalo (F01).
+- **NumberStepper:** layout horizontal `[−] valor [+]`; valor `int` controlado (`value` + `onChanged`); `min`/`max`/`step`; botones deshabilitados en bordes; long-press auto-repeat; display no editable. Usar para sets y enteros pequeños.
+- **IntervalDurationPicker** (alias `DurationStepper`): pickers **verticales** independientes (minutos / segundos) con chevrons ▲/▼; valor total en segundos; minutos ±1 min, segundos ±5 s sobre el total; total `mm:ss` debajo con label secundario "total"; long-press con aceleración; `AnimatedSwitcher` en cambios de valor; clamp a `minSeconds`/`maxSeconds`.
+- **Apariencia:** contenedor suave (`surfaceContainerLow`, `radiusXl` ~20), tipografía dominante en el número (~40sp bold), labels secundarios grises; sin `TextField` ni rueda nativa.
+- **Consumers:** formulario de ejercicio (F32) y de intervalo (F01).
 
 ### CountdownRing vs ProgressBar
 

@@ -1,6 +1,6 @@
 # Requirements: Controles Numericos y de Duracion (Steppers Premium)
 
-> Estado: En progreso
+> Estado: Completado
 
 **ID:** F33 &nbsp;|&nbsp; **Slug:** `33-premium-numeric-steppers` &nbsp;|&nbsp; **Fase:** Fase 7 · Calidad y Pulido
 

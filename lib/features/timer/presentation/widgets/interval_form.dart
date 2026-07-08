@@ -2,9 +2,10 @@ import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
-import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/interval_type.dart';
+import 'package:interval_timer/shared/widgets/interval_duration_picker.dart';
+
 
 class IntervalFormResult {
   const IntervalFormResult({
@@ -38,23 +39,21 @@ class IntervalForm extends StatefulWidget {
 
 class IntervalFormState extends State<IntervalForm> {
   late final TextEditingController _nameController;
-  late final TextEditingController _durationController;
+  late int _durationSeconds;
   late Color _selectedColor;
   late IntervalType _selectedType;
 
   String? _nameError;
-  String? _durationError;
+
+  static const _minDurationSeconds = 1;
+  static const _maxDurationSeconds = 5999;
 
   @override
   void initState() {
     super.initState();
     final initial = widget.initial;
     _nameController = TextEditingController(text: initial?.name ?? '');
-    _durationController = TextEditingController(
-      text: initial != null
-          ? formatDurationMmSs(initial.durationSeconds)
-          : '01:00',
-    );
+    _durationSeconds = initial?.durationSeconds ?? 60;
     _selectedColor = Color(initial?.colorArgb ?? widget.defaultColorArgb);
     _selectedType = initial?.type ?? IntervalType.work;
   }
@@ -62,14 +61,12 @@ class IntervalFormState extends State<IntervalForm> {
   @override
   void dispose() {
     _nameController.dispose();
-    _durationController.dispose();
     super.dispose();
   }
 
   bool validate() {
     final name = _nameController.text.trim();
     String? nameError;
-    String? durationError;
 
     if (name.isEmpty) {
       nameError = UiStrings.nameRequired;
@@ -77,17 +74,11 @@ class IntervalFormState extends State<IntervalForm> {
       nameError = UiStrings.nameTooLong;
     }
 
-    final duration = parseDurationMmSs(_durationController.text);
-    if (duration == null) {
-      durationError = UiStrings.durationInvalid;
-    }
-
     setState(() {
       _nameError = nameError;
-      _durationError = durationError;
     });
 
-    return nameError == null && durationError == null;
+    return nameError == null;
   }
 
   void submit() {
@@ -96,7 +87,7 @@ class IntervalFormState extends State<IntervalForm> {
     widget.onSubmit(
       IntervalFormResult(
         name: _nameController.text.trim(),
-        durationSeconds: parseDurationMmSs(_durationController.text)!,
+        durationSeconds: _durationSeconds,
         colorArgb: _selectedColor.toARGB32(),
         type: _selectedType,
       ),
@@ -105,53 +96,57 @@ class IntervalFormState extends State<IntervalForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextField(
-          key: const Key('interval_name_field'),
-          controller: _nameController,
-          decoration: InputDecoration(
-            labelText: UiStrings.intervalName,
-            errorText: _nameError,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            key: const Key('interval_name_field'),
+            controller: _nameController,
+            decoration: InputDecoration(
+              labelText: UiStrings.intervalName,
+              errorText: _nameError,
+            ),
+            maxLength: 51,
+            onChanged: (_) {
+              if (_nameError != null) validate();
+            },
           ),
-          maxLength: 51,
-          onChanged: (_) {
-            if (_nameError != null) validate();
-          },
-        ),
-        const SizedBox(height: AppTheme.spacingMd),
-        TextField(
-          key: const Key('interval_duration_field'),
-          controller: _durationController,
-          decoration: InputDecoration(
-            labelText: UiStrings.duration,
-            errorText: _durationError,
+          const SizedBox(height: AppTheme.spacingLg),
+          IntervalDurationPicker(
+            key: const Key('interval_duration_stepper'),
+            keyPrefix: 'interval_duration_',
+            totalSeconds: _durationSeconds,
+            minSeconds: _minDurationSeconds,
+            maxSeconds: _maxDurationSeconds,
+            label: UiStrings.duration,
+            onChanged: (value) => setState(() => _durationSeconds = value),
           ),
-          keyboardType: TextInputType.datetime,
-          onChanged: (_) {
-            if (_durationError != null) validate();
-          },
-        ),
-        const SizedBox(height: AppTheme.spacingMd),
-        Text(UiStrings.color, style: Theme.of(context).textTheme.labelLarge),
-        const SizedBox(height: AppTheme.spacingSm),
-        ColorPicker(
-          pickerColor: _selectedColor,
-          onColorChanged: (color) => setState(() => _selectedColor = color),
-          enableAlpha: false,
-          displayThumbColor: true,
-          paletteType: PaletteType.hsvWithHue,
-          labelTypes: const [],
-          pickerAreaHeightPercent: 0.7,
-        ),
-        const SizedBox(height: AppTheme.spacingMd),
-        FilledButton(
-          key: const Key('interval_save_button'),
-          onPressed: submit,
-          child: const Text(UiStrings.save),
-        ),
-      ],
+          const SizedBox(height: AppTheme.spacingLg),
+          Text(
+            UiStrings.color,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          ColorPicker(
+            pickerColor: _selectedColor,
+            onColorChanged: (color) => setState(() => _selectedColor = color),
+            enableAlpha: false,
+            displayThumbColor: true,
+            paletteType: PaletteType.hsvWithHue,
+            labelTypes: const [],
+            pickerAreaHeightPercent: 0.7,
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          FilledButton(
+            key: const Key('interval_save_button'),
+            onPressed: submit,
+            child: const Text(UiStrings.save),
+          ),
+        ],
+      ),
     );
   }
 }

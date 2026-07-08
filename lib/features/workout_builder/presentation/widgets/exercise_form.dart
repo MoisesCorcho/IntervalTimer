@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
-import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/data/models/workout_exercise.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
+import 'package:interval_timer/shared/widgets/interval_duration_picker.dart';
+import 'package:interval_timer/shared/widgets/number_stepper.dart';
 
 class ExerciseFormResult {
   const ExerciseFormResult({
@@ -35,9 +36,9 @@ class ExerciseForm extends StatefulWidget {
 
 class ExerciseFormState extends State<ExerciseForm> {
   late final TextEditingController _nameController;
-  late final TextEditingController _setsController;
-  late final TextEditingController _workController;
-  late final TextEditingController _restController;
+  late int _sets;
+  late int _workSeconds;
+  late int _restSeconds;
 
   String? _nameError;
   String? _setsError;
@@ -49,40 +50,23 @@ class ExerciseFormState extends State<ExerciseForm> {
     super.initState();
     final initial = widget.initial;
     _nameController = TextEditingController(text: initial?.name ?? '');
-    _setsController = TextEditingController(
-      text: initial?.sets.toString() ?? '3',
-    );
-    _workController = TextEditingController(
-      text: initial != null
-          ? formatDurationMmSs(initial.workSeconds)
-          : '00:40',
-    );
-    _restController = TextEditingController(
-      text: initial != null
-          ? formatDurationMmSs(initial.restSeconds)
-          : '00:20',
-    );
+    _sets = initial?.sets ?? 3;
+    _workSeconds = initial?.workSeconds ?? 40;
+    _restSeconds = initial?.restSeconds ?? 20;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _setsController.dispose();
-    _workController.dispose();
-    _restController.dispose();
     super.dispose();
   }
 
   bool validate() {
     final nameError =
         WorkoutValidators.validateExerciseName(_nameController.text);
-    final sets = int.tryParse(_setsController.text.trim());
-    final setsError = WorkoutValidators.validateSets(sets);
-    final workSeconds = parseDurationMmSs(_workController.text);
-    final workError = WorkoutValidators.validateWorkSeconds(workSeconds);
-    final restSeconds =
-        parseDurationMmSs(_restController.text, allowZero: true);
-    final restError = WorkoutValidators.validateRestSeconds(restSeconds);
+    final setsError = WorkoutValidators.validateSets(_sets);
+    final workError = WorkoutValidators.validateWorkSeconds(_workSeconds);
+    final restError = WorkoutValidators.validateRestSeconds(_restSeconds);
 
     setState(() {
       _nameError = nameError;
@@ -103,77 +87,109 @@ class ExerciseFormState extends State<ExerciseForm> {
     widget.onSubmit(
       ExerciseFormResult(
         name: _nameController.text.trim(),
-        sets: int.parse(_setsController.text.trim()),
-        workSeconds: parseDurationMmSs(_workController.text)!,
-        restSeconds:
-            parseDurationMmSs(_restController.text, allowZero: true)!,
+        sets: _sets,
+        workSeconds: _workSeconds,
+        restSeconds: _restSeconds,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextField(
-          key: const Key('exercise_name_field'),
-          controller: _nameController,
-          decoration: InputDecoration(
-            labelText: UiStrings.exerciseName,
-            errorText: _nameError,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            key: const Key('exercise_name_field'),
+            controller: _nameController,
+            decoration: InputDecoration(
+              labelText: UiStrings.exerciseName,
+              errorText: _nameError,
+            ),
+            maxLength: WorkoutValidators.maxExerciseNameLength + 1,
+            onChanged: (_) {
+              if (_nameError != null) validate();
+            },
           ),
-          maxLength: WorkoutValidators.maxExerciseNameLength + 1,
-          onChanged: (_) {
-            if (_nameError != null) validate();
-          },
-        ),
-        const SizedBox(height: AppTheme.spacingMd),
-        TextField(
-          key: const Key('exercise_sets_field'),
-          controller: _setsController,
-          decoration: InputDecoration(
-            labelText: UiStrings.sets,
-            errorText: _setsError,
+          const SizedBox(height: AppTheme.spacingLg),
+          NumberStepper(
+            key: const Key('exercise_sets_stepper'),
+            keyPrefix: 'exercise_sets_',
+            value: _sets,
+            min: WorkoutValidators.minSets,
+            max: WorkoutValidators.maxSets,
+            label: UiStrings.sets,
+            semanticsLabel: UiStrings.sets,
+            onChanged: (value) => setState(() {
+              _sets = value;
+              if (_setsError != null) validate();
+            }),
           ),
-          keyboardType: TextInputType.number,
-          onChanged: (_) {
-            if (_setsError != null) validate();
-          },
-        ),
-        const SizedBox(height: AppTheme.spacingMd),
-        TextField(
-          key: const Key('exercise_work_field'),
-          controller: _workController,
-          decoration: InputDecoration(
-            labelText: UiStrings.workDuration,
-            errorText: _workError,
+          if (_setsError != null)
+            Padding(
+              padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+              child: Text(
+                _setsError!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+              ),
+            ),
+          const SizedBox(height: AppTheme.spacingLg),
+          IntervalDurationPicker(
+            key: const Key('exercise_work_stepper'),
+            keyPrefix: 'exercise_work_',
+            totalSeconds: _workSeconds,
+            minSeconds: WorkoutValidators.minWorkSeconds,
+            maxSeconds: WorkoutValidators.maxWorkSeconds,
+            label: UiStrings.workDuration,
+            onChanged: (value) => setState(() {
+              _workSeconds = value;
+              if (_workError != null) validate();
+            }),
           ),
-          keyboardType: TextInputType.datetime,
-          onChanged: (_) {
-            if (_workError != null) validate();
-          },
-        ),
-        const SizedBox(height: AppTheme.spacingMd),
-        TextField(
-          key: const Key('exercise_rest_field'),
-          controller: _restController,
-          decoration: InputDecoration(
-            labelText: UiStrings.restDuration,
-            errorText: _restError,
+          if (_workError != null)
+            Padding(
+              padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+              child: Text(
+                _workError!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+              ),
+            ),
+          const SizedBox(height: AppTheme.spacingLg),
+          IntervalDurationPicker(
+            key: const Key('exercise_rest_stepper'),
+            keyPrefix: 'exercise_rest_',
+            totalSeconds: _restSeconds,
+            minSeconds: 0,
+            maxSeconds: WorkoutValidators.maxRestSeconds,
+            label: UiStrings.restDuration,
+            onChanged: (value) => setState(() {
+              _restSeconds = value;
+              if (_restError != null) validate();
+            }),
           ),
-          keyboardType: TextInputType.datetime,
-          onChanged: (_) {
-            if (_restError != null) validate();
-          },
-        ),
-        const SizedBox(height: AppTheme.spacingMd),
-        FilledButton(
-          key: const Key('exercise_save_button'),
-          onPressed: submit,
-          child: const Text(UiStrings.save),
-        ),
-      ],
+          if (_restError != null)
+            Padding(
+              padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+              child: Text(
+                _restError!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+              ),
+            ),
+          const SizedBox(height: AppTheme.spacingLg),
+          FilledButton(
+            key: const Key('exercise_save_button'),
+            onPressed: submit,
+            child: const Text(UiStrings.save),
+          ),
+        ],
+      ),
     );
   }
 }

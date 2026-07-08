@@ -36,14 +36,14 @@ abstract final class WorkoutValidators {
     if (seconds == null ||
         seconds < minWorkSeconds ||
         seconds > maxWorkSeconds) {
-      return 'Duración inválida. Usa mm:ss entre 00:01 y 99:59';
+      return 'Duración inválida. Debe estar entre 00:01 y 99:59';
     }
     return null;
   }
 
   static String? validateRestSeconds(int? seconds) {
     if (seconds == null || seconds < 0 || seconds > maxRestSeconds) {
-      return 'Duración inválida. Usa mm:ss entre 00:00 y 99:59';
+      return 'Duración inválida. Debe estar entre 00:00 y 99:59';
     }
     return null;
   }

@@ -9,6 +9,8 @@ abstract final class AppTheme {
   static const radiusSm = 8.0;
   static const radiusMd = 12.0;
   static const radiusLg = 16.0;
+  /// Soft premium containers (duration pickers, calm cards).
+  static const radiusXl = 20.0;
 
   /// Default interval colors per type (ARGB).
   static const warmupColor = Color(0xFFFFC107);

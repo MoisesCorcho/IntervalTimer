@@ -7,7 +7,14 @@ abstract final class UiStrings {
   static const addInterval = 'Agregar intervalo';
   static const editInterval = 'Editar intervalo';
   static const intervalName = 'Nombre del intervalo';
-  static const duration = 'Duración (mm:ss)';
+  static const duration = 'Duración';
+  static const minutesLabel = 'MINUTOS';
+  static const secondsLabel = 'SEGUNDOS';
+  static const totalLabel = 'total';
+  static const increaseMinutes = 'Aumentar minutos';
+  static const decreaseMinutes = 'Disminuir minutos';
+  static const increaseSeconds = 'Aumentar segundos';
+  static const decreaseSeconds = 'Disminuir segundos';
   static const color = 'Color';
   static const save = 'Guardar';
   static const cancel = 'Cancelar';
@@ -20,7 +27,7 @@ abstract final class UiStrings {
   static const nameRequired = 'El nombre es obligatorio';
   static const nameTooLong = 'El nombre no puede superar 50 caracteres';
   static const durationInvalid =
-      'Duración inválida. Usa mm:ss entre 00:01 y 99:59';
+      'Duración inválida. Debe estar entre 00:01 y 99:59';
   static const emptyRoutineStart =
       'Se requiere al menos un intervalo para iniciar';
 
@@ -58,11 +65,11 @@ abstract final class UiStrings {
   static const editExercise = 'Editar ejercicio';
   static const exerciseName = 'Nombre del ejercicio';
   static const sets = 'Sets';
-  static const workDuration = 'Duración trabajo (mm:ss)';
-  static const restDuration = 'Duración descanso (mm:ss)';
+  static const workDuration = 'Duración trabajo';
+  static const restDuration = 'Duración descanso';
   static const setsInvalid = 'Los sets deben estar entre 1 y 99';
   static const restDurationInvalid =
-      'Duración inválida. Usa mm:ss entre 00:00 y 99:59';
+      'Duración inválida. Debe estar entre 00:00 y 99:59';
   static const train = 'Entrenar';
   static const edit = 'Editar';
   static const duplicate = 'Duplicar';
