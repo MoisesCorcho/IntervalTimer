@@ -37,9 +37,12 @@ class WorkoutExercise {
   final String name;         // max 50 chars
   final int sets;            // 1..99
   final int workSeconds;     // 1..5999
-  final int restSeconds;     // 0..5999
+  final int restSeconds;     // 0..5999 — entre sets del mismo ejercicio
+  // F34: final int restAfterExerciseSeconds; // 0..5999 — tras ultimo set si hay ejercicio siguiente
 }
 ```
+
+> **F34** extiende este modelo con `restAfterExerciseSeconds` y el algoritmo de aplanado dual. Ver `34-exercise-rest-between-and-final/design.md` y `_global/05-data-model.md`.
 
 **Migracion drift (schema version — coordinar con F01/F05):** tablas nuevas:
 
@@ -85,6 +88,7 @@ List<Interval> flattenWorkout(Workout workout, {required int workColorArgb, requ
 
 - La secuencia aplanada **no se persiste** en drift; se genera en runtime al iniciar entrenamiento.
 - IDs nuevos por intervalo aplanado evitan colisiones con intervalos persistidos de F01.
+- **F34:** tras el bucle de sets de un ejercicio que no es el ultimo, si `restAfterExerciseSeconds > 0`, emitir `rest` con nombre `"Descanso entre ejercicios"`. No emitir en el ultimo ejercicio del workout.
 
 ### Integracion con F01 (TimerController)
 

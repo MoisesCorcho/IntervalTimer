@@ -26,7 +26,7 @@ que introduce o modifica una entidad debe reflejarlo aqui **antes** de implement
 | `BodyMeasurement` | F15 | Registro de peso/medidas en el tiempo. |
 | `FavoriteRoutine` | F24 | Marca de rutina favorita (referencia por id + tipo preset/user). |
 | `Workout` | F32 | Entrenamiento del usuario: nombre + lista ordenada de ejercicios. |
-| `WorkoutExercise` | F32 | Ejercicio dentro de un entrenamiento: nombre, sets, duracion trabajo, duracion descanso. |
+| `WorkoutExercise` | F32 / F34 | Ejercicio dentro de un entrenamiento: nombre, sets, trabajo, descanso entre sets y descanso final (post-ejercicio). |
 
 ## Schema F01 (drift) — fundacional
 
@@ -129,7 +129,7 @@ En drift, `routine_items.item_type` discrimina la variante; F01 solo persiste `i
 - Al seleccionar un preset, el sistema **mapea** su estructura a una `Routine` temporal o copia en drift (F05 define duplicacion persistente).
 - `PresetRoutine` puede modelar intervalos como `List<Interval>` en JSON; al cargar en el timer, convertir a `List<RoutineItem>` con `IntervalRoutineItem`.
 
-## Workout / WorkoutExercise (F32) — entrenamientos estructurados
+## Workout / WorkoutExercise (F32 / F34) — entrenamientos estructurados
 
 Modelo declarativo ejercicio + sets. **No** se persiste la secuencia aplanada de intervalos; se genera en runtime al iniciar el entrenamiento.
 
@@ -143,32 +143,46 @@ Workout {
 }
 
 WorkoutExercise {
-  id: String              // UUID v4
-  workoutId: String       // FK → workouts.id
-  position: int           // 0..n-1, unico por workout
-  name: String            // max 50 chars
-  sets: int               // 1..99
-  workSeconds: int        // 1..5999
-  restSeconds: int        // 0..5999 (entre sets; omitido si 0 o ultimo set)
+  id: String                       // UUID v4
+  workoutId: String                // FK → workouts.id
+  position: int                    // 0..n-1, unico por workout
+  name: String                     // max 50 chars
+  sets: int                        // 1..99
+  workSeconds: int                 // 1..5999
+  restSeconds: int                 // 0..5999 — descanso entre sets del mismo ejercicio
+                                   //   (omitido si 0 o si es el ultimo set)
+  restAfterExerciseSeconds: int    // 0..5999 — F34: descanso final tras el ultimo set
+                                   //   solo si hay ejercicio siguiente; 0 = omitir;
+                                   //   nunca se emite en el ultimo ejercicio del workout
 }
 ```
 
-### Tablas drift (F32)
+### Tablas drift (F32 + F34)
 
 | Tabla | Columnas | Notas |
 |---|---|---|
 | `workouts` | `id` TEXT PK, `name` TEXT, `created_at` INTEGER, `updated_at` INTEGER | timestamps UTC ms |
-| `workout_exercises` | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `name` TEXT, `sets` INTEGER, `work_seconds` INTEGER, `rest_seconds` INTEGER | indice unico `(workout_id, position)` |
+| `workout_exercises` | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `name` TEXT, `sets` INTEGER, `work_seconds` INTEGER, `rest_seconds` INTEGER | indice unico `(workout_id, position)`; F32 schema v3 |
+| `workout_exercises` (F34) | + `rest_after_exercise_seconds` INTEGER NOT NULL DEFAULT 0 | Migracion aditiva schema v4; backfill 0 en filas existentes |
 | `app_preferences` | `key` TEXT PK, `value` TEXT nullable | key-value; F32 schema v3 |
 
-### Aplanado a `Interval` (F01) — solo en memoria
+### Aplanado a `Interval` (F01) — solo en memoria (F32 extendido por F34)
 
-Por cada `WorkoutExercise` en orden de `position`, por cada set de 1 a `sets`:
+Por cada `WorkoutExercise` en orden de `position`:
 
-1. `Interval` tipo `work`, nombre = `exercise.name`, duracion = `workSeconds`
-2. Si no es el ultimo set y `restSeconds > 0`: `Interval` tipo `rest`, nombre = `"Descanso"`, duracion = `restSeconds`
+1. Por cada set de 1 a `sets`:
+   1. `Interval` tipo `work`, nombre = `exercise.name`, duracion = `workSeconds`
+   2. Si no es el ultimo set y `restSeconds > 0`: `Interval` tipo `rest`, nombre = `"Descanso"`, duracion = `restSeconds`
+2. Si el ejercicio **no** es el ultimo del workout y `restAfterExerciseSeconds > 0`: `Interval` tipo `rest`, nombre = `"Descanso entre ejercicios"`, duracion = `restAfterExerciseSeconds`
 
-Implementacion: `WorkoutFlattener` en `features/workout_builder/domain/`. Ver `32-workout-exercise-builder/design.md`.
+**Notas de semantica (F34):**
+
+- `restSeconds` y `restAfterExerciseSeconds` son independientes (no se reutiliza un solo valor para ambos).
+- `sets = 1` nunca emite descanso entre sets; puede emitir descanso final si hay ejercicio siguiente.
+- El ultimo ejercicio del entrenamiento **no** emite descanso final (no hay cooldown de sesion inventado).
+- Default de migracion / alta: `restAfterExerciseSeconds = 0` (comportamiento pre-F34).
+
+Implementacion: `WorkoutFlattener` en `features/workout_builder/domain/`. Ver `32-workout-exercise-builder/design.md` (base) y `34-exercise-rest-between-and-final/design.md` (dual rest).
 
 ### Preferencias F32 (drift `app_preferences`)
 
