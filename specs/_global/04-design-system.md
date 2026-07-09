@@ -68,8 +68,17 @@ Aplicar cuando el usuario no elige color explicito. Valores ARGB; override permi
 | `IntervalColorBadge` | `shared/widgets/` | Indicador de color + nombre |
 | `CountdownRing` | `shared/widgets/` | Visualizacion circular del tiempo restante (default en ejecucion) |
 | `ProgressBar` | `shared/widgets/` | Barra lineal alternativa; preferir en F31 si ring no es accesible |
+| `NumberStepper` | `shared/widgets/` | Entero con botones ± (sets, etc.) — F33; sin teclado; touch >= 48dp |
+| `IntervalDurationPicker` / `DurationStepper` | `shared/widgets/` | Duracion mm:ss con pickers verticales min/seg (chevron ±, long-press auto-repeat) — F33 UX update; valor en segundos; sin teclado |
 | `FavoriteToggleButton` | `shared/widgets/` | F24 |
 | `ProGate` | `shared/widgets/` | Wrapper premium F06 |
+
+### NumberStepper e IntervalDurationPicker (F33 UX)
+
+- **NumberStepper:** layout horizontal `[−] valor [+]`; valor `int` controlado (`value` + `onChanged`); `min`/`max`/`step`; botones deshabilitados en bordes; long-press auto-repeat; display no editable. Usar para sets y enteros pequeños.
+- **IntervalDurationPicker** (alias `DurationStepper`): pickers **verticales** independientes (minutos / segundos) con chevrons ▲/▼; valor total en segundos; minutos ±1 min, segundos ±5 s sobre el total; total `mm:ss` debajo con label secundario "total"; long-press con aceleración; `AnimatedSwitcher` en cambios de valor; clamp a `minSeconds`/`maxSeconds`.
+- **Apariencia:** contenedor suave (`surfaceContainerLow`, `radiusXl` ~20), tipografía dominante en el número (~40sp bold), labels secundarios grises; sin `TextField` ni rueda nativa.
+- **Consumers:** formulario de ejercicio (F32) y de intervalo (F01).
 
 ### CountdownRing vs ProgressBar
 

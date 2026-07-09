@@ -19,6 +19,7 @@ Motor central del temporizador: creacion de intervalos (nombre, duracion, color)
 - F04 - Calendario e Historial de Sesiones
 - F05 - Editor de Rutinas Propias
 - F32 - Constructor de Entrenamientos por Ejercicios
+- F33 - Controles Numericos y de Duracion (Steppers Premium)
 - F06 - Capa Pro / Compras In-App
 - F08 - Repeticion de Circuitos (Rounds)
 - F10 - Modo por Repeticiones

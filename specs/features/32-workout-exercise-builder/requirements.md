@@ -17,6 +17,7 @@ Apartado **Entrenamientos** donde el usuario crea entrenamientos compuestos por 
 - F04 - Calendario e Historial de Sesiones (puede registrar sesiones originadas en un `Workout`)
 - F08 - Repeticion de Circuitos (Rounds) (puede extender el modelo en el futuro; no prerequisito de F32)
 - F24 - Favoritos (puede marcar entrenamientos favoritos en iteracion futura)
+- F33 - Controles Numericos y de Duracion (Steppers Premium) (reemplaza TextField de sets/duracion por steppers)
 
 ## User Stories
 

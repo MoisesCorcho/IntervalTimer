@@ -136,9 +136,9 @@ Ubicacion: `features/workout_builder/presentation/`.
 | Campo | Widget | Validacion |
 |---|---|---|
 | Nombre | `TextField` | no vacio, max 50 |
-| Sets | `TextField` numerico o stepper | 1–99 |
-| Duracion trabajo | mm:ss parser (reutilizar util F01) | 1–5999 s |
-| Duracion descanso | mm:ss parser | 0–5999 s |
+| Sets | `TextField` numerico o stepper (formalizado en **F33** `NumberStepper`) | 1–99 |
+| Duracion trabajo | mm:ss parser / **F33** `DurationStepper` (sin teclado) | 1–5999 s |
+| Duracion descanso | mm:ss parser / **F33** `DurationStepper` (sin teclado, min 0) | 0–5999 s |
 
 ### Navegacion (go_router)
 
