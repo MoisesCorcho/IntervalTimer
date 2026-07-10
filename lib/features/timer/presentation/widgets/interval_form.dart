@@ -4,6 +4,7 @@ import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/interval_type.dart';
+import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/interval_duration_picker.dart';
 
 
@@ -140,10 +141,11 @@ class IntervalFormState extends State<IntervalForm> {
             pickerAreaHeightPercent: 0.7,
           ),
           const SizedBox(height: AppTheme.spacingMd),
-          FilledButton(
+          AppPrimaryButton(
             key: const Key('interval_save_button'),
             onPressed: submit,
-            child: const Text(UiStrings.save),
+            label: UiStrings.save,
+            expand: true,
           ),
         ],
       ),

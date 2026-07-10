@@ -4,6 +4,7 @@ import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
+import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/number_stepper.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -30,9 +31,9 @@ class SettingsScreen extends ConsumerWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppTheme.spacingMd),
-                FilledButton(
+                AppPrimaryButton(
                   onPressed: () => ref.invalidate(settingsControllerProvider),
-                  child: const Text(UiStrings.retry),
+                  label: UiStrings.retry,
                 ),
               ],
             ),

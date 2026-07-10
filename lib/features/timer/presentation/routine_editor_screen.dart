@@ -13,6 +13,7 @@ import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 import 'package:interval_timer/features/timer/presentation/widgets/interval_form.dart';
+import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/interval_color_badge.dart';
 
 class RoutineEditorScreen extends ConsumerStatefulWidget {
@@ -135,11 +136,11 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppTheme.spacingMd),
-                    FilledButton.icon(
+                    AppPrimaryButton(
                       onPressed:
                           canEdit ? () => _showIntervalSheet() : null,
-                      icon: const Icon(Icons.add),
-                      label: const Text(UiStrings.addInterval),
+                      icon: Icons.add,
+                      label: UiStrings.addInterval,
                     ),
                     if (_startError != null) ...[
                       const SizedBox(height: AppTheme.spacingMd),
@@ -214,19 +215,21 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: OutlinedButton.icon(
+                      child: AppPrimaryButton(
                         onPressed:
                             canEdit ? () => _showIntervalSheet() : null,
-                        icon: const Icon(Icons.add),
-                        label: const Text(UiStrings.addInterval),
+                        icon: Icons.add,
+                        label: UiStrings.addInterval,
+                        expand: true,
                       ),
                     ),
                     const SizedBox(width: AppTheme.spacingMd),
                     Expanded(
-                      child: FilledButton(
+                      child: AppPrimaryButton(
                         key: const Key('start_session_button'),
                         onPressed: _startSession,
-                        child: const Text(UiStrings.startSession),
+                        label: UiStrings.startSession,
+                        expand: true,
                       ),
                     ),
                   ],

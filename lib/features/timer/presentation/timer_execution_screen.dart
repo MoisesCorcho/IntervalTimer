@@ -7,7 +7,9 @@ import 'package:interval_timer/core/utils/contrast_text_color.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
+import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/countdown_ring.dart';
+import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
 class TimerExecutionScreen extends ConsumerStatefulWidget {
   const TimerExecutionScreen({super.key});
@@ -56,15 +58,21 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
           title: const Text(UiStrings.exitConfirmTitle),
           content: const Text(UiStrings.exitConfirmMessage),
           actions: [
-            TextButton(
-              key: const Key('exit_continue_button'),
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text(UiStrings.exitConfirmContinue),
-            ),
-            TextButton(
-              key: const Key('exit_leave_button'),
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text(UiStrings.exitConfirmLeave),
+            DialogActionsRow(
+              children: [
+                AppSecondaryButton(
+                  key: const Key('exit_continue_button'),
+                  compact: true,
+                  onPressed: () => Navigator.of(context).pop(false),
+                  label: UiStrings.exitConfirmContinue,
+                ),
+                AppPrimaryButton(
+                  key: const Key('exit_leave_button'),
+                  compact: true,
+                  onPressed: () => Navigator.of(context).pop(true),
+                  label: UiStrings.exitConfirmLeave,
+                ),
+              ],
             ),
           ],
         );
@@ -389,7 +397,8 @@ class _ExecutionControlBar extends StatelessWidget {
   }
 }
 
-/// Shared rectangular control used for exit, prev/next and pause/resume.
+/// Execution control: rectangular + subtle radius + outer shadow
+/// (same language as [AppPrimaryButton], adaptive colors on interval bg).
 class _RectControlButton extends StatelessWidget {
   const _RectControlButton({
     super.key,
@@ -408,32 +417,24 @@ class _RectControlButton extends StatelessWidget {
   final bool iconOnly;
   final VoidCallback? onPressed;
 
-  /// Outer elevation only (Tailwind-like `shadow` / `shadow-md`).
-  /// Color + shadow live on the same [BoxDecoration] so the shadow is
-  /// painted *around* the surface, not as an inset look inside the fill.
-  static const _outerShadow = [
-    BoxShadow(
-      color: Color(0x1A000000), // ~10% black
-      blurRadius: 6,
-      offset: Offset(0, 4),
-      spreadRadius: -1,
-    ),
-    BoxShadow(
-      color: Color(0x1A000000),
-      blurRadius: 4,
-      offset: Offset(0, 2),
-      spreadRadius: -2,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null;
+    // Filled pause/resume: solid tone like primary CTA; outline-style for skips.
     final bg = filled
-        ? color.withValues(alpha: enabled ? 0.28 : 0.10)
-        : color.withValues(alpha: enabled ? 0.16 : 0.08);
-    final fg = color.withValues(alpha: enabled ? 1.0 : 0.35);
-    final borderRadius = BorderRadius.circular(AppTheme.radiusSm);
+        ? color.withValues(alpha: enabled ? 0.92 : 0.28)
+        : color.withValues(alpha: enabled ? 0.18 : 0.08);
+    final fg = filled
+        ? (enabled
+            ? (color.computeLuminance() > 0.5
+                ? Colors.black
+                : Colors.white)
+            : (color.computeLuminance() > 0.5
+                ? Colors.black.withValues(alpha: 0.38)
+                : Colors.white.withValues(alpha: 0.38)))
+        : color.withValues(alpha: enabled ? 1.0 : 0.35);
+    // Subtle square corners — never stadium (height/2).
+    final borderRadius = BorderRadius.circular(AppTheme.buttonRadius);
 
     return Semantics(
       button: true,
@@ -443,7 +444,7 @@ class _RectControlButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: bg,
           borderRadius: borderRadius,
-          boxShadow: enabled ? _outerShadow : null,
+          boxShadow: enabled ? AppTheme.buttonOuterShadow : null,
         ),
         child: Material(
           type: MaterialType.transparency,
@@ -453,7 +454,10 @@ class _RectControlButton extends StatelessWidget {
             splashColor: color.withValues(alpha: 0.12),
             highlightColor: color.withValues(alpha: 0.06),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 48, minWidth: 48),
+              constraints: const BoxConstraints(
+                minHeight: AppTheme.buttonMinHeight,
+                minWidth: AppTheme.buttonMinHeight,
+              ),
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal:

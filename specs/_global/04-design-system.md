@@ -65,6 +65,7 @@ Aplicar cuando el usuario no elige color explicito. Valores ARGB; override permi
 
 | Componente | Ubicacion | Uso |
 |---|---|---|
+| `AppPrimaryButton` / `AppSecondaryButton` | `shared/widgets/app_primary_button.dart` | CTA principal (fill primary + sombra + pill) y secundaria (outline misma forma); reutilizar en toda la app |
 | `IntervalColorBadge` | `shared/widgets/` | Indicador de color + nombre |
 | `CountdownRing` | `shared/widgets/` | Visualizacion circular del tiempo restante (default en ejecucion) |
 | `ProgressBar` | `shared/widgets/` | Barra lineal alternativa; preferir en F31 si ring no es accesible |

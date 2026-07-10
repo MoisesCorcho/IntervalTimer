@@ -13,6 +13,8 @@ import 'package:interval_timer/features/workout_builder/application/workout_prov
 import 'package:interval_timer/features/workout_builder/domain/workout_flattener.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 import 'package:interval_timer/features/workout_builder/presentation/widgets/exercise_form.dart';
+import 'package:interval_timer/shared/widgets/app_primary_button.dart';
+import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
 class WorkoutEditorScreen extends ConsumerStatefulWidget {
   const WorkoutEditorScreen({super.key, required this.workoutId});
@@ -49,21 +51,28 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
               maxLength: WorkoutValidators.maxWorkoutNameLength + 1,
             ),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text(UiStrings.cancel),
-              ),
-              FilledButton(
-                onPressed: () {
-                  nameError =
-                      WorkoutValidators.validateWorkoutName(controller.text);
-                  if (nameError != null) {
-                    setDialogState(() {});
-                    return;
-                  }
-                  Navigator.pop(context, true);
-                },
-                child: const Text(UiStrings.save),
+              DialogActionsRow(
+                children: [
+                  AppSecondaryButton(
+                    compact: true,
+                    onPressed: () => Navigator.pop(context, false),
+                    label: UiStrings.cancel,
+                  ),
+                  AppPrimaryButton(
+                    compact: true,
+                    onPressed: () {
+                      nameError = WorkoutValidators.validateWorkoutName(
+                        controller.text,
+                      );
+                      if (nameError != null) {
+                        setDialogState(() {});
+                        return;
+                      }
+                      Navigator.pop(context, true);
+                    },
+                    label: UiStrings.save,
+                  ),
+                ],
               ),
             ],
           );
@@ -232,11 +241,11 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
             children: [
               Text(UiStrings.persistenceError),
               const SizedBox(height: AppTheme.spacingMd),
-              FilledButton(
+              AppPrimaryButton(
                 onPressed: () => ref.invalidate(
                   workoutEditorControllerProvider(widget.workoutId),
                 ),
-                child: const Text(UiStrings.retry),
+                label: UiStrings.retry,
               ),
             ],
           ),
@@ -337,18 +346,20 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: OutlinedButton.icon(
+                      child: AppPrimaryButton(
                         onPressed:
                             canEdit ? () => _showExerciseSheet() : null,
-                        icon: const Icon(Icons.add),
-                        label: const Text(UiStrings.addExercise),
+                        icon: Icons.add,
+                        label: UiStrings.addExercise,
+                        expand: true,
                       ),
                     ),
                     const SizedBox(width: AppTheme.spacingMd),
                     Expanded(
-                      child: FilledButton(
+                      child: AppPrimaryButton(
                         onPressed: _trainWorkout,
-                        child: const Text(UiStrings.train),
+                        label: UiStrings.train,
+                        expand: true,
                       ),
                     ),
                   ],

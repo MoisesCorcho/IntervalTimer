@@ -3,6 +3,7 @@ import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/models/workout_exercise.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
+import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/interval_duration_picker.dart';
 import 'package:interval_timer/shared/widgets/number_stepper.dart';
 
@@ -217,10 +218,11 @@ class ExerciseFormState extends State<ExerciseForm> {
               ),
             ),
           const SizedBox(height: AppTheme.spacingLg),
-          FilledButton(
+          AppPrimaryButton(
             key: const Key('exercise_save_button'),
             onPressed: submit,
-            child: const Text(UiStrings.save),
+            label: UiStrings.save,
+            expand: true,
           ),
         ],
       ),

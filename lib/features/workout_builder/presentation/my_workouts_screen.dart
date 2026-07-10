@@ -12,6 +12,8 @@ import 'package:interval_timer/features/workout_builder/application/workout_prov
 import 'package:interval_timer/features/workout_builder/domain/workout_flattener.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 import 'package:interval_timer/features/workout_builder/presentation/widgets/delete_workout_dialog.dart';
+import 'package:interval_timer/shared/widgets/app_primary_button.dart';
+import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
 class MyWorkoutsScreen extends ConsumerStatefulWidget {
   const MyWorkoutsScreen({super.key});
@@ -44,22 +46,29 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
               autofocus: true,
             ),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text(UiStrings.cancel),
-              ),
-              FilledButton(
-                key: const Key('create_workout_confirm'),
-                onPressed: () {
-                  nameError =
-                      WorkoutValidators.validateWorkoutName(controller.text);
-                  if (nameError != null) {
-                    setDialogState(() {});
-                    return;
-                  }
-                  Navigator.pop(context, true);
-                },
-                child: const Text(UiStrings.save),
+              DialogActionsRow(
+                children: [
+                  AppSecondaryButton(
+                    compact: true,
+                    onPressed: () => Navigator.pop(context, false),
+                    label: UiStrings.cancel,
+                  ),
+                  AppPrimaryButton(
+                    key: const Key('create_workout_confirm'),
+                    compact: true,
+                    onPressed: () {
+                      nameError = WorkoutValidators.validateWorkoutName(
+                        controller.text,
+                      );
+                      if (nameError != null) {
+                        setDialogState(() {});
+                        return;
+                      }
+                      Navigator.pop(context, true);
+                    },
+                    label: UiStrings.save,
+                  ),
+                ],
               ),
             ],
           );
@@ -177,9 +186,9 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
             children: [
               Text(UiStrings.persistenceError),
               const SizedBox(height: AppTheme.spacingMd),
-              FilledButton(
+              AppPrimaryButton(
                 onPressed: () => ref.invalidate(workoutsListProvider),
-                child: const Text(UiStrings.retry),
+                label: UiStrings.retry,
               ),
             ],
           ),
