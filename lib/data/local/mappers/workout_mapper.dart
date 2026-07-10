@@ -21,6 +21,7 @@ domain.Workout mapWorkoutRow(
             sets: e.sets,
             workSeconds: e.workSeconds,
             restSeconds: e.restSeconds,
+            restAfterExerciseSeconds: e.restAfterExerciseSeconds,
           ),
         )
         .toList(),

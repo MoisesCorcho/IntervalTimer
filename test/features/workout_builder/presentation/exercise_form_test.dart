@@ -29,7 +29,7 @@ void main() {
     expect(find.text(UiStrings.nameRequired), findsOneWidget);
   });
 
-  testWidgets('sets/work/rest use steppers; save persists adjusted ints', (
+  testWidgets('shows two rest steppers; save persists both rest ints', (
     tester,
   ) async {
     ExerciseFormResult? result;
@@ -45,7 +45,10 @@ void main() {
     );
 
     expect(find.byType(NumberStepper), findsOneWidget);
-    expect(find.byType(IntervalDurationPicker), findsNWidgets(2));
+    // work + rest between sets + rest after exercise
+    expect(find.byType(IntervalDurationPicker), findsNWidgets(3));
+    expect(find.text(UiStrings.restBetweenSetsDuration), findsOneWidget);
+    expect(find.text(UiStrings.restAfterExerciseDuration), findsOneWidget);
     expect(find.byKey(const Key('exercise_sets_field')), findsNothing);
     expect(find.byKey(const Key('exercise_work_field')), findsNothing);
     expect(find.byKey(const Key('exercise_rest_field')), findsNothing);
@@ -55,7 +58,7 @@ void main() {
       'Burpees',
     );
 
-    // defaults: sets 3, work 40, rest 20
+    // defaults: sets 3, work 40, rest 20, restAfter 0
     final setsInc =
         find.byKey(const Key('exercise_sets_number_stepper_increment'));
     await tester.ensureVisible(setsInc);
@@ -74,6 +77,13 @@ void main() {
     await tester.tap(restDec);
     await tester.pumpAndSettle();
 
+    final restAfterInc = find.byKey(
+      const Key('exercise_rest_after_duration_stepper_sec_increment'),
+    );
+    await tester.ensureVisible(restAfterInc);
+    await tester.tap(restAfterInc);
+    await tester.pumpAndSettle();
+
     final saveButton = find.byKey(const Key('exercise_save_button'));
     await tester.ensureVisible(saveButton);
     await tester.tap(saveButton);
@@ -84,5 +94,6 @@ void main() {
     expect(result!.sets, 4);
     expect(result!.workSeconds, 45);
     expect(result!.restSeconds, 15);
+    expect(result!.restAfterExerciseSeconds, 5);
   });
 }

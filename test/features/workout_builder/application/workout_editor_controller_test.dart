@@ -42,6 +42,7 @@ void main() {
       sets: 0,
       workSeconds: 40,
       restSeconds: 20,
+      restAfterExerciseSeconds: 0,
     );
     expect(ok, isFalse);
   });

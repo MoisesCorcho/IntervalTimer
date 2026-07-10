@@ -7,6 +7,11 @@ import 'package:uuid/uuid.dart';
 ///
 /// When the session originates from F32, [SessionCompletedEvent.routineId] and
 /// [SessionCancelledEvent.routineId] use the workout id as the origin reference.
+///
+/// F34 dual rest:
+/// - [WorkoutExercise.restSeconds]: between sets of the same exercise
+/// - [WorkoutExercise.restAfterExerciseSeconds]: after last set if another
+///   exercise follows (never on the last exercise of the workout)
 List<Interval> flattenWorkout(
   Workout workout, {
   required int workColorArgb,
@@ -15,8 +20,12 @@ List<Interval> flattenWorkout(
 }) {
   final idGen = uuid ?? const Uuid();
   final result = <Interval>[];
+  final exercises = workout.exercises;
 
-  for (final exercise in workout.exercises) {
+  for (var i = 0; i < exercises.length; i++) {
+    final exercise = exercises[i];
+    final isLastExercise = i == exercises.length - 1;
+
     for (var set = 1; set <= exercise.sets; set++) {
       result.add(
         Interval(
@@ -40,6 +49,18 @@ List<Interval> flattenWorkout(
           ),
         );
       }
+    }
+
+    if (!isLastExercise && exercise.restAfterExerciseSeconds > 0) {
+      result.add(
+        Interval(
+          id: idGen.v4(),
+          name: 'Descanso entre ejercicios',
+          durationSeconds: exercise.restAfterExerciseSeconds,
+          colorArgb: restColorArgb,
+          type: IntervalType.rest,
+        ),
+      );
     }
   }
 

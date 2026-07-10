@@ -18,6 +18,7 @@ Apartado **Entrenamientos** donde el usuario crea entrenamientos compuestos por 
 - F08 - Repeticion de Circuitos (Rounds) (puede extender el modelo en el futuro; no prerequisito de F32)
 - F24 - Favoritos (puede marcar entrenamientos favoritos en iteracion futura)
 - F33 - Controles Numericos y de Duracion (Steppers Premium) (reemplaza TextField de sets/duracion por steppers)
+- F34 - Descanso entre Sets y Descanso Final del Ejercicio (extiende semantica de rest y aplanado; ver nota en R8 / decisiones)
 
 ## User Stories
 
@@ -58,7 +59,9 @@ DONDE el usuario esta en la pantalla de edicion de un entrenamiento, CUANDO conf
 
 ### R8 — Aplanar entrenamiento para ejecucion
 
-CUANDO el usuario inicia un entrenamiento desde **Mis entrenamientos** o desde su pantalla de edicion, EL SISTEMA DEBE generar una secuencia lineal de intervalos segun el algoritmo de `design.md` (un intervalo de trabajo por set y un intervalo de descanso entre sets del mismo ejercicio, sin descanso tras el ultimo set del ejercicio) y cargarla en `TimerController` (F01) en estado `idle`.
+CUANDO el usuario inicia un entrenamiento desde **Mis entrenamientos** o desde su pantalla de edicion, EL SISTEMA DEBE generar una secuencia lineal de intervalos segun el algoritmo de `design.md` (un intervalo de trabajo por set y un intervalo de descanso entre sets del mismo ejercicio, sin descanso **entre-sets** tras el ultimo set del ejercicio) y cargarla en `TimerController` (F01) en estado `idle`.
+
+> **Extension F34:** el aplanado se amplía con `restAfterExerciseSeconds` (descanso final del ejercicio **solo** si hay ejercicio siguiente). Ver `34-exercise-rest-between-and-final/`. Hasta implementar F34, no hay descanso post-ejercicio (equivalente a `restAfterExerciseSeconds = 0`).
 
 ### R9 — Iniciar sesion del entrenamiento
 
@@ -107,8 +110,9 @@ DONDE el usuario esta en el dialogo de confirmacion de eliminacion, CUANDO cance
 | Tema | Decision |
 |---|---|
 | F32 vs F05 | **F32** = entrenamientos con ejercicios y sets (modelo estructurado). **F05** = rutinas con intervalos planos. Coexisten; F32 no depende de F05 ni de F03. |
-| Algoritmo de aplanado (R8) | Por cada ejercicio en orden de `position`, por cada set de 1 a `sets`: (1) intervalo `work` con nombre del ejercicio y `workSeconds`; (2) si el set no es el ultimo, intervalo `rest` con nombre `"Descanso"` y `restSeconds`. Sin descanso tras el ultimo set del ejercicio. |
-| `restSeconds = 0` | Permitido: el intervalo de descanso se omite (avance inmediato al siguiente set). |
+| Algoritmo de aplanado (R8) | Por cada ejercicio en orden de `position`, por cada set de 1 a `sets`: (1) intervalo `work` con nombre del ejercicio y `workSeconds`; (2) si el set no es el ultimo, intervalo `rest` con nombre `"Descanso"` y `restSeconds`. Sin descanso **entre-sets** tras el ultimo set del ejercicio. **F34** agrega, tras completar los sets de un ejercicio no final, un descanso final opcional (`restAfterExerciseSeconds`) si > 0. |
+| `restSeconds = 0` | Permitido: el intervalo de descanso entre sets se omite (avance inmediato al siguiente set). |
+| Descanso final entre ejercicios | **Fuera del alcance de F32 base;** formalizado en **F34** (`restAfterExerciseSeconds`). F32 solo modela `restSeconds` entre sets. |
 | Identificador en sesion (F01/F04) | Al aplanar, `SessionCompletedEvent.routineId` usa el `workoutId` como referencia de origen; el snapshot de sesion guarda el nombre del entrenamiento (F04). |
 | Entrenamiento activo | Clave `active_workout_id` en drift (`app_preferences`); independiente de `active_routine_id` de F05. |
 | Colores en intervalos aplanados | Trabajo: color `work` por defecto de tema; descanso: color `rest` por defecto (`04-design-system.md`). |

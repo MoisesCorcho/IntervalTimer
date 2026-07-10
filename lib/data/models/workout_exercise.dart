@@ -12,5 +12,6 @@ abstract class WorkoutExercise with _$WorkoutExercise {
     required int sets,
     required int workSeconds,
     required int restSeconds,
+    @Default(0) int restAfterExerciseSeconds,
   }) = _WorkoutExercise;
 }

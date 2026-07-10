@@ -11,6 +11,8 @@ class WorkoutExercises extends Table {
   IntColumn get sets => integer()();
   IntColumn get workSeconds => integer()();
   IntColumn get restSeconds => integer()();
+  IntColumn get restAfterExerciseSeconds =>
+      integer().withDefault(const Constant(0))();
 
   @override
   Set<Column> get primaryKey => {id};

@@ -61,6 +61,7 @@ class WorkoutRepository {
     required int sets,
     required int workSeconds,
     required int restSeconds,
+    required int restAfterExerciseSeconds,
   }) async {
     final exercises = await _db.getWorkoutExerciseRows(workoutId);
     final position = exercises.length;
@@ -76,6 +77,7 @@ class WorkoutRepository {
             sets: sets,
             workSeconds: workSeconds,
             restSeconds: restSeconds,
+            restAfterExerciseSeconds: restAfterExerciseSeconds,
           ),
         );
 
@@ -92,6 +94,7 @@ class WorkoutRepository {
       sets: sets,
       workSeconds: workSeconds,
       restSeconds: restSeconds,
+      restAfterExerciseSeconds: restAfterExerciseSeconds,
     );
   }
 
@@ -105,6 +108,7 @@ class WorkoutRepository {
         sets: Value(exercise.sets),
         workSeconds: Value(exercise.workSeconds),
         restSeconds: Value(exercise.restSeconds),
+        restAfterExerciseSeconds: Value(exercise.restAfterExerciseSeconds),
       ),
     );
 
@@ -191,6 +195,7 @@ class WorkoutRepository {
                 sets: exercise.sets,
                 workSeconds: exercise.workSeconds,
                 restSeconds: exercise.restSeconds,
+                restAfterExerciseSeconds: exercise.restAfterExerciseSeconds,
               ),
             );
       }

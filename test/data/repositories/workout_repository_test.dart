@@ -26,6 +26,7 @@ void main() {
         sets: 3,
         workSeconds: 40,
         restSeconds: 20,
+        restAfterExerciseSeconds: 60,
       );
       final ex2 = await repo.addExercise(
         workoutId: workout.id,
@@ -33,19 +34,27 @@ void main() {
         sets: 2,
         workSeconds: 30,
         restSeconds: 10,
+        restAfterExerciseSeconds: 0,
       );
 
       final loaded = await repo.getWorkout(workout.id);
       expect(loaded!.exercises.length, 2);
       expect(loaded.exercises[0].name, 'Squats');
+      expect(loaded.exercises[0].restAfterExerciseSeconds, 60);
       expect(loaded.exercises[1].name, 'Lunges');
+      expect(loaded.exercises[1].restAfterExerciseSeconds, 0);
 
       await repo.updateExercise(
-        ex1.copyWith(name: 'Deep squats', sets: 4),
+        ex1.copyWith(
+          name: 'Deep squats',
+          sets: 4,
+          restAfterExerciseSeconds: 90,
+        ),
       );
       final updated = await repo.getWorkout(workout.id);
       expect(updated!.exercises.first.name, 'Deep squats');
       expect(updated.exercises.first.sets, 4);
+      expect(updated.exercises.first.restAfterExerciseSeconds, 90);
 
       await repo.reorderExercises(workout.id, [ex2.id, ex1.id]);
       final reordered = await repo.getWorkout(workout.id);
@@ -65,6 +74,7 @@ void main() {
         sets: 2,
         workSeconds: 30,
         restSeconds: 15,
+        restAfterExerciseSeconds: 45,
       );
 
       final copy = await repo.duplicateWorkout(workout.id);
@@ -73,6 +83,8 @@ void main() {
       expect(copy.exercises.length, 1);
       expect(copy.exercises.first.id, isNot(workout.id));
       expect(copy.exercises.first.name, 'Rows');
+      expect(copy.exercises.first.restSeconds, 15);
+      expect(copy.exercises.first.restAfterExerciseSeconds, 45);
     });
 
     test('duplicate resolves numeric suffix on name conflict', () async {
@@ -81,6 +93,23 @@ void main() {
 
       final copy = await repo.duplicateWorkout(original.id);
       expect(copy.name, 'Copia de Cardio (2)');
+    });
+
+    test('addExercise defaults restAfterExerciseSeconds when provided as 0',
+        () async {
+      final workout = await repo.createWorkout('Default rest');
+      final ex = await repo.addExercise(
+        workoutId: workout.id,
+        name: 'Plank',
+        sets: 1,
+        workSeconds: 60,
+        restSeconds: 0,
+        restAfterExerciseSeconds: 0,
+      );
+
+      expect(ex.restAfterExerciseSeconds, 0);
+      final loaded = await repo.getWorkout(workout.id);
+      expect(loaded!.exercises.first.restAfterExerciseSeconds, 0);
     });
   });
 }

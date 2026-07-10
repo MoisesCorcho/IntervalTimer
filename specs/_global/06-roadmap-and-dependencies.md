@@ -37,6 +37,7 @@
 | F31 | [Accesibilidad](../features/31-accessibility/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
 | F32 | [Constructor de Entrenamientos por Ejercicios](../features/32-workout-exercise-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01 |
 | F33 | [Controles Numericos y de Duracion (Steppers Premium)](../features/33-premium-numeric-steppers/requirements.md) | Fase 7 · Calidad y Pulido | Completado | F01, F32 |
+| F34 | [Descanso entre Sets y Descanso Final del Ejercicio](../features/34-exercise-rest-between-and-final/requirements.md) | Fase 1 · Personalizacion | Completado | F32 |
 
 Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `requirements.md`.
 
@@ -62,6 +63,15 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - Puede adelantarse dentro de Fase 7 apenas F01 y F32 tengan formularios estables en codigo.
 - F05 y otros forms futuros pueden reutilizar los widgets sin ser prerequisito de F33.
 
+### F34 vs F32 (descansos duales del ejercicio)
+
+- **F32:** introduce `restSeconds` (descanso entre sets) y un aplanado que **omite** cualquier rest tras el ultimo set del ejercicio.
+- **F34:** mantiene `restSeconds` como entre-sets y agrega `restAfterExerciseSeconds` (descanso final del ejercicio, solo si hay ejercicio siguiente). Extiende `WorkoutFlattener` y el formulario de ejercicio; no crea modulo nuevo.
+- F34 **no** inventa cooldown de sesion al terminar el workout.
+- Default de migracion `restAfterExerciseSeconds = 0` preserva el comportamiento pre-F34.
+- Caso clave: `sets = 1` + ejercicio siguiente → el descanso entre sets no aplica; el descanso final de A si puede ejecutarse antes de B.
+- Depende solo de F32; F33 no es prerequisito formal, pero el form debe reutilizar `DurationStepper` si ya esta integrado.
+
 ### F01 vs F04 (eventos de sesion)
 
 - F04 consume `SessionCompletedEvent` y `SessionCancelledEvent` expuestos por `TimerController` (F01).
@@ -77,7 +87,7 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 ## Orden de implementacion sugerido (por fase)
 
 - **Fase 0 - Fundacion:** F01, luego F02 / F03 / F04 en paralelo (migraciones drift coordinadas).
-- **Fase 1 - Personalizacion y monetizacion:** F32, F05, F06, F07 (F32 puede implementarse antes que F05; no comparten prerequisitos).
+- **Fase 1 - Personalizacion y monetizacion:** F32, F34 (tras F32), F05, F06, F07 (F32 puede implementarse antes que F05; no comparten prerequisitos; F34 extiende el aplanado/rest de F32).
 - **Fase 2 - Profundidad de entrenamiento:** F08, F09, F10, F11.
 - **Fase 3 - Seguimiento y motivacion:** F12, F13, F14, F15, F16.
 - **Fase 4 - Audio y experiencia:** F17, F18, F19, F20, F21 (F21 es fase futura/spike).
@@ -147,11 +157,12 @@ F01 --> F31
 F01 --> F32
 F01 --> F33
 F32 --> F33
+F32 --> F34
 ```
 
 ## Como agregar una nueva feature al roadmap
 
-1. Asignar el siguiente ID disponible (`F34`, etc.).
+1. Asignar el siguiente ID disponible (`F35`, etc.).
 2. Crear carpeta `specs/features/NN-slug/` con los 3 archivos usando las existentes como referencia.
 3. Declarar sus prerequisitos reales.
 4. Actualizar la tabla de este archivo (con columna Estado) y el grafo de dependencias.

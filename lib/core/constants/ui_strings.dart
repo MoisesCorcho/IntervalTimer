@@ -67,8 +67,12 @@ abstract final class UiStrings {
   static const sets = 'Sets';
   static const workDuration = 'Duración trabajo';
   static const restDuration = 'Duración descanso';
+  static const restBetweenSetsDuration = 'Descanso entre sets';
+  static const restAfterExerciseDuration = 'Descanso final';
   static const setsInvalid = 'Los sets deben estar entre 1 y 99';
   static const restDurationInvalid =
+      'Duración inválida. Debe estar entre 00:00 y 99:59';
+  static const restAfterExerciseInvalid =
       'Duración inválida. Debe estar entre 00:00 y 99:59';
   static const train = 'Entrenar';
   static const edit = 'Editar';

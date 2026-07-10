@@ -88,3 +88,5 @@
 Esta feature depende de: F01.
 No iniciar tasks de este archivo hasta que F01 este en estado "Done".
 Orden recomendado: modelos/migracion → WorkoutFlattener → repository → providers → UI listado → UI editor → integracion TimerController → tests.
+
+**Post-feature:** la semantica de descanso final entre ejercicios y el campo `restAfterExerciseSeconds` se implementan en **F34** (`34-exercise-rest-between-and-final/`), que extiende el flattener y el form de esta feature sin reemplazar el resto del CRUD F32.

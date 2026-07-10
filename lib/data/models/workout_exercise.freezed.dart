@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WorkoutExercise {
 
- String get id; String get workoutId; int get position; String get name; int get sets; int get workSeconds; int get restSeconds;
+ String get id; String get workoutId; int get position; String get name; int get sets; int get workSeconds; int get restSeconds; int get restAfterExerciseSeconds;
 /// Create a copy of WorkoutExercise
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $WorkoutExerciseCopyWith<WorkoutExercise> get copyWith => _$WorkoutExerciseCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutExercise&&(identical(other.id, id) || other.id == id)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.position, position) || other.position == position)&&(identical(other.name, name) || other.name == name)&&(identical(other.sets, sets) || other.sets == sets)&&(identical(other.workSeconds, workSeconds) || other.workSeconds == workSeconds)&&(identical(other.restSeconds, restSeconds) || other.restSeconds == restSeconds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutExercise&&(identical(other.id, id) || other.id == id)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.position, position) || other.position == position)&&(identical(other.name, name) || other.name == name)&&(identical(other.sets, sets) || other.sets == sets)&&(identical(other.workSeconds, workSeconds) || other.workSeconds == workSeconds)&&(identical(other.restSeconds, restSeconds) || other.restSeconds == restSeconds)&&(identical(other.restAfterExerciseSeconds, restAfterExerciseSeconds) || other.restAfterExerciseSeconds == restAfterExerciseSeconds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,workoutId,position,name,sets,workSeconds,restSeconds);
+int get hashCode => Object.hash(runtimeType,id,workoutId,position,name,sets,workSeconds,restSeconds,restAfterExerciseSeconds);
 
 @override
 String toString() {
-  return 'WorkoutExercise(id: $id, workoutId: $workoutId, position: $position, name: $name, sets: $sets, workSeconds: $workSeconds, restSeconds: $restSeconds)';
+  return 'WorkoutExercise(id: $id, workoutId: $workoutId, position: $position, name: $name, sets: $sets, workSeconds: $workSeconds, restSeconds: $restSeconds, restAfterExerciseSeconds: $restAfterExerciseSeconds)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $WorkoutExerciseCopyWith<$Res>  {
   factory $WorkoutExerciseCopyWith(WorkoutExercise value, $Res Function(WorkoutExercise) _then) = _$WorkoutExerciseCopyWithImpl;
 @useResult
 $Res call({
- String id, String workoutId, int position, String name, int sets, int workSeconds, int restSeconds
+ String id, String workoutId, int position, String name, int sets, int workSeconds, int restSeconds, int restAfterExerciseSeconds
 });
 
 
@@ -62,7 +62,7 @@ class _$WorkoutExerciseCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutExercise
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? workoutId = null,Object? position = null,Object? name = null,Object? sets = null,Object? workSeconds = null,Object? restSeconds = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? workoutId = null,Object? position = null,Object? name = null,Object? sets = null,Object? workSeconds = null,Object? restSeconds = null,Object? restAfterExerciseSeconds = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
@@ -71,6 +71,7 @@ as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nu
 as String,sets: null == sets ? _self.sets : sets // ignore: cast_nullable_to_non_nullable
 as int,workSeconds: null == workSeconds ? _self.workSeconds : workSeconds // ignore: cast_nullable_to_non_nullable
 as int,restSeconds: null == restSeconds ? _self.restSeconds : restSeconds // ignore: cast_nullable_to_non_nullable
+as int,restAfterExerciseSeconds: null == restAfterExerciseSeconds ? _self.restAfterExerciseSeconds : restAfterExerciseSeconds // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String workoutId,  int position,  String name,  int sets,  int workSeconds,  int restSeconds)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String workoutId,  int position,  String name,  int sets,  int workSeconds,  int restSeconds,  int restAfterExerciseSeconds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WorkoutExercise() when $default != null:
-return $default(_that.id,_that.workoutId,_that.position,_that.name,_that.sets,_that.workSeconds,_that.restSeconds);case _:
+return $default(_that.id,_that.workoutId,_that.position,_that.name,_that.sets,_that.workSeconds,_that.restSeconds,_that.restAfterExerciseSeconds);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.id,_that.workoutId,_that.position,_that.name,_that.sets,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String workoutId,  int position,  String name,  int sets,  int workSeconds,  int restSeconds)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String workoutId,  int position,  String name,  int sets,  int workSeconds,  int restSeconds,  int restAfterExerciseSeconds)  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutExercise():
-return $default(_that.id,_that.workoutId,_that.position,_that.name,_that.sets,_that.workSeconds,_that.restSeconds);case _:
+return $default(_that.id,_that.workoutId,_that.position,_that.name,_that.sets,_that.workSeconds,_that.restSeconds,_that.restAfterExerciseSeconds);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.id,_that.workoutId,_that.position,_that.name,_that.sets,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String workoutId,  int position,  String name,  int sets,  int workSeconds,  int restSeconds)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String workoutId,  int position,  String name,  int sets,  int workSeconds,  int restSeconds,  int restAfterExerciseSeconds)?  $default,) {final _that = this;
 switch (_that) {
 case _WorkoutExercise() when $default != null:
-return $default(_that.id,_that.workoutId,_that.position,_that.name,_that.sets,_that.workSeconds,_that.restSeconds);case _:
+return $default(_that.id,_that.workoutId,_that.position,_that.name,_that.sets,_that.workSeconds,_that.restSeconds,_that.restAfterExerciseSeconds);case _:
   return null;
 
 }
@@ -212,7 +213,7 @@ return $default(_that.id,_that.workoutId,_that.position,_that.name,_that.sets,_t
 
 
 class _WorkoutExercise implements WorkoutExercise {
-  const _WorkoutExercise({required this.id, required this.workoutId, required this.position, required this.name, required this.sets, required this.workSeconds, required this.restSeconds});
+  const _WorkoutExercise({required this.id, required this.workoutId, required this.position, required this.name, required this.sets, required this.workSeconds, required this.restSeconds, this.restAfterExerciseSeconds = 0});
   
 
 @override final  String id;
@@ -222,6 +223,7 @@ class _WorkoutExercise implements WorkoutExercise {
 @override final  int sets;
 @override final  int workSeconds;
 @override final  int restSeconds;
+@override@JsonKey() final  int restAfterExerciseSeconds;
 
 /// Create a copy of WorkoutExercise
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +235,16 @@ _$WorkoutExerciseCopyWith<_WorkoutExercise> get copyWith => __$WorkoutExerciseCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkoutExercise&&(identical(other.id, id) || other.id == id)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.position, position) || other.position == position)&&(identical(other.name, name) || other.name == name)&&(identical(other.sets, sets) || other.sets == sets)&&(identical(other.workSeconds, workSeconds) || other.workSeconds == workSeconds)&&(identical(other.restSeconds, restSeconds) || other.restSeconds == restSeconds));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkoutExercise&&(identical(other.id, id) || other.id == id)&&(identical(other.workoutId, workoutId) || other.workoutId == workoutId)&&(identical(other.position, position) || other.position == position)&&(identical(other.name, name) || other.name == name)&&(identical(other.sets, sets) || other.sets == sets)&&(identical(other.workSeconds, workSeconds) || other.workSeconds == workSeconds)&&(identical(other.restSeconds, restSeconds) || other.restSeconds == restSeconds)&&(identical(other.restAfterExerciseSeconds, restAfterExerciseSeconds) || other.restAfterExerciseSeconds == restAfterExerciseSeconds));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,workoutId,position,name,sets,workSeconds,restSeconds);
+int get hashCode => Object.hash(runtimeType,id,workoutId,position,name,sets,workSeconds,restSeconds,restAfterExerciseSeconds);
 
 @override
 String toString() {
-  return 'WorkoutExercise(id: $id, workoutId: $workoutId, position: $position, name: $name, sets: $sets, workSeconds: $workSeconds, restSeconds: $restSeconds)';
+  return 'WorkoutExercise(id: $id, workoutId: $workoutId, position: $position, name: $name, sets: $sets, workSeconds: $workSeconds, restSeconds: $restSeconds, restAfterExerciseSeconds: $restAfterExerciseSeconds)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$WorkoutExerciseCopyWith<$Res> implements $WorkoutExercise
   factory _$WorkoutExerciseCopyWith(_WorkoutExercise value, $Res Function(_WorkoutExercise) _then) = __$WorkoutExerciseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String workoutId, int position, String name, int sets, int workSeconds, int restSeconds
+ String id, String workoutId, int position, String name, int sets, int workSeconds, int restSeconds, int restAfterExerciseSeconds
 });
 
 
@@ -270,7 +272,7 @@ class __$WorkoutExerciseCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutExercise
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? workoutId = null,Object? position = null,Object? name = null,Object? sets = null,Object? workSeconds = null,Object? restSeconds = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? workoutId = null,Object? position = null,Object? name = null,Object? sets = null,Object? workSeconds = null,Object? restSeconds = null,Object? restAfterExerciseSeconds = null,}) {
   return _then(_WorkoutExercise(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,workoutId: null == workoutId ? _self.workoutId : workoutId // ignore: cast_nullable_to_non_nullable
@@ -279,6 +281,7 @@ as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nu
 as String,sets: null == sets ? _self.sets : sets // ignore: cast_nullable_to_non_nullable
 as int,workSeconds: null == workSeconds ? _self.workSeconds : workSeconds // ignore: cast_nullable_to_non_nullable
 as int,restSeconds: null == restSeconds ? _self.restSeconds : restSeconds // ignore: cast_nullable_to_non_nullable
+as int,restAfterExerciseSeconds: null == restAfterExerciseSeconds ? _self.restAfterExerciseSeconds : restAfterExerciseSeconds // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }

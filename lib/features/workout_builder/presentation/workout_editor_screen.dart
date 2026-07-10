@@ -100,6 +100,8 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                       sets: result.sets,
                       workSeconds: result.workSeconds,
                       restSeconds: result.restSeconds,
+                      restAfterExerciseSeconds:
+                          result.restAfterExerciseSeconds,
                     )
                   : await _editor.updateExercise(
                       existing.copyWith(
@@ -107,6 +109,8 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                         sets: result.sets,
                         workSeconds: result.workSeconds,
                         restSeconds: result.restSeconds,
+                        restAfterExerciseSeconds:
+                            result.restAfterExerciseSeconds,
                       ),
                     );
 
@@ -118,6 +122,8 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                       sets: result.sets,
                       workSeconds: result.workSeconds,
                       restSeconds: result.restSeconds,
+                      restAfterExerciseSeconds:
+                          result.restAfterExerciseSeconds,
                     );
                   } else {
                     await _editor.updateExercise(
@@ -126,6 +132,8 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                         sets: result.sets,
                         workSeconds: result.workSeconds,
                         restSeconds: result.restSeconds,
+                        restAfterExerciseSeconds:
+                            result.restAfterExerciseSeconds,
                       ),
                     );
                   }
@@ -272,8 +280,9 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                               title: Text(exercise.name),
                               subtitle: Text(
                                 '${exercise.sets} sets · '
-                                '${formatDurationMmSs(exercise.workSeconds)} / '
-                                '${formatDurationMmSs(exercise.restSeconds)}',
+                                '${formatDurationMmSs(exercise.workSeconds)} · '
+                                'entre ${formatDurationMmSs(exercise.restSeconds)}'
+                                '${exercise.restAfterExerciseSeconds > 0 ? ' · final ${formatDurationMmSs(exercise.restAfterExerciseSeconds)}' : ''}',
                               ),
                               trailing: canEdit
                                   ? Row(
