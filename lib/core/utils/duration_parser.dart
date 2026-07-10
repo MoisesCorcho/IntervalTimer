@@ -30,3 +30,15 @@ String formatRemainingMs(int remainingMs) {
   final totalSeconds = (remainingMs / 1000).ceil();
   return formatDurationMmSs(totalSeconds.clamp(0, 5999));
 }
+
+/// Formats total remaining session time (R8): mm:ss or h:mm:ss if > 59:59.
+String formatTotalRemainingMs(int remainingMs) {
+  final totalSeconds = (remainingMs / 1000).ceil().clamp(0, 359999);
+  if (totalSeconds > 3599) {
+    final hours = totalSeconds ~/ 3600;
+    final minutes = (totalSeconds % 3600) ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+  return formatDurationMmSs(totalSeconds);
+}

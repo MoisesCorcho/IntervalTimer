@@ -125,10 +125,11 @@ void main() {
 
     final controller = container.read(timerControllerProvider.notifier);
     final timerState = container.read(timerControllerProvider);
-    expect(timerState.status, TimerStatus.running);
-    expect(timerState.currentInterval?.name, 'Flexiones');
+    // F35: default prep_seconds is 10 → session starts in preparation.
+    expect(timerState.status, TimerStatus.preparing);
+    expect(timerState.sessionPrepSeconds, 10);
     expect(find.byType(TimerExecutionScreen), findsOneWidget);
-    expect(find.text('Flexiones'), findsOneWidget);
+    expect(find.text(UiStrings.preparation), findsOneWidget);
 
     controller.pause();
     await tester.pump();

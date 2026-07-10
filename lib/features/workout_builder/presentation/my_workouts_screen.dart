@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/models/workout.dart';
+import 'package:interval_timer/features/settings/application/settings_providers.dart';
+import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
@@ -99,7 +101,12 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
         .read(activeWorkoutIdProvider.notifier)
         .setActiveWorkoutId(workout.id);
 
-    final started = ref.read(timerControllerProvider.notifier).start();
+    final prepSeconds = ref.read(settingsControllerProvider).valueOrNull
+            ?.prepSeconds ??
+        SettingsRepository.defaultPrepSeconds;
+    final started = ref
+        .read(timerControllerProvider.notifier)
+        .start(prepSeconds: prepSeconds);
     if (!mounted) return;
     if (started) {
       context.go('/execute');
@@ -123,7 +130,8 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
   Future<void> _deleteWorkout(Workout workout) async {
     final timerStatus = ref.read(timerControllerProvider).status;
     if (timerStatus == TimerStatus.running ||
-        timerStatus == TimerStatus.paused) {
+        timerStatus == TimerStatus.paused ||
+        timerStatus == TimerStatus.preparing) {
       setState(() => _actionError = UiStrings.deleteBlockedDuringSession);
       return;
     }

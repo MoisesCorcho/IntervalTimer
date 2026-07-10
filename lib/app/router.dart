@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/app/app_shell.dart';
+import 'package:interval_timer/features/settings/presentation/settings_screen.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/timer/presentation/routine_editor_screen.dart';
@@ -11,9 +12,12 @@ import 'package:interval_timer/features/workout_builder/presentation/my_workouts
 import 'package:interval_timer/features/workout_builder/presentation/workout_editor_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellNavigatorRoutineKey = GlobalKey<NavigatorState>(debugLabel: 'routine');
+final _shellNavigatorRoutineKey =
+    GlobalKey<NavigatorState>(debugLabel: 'routine');
 final _shellNavigatorWorkoutsKey =
     GlobalKey<NavigatorState>(debugLabel: 'workouts');
+final _shellNavigatorSettingsKey =
+    GlobalKey<NavigatorState>(debugLabel: 'settings');
 
 final routerProvider = Provider<GoRouter>((ref) {
   final refreshNotifier = _RouterRefreshNotifier(ref);
@@ -27,7 +31,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final location = state.matchedLocation;
 
       if (timerStatus == TimerStatus.running ||
-          timerStatus == TimerStatus.paused) {
+          timerStatus == TimerStatus.paused ||
+          timerStatus == TimerStatus.preparing) {
         if (location != '/execute') return '/execute';
       }
 
@@ -64,6 +69,15 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/workouts',
                 builder: (context, state) => const MyWorkoutsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorSettingsKey,
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsScreen(),
               ),
             ],
           ),

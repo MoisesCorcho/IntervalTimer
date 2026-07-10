@@ -6,6 +6,8 @@ import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/routine_item.dart';
+import 'package:interval_timer/features/settings/application/settings_providers.dart';
+import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/timer/application/routine_editor_controller.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
@@ -71,7 +73,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
     );
   }
 
-  void _startSession() {
+  Future<void> _startSession() async {
     final routineAsync = ref.read(routineEditorProvider);
     final routine = routineAsync.valueOrNull;
     if (routine == null || routine.items.isEmpty) {
@@ -81,7 +83,13 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
 
     setState(() => _startError = null);
     ref.read(timerControllerProvider.notifier).bindRoutine(routine);
-    final started = ref.read(timerControllerProvider.notifier).start();
+    final prepSeconds = ref.read(settingsControllerProvider).valueOrNull
+            ?.prepSeconds ??
+        SettingsRepository.defaultPrepSeconds;
+    final started = ref
+        .read(timerControllerProvider.notifier)
+        .start(prepSeconds: prepSeconds);
+    if (!mounted) return;
     if (started) {
       context.go('/execute');
     } else {

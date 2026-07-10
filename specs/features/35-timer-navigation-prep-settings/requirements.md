@@ -1,6 +1,6 @@
 # Requirements: Navegacion de Secciones, Preparacion y Ajustes
 
-> Estado: En progreso
+> Estado: Completado
 
 **ID:** F35 &nbsp;|&nbsp; **Slug:** `35-timer-navigation-prep-settings` &nbsp;|&nbsp; **Fase:** Fase 0 · Fundacion (extiende F01)
 
