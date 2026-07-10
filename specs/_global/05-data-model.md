@@ -182,9 +182,9 @@ WorkoutExercise {
 Por cada `WorkoutExercise` en orden de `position`:
 
 1. Por cada set de 1 a `sets`:
-   1. `Interval` tipo `work`, nombre = `exercise.name`, duracion = `workSeconds`
-   2. Si no es el ultimo set y `restSeconds > 0`: `Interval` tipo `rest`, nombre = `"Descanso"`, duracion = `restSeconds`
-2. Si el ejercicio **no** es el ultimo del workout y `restAfterExerciseSeconds > 0`: `Interval` tipo `rest`, nombre = `"Descanso entre ejercicios"`, duracion = `restAfterExerciseSeconds`
+   1. `Interval` tipo `work`, nombre = `formatDisplayName(exercise.name)` (MAYUSCULAS), duracion = `workSeconds`
+   2. Si no es el ultimo set y `restSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO"`, duracion = `restSeconds`
+2. Si el ejercicio **no** es el ultimo del workout y `restAfterExerciseSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO FINAL"`, duracion = `restAfterExerciseSeconds`
 
 **Notas de semantica (F34):**
 

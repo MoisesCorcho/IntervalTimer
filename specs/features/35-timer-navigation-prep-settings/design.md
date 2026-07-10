@@ -83,7 +83,8 @@ Exponer getters en `TimerController` / estado: `remainingMs`, `totalRemainingMs`
 
 ### Preferencias de preparacion
 
-Sin drift. Reutilizar patron de preferencias (como F05 `active_routine_id`):
+Sin tabla drift nueva. Reutilizar `PreferencesRepository` / tabla `app_preferences`
+(mismo patron que F32 `active_workout_id`; semantica de clave tipo shared_preferences):
 
 | Clave | Tipo | Default | Rango |
 |---|---|---|---|
@@ -93,10 +94,10 @@ Capa:
 
 ```
 features/settings/
-  application/settings_controller.dart   # Notifier o AsyncNotifier
-  application/settings_state.dart
-  domain/app_settings.dart               # opcional: value object { prepSeconds }
-  data/settings_repository.dart          # shared_preferences
+  application/settings_controller.dart   # AsyncNotifier<AppSettings>
+  application/settings_providers.dart
+  domain/app_settings.dart
+  data/settings_repository.dart          # wrap PreferencesRepository
   presentation/settings_screen.dart
 ```
 
@@ -105,9 +106,8 @@ features/settings/
 - `Future<int> getPrepSeconds()`
 - `Future<void> setPrepSeconds(int value)` con clamp 0–60
 
-Inyectar via Riverpod. `TimerController.start` lee a traves del repositorio o de un provider de settings (override en tests).
-
-Paquete: `shared_preferences` (ya tipico en el stack; verificar presencia en `pubspec.yaml` al implementar — si no esta, agregarlo; no inventar otro store).
+Inyectar via Riverpod. La UI lee `settingsControllerProvider` y pasa
+`prepSeconds` a `TimerController.start(prepSeconds: …)` (snapshot R20).
 
 ### UI de ejecucion
 
@@ -126,11 +126,13 @@ Estructura visual (referencia de producto acordada):
          [ << ]   [ Pausar|Reanudar ]   [ >> ]
 ```
 
-- Botones: `RoundedRectangleBorder` / `BorderRadius` ~8–12 (`radius.sm`/`md`); no `CircleBorder` para estos controles.
-- Centro: `FilledButton` o superficie elevada + acento; laterales: tonal/outlined.
-- Card "Siguiente": `surfaceContainer` / elevacion baja, padding md, label caption + title medium + duracion secondary.
-- Modal salir: `AlertDialog` o bottom sheet modal segun plataforma; botones Continuar (default) y Salir (destructivo sutil).
-- Contraste: mantener `contrastTextColor` de F01 R17 sobre color de intervalo.
+- Botones: rectangulares con radio sutil (`AppTheme.buttonRadius` = `radius.sm`); **no** stadium/pill ni circulos.
+- Anterior/Siguiente: **solo icono** (label en Semantics); Pausar/Reanudar: icono + texto.
+- Sombra **exterior** (Tailwind-like) en controles; color de relleno plano sin inset.
+- Card "Siguiente": superficie semitransparente, padding md, label "Siguiente" + nombre + duracion.
+- Modal salir: `AlertDialog` con `DialogActionsRow` (botones **en fila**, `compact: true`) Continuar | Salir.
+- Contraste: `contrastTextColor` sobre color de intervalo; work/rest de workouts usan tonos 800 para texto blanco.
+- Nombres de fase/segmento en **MAYUSCULAS** (`formatDisplayName` / `UiStrings.preparation`).
 
 Widgets extraibles (opcionales, `presentation/widgets/` o `shared/widgets/` solo si se reutilizan):
 
@@ -141,9 +143,10 @@ Widgets extraibles (opcionales, `presentation/widgets/` o `shared/widgets/` solo
 
 ### Entrada a Configuracion
 
-- Ruta GoRouter (o router del proyecto): `/settings`.
-- Punto de entrada minimo: icono en AppBar de la home / lista de entrenamientos / creacion de rutina (donde ya haya navegacion principal). Documentar la eleccion en el PR; no requiere tab bar nueva en F35.
-- Bloquear navegacion a settings **desde** la pantalla de ejecucion activa no es obligatorio si el stack impide volver atras sin cancelar; preferir que la ejecucion sea ruta full-screen sin drawer de settings.
+- Ruta GoRouter: `/settings` como **tercer branch** del `StatefulShellRoute` (barra inferior).
+- Destinos de navegacion: **Rutina | Entrenamientos | Ajustes** (`AppShell` / `NavigationBar`).
+- No icono de settings en AppBar (reemplazado por tab inferior).
+- Ejecucion full-screen (`/execute`); el redirect de sesion activa fuerza `/execute` tambien en `preparing`.
 
 ### Eventos de sesion
 
@@ -163,9 +166,9 @@ Hasta F28, agregar claves en `lib/core/constants/ui_strings.dart`:
 ## Diagrama de flujo — F35
 
 ```
-[SettingsScreen] <--> [SettingsRepository (shared_preferences)]
+[SettingsScreen] <--> [SettingsRepository → PreferencesRepository / app_preferences]
         ^
-        | prepSeconds al start
+        | prepSeconds al start (snapshot)
 [Start sesion] --> [TimerController]
         |
         +-- prep>0 --> [preparing UI] --0/skip--> [running intervalos]
@@ -200,11 +203,12 @@ Hasta F28, agregar claves en `lib/core/constants/ui_strings.dart`:
 | Dos botones separados Pausar y Reanudar | Usuario pidio un solo control toggle. |
 | Anterior siempre deshabilitado en index 0 | Peor UX; reiniciar el primer intervalo es util (R3). |
 
-## Plan de actualizacion de steering docs (pre-codigo)
+## Plan de actualizacion de steering docs
 
-| Documento | Cambio |
+| Documento | Estado |
 |---|---|
-| `05-data-model.md` | Seccion preferencias F35: clave `prep_seconds` |
-| `06-roadmap-and-dependencies.md` | Fila F35 + grafo |
-| `04-design-system.md` | Solo si se extrae widget compartido nuevo documentable (opcional en implementacion) |
+| `05-data-model.md` | Hecho: `prep_seconds` via PreferencesRepository / app_preferences |
+| `06-roadmap-and-dependencies.md` | Hecho: F35 Completado + grafo |
+| `04-design-system.md` | Hecho: work/rest 800, AppPrimaryButton rectangular, DialogActionsRow |
+| Este `design.md` | Sincronizado post-implementacion (prefs Drift, tab Ajustes, UI botones) |
 | `02-architecture` | Ya menciona `settings/`; no requiere cambio estructural |

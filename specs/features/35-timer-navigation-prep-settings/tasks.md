@@ -16,7 +16,7 @@
 ### Datos y preferencias
 
 - [x] Documentar en `_global/05-data-model.md` la preferencia `prep_seconds` (default 10, rango 0–60). _(cubre R15, R16)_
-- [x] Implementar `SettingsRepository` sobre `shared_preferences` (get/set clamp 0–60; default 10 si ausente). _(cubre R15, R16, R17)_
+- [x] Implementar `SettingsRepository` (get/set clamp 0–60; default 10 si ausente) sobre `PreferencesRepository` / `app_preferences` (semantica shared_preferences). _(cubre R15, R16, R17)_
 - [x] Implementar `SettingsController` / provider Riverpod que expone y actualiza `prepSeconds`. _(cubre R14, R15)_
 
 ### Logica del temporizador
@@ -44,7 +44,7 @@
 ### UI — configuracion
 
 - [x] Crear `SettingsScreen` con `NumberStepper` (0–60, step 1) para preparacion y label claro. _(cubre R14, R15, R17)_
-- [x] Registrar ruta `/settings` (o equivalente) y entrada de navegacion desde home/lista principal. _(cubre R14)_
+- [x] Registrar ruta `/settings` como tab del shell (Rutina | Entrenamientos | Ajustes). _(cubre R14)_
 - [x] Persistir al cambiar valor; verificar que no muta sesion activa (R20) si aplica. _(cubre R15, R20)_
 
 ### Tests
