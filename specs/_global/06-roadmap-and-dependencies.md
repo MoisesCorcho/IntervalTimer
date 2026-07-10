@@ -38,6 +38,7 @@
 | F32 | [Constructor de Entrenamientos por Ejercicios](../features/32-workout-exercise-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01 |
 | F33 | [Controles Numericos y de Duracion (Steppers Premium)](../features/33-premium-numeric-steppers/requirements.md) | Fase 7 · Calidad y Pulido | Completado | F01, F32 |
 | F34 | [Descanso entre Sets y Descanso Final del Ejercicio](../features/34-exercise-rest-between-and-final/requirements.md) | Fase 1 · Personalizacion | Completado | F32 |
+| F35 | [Navegacion de Secciones, Preparacion y Ajustes](../features/35-timer-navigation-prep-settings/requirements.md) | Fase 0 · Fundacion | En progreso | F01 |
 
 Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `requirements.md`.
 
@@ -72,6 +73,14 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - Caso clave: `sets = 1` + ejercicio siguiente → el descanso entre sets no aplica; el descanso final de A si puede ejecutarse antes de B.
 - Depende solo de F32; F33 no es prerequisito formal, pero el form debe reutilizar `DurationStepper` si ya esta integrado.
 
+### F35 vs F01 (ejecucion, prep y settings)
+
+- **F01:** motor base (pause/resume, skip forward, cancel, pantalla de ejecucion, eventos de sesion).
+- **F35:** skip back, fase `preparing` pre-sesion, tiempo restante total, modal de salida, redesenio de controles, shell `features/settings/` y preferencia global `prep_seconds`.
+- Pausa sin reinicio **no** se reespecifica: se preserva y se regresa F01 R4/R14.
+- F33 no es prerequisito formal de F35, pero el control de prep en Settings **debe** reutilizar `NumberStepper` si ya esta en `shared/widgets/`.
+- Prep se aplica **una vez** al inicio de la secuencia efectiva del controller (rutina F01 o lista aplanada F32/F34), no por ejercicio.
+
 ### F01 vs F04 (eventos de sesion)
 
 - F04 consume `SessionCompletedEvent` y `SessionCancelledEvent` expuestos por `TimerController` (F01).
@@ -86,7 +95,7 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 
 ## Orden de implementacion sugerido (por fase)
 
-- **Fase 0 - Fundacion:** F01, luego F02 / F03 / F04 en paralelo (migraciones drift coordinadas).
+- **Fase 0 - Fundacion:** F01, luego F35 (extiende ejecucion de F01: nav, prep, settings), luego F02 / F03 / F04 en paralelo (migraciones drift coordinadas).
 - **Fase 1 - Personalizacion y monetizacion:** F32, F34 (tras F32), F05, F06, F07 (F32 puede implementarse antes que F05; no comparten prerequisitos; F34 extiende el aplanado/rest de F32).
 - **Fase 2 - Profundidad de entrenamiento:** F08, F09, F10, F11.
 - **Fase 3 - Seguimiento y motivacion:** F12, F13, F14, F15, F16.
@@ -158,6 +167,7 @@ F01 --> F32
 F01 --> F33
 F32 --> F33
 F32 --> F34
+F01 --> F35
 ```
 
 ## Como agregar una nueva feature al roadmap
