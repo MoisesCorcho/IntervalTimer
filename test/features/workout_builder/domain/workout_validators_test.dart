@@ -22,5 +22,18 @@ void main() {
     test('allows rest seconds at zero', () {
       expect(WorkoutValidators.validateRestSeconds(0), isNull);
     });
+
+    test('rejects restAfterExerciseSeconds outside 0–5999', () {
+      expect(
+        WorkoutValidators.validateRestAfterExerciseSeconds(-1),
+        isNotNull,
+      );
+      expect(
+        WorkoutValidators.validateRestAfterExerciseSeconds(6000),
+        isNotNull,
+      );
+      expect(WorkoutValidators.validateRestAfterExerciseSeconds(0), isNull);
+      expect(WorkoutValidators.validateRestAfterExerciseSeconds(5999), isNull);
+    });
   });
 }

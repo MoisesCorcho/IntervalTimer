@@ -47,4 +47,11 @@ abstract final class WorkoutValidators {
     }
     return null;
   }
+
+  static String? validateRestAfterExerciseSeconds(int? seconds) {
+    if (seconds == null || seconds < 0 || seconds > maxRestSeconds) {
+      return 'Duración inválida. Debe estar entre 00:00 y 99:59';
+    }
+    return null;
+  }
 }

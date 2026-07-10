@@ -1,6 +1,6 @@
 # Requirements: Descanso entre Sets y Descanso Final del Ejercicio
 
-> Estado: No iniciada
+> Estado: Completado
 
 **ID:** F34 &nbsp;|&nbsp; **Slug:** `34-exercise-rest-between-and-final` &nbsp;|&nbsp; **Fase:** Fase 1 · Personalizacion
 

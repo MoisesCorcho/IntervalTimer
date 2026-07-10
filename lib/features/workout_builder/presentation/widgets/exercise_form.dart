@@ -12,12 +12,14 @@ class ExerciseFormResult {
     required this.sets,
     required this.workSeconds,
     required this.restSeconds,
+    required this.restAfterExerciseSeconds,
   });
 
   final String name;
   final int sets;
   final int workSeconds;
   final int restSeconds;
+  final int restAfterExerciseSeconds;
 }
 
 class ExerciseForm extends StatefulWidget {
@@ -39,11 +41,13 @@ class ExerciseFormState extends State<ExerciseForm> {
   late int _sets;
   late int _workSeconds;
   late int _restSeconds;
+  late int _restAfterExerciseSeconds;
 
   String? _nameError;
   String? _setsError;
   String? _workError;
   String? _restError;
+  String? _restAfterError;
 
   @override
   void initState() {
@@ -53,6 +57,7 @@ class ExerciseFormState extends State<ExerciseForm> {
     _sets = initial?.sets ?? 3;
     _workSeconds = initial?.workSeconds ?? 40;
     _restSeconds = initial?.restSeconds ?? 20;
+    _restAfterExerciseSeconds = initial?.restAfterExerciseSeconds ?? 0;
   }
 
   @override
@@ -67,18 +72,23 @@ class ExerciseFormState extends State<ExerciseForm> {
     final setsError = WorkoutValidators.validateSets(_sets);
     final workError = WorkoutValidators.validateWorkSeconds(_workSeconds);
     final restError = WorkoutValidators.validateRestSeconds(_restSeconds);
+    final restAfterError = WorkoutValidators.validateRestAfterExerciseSeconds(
+      _restAfterExerciseSeconds,
+    );
 
     setState(() {
       _nameError = nameError;
       _setsError = setsError;
       _workError = workError;
       _restError = restError;
+      _restAfterError = restAfterError;
     });
 
     return nameError == null &&
         setsError == null &&
         workError == null &&
-        restError == null;
+        restError == null &&
+        restAfterError == null;
   }
 
   void submit() {
@@ -90,6 +100,7 @@ class ExerciseFormState extends State<ExerciseForm> {
         sets: _sets,
         workSeconds: _workSeconds,
         restSeconds: _restSeconds,
+        restAfterExerciseSeconds: _restAfterExerciseSeconds,
       ),
     );
   }
@@ -166,7 +177,7 @@ class ExerciseFormState extends State<ExerciseForm> {
             totalSeconds: _restSeconds,
             minSeconds: 0,
             maxSeconds: WorkoutValidators.maxRestSeconds,
-            label: UiStrings.restDuration,
+            label: UiStrings.restBetweenSetsDuration,
             onChanged: (value) => setState(() {
               _restSeconds = value;
               if (_restError != null) validate();
@@ -177,6 +188,29 @@ class ExerciseFormState extends State<ExerciseForm> {
               padding: const EdgeInsets.only(top: AppTheme.spacingXs),
               child: Text(
                 _restError!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+              ),
+            ),
+          const SizedBox(height: AppTheme.spacingLg),
+          IntervalDurationPicker(
+            key: const Key('exercise_rest_after_stepper'),
+            keyPrefix: 'exercise_rest_after_',
+            totalSeconds: _restAfterExerciseSeconds,
+            minSeconds: 0,
+            maxSeconds: WorkoutValidators.maxRestSeconds,
+            label: UiStrings.restAfterExerciseDuration,
+            onChanged: (value) => setState(() {
+              _restAfterExerciseSeconds = value;
+              if (_restAfterError != null) validate();
+            }),
+          ),
+          if (_restAfterError != null)
+            Padding(
+              padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+              child: Text(
+                _restAfterError!,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.error,
                     ),

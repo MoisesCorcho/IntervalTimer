@@ -37,7 +37,7 @@
 | F31 | [Accesibilidad](../features/31-accessibility/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
 | F32 | [Constructor de Entrenamientos por Ejercicios](../features/32-workout-exercise-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01 |
 | F33 | [Controles Numericos y de Duracion (Steppers Premium)](../features/33-premium-numeric-steppers/requirements.md) | Fase 7 · Calidad y Pulido | Completado | F01, F32 |
-| F34 | [Descanso entre Sets y Descanso Final del Ejercicio](../features/34-exercise-rest-between-and-final/requirements.md) | Fase 1 · Personalizacion | No iniciada | F32 |
+| F34 | [Descanso entre Sets y Descanso Final del Ejercicio](../features/34-exercise-rest-between-and-final/requirements.md) | Fase 1 · Personalizacion | Completado | F32 |
 
 Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `requirements.md`.
 

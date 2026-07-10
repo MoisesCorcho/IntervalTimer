@@ -131,5 +131,243 @@ void main() {
       expect(result[2].name, 'First');
       expect(result[3].name, 'Second');
     });
+
+    test('multi-set + final: W R W R W + rest F when not last', () {
+      final workout = _workoutWithExercises([
+        const WorkoutExercise(
+          id: 'ex-a',
+          workoutId: 'workout-1',
+          position: 0,
+          name: 'A',
+          sets: 3,
+          workSeconds: 30,
+          restSeconds: 10,
+          restAfterExerciseSeconds: 60,
+        ),
+        const WorkoutExercise(
+          id: 'ex-b',
+          workoutId: 'workout-1',
+          position: 1,
+          name: 'B',
+          sets: 1,
+          workSeconds: 20,
+          restSeconds: 0,
+        ),
+      ]);
+
+      final result = flattenWorkout(
+        workout,
+        workColorArgb: _workColor,
+        restColorArgb: _restColor,
+      );
+
+      expect(result.length, 7);
+      expect(result[0].type, IntervalType.work);
+      expect(result[1].type, IntervalType.rest);
+      expect(result[1].name, 'Descanso');
+      expect(result[1].durationSeconds, 10);
+      expect(result[2].type, IntervalType.work);
+      expect(result[3].type, IntervalType.rest);
+      expect(result[3].durationSeconds, 10);
+      expect(result[4].type, IntervalType.work);
+      expect(result[5].type, IntervalType.rest);
+      expect(result[5].name, 'Descanso entre ejercicios');
+      expect(result[5].durationSeconds, 60);
+      expect(result[6].name, 'B');
+      expect(result[6].type, IntervalType.work);
+    });
+
+    test('sets=1 + next: work A, final rest, work B (scenario A)', () {
+      final workout = _workoutWithExercises([
+        const WorkoutExercise(
+          id: 'ex-a',
+          workoutId: 'workout-1',
+          position: 0,
+          name: 'A',
+          sets: 1,
+          workSeconds: 40,
+          restSeconds: 20,
+          restAfterExerciseSeconds: 90,
+        ),
+        const WorkoutExercise(
+          id: 'ex-b',
+          workoutId: 'workout-1',
+          position: 1,
+          name: 'B',
+          sets: 1,
+          workSeconds: 30,
+          restSeconds: 0,
+        ),
+      ]);
+
+      final result = flattenWorkout(
+        workout,
+        workColorArgb: _workColor,
+        restColorArgb: _restColor,
+      );
+
+      expect(result.length, 3);
+      expect(result[0].name, 'A');
+      expect(result[0].durationSeconds, 40);
+      expect(result[0].type, IntervalType.work);
+      expect(result[1].name, 'Descanso entre ejercicios');
+      expect(result[1].durationSeconds, 90);
+      expect(result[1].type, IntervalType.rest);
+      expect(result[2].name, 'B');
+      expect(result[2].durationSeconds, 30);
+      expect(result[2].type, IntervalType.work);
+    });
+
+    test('final=0 omits inter-exercise rest (scenario C)', () {
+      final workout = _workoutWithExercises([
+        const WorkoutExercise(
+          id: 'ex-a',
+          workoutId: 'workout-1',
+          position: 0,
+          name: 'A',
+          sets: 2,
+          workSeconds: 30,
+          restSeconds: 15,
+          restAfterExerciseSeconds: 0,
+        ),
+        const WorkoutExercise(
+          id: 'ex-b',
+          workoutId: 'workout-1',
+          position: 1,
+          name: 'B',
+          sets: 1,
+          workSeconds: 20,
+          restSeconds: 0,
+        ),
+      ]);
+
+      final result = flattenWorkout(
+        workout,
+        workColorArgb: _workColor,
+        restColorArgb: _restColor,
+      );
+
+      expect(result.length, 4);
+      expect(result[0].type, IntervalType.work);
+      expect(result[1].durationSeconds, 15);
+      expect(result[1].name, 'Descanso');
+      expect(result[2].type, IntervalType.work);
+      expect(result[3].name, 'B');
+      expect(
+        result.where((i) => i.name == 'Descanso entre ejercicios'),
+        isEmpty,
+      );
+    });
+
+    test('last exercise ignores final rest (scenario D)', () {
+      final workout = _workoutWithExercises([
+        const WorkoutExercise(
+          id: 'ex-1',
+          workoutId: 'workout-1',
+          position: 0,
+          name: 'Solo',
+          sets: 2,
+          workSeconds: 30,
+          restSeconds: 10,
+          restAfterExerciseSeconds: 120,
+        ),
+      ]);
+
+      final result = flattenWorkout(
+        workout,
+        workColorArgb: _workColor,
+        restColorArgb: _restColor,
+      );
+
+      expect(result.length, 3);
+      expect(result[0].type, IntervalType.work);
+      expect(result[1].name, 'Descanso');
+      expect(result[2].type, IntervalType.work);
+      expect(
+        result.where((i) => i.name == 'Descanso entre ejercicios'),
+        isEmpty,
+      );
+    });
+
+    test('chain A/B/C emits finals on A and B only (scenario E)', () {
+      final workout = _workoutWithExercises([
+        const WorkoutExercise(
+          id: 'ex-a',
+          workoutId: 'workout-1',
+          position: 0,
+          name: 'A',
+          sets: 3,
+          workSeconds: 20,
+          restSeconds: 20,
+          restAfterExerciseSeconds: 45,
+        ),
+        const WorkoutExercise(
+          id: 'ex-b',
+          workoutId: 'workout-1',
+          position: 1,
+          name: 'B',
+          sets: 2,
+          workSeconds: 15,
+          restSeconds: 10,
+          restAfterExerciseSeconds: 30,
+        ),
+        const WorkoutExercise(
+          id: 'ex-c',
+          workoutId: 'workout-1',
+          position: 2,
+          name: 'C',
+          sets: 1,
+          workSeconds: 10,
+          restSeconds: 5,
+          restAfterExerciseSeconds: 99,
+        ),
+      ]);
+
+      final result = flattenWorkout(
+        workout,
+        workColorArgb: _workColor,
+        restColorArgb: _restColor,
+      );
+
+      // A: W R W R W + F45 = 6; B: W R W + F30 = 4; C: W = 1 → 11
+      expect(result.length, 11);
+
+      final finalRests =
+          result.where((i) => i.name == 'Descanso entre ejercicios').toList();
+      expect(finalRests.length, 2);
+      expect(finalRests[0].durationSeconds, 45);
+      expect(finalRests[1].durationSeconds, 30);
+
+      expect(result.last.name, 'C');
+      expect(result.last.type, IntervalType.work);
+    });
+
+    test('single multi-set exercise: between-set rests, no final', () {
+      final workout = _workoutWithExercises([
+        const WorkoutExercise(
+          id: 'ex-1',
+          workoutId: 'workout-1',
+          position: 0,
+          name: 'Solo',
+          sets: 3,
+          workSeconds: 40,
+          restSeconds: 20,
+          restAfterExerciseSeconds: 90,
+        ),
+      ]);
+
+      final result = flattenWorkout(
+        workout,
+        workColorArgb: _workColor,
+        restColorArgb: _restColor,
+      );
+
+      expect(result.length, 5);
+      expect(
+        result.where((i) => i.name == 'Descanso entre ejercicios'),
+        isEmpty,
+      );
+      expect(result.where((i) => i.name == 'Descanso').length, 2);
+    });
   });
 }

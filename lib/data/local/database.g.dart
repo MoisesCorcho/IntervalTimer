@@ -1388,6 +1388,18 @@ class $WorkoutExercisesTable extends WorkoutExercises
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _restAfterExerciseSecondsMeta =
+      const VerificationMeta('restAfterExerciseSeconds');
+  @override
+  late final GeneratedColumn<int> restAfterExerciseSeconds =
+      GeneratedColumn<int>(
+        'rest_after_exercise_seconds',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1397,6 +1409,7 @@ class $WorkoutExercisesTable extends WorkoutExercises
     sets,
     workSeconds,
     restSeconds,
+    restAfterExerciseSeconds,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1469,6 +1482,15 @@ class $WorkoutExercisesTable extends WorkoutExercises
     } else if (isInserting) {
       context.missing(_restSecondsMeta);
     }
+    if (data.containsKey('rest_after_exercise_seconds')) {
+      context.handle(
+        _restAfterExerciseSecondsMeta,
+        restAfterExerciseSeconds.isAcceptableOrUnknown(
+          data['rest_after_exercise_seconds']!,
+          _restAfterExerciseSecondsMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -1510,6 +1532,10 @@ class $WorkoutExercisesTable extends WorkoutExercises
         DriftSqlType.int,
         data['${effectivePrefix}rest_seconds'],
       )!,
+      restAfterExerciseSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rest_after_exercise_seconds'],
+      )!,
     );
   }
 
@@ -1528,6 +1554,7 @@ class WorkoutExerciseRow extends DataClass
   final int sets;
   final int workSeconds;
   final int restSeconds;
+  final int restAfterExerciseSeconds;
   const WorkoutExerciseRow({
     required this.id,
     required this.workoutId,
@@ -1536,6 +1563,7 @@ class WorkoutExerciseRow extends DataClass
     required this.sets,
     required this.workSeconds,
     required this.restSeconds,
+    required this.restAfterExerciseSeconds,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1547,6 +1575,9 @@ class WorkoutExerciseRow extends DataClass
     map['sets'] = Variable<int>(sets);
     map['work_seconds'] = Variable<int>(workSeconds);
     map['rest_seconds'] = Variable<int>(restSeconds);
+    map['rest_after_exercise_seconds'] = Variable<int>(
+      restAfterExerciseSeconds,
+    );
     return map;
   }
 
@@ -1559,6 +1590,7 @@ class WorkoutExerciseRow extends DataClass
       sets: Value(sets),
       workSeconds: Value(workSeconds),
       restSeconds: Value(restSeconds),
+      restAfterExerciseSeconds: Value(restAfterExerciseSeconds),
     );
   }
 
@@ -1575,6 +1607,9 @@ class WorkoutExerciseRow extends DataClass
       sets: serializer.fromJson<int>(json['sets']),
       workSeconds: serializer.fromJson<int>(json['workSeconds']),
       restSeconds: serializer.fromJson<int>(json['restSeconds']),
+      restAfterExerciseSeconds: serializer.fromJson<int>(
+        json['restAfterExerciseSeconds'],
+      ),
     );
   }
   @override
@@ -1588,6 +1623,9 @@ class WorkoutExerciseRow extends DataClass
       'sets': serializer.toJson<int>(sets),
       'workSeconds': serializer.toJson<int>(workSeconds),
       'restSeconds': serializer.toJson<int>(restSeconds),
+      'restAfterExerciseSeconds': serializer.toJson<int>(
+        restAfterExerciseSeconds,
+      ),
     };
   }
 
@@ -1599,6 +1637,7 @@ class WorkoutExerciseRow extends DataClass
     int? sets,
     int? workSeconds,
     int? restSeconds,
+    int? restAfterExerciseSeconds,
   }) => WorkoutExerciseRow(
     id: id ?? this.id,
     workoutId: workoutId ?? this.workoutId,
@@ -1607,6 +1646,8 @@ class WorkoutExerciseRow extends DataClass
     sets: sets ?? this.sets,
     workSeconds: workSeconds ?? this.workSeconds,
     restSeconds: restSeconds ?? this.restSeconds,
+    restAfterExerciseSeconds:
+        restAfterExerciseSeconds ?? this.restAfterExerciseSeconds,
   );
   WorkoutExerciseRow copyWithCompanion(WorkoutExercisesCompanion data) {
     return WorkoutExerciseRow(
@@ -1621,6 +1662,9 @@ class WorkoutExerciseRow extends DataClass
       restSeconds: data.restSeconds.present
           ? data.restSeconds.value
           : this.restSeconds,
+      restAfterExerciseSeconds: data.restAfterExerciseSeconds.present
+          ? data.restAfterExerciseSeconds.value
+          : this.restAfterExerciseSeconds,
     );
   }
 
@@ -1633,7 +1677,8 @@ class WorkoutExerciseRow extends DataClass
           ..write('name: $name, ')
           ..write('sets: $sets, ')
           ..write('workSeconds: $workSeconds, ')
-          ..write('restSeconds: $restSeconds')
+          ..write('restSeconds: $restSeconds, ')
+          ..write('restAfterExerciseSeconds: $restAfterExerciseSeconds')
           ..write(')'))
         .toString();
   }
@@ -1647,6 +1692,7 @@ class WorkoutExerciseRow extends DataClass
     sets,
     workSeconds,
     restSeconds,
+    restAfterExerciseSeconds,
   );
   @override
   bool operator ==(Object other) =>
@@ -1658,7 +1704,8 @@ class WorkoutExerciseRow extends DataClass
           other.name == this.name &&
           other.sets == this.sets &&
           other.workSeconds == this.workSeconds &&
-          other.restSeconds == this.restSeconds);
+          other.restSeconds == this.restSeconds &&
+          other.restAfterExerciseSeconds == this.restAfterExerciseSeconds);
 }
 
 class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
@@ -1669,6 +1716,7 @@ class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
   final Value<int> sets;
   final Value<int> workSeconds;
   final Value<int> restSeconds;
+  final Value<int> restAfterExerciseSeconds;
   final Value<int> rowid;
   const WorkoutExercisesCompanion({
     this.id = const Value.absent(),
@@ -1678,6 +1726,7 @@ class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
     this.sets = const Value.absent(),
     this.workSeconds = const Value.absent(),
     this.restSeconds = const Value.absent(),
+    this.restAfterExerciseSeconds = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   WorkoutExercisesCompanion.insert({
@@ -1688,6 +1737,7 @@ class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
     required int sets,
     required int workSeconds,
     required int restSeconds,
+    this.restAfterExerciseSeconds = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        workoutId = Value(workoutId),
@@ -1704,6 +1754,7 @@ class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
     Expression<int>? sets,
     Expression<int>? workSeconds,
     Expression<int>? restSeconds,
+    Expression<int>? restAfterExerciseSeconds,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1714,6 +1765,8 @@ class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
       if (sets != null) 'sets': sets,
       if (workSeconds != null) 'work_seconds': workSeconds,
       if (restSeconds != null) 'rest_seconds': restSeconds,
+      if (restAfterExerciseSeconds != null)
+        'rest_after_exercise_seconds': restAfterExerciseSeconds,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1726,6 +1779,7 @@ class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
     Value<int>? sets,
     Value<int>? workSeconds,
     Value<int>? restSeconds,
+    Value<int>? restAfterExerciseSeconds,
     Value<int>? rowid,
   }) {
     return WorkoutExercisesCompanion(
@@ -1736,6 +1790,8 @@ class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
       sets: sets ?? this.sets,
       workSeconds: workSeconds ?? this.workSeconds,
       restSeconds: restSeconds ?? this.restSeconds,
+      restAfterExerciseSeconds:
+          restAfterExerciseSeconds ?? this.restAfterExerciseSeconds,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1764,6 +1820,11 @@ class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
     if (restSeconds.present) {
       map['rest_seconds'] = Variable<int>(restSeconds.value);
     }
+    if (restAfterExerciseSeconds.present) {
+      map['rest_after_exercise_seconds'] = Variable<int>(
+        restAfterExerciseSeconds.value,
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1780,6 +1841,7 @@ class WorkoutExercisesCompanion extends UpdateCompanion<WorkoutExerciseRow> {
           ..write('sets: $sets, ')
           ..write('workSeconds: $workSeconds, ')
           ..write('restSeconds: $restSeconds, ')
+          ..write('restAfterExerciseSeconds: $restAfterExerciseSeconds, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3308,6 +3370,7 @@ typedef $$WorkoutExercisesTableCreateCompanionBuilder =
       required int sets,
       required int workSeconds,
       required int restSeconds,
+      Value<int> restAfterExerciseSeconds,
       Value<int> rowid,
     });
 typedef $$WorkoutExercisesTableUpdateCompanionBuilder =
@@ -3319,6 +3382,7 @@ typedef $$WorkoutExercisesTableUpdateCompanionBuilder =
       Value<int> sets,
       Value<int> workSeconds,
       Value<int> restSeconds,
+      Value<int> restAfterExerciseSeconds,
       Value<int> rowid,
     });
 
@@ -3392,6 +3456,11 @@ class $$WorkoutExercisesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get restAfterExerciseSeconds => $composableBuilder(
+    column: $table.restAfterExerciseSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$WorkoutsTableFilterComposer get workoutId {
     final $$WorkoutsTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -3455,6 +3524,11 @@ class $$WorkoutExercisesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get restAfterExerciseSeconds => $composableBuilder(
+    column: $table.restAfterExerciseSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$WorkoutsTableOrderingComposer get workoutId {
     final $$WorkoutsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -3507,6 +3581,11 @@ class $$WorkoutExercisesTableAnnotationComposer
 
   GeneratedColumn<int> get restSeconds => $composableBuilder(
     column: $table.restSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get restAfterExerciseSeconds => $composableBuilder(
+    column: $table.restAfterExerciseSeconds,
     builder: (column) => column,
   );
 
@@ -3571,6 +3650,7 @@ class $$WorkoutExercisesTableTableManager
                 Value<int> sets = const Value.absent(),
                 Value<int> workSeconds = const Value.absent(),
                 Value<int> restSeconds = const Value.absent(),
+                Value<int> restAfterExerciseSeconds = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutExercisesCompanion(
                 id: id,
@@ -3580,6 +3660,7 @@ class $$WorkoutExercisesTableTableManager
                 sets: sets,
                 workSeconds: workSeconds,
                 restSeconds: restSeconds,
+                restAfterExerciseSeconds: restAfterExerciseSeconds,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3591,6 +3672,7 @@ class $$WorkoutExercisesTableTableManager
                 required int sets,
                 required int workSeconds,
                 required int restSeconds,
+                Value<int> restAfterExerciseSeconds = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutExercisesCompanion.insert(
                 id: id,
@@ -3600,6 +3682,7 @@ class $$WorkoutExercisesTableTableManager
                 sets: sets,
                 workSeconds: workSeconds,
                 restSeconds: restSeconds,
+                restAfterExerciseSeconds: restAfterExerciseSeconds,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

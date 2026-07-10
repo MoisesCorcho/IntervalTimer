@@ -41,6 +41,7 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
     required int sets,
     required int workSeconds,
     required int restSeconds,
+    required int restAfterExerciseSeconds,
   }) async {
     if (!canEdit) return false;
     if (_hasValidationErrors(
@@ -48,6 +49,7 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
       sets: sets,
       workSeconds: workSeconds,
       restSeconds: restSeconds,
+      restAfterExerciseSeconds: restAfterExerciseSeconds,
     )) {
       return false;
     }
@@ -60,6 +62,7 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
         sets: sets,
         workSeconds: workSeconds,
         restSeconds: restSeconds,
+        restAfterExerciseSeconds: restAfterExerciseSeconds,
       );
       return (await repo.getWorkout(arg))!;
     });
@@ -72,6 +75,7 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
       sets: exercise.sets,
       workSeconds: exercise.workSeconds,
       restSeconds: exercise.restSeconds,
+      restAfterExerciseSeconds: exercise.restAfterExerciseSeconds,
     )) {
       return false;
     }
@@ -114,10 +118,15 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
     required int sets,
     required int workSeconds,
     required int restSeconds,
+    required int restAfterExerciseSeconds,
   }) {
     return WorkoutValidators.validateExerciseName(name) != null ||
         WorkoutValidators.validateSets(sets) != null ||
         WorkoutValidators.validateWorkSeconds(workSeconds) != null ||
-        WorkoutValidators.validateRestSeconds(restSeconds) != null;
+        WorkoutValidators.validateRestSeconds(restSeconds) != null ||
+        WorkoutValidators.validateRestAfterExerciseSeconds(
+              restAfterExerciseSeconds,
+            ) !=
+            null;
   }
 }

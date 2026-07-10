@@ -4,50 +4,50 @@
 
 ## Definition of Done
 
-- [ ] Todos los criterios R1–R15 de `requirements.md` estan implementados y verificados. _(cubre R1–R15)_
-- [ ] Escenarios A–F de `requirements.md` cubiertos por tests unitarios del flattener (y migracion/default donde aplique).
-- [ ] `_global/05-data-model.md` refleja `restAfterExerciseSeconds` y el algoritmo de aplanado F34.
-- [ ] Migracion drift v3→v4 aditiva con default 0; workouts existentes no cambian de secuencia al aplanar sin editar.
-- [ ] Tests previos de F32 (flattener, repo, form, controller) actualizados y en verde.
-- [ ] Codigo revisado contra `_global/03-conventions.md`.
+- [x] Todos los criterios R1–R15 de `requirements.md` estan implementados y verificados. _(cubre R1–R15)_
+- [x] Escenarios A–F de `requirements.md` cubiertos por tests unitarios del flattener (y migracion/default donde aplique).
+- [x] `_global/05-data-model.md` refleja `restAfterExerciseSeconds` y el algoritmo de aplanado F34.
+- [x] Migracion drift v3→v4 aditiva con default 0; workouts existentes no cambian de secuencia al aplanar sin editar.
+- [x] Tests previos de F32 (flattener, repo, form, controller) actualizados y en verde.
+- [x] Codigo revisado contra `_global/03-conventions.md`.
 
 ## Checklist de implementacion
 
 ### Datos y persistencia
 
-- [ ] Actualizar entidad freezed `WorkoutExercise` con `restAfterExerciseSeconds` (default 0 en dominio donde aplique). _(cubre R1, R12)_
-- [ ] Agregar columna `rest_after_exercise_seconds` en tabla drift `workout_exercises` + `schemaVersion` 4 + migracion aditiva DEFAULT 0. _(cubre R1, R12)_
-- [ ] Regenerar codigo drift/freezed (`build_runner` o flujo del proyecto). _(cubre R1)_
-- [ ] Extender `WorkoutRepository`: add / update / get map / duplicate copian y leen el campo. _(cubre R1, R11, R15)_
-- [ ] Confirmar que `_global/05-data-model.md` ya documenta el delta F34 (hecho al crear la feature; revalidar si el schema real difiere). _(cubre R1, R3, R4)_
+- [x] Actualizar entidad freezed `WorkoutExercise` con `restAfterExerciseSeconds` (default 0 en dominio donde aplique). _(cubre R1, R12)_
+- [x] Agregar columna `rest_after_exercise_seconds` en tabla drift `workout_exercises` + `schemaVersion` 4 + migracion aditiva DEFAULT 0. _(cubre R1, R12)_
+- [x] Regenerar codigo drift/freezed (`build_runner` o flujo del proyecto). _(cubre R1)_
+- [x] Extender `WorkoutRepository`: add / update / get map / duplicate copian y leen el campo. _(cubre R1, R11, R15)_
+- [x] Confirmar que `_global/05-data-model.md` ya documenta el delta F34 (hecho al crear la feature; revalidar si el schema real difiere). _(cubre R1, R3, R4)_
 
 ### Dominio — aplanado y validacion
 
-- [ ] Actualizar `flattenWorkout` con el algoritmo dual (entre sets + final si no es ultimo ejercicio). _(cubre R3, R4, R5, R6, R7, R8, R9)_
-- [ ] Labels: entre sets `"Descanso"`; final `"Descanso entre ejercicios"`. _(cubre R3, R4)_
-- [ ] Agregar/extender `WorkoutValidators` (o equivalente) para `restAfterExerciseSeconds` en 0–5999. _(cubre R13, R14)_
+- [x] Actualizar `flattenWorkout` con el algoritmo dual (entre sets + final si no es ultimo ejercicio). _(cubre R3, R4, R5, R6, R7, R8, R9)_
+- [x] Labels: entre sets `"Descanso"`; final `"Descanso entre ejercicios"`. _(cubre R3, R4)_
+- [x] Agregar/extender `WorkoutValidators` (o equivalente) para `restAfterExerciseSeconds` en 0–5999. _(cubre R13, R14)_
 
 ### Application / UI
 
-- [ ] Extender `workout_editor_controller` add/update con `restAfterExerciseSeconds`. _(cubre R1, R2)_
-- [ ] Extender `exercise_form` con segundo `DurationStepper` (min 0, max 5999), labels distinguibles, default 0 en alta. _(cubre R2, R13)_
-- [ ] Actualizar tile/resumen en `workout_editor_screen` para mostrar descanso final de forma distinguible. _(cubre R10)_
-- [ ] Strings/labels en `UiStrings` (o constantes del feature) para el nuevo campo y error de validacion. _(cubre R2, R13)_
-- [ ] Manejo de error DB al guardar con SnackBar + reintentar (reutilizar patron F32). _(cubre R15)_
+- [x] Extender `workout_editor_controller` add/update con `restAfterExerciseSeconds`. _(cubre R1, R2)_
+- [x] Extender `exercise_form` con segundo `DurationStepper` (min 0, max 5999), labels distinguibles, default 0 en alta. _(cubre R2, R13)_
+- [x] Actualizar tile/resumen en `workout_editor_screen` para mostrar descanso final de forma distinguible. _(cubre R10)_
+- [x] Strings/labels en `UiStrings` (o constantes del feature) para el nuevo campo y error de validacion. _(cubre R2, R13)_
+- [x] Manejo de error DB al guardar con SnackBar + reintentar (reutilizar patron F32). _(cubre R15)_
 
 ### Tests
 
-- [ ] **Unit — flattener multi-set + final:** sets=3, rest R, final F, no ultimo → W R W R W + rest F. _(cubre R7)_
-- [ ] **Unit — flattener sets=1 + siguiente:** A sets=1 final N + B → WA, rest N, WB (sin rest entre sets). _(cubre R6, Escenario A)_
-- [ ] **Unit — flattener final=0:** no emite rest entre ejercicios. _(cubre R8, Escenario C)_
-- [ ] **Unit — flattener ultimo ejercicio:** final > 0 no se emite. _(cubre R5, Escenario D)_
-- [ ] **Unit — flattener restSeconds=0:** omite entre sets (regresion F32). _(cubre R9)_
-- [ ] **Unit — flattener cadena A/B/C:** ambos rests en A y B; C sin final. _(cubre Escenario E)_
-- [ ] **Unit — flattener un solo ejercicio multi-set:** sin final; con rests entre si restSeconds > 0. _(cubre R5)_
-- [ ] **Unit — validacion:** restAfterExerciseSeconds fuera de rango rechazado. _(cubre R13)_
-- [ ] **Unit — repository:** add/update/duplicate persisten y copian `restAfterExerciseSeconds`; filas default 0 si aplica. _(cubre R1, R11, R12)_
-- [ ] **Widget — exercise form:** muestra dos steppers de descanso; guardar propaga ambos enteros. _(cubre R2, R1)_
-- [ ] Actualizar tests F32 existentes (constructores `WorkoutExercise`, expects de longitud) con el nuevo campo en 0 salvo casos F34. _(cubre R9, regresion)_
+- [x] **Unit — flattener multi-set + final:** sets=3, rest R, final F, no ultimo → W R W R W + rest F. _(cubre R7)_
+- [x] **Unit — flattener sets=1 + siguiente:** A sets=1 final N + B → WA, rest N, WB (sin rest entre sets). _(cubre R6, Escenario A)_
+- [x] **Unit — flattener final=0:** no emite rest entre ejercicios. _(cubre R8, Escenario C)_
+- [x] **Unit — flattener ultimo ejercicio:** final > 0 no se emite. _(cubre R5, Escenario D)_
+- [x] **Unit — flattener restSeconds=0:** omite entre sets (regresion F32). _(cubre R9)_
+- [x] **Unit — flattener cadena A/B/C:** ambos rests en A y B; C sin final. _(cubre Escenario E)_
+- [x] **Unit — flattener un solo ejercicio multi-set:** sin final; con rests entre si restSeconds > 0. _(cubre R5)_
+- [x] **Unit — validacion:** restAfterExerciseSeconds fuera de rango rechazado. _(cubre R13)_
+- [x] **Unit — repository:** add/update/duplicate persisten y copian `restAfterExerciseSeconds`; filas default 0 si aplica. _(cubre R1, R11, R12)_
+- [x] **Widget — exercise form:** muestra dos steppers de descanso; guardar propaga ambos enteros. _(cubre R2, R1)_
+- [x] Actualizar tests F32 existentes (constructores `WorkoutExercise`, expects de longitud) con el nuevo campo en 0 salvo casos F34. _(cubre R9, regresion)_
 
 ## Mapa de trazabilidad (resumen)
 
