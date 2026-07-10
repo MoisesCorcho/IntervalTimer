@@ -44,6 +44,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
             title: const Text(UiStrings.workoutName),
             content: TextField(
               controller: controller,
+              textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
                 labelText: UiStrings.workoutName,
                 errorText: nameError,

@@ -63,9 +63,9 @@ void main() {
     expect(find.byKey(const Key('countdown_display')), findsOneWidget);
     expect(find.text('01:00'), findsOneWidget);
     expect(find.byKey(const Key('current_interval_name')), findsOneWidget);
-    expect(find.text('Trabajo'), findsOneWidget);
+    expect(find.text('TRABAJO'), findsOneWidget);
     expect(find.text(UiStrings.nextInterval), findsWidgets);
-    expect(find.text('Descanso'), findsOneWidget);
+    expect(find.text('DESCANSO'), findsOneWidget);
 
     controller.pause();
     await tester.pump();

@@ -5,6 +5,7 @@ import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/contrast_text_color.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
+import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
@@ -121,8 +122,9 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
     final textColor = contrastTextColor(bgColor);
     final segmentTimeText = formatRemainingMs(timerState.remainingMs);
     final totalTimeText = formatTotalRemainingMs(timerState.totalRemainingMs);
-    final phaseName =
-        isPrep ? UiStrings.preparation : (current?.name ?? '');
+    final phaseName = isPrep
+        ? UiStrings.preparation
+        : formatDisplayName(current?.name ?? '');
     final isPaused = timerState.status == TimerStatus.paused;
 
     return Scaffold(
@@ -178,7 +180,9 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
               _NextSegmentCard(
                 textColor: textColor,
                 hasNext: timerState.hasNextInterval,
-                nextName: timerState.nextInterval?.name,
+                nextName: timerState.nextInterval != null
+                    ? formatDisplayName(timerState.nextInterval!.name)
+                    : null,
                 nextDurationSeconds: timerState.nextInterval?.durationSeconds,
               ),
               const SizedBox(height: AppTheme.spacingLg),

@@ -139,7 +139,7 @@ void main() {
 
     expect(find.byKey(const Key('next_segment_card')), findsOneWidget);
     expect(find.byKey(const Key('next_segment_name')), findsOneWidget);
-    expect(find.text('Descanso'), findsOneWidget);
+    expect(find.text('DESCANSO'), findsOneWidget);
 
     controller.skipForward();
     // skipForward resumes running — pause again for stable pump.

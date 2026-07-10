@@ -38,6 +38,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
             content: TextField(
               key: const Key('workout_name_field'),
               controller: controller,
+              textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
                 labelText: UiStrings.workoutName,
                 errorText: nameError,

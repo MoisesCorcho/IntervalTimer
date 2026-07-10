@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/data/models/workout_exercise.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
@@ -97,7 +98,7 @@ class ExerciseFormState extends State<ExerciseForm> {
 
     widget.onSubmit(
       ExerciseFormResult(
-        name: _nameController.text.trim(),
+        name: formatDisplayName(_nameController.text),
         sets: _sets,
         workSeconds: _workSeconds,
         restSeconds: _restSeconds,
@@ -115,6 +116,7 @@ class ExerciseFormState extends State<ExerciseForm> {
           TextField(
             key: const Key('exercise_name_field'),
             controller: _nameController,
+            textCapitalization: TextCapitalization.characters,
             decoration: InputDecoration(
               labelText: UiStrings.exerciseName,
               errorText: _nameError,

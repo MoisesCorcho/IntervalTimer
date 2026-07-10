@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/interval_type.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
@@ -87,7 +88,7 @@ class IntervalFormState extends State<IntervalForm> {
 
     widget.onSubmit(
       IntervalFormResult(
-        name: _nameController.text.trim(),
+        name: formatDisplayName(_nameController.text),
         durationSeconds: _durationSeconds,
         colorArgb: _selectedColor.toARGB32(),
         type: _selectedType,
@@ -104,6 +105,7 @@ class IntervalFormState extends State<IntervalForm> {
           TextField(
             key: const Key('interval_name_field'),
             controller: _nameController,
+            textCapitalization: TextCapitalization.characters,
             decoration: InputDecoration(
               labelText: UiStrings.intervalName,
               errorText: _nameError,

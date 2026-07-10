@@ -42,7 +42,7 @@ abstract final class UiStrings {
   static const lastInterval = 'Último intervalo';
   static const intervalProgress = 'Intervalo {current} de {total}';
   static const remainingLabel = 'RESTANTE';
-  static const preparation = 'Preparación';
+  static const preparation = 'PREPARACIÓN';
   static const exitConfirmTitle = '¿Salir del entrenamiento?';
   static const exitConfirmMessage =
       'Se perderá el progreso de esta sesión.';

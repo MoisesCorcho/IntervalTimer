@@ -42,13 +42,13 @@ void main() {
       );
 
       expect(result.length, 5);
-      expect(result[0].name, 'Push-ups');
+      expect(result[0].name, 'PUSH-UPS');
       expect(result[0].durationSeconds, 40);
       expect(result[0].type, IntervalType.work);
-      expect(result[1].name, 'Descanso');
+      expect(result[1].name, 'DESCANSO');
       expect(result[1].durationSeconds, 20);
       expect(result[1].type, IntervalType.rest);
-      expect(result[4].name, 'Push-ups');
+      expect(result[4].name, 'PUSH-UPS');
       expect(result[4].type, IntervalType.work);
     });
 
@@ -127,9 +127,9 @@ void main() {
       );
 
       expect(result.length, 4);
-      expect(result[0].name, 'First');
-      expect(result[2].name, 'First');
-      expect(result[3].name, 'Second');
+      expect(result[0].name, 'FIRST');
+      expect(result[2].name, 'FIRST');
+      expect(result[3].name, 'SECOND');
     });
 
     test('multi-set + final: W R W R W + rest F when not last', () {
@@ -164,16 +164,16 @@ void main() {
       expect(result.length, 7);
       expect(result[0].type, IntervalType.work);
       expect(result[1].type, IntervalType.rest);
-      expect(result[1].name, 'Descanso');
+      expect(result[1].name, 'DESCANSO');
       expect(result[1].durationSeconds, 10);
       expect(result[2].type, IntervalType.work);
       expect(result[3].type, IntervalType.rest);
       expect(result[3].durationSeconds, 10);
       expect(result[4].type, IntervalType.work);
       expect(result[5].type, IntervalType.rest);
-      expect(result[5].name, 'Descanso entre ejercicios');
+      expect(result[5].name, 'DESCANSO FINAL');
       expect(result[5].durationSeconds, 60);
-      expect(result[6].name, 'B');
+      expect(result[6].name, 'B'); // single letter, already upper
       expect(result[6].type, IntervalType.work);
     });
 
@@ -210,7 +210,7 @@ void main() {
       expect(result[0].name, 'A');
       expect(result[0].durationSeconds, 40);
       expect(result[0].type, IntervalType.work);
-      expect(result[1].name, 'Descanso entre ejercicios');
+      expect(result[1].name, 'DESCANSO FINAL');
       expect(result[1].durationSeconds, 90);
       expect(result[1].type, IntervalType.rest);
       expect(result[2].name, 'B');
@@ -250,11 +250,11 @@ void main() {
       expect(result.length, 4);
       expect(result[0].type, IntervalType.work);
       expect(result[1].durationSeconds, 15);
-      expect(result[1].name, 'Descanso');
+      expect(result[1].name, 'DESCANSO');
       expect(result[2].type, IntervalType.work);
       expect(result[3].name, 'B');
       expect(
-        result.where((i) => i.name == 'Descanso entre ejercicios'),
+        result.where((i) => i.name == 'DESCANSO FINAL'),
         isEmpty,
       );
     });
@@ -281,10 +281,10 @@ void main() {
 
       expect(result.length, 3);
       expect(result[0].type, IntervalType.work);
-      expect(result[1].name, 'Descanso');
+      expect(result[1].name, 'DESCANSO');
       expect(result[2].type, IntervalType.work);
       expect(
-        result.where((i) => i.name == 'Descanso entre ejercicios'),
+        result.where((i) => i.name == 'DESCANSO FINAL'),
         isEmpty,
       );
     });
@@ -333,7 +333,7 @@ void main() {
       expect(result.length, 11);
 
       final finalRests =
-          result.where((i) => i.name == 'Descanso entre ejercicios').toList();
+          result.where((i) => i.name == 'DESCANSO FINAL').toList();
       expect(finalRests.length, 2);
       expect(finalRests[0].durationSeconds, 45);
       expect(finalRests[1].durationSeconds, 30);
@@ -364,10 +364,10 @@ void main() {
 
       expect(result.length, 5);
       expect(
-        result.where((i) => i.name == 'Descanso entre ejercicios'),
+        result.where((i) => i.name == 'DESCANSO FINAL'),
         isEmpty,
       );
-      expect(result.where((i) => i.name == 'Descanso').length, 2);
+      expect(result.where((i) => i.name == 'DESCANSO').length, 2);
     });
   });
 }
