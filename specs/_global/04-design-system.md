@@ -42,8 +42,8 @@ Aplicar cuando el usuario no elige color explicito. Valores ARGB; override permi
 | Tipo | Color default | ARGB |
 |---|---|---|
 | `warmup` | Amarillo suave | `0xFFFFC107` |
-| `work` | Verde energico | `0xFF4CAF50` |
-| `rest` | Azul calmo | `0xFF2196F3` |
+| `work` | Verde energico (profundo; texto blanco en ejecucion) | `0xFF2E7D32` |
+| `rest` | Azul calmo (profundo; texto blanco en ejecucion) | `0xFF1565C0` |
 | `stretch` | Violeta suave | `0xFF9C27B0` |
 | `custom` | `colorScheme.primary` | Del tema |
 

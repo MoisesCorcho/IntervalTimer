@@ -35,9 +35,13 @@ abstract final class AppTheme {
   ];
 
   /// Default interval colors per type (ARGB).
+  /// Work/rest use deeper tones so execution UI text/ring stay white
+  /// ([contrastTextColor] → white when luminance ≤ 0.179), matching routine
+  /// sessions on saturated backgrounds. Lighter Material 500 greens/blues
+  /// force black text and looked inconsistent on the workout timer.
   static const warmupColor = Color(0xFFFFC107);
-  static const workColor = Color(0xFF4CAF50);
-  static const restColor = Color(0xFF2196F3);
+  static const workColor = Color(0xFF2E7D32); // Green 800
+  static const restColor = Color(0xFF1565C0); // Blue 800
   static const stretchColor = Color(0xFF9C27B0);
 
   static ThemeData light() {
