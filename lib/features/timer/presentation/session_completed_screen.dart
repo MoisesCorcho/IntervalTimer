@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
+import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 
 class SessionCompletedScreen extends ConsumerWidget {
   const SessionCompletedScreen({super.key});
@@ -36,13 +37,13 @@ class SessionCompletedScreen extends ConsumerWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppTheme.spacingLg),
-              FilledButton(
+              AppPrimaryButton(
                 key: const Key('back_to_routine_button'),
                 onPressed: () {
                   ref.read(timerControllerProvider.notifier).resetToIdle();
                   context.go('/');
                 },
-                child: const Text(UiStrings.backToRoutine),
+                label: UiStrings.backToRoutine,
               ),
             ],
           ),

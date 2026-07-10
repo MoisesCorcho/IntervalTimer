@@ -90,7 +90,7 @@ void main() {
     await tester.pump();
 
     expect(result, isNotNull);
-    expect(result!.name, 'Burpees');
+    expect(result!.name, 'BURPEES');
     expect(result!.sets, 4);
     expect(result!.workSeconds, 45);
     expect(result!.restSeconds, 15);

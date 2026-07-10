@@ -42,8 +42,8 @@ Aplicar cuando el usuario no elige color explicito. Valores ARGB; override permi
 | Tipo | Color default | ARGB |
 |---|---|---|
 | `warmup` | Amarillo suave | `0xFFFFC107` |
-| `work` | Verde energico | `0xFF4CAF50` |
-| `rest` | Azul calmo | `0xFF2196F3` |
+| `work` | Verde energico (profundo; texto blanco en ejecucion) | `0xFF2E7D32` |
+| `rest` | Azul calmo (profundo; texto blanco en ejecucion) | `0xFF1565C0` |
 | `stretch` | Violeta suave | `0xFF9C27B0` |
 | `custom` | `colorScheme.primary` | Del tema |
 
@@ -60,11 +60,14 @@ Aplicar cuando el usuario no elige color explicito. Valores ARGB; override permi
 - Fuente legible a distancia; numeros tabulares (mono-space) para el contador evita "saltos" de layout.
 - Fuente sugerida para contador: `Roboto Mono` o equivalente con `fontFeatures: [FontFeature.tabularFigures()]`.
 - Escala tipografica respeta `textScaleFactor` del sistema (F31).
+- **Nombres de segmento en ejecucion:** MAYUSCULAS. Util `formatDisplayName` en `core/utils/name_format.dart` (trim + `toUpperCase`) al persistir nombres de usuario y al mostrar fase/siguiente. Labels de sistema: `PREPARACIÓN`, flatten F32/F34: `DESCANSO`, `DESCANSO FINAL`.
 
 ## Componentes reutilizables clave
 
 | Componente | Ubicacion | Uso |
 |---|---|---|
+| `AppPrimaryButton` / `AppSecondaryButton` | `shared/widgets/app_primary_button.dart` | CTA rectangular radio sutil (`buttonRadius`/`radius.sm`) + sombra exterior; `compact` en dialogs; **no** stadium/pill |
+| `DialogActionsRow` | `shared/widgets/dialog_actions_row.dart` | Fila horizontal de acciones en `AlertDialog` (evita apilar botones del OverflowBar) |
 | `IntervalColorBadge` | `shared/widgets/` | Indicador de color + nombre |
 | `CountdownRing` | `shared/widgets/` | Visualizacion circular del tiempo restante (default en ejecucion) |
 | `ProgressBar` | `shared/widgets/` | Barra lineal alternativa; preferir en F31 si ring no es accesible |

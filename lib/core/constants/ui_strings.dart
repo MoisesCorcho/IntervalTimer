@@ -35,10 +35,25 @@ abstract final class UiStrings {
   static const pause = 'Pausar';
   static const resume = 'Reanudar';
   static const skip = 'Saltar';
+  static const previous = 'Anterior';
   static const cancelSession = 'Cancelar sesión';
+  static const exitSession = 'Salir';
   static const nextInterval = 'Siguiente';
   static const lastInterval = 'Último intervalo';
   static const intervalProgress = 'Intervalo {current} de {total}';
+  static const remainingLabel = 'RESTANTE';
+  static const preparation = 'PREPARACIÓN';
+  static const exitConfirmTitle = '¿Salir del entrenamiento?';
+  static const exitConfirmMessage =
+      'Se perderá el progreso de esta sesión.';
+  static const exitConfirmContinue = 'Continuar';
+  static const exitConfirmLeave = 'Salir';
+
+  // Settings (F35)
+  static const settingsTitle = 'Configuración';
+  static const prepSecondsLabel = 'Segundos de preparación';
+  static const prepSecondsHint =
+      'Cuenta regresiva antes del primer intervalo (0 = desactivada).';
 
   // Completed
   static const sessionCompleted = '¡Sesión completada!';
@@ -55,6 +70,7 @@ abstract final class UiStrings {
   static const workoutsTitle = 'Mis entrenamientos';
   static const navRoutine = 'Rutina';
   static const navWorkouts = 'Entrenamientos';
+  static const navSettings = 'Ajustes';
   static const createWorkout = 'Crear entrenamiento';
   static const workoutName = 'Nombre del entrenamiento';
   static const workoutNameTooLong =

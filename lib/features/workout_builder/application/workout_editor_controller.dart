@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/data/models/workout.dart';
 import 'package:interval_timer/data/models/workout_exercise.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
@@ -31,7 +32,7 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
 
     return _persist(() async {
       final repo = ref.read(workoutRepositoryProvider);
-      await repo.updateWorkoutName(arg, name.trim());
+      await repo.updateWorkoutName(arg, formatDisplayName(name));
       return (await repo.getWorkout(arg))!;
     });
   }
@@ -58,7 +59,7 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
       final repo = ref.read(workoutRepositoryProvider);
       await repo.addExercise(
         workoutId: arg,
-        name: name.trim(),
+        name: formatDisplayName(name),
         sets: sets,
         workSeconds: workSeconds,
         restSeconds: restSeconds,
@@ -82,7 +83,9 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
 
     return _persist(() async {
       final repo = ref.read(workoutRepositoryProvider);
-      await repo.updateExercise(exercise);
+      await repo.updateExercise(
+        exercise.copyWith(name: formatDisplayName(exercise.name)),
+      );
       return (await repo.getWorkout(arg))!;
     });
   }

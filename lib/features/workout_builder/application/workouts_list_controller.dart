@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/data/models/workout.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
@@ -34,7 +35,7 @@ class WorkoutsListController extends AsyncNotifier<List<Workout>> {
     if (error != null) return null;
 
     final repo = ref.read(workoutRepositoryProvider);
-    return repo.createWorkout(name.trim());
+    return repo.createWorkout(formatDisplayName(name));
   }
 
   Future<Workout?> duplicateWorkout(String id) async {

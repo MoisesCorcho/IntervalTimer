@@ -55,7 +55,7 @@ void main() {
 
     final controller = container.read(timerControllerProvider.notifier);
     controller.bindRoutine(routine);
-    controller.start();
+    controller.start(prepSeconds: 0);
 
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
@@ -63,9 +63,9 @@ void main() {
     expect(find.byKey(const Key('countdown_display')), findsOneWidget);
     expect(find.text('01:00'), findsOneWidget);
     expect(find.byKey(const Key('current_interval_name')), findsOneWidget);
-    expect(find.text('Trabajo'), findsOneWidget);
-    expect(find.text(UiStrings.nextInterval), findsOneWidget);
-    expect(find.text('Descanso'), findsOneWidget);
+    expect(find.text('TRABAJO'), findsOneWidget);
+    expect(find.text(UiStrings.nextInterval), findsWidgets);
+    expect(find.text('DESCANSO'), findsOneWidget);
 
     controller.pause();
     await tester.pump();

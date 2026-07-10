@@ -12,10 +12,36 @@ abstract final class AppTheme {
   /// Soft premium containers (duration pickers, calm cards).
   static const radiusXl = 20.0;
 
+  /// Primary action buttons: rectangular with subtle corner radius (not stadium/pill).
+  /// Touch target ≥ 48dp; outer shadow for light depth (Tailwind-like, outside only).
+  static const buttonElevation = 6.0;
+  static const buttonMinHeight = 48.0;
+  /// Same language as cards/controls: soft square, not fully rounded.
+  static const buttonRadius = radiusSm;
+  /// Outer shadow only — never an inset/inner look.
+  static const buttonOuterShadow = [
+    BoxShadow(
+      color: Color(0x1A000000), // ~10% black
+      blurRadius: 6,
+      offset: Offset(0, 4),
+      spreadRadius: -1,
+    ),
+    BoxShadow(
+      color: Color(0x1A000000),
+      blurRadius: 4,
+      offset: Offset(0, 2),
+      spreadRadius: -2,
+    ),
+  ];
+
   /// Default interval colors per type (ARGB).
+  /// Work/rest use deeper tones so execution UI text/ring stay white
+  /// ([contrastTextColor] → white when luminance ≤ 0.179), matching routine
+  /// sessions on saturated backgrounds. Lighter Material 500 greens/blues
+  /// force black text and looked inconsistent on the workout timer.
   static const warmupColor = Color(0xFFFFC107);
-  static const workColor = Color(0xFF4CAF50);
-  static const restColor = Color(0xFF2196F3);
+  static const workColor = Color(0xFF2E7D32); // Green 800
+  static const restColor = Color(0xFF1565C0); // Blue 800
   static const stretchColor = Color(0xFF9C27B0);
 
   static ThemeData light() {

@@ -98,6 +98,17 @@ RoutineItem (sealed class / freezed union) {
 |---|---|---|
 | `active_routine_id` | String (UUID) | Rutina cargada por `TimerController` (F01); limpiar al eliminar rutina activa en idle |
 
+### Preferencias F35 (`app_preferences` / PreferencesRepository)
+
+Preferencias globales de app (no por rutina). Introducidas con el shell `features/settings/`.
+Semantica de clave igual a shared_preferences; implementacion en Drift `app_preferences` via `PreferencesRepository` (mismo patron que F32 `active_workout_id`).
+
+| Clave | Tipo | Default | Rango | Uso |
+|---|---|---|---|---|
+| `prep_seconds` | `int` | `10` | `0..60` | Segundos de preparacion antes del primer intervalo al iniciar una sesion. `0` = sin fase prep. Leido **una vez** en `TimerController.start` y copiado a estado de sesion (`sessionPrepSeconds`); cambios posteriores no alteran la sesion activa. |
+
+No requiere tabla drift nueva en F35 (reutiliza `app_preferences`). Otras preferencias de F27/F28/F31 pueden convivir en el mismo store con claves propias.
+
 ### Schema F05 (drift) — migracion v2
 
 Columnas aditivas en `routines`:
@@ -171,9 +182,9 @@ WorkoutExercise {
 Por cada `WorkoutExercise` en orden de `position`:
 
 1. Por cada set de 1 a `sets`:
-   1. `Interval` tipo `work`, nombre = `exercise.name`, duracion = `workSeconds`
-   2. Si no es el ultimo set y `restSeconds > 0`: `Interval` tipo `rest`, nombre = `"Descanso"`, duracion = `restSeconds`
-2. Si el ejercicio **no** es el ultimo del workout y `restAfterExerciseSeconds > 0`: `Interval` tipo `rest`, nombre = `"Descanso entre ejercicios"`, duracion = `restAfterExerciseSeconds`
+   1. `Interval` tipo `work`, nombre = `formatDisplayName(exercise.name)` (MAYUSCULAS), duracion = `workSeconds`
+   2. Si no es el ultimo set y `restSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO"`, duracion = `restSeconds`
+2. Si el ejercicio **no** es el ultimo del workout y `restAfterExerciseSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO FINAL"`, duracion = `restAfterExerciseSeconds`
 
 **Notas de semantica (F34):**
 

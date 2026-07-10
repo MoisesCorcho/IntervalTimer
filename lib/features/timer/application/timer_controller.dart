@@ -63,7 +63,9 @@ class TimerController extends Notifier<TimerState> {
     state = state.copyWith(routine: routine);
   }
 
-  bool start() {
+  /// Starts a session. [prepSeconds] is snapshotted once (R20); default 0
+  /// preserves F01 unit-test behavior (prep comes from Settings in the UI).
+  bool start({int prepSeconds = 0}) {
     final routine = state.routine;
     if (routine == null || routine.items.isEmpty) return false;
     if (state.status != TimerStatus.idle) return false;
@@ -72,10 +74,32 @@ class TimerController extends Notifier<TimerState> {
     if (first == null) return false;
 
     final now = _now();
-    final durationMs = first.durationSeconds * 1000;
+    final sessionPrep = prepSeconds.clamp(0, 60);
 
+    if (sessionPrep > 0) {
+      final prepMs = sessionPrep * 1000;
+      state = state.copyWith(
+        status: TimerStatus.preparing,
+        segmentKind: SegmentKind.preparation,
+        sessionPrepSeconds: sessionPrep,
+        currentIndex: 0,
+        remainingMs: prepMs,
+        currentIntervalDurationMs: prepMs,
+        segmentStartTimestamp: now,
+        pausedAccumulatedMs: 0,
+        sessionStartTimestamp: now,
+        isPausePending: false,
+        tick: 0,
+      );
+      _startUiTicker();
+      return true;
+    }
+
+    final durationMs = first.durationSeconds * 1000;
     state = state.copyWith(
       status: TimerStatus.running,
+      segmentKind: SegmentKind.interval,
+      sessionPrepSeconds: 0,
       currentIndex: 0,
       remainingMs: durationMs,
       currentIntervalDurationMs: durationMs,
@@ -90,9 +114,12 @@ class TimerController extends Notifier<TimerState> {
   }
 
   void pause() {
-    if (state.status != TimerStatus.running) return;
+    if (state.status != TimerStatus.running &&
+        state.status != TimerStatus.preparing) {
+      return;
+    }
 
-    // R16: set flag first so domain tick cannot advance interval.
+    // R16/R19: set flag first so domain tick cannot advance segment.
     state = state.copyWith(isPausePending: true);
 
     final remaining = _calculateRemainingMs();
@@ -107,43 +134,75 @@ class TimerController extends Notifier<TimerState> {
     if (state.status != TimerStatus.paused) return;
 
     final now = _now();
+    final nextStatus = state.segmentKind == SegmentKind.preparation
+        ? TimerStatus.preparing
+        : TimerStatus.running;
+
+    // Reconstruct segmentStart so remaining keeps the frozen value from pause.
+    // Setting start=now with full currentIntervalDurationMs would reset the
+    // segment to its full length on the next tick (wrong).
+    final durationMs = state.currentIntervalDurationMs;
+    final remainingMs = state.remainingMs.clamp(0, durationMs);
+    final elapsedSoFar = (durationMs - remainingMs).clamp(0, durationMs);
+
     state = state.copyWith(
-      status: TimerStatus.running,
-      segmentStartTimestamp: now,
+      status: nextStatus,
+      segmentStartTimestamp:
+          now.subtract(Duration(milliseconds: elapsedSoFar)),
       pausedAccumulatedMs: 0,
       isPausePending: false,
+      remainingMs: remainingMs,
     );
     _startUiTicker();
   }
 
-  void skip() {
-    if (state.status != TimerStatus.running &&
-        state.status != TimerStatus.paused) {
-      return;
-    }
+  /// Advances to the next section (R1) or ends prep (R13).
+  void skipForward() {
+    if (!state.isSessionActive) return;
 
     final routine = state.routine;
     if (routine == null) return;
+
+    if (state.isInPreparation) {
+      _beginIntervalAt(0);
+      return;
+    }
 
     if (state.currentIndex >= routine.items.length - 1) {
       _completeSession();
       return;
     }
 
-    _advanceToIndex(state.currentIndex + 1, keepRunning: true);
+    _beginIntervalAt(state.currentIndex + 1);
+  }
+
+  /// Backward-compatible alias for [skipForward].
+  void skip() => skipForward();
+
+  /// Goes to previous interval full, or restarts index 0 (R2/R3). No-op in prep.
+  void skipBack() {
+    if (!state.canSkipBack) return;
+
+    final routine = state.routine;
+    if (routine == null) return;
+
+    if (state.currentIndex <= 0) {
+      _beginIntervalAt(0);
+      return;
+    }
+
+    _beginIntervalAt(state.currentIndex - 1);
   }
 
   void cancel() {
-    if (state.status != TimerStatus.running &&
-        state.status != TimerStatus.paused) {
-      return;
-    }
+    if (!state.isSessionActive) return;
 
     final routine = state.routine;
     if (routine == null) return;
 
     final elapsedSeconds = _elapsedSessionSeconds();
-    final completedCount = state.currentIndex;
+    final completedCount =
+        state.isInPreparation ? 0 : state.currentIndex;
 
     _stopUiTicker();
     state = TimerState(routine: routine);
@@ -165,12 +224,18 @@ class TimerController extends Notifier<TimerState> {
   }
 
   void onAppLifecyclePaused() {
-    if (state.status != TimerStatus.running) return;
+    if (state.status != TimerStatus.running &&
+        state.status != TimerStatus.preparing) {
+      return;
+    }
     _recalculateFromTimestamps();
   }
 
   void onAppLifecycleResumed() {
-    if (state.status != TimerStatus.running) return;
+    if (state.status != TimerStatus.running &&
+        state.status != TimerStatus.preparing) {
+      return;
+    }
     _recalculateFromTimestamps();
     _processDomainTick();
   }
@@ -188,21 +253,31 @@ class TimerController extends Notifier<TimerState> {
   }
 
   void _processDomainTick() {
-    if (state.status != TimerStatus.running) return;
+    if (state.status != TimerStatus.running &&
+        state.status != TimerStatus.preparing) {
+      return;
+    }
 
     _recalculateFromTimestamps();
 
     if (state.isPausePending) return;
 
     if (state.remainingMs <= 0) {
-      _onIntervalCompleted();
+      if (state.segmentKind == SegmentKind.preparation) {
+        _beginIntervalAt(0);
+      } else {
+        _onIntervalCompleted();
+      }
     } else {
       state = state.copyWith(tick: state.tick + 1);
     }
   }
 
   void _recalculateFromTimestamps() {
-    if (state.status != TimerStatus.running) return;
+    if (state.status != TimerStatus.running &&
+        state.status != TimerStatus.preparing) {
+      return;
+    }
     final remaining = _calculateRemainingMs();
     state = state.copyWith(remainingMs: remaining);
   }
@@ -227,10 +302,10 @@ class TimerController extends Notifier<TimerState> {
       return;
     }
 
-    _advanceToIndex(state.currentIndex + 1, keepRunning: true);
+    _beginIntervalAt(state.currentIndex + 1);
   }
 
-  void _advanceToIndex(int index, {required bool keepRunning}) {
+  void _beginIntervalAt(int index) {
     final routine = state.routine;
     if (routine == null) return;
 
@@ -241,7 +316,8 @@ class TimerController extends Notifier<TimerState> {
     final now = _now();
 
     state = state.copyWith(
-      status: keepRunning ? TimerStatus.running : state.status,
+      status: TimerStatus.running,
+      segmentKind: SegmentKind.interval,
       currentIndex: index,
       remainingMs: durationMs,
       currentIntervalDurationMs: durationMs,
@@ -251,7 +327,7 @@ class TimerController extends Notifier<TimerState> {
       tick: state.tick + 1,
     );
 
-    if (keepRunning && _uiTicker == null) {
+    if (_uiTicker == null) {
       _startUiTicker();
     }
   }
@@ -278,6 +354,7 @@ class TimerController extends Notifier<TimerState> {
       status: TimerStatus.completed,
       remainingMs: 0,
       isPausePending: false,
+      segmentKind: SegmentKind.interval,
     );
   }
 

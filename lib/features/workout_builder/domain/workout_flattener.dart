@@ -1,3 +1,4 @@
+import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/interval_type.dart';
 import 'package:interval_timer/data/models/workout.dart';
@@ -30,7 +31,7 @@ List<Interval> flattenWorkout(
       result.add(
         Interval(
           id: idGen.v4(),
-          name: exercise.name,
+          name: formatDisplayName(exercise.name),
           durationSeconds: exercise.workSeconds,
           colorArgb: workColorArgb,
           type: IntervalType.work,
@@ -42,7 +43,7 @@ List<Interval> flattenWorkout(
         result.add(
           Interval(
             id: idGen.v4(),
-            name: 'Descanso',
+            name: formatDisplayName('Descanso'),
             durationSeconds: exercise.restSeconds,
             colorArgb: restColorArgb,
             type: IntervalType.rest,
@@ -55,7 +56,7 @@ List<Interval> flattenWorkout(
       result.add(
         Interval(
           id: idGen.v4(),
-          name: 'Descanso entre ejercicios',
+          name: formatDisplayName('Descanso final'),
           durationSeconds: exercise.restAfterExerciseSeconds,
           colorArgb: restColorArgb,
           type: IntervalType.rest,

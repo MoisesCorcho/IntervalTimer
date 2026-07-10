@@ -4,12 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/models/workout.dart';
+import 'package:interval_timer/features/settings/application/settings_providers.dart';
+import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_flattener.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 import 'package:interval_timer/features/workout_builder/presentation/widgets/delete_workout_dialog.dart';
+import 'package:interval_timer/shared/widgets/app_primary_button.dart';
+import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
 class MyWorkoutsScreen extends ConsumerStatefulWidget {
   const MyWorkoutsScreen({super.key});
@@ -34,6 +38,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
             content: TextField(
               key: const Key('workout_name_field'),
               controller: controller,
+              textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
                 labelText: UiStrings.workoutName,
                 errorText: nameError,
@@ -42,22 +47,29 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
               autofocus: true,
             ),
             actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text(UiStrings.cancel),
-              ),
-              FilledButton(
-                key: const Key('create_workout_confirm'),
-                onPressed: () {
-                  nameError =
-                      WorkoutValidators.validateWorkoutName(controller.text);
-                  if (nameError != null) {
-                    setDialogState(() {});
-                    return;
-                  }
-                  Navigator.pop(context, true);
-                },
-                child: const Text(UiStrings.save),
+              DialogActionsRow(
+                children: [
+                  AppSecondaryButton(
+                    compact: true,
+                    onPressed: () => Navigator.pop(context, false),
+                    label: UiStrings.cancel,
+                  ),
+                  AppPrimaryButton(
+                    key: const Key('create_workout_confirm'),
+                    compact: true,
+                    onPressed: () {
+                      nameError = WorkoutValidators.validateWorkoutName(
+                        controller.text,
+                      );
+                      if (nameError != null) {
+                        setDialogState(() {});
+                        return;
+                      }
+                      Navigator.pop(context, true);
+                    },
+                    label: UiStrings.save,
+                  ),
+                ],
               ),
             ],
           );
@@ -99,7 +111,12 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
         .read(activeWorkoutIdProvider.notifier)
         .setActiveWorkoutId(workout.id);
 
-    final started = ref.read(timerControllerProvider.notifier).start();
+    final prepSeconds = ref.read(settingsControllerProvider).valueOrNull
+            ?.prepSeconds ??
+        SettingsRepository.defaultPrepSeconds;
+    final started = ref
+        .read(timerControllerProvider.notifier)
+        .start(prepSeconds: prepSeconds);
     if (!mounted) return;
     if (started) {
       context.go('/execute');
@@ -123,7 +140,8 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
   Future<void> _deleteWorkout(Workout workout) async {
     final timerStatus = ref.read(timerControllerProvider).status;
     if (timerStatus == TimerStatus.running ||
-        timerStatus == TimerStatus.paused) {
+        timerStatus == TimerStatus.paused ||
+        timerStatus == TimerStatus.preparing) {
       setState(() => _actionError = UiStrings.deleteBlockedDuringSession);
       return;
     }
@@ -169,9 +187,9 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
             children: [
               Text(UiStrings.persistenceError),
               const SizedBox(height: AppTheme.spacingMd),
-              FilledButton(
+              AppPrimaryButton(
                 onPressed: () => ref.invalidate(workoutsListProvider),
-                child: const Text(UiStrings.retry),
+                label: UiStrings.retry,
               ),
             ],
           ),
