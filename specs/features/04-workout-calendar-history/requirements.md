@@ -1,6 +1,6 @@
 # Requirements: Calendario e Historial de Sesiones
 
-> Estado: No iniciada
+> Estado: Completado
 
 **ID:** F04 &nbsp;|&nbsp; **Slug:** `04-workout-calendar-history` &nbsp;|&nbsp; **Fase:** Fase 0 · Fundacion
 

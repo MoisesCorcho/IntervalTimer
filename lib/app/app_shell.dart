@@ -36,6 +36,12 @@ class AppShell extends StatelessWidget {
             label: UiStrings.navWorkouts,
           ),
           NavigationDestination(
+            key: Key('history_nav_destination'),
+            icon: Icon(Icons.calendar_month_outlined),
+            selectedIcon: Icon(Icons.calendar_month),
+            label: UiStrings.navHistory,
+          ),
+          NavigationDestination(
             key: Key('settings_nav_destination'),
             icon: Icon(Icons.settings_outlined),
             selectedIcon: Icon(Icons.settings),

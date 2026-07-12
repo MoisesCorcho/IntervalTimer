@@ -6,6 +6,7 @@ import 'package:interval_timer/data/local/tables/app_preferences_table.dart';
 import 'package:interval_timer/data/local/tables/intervals_table.dart';
 import 'package:interval_timer/data/local/tables/routine_items_table.dart';
 import 'package:interval_timer/data/local/tables/routines_table.dart';
+import 'package:interval_timer/data/local/tables/session_logs_table.dart';
 import 'package:interval_timer/data/local/tables/workout_exercises_table.dart';
 import 'package:interval_timer/data/local/tables/workouts_table.dart';
 import 'package:path/path.dart' as p;
@@ -21,6 +22,7 @@ part 'database.g.dart';
     Workouts,
     WorkoutExercises,
     AppPreferences,
+    SessionLogs,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -29,7 +31,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -46,6 +48,9 @@ class AppDatabase extends _$AppDatabase {
               workoutExercises,
               workoutExercises.restAfterExerciseSeconds,
             );
+          }
+          if (from < 5) {
+            await migrator.createTable(sessionLogs);
           }
         },
       );

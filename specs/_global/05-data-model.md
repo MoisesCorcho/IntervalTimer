@@ -242,7 +242,7 @@ SessionLog {
 **Integridad:**
 
 - **Sin FK** a `routines` / `workouts`: el origen puede borrarse y el historial permanece (snapshot).
-- `schemaVersion`: siguiente version aditiva libre al implementar (si el proyecto esta en v4 por F34, F04 tipicamente es **v5**). Confirmar en `database.dart` al codificar.
+- `schemaVersion`: **5** (migracion F04: `createTable(sessionLogs)`). Confirmado en `lib/data/local/database.dart`.
 
 **Semantica de escritura (resumen F04):**
 
