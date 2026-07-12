@@ -29,6 +29,57 @@ Evitar frases vagas — todo criterio debe ser verificable.
 - **Prohibido:** `setState` para estado de negocio (rutinas, timer, persistencia).
 - **Permitido con `setState`:** animaciones locales, indices de tab, estado visual efimero que no afecta dominio ni persistencia (ej. escala de boton en press).
 
+## Calidad de codigo y reutilizacion (obligatorio para agentes e implementacion)
+
+Estas reglas aplican a **toda** feature. Un agente o humano que implemente debe leerlas y aplicarlas
+antes de copiar o inventar codigo nuevo.
+
+### Reutilizacion de UI (preferir lo existente)
+
+1. **Antes de crear un widget nuevo**, revisar:
+   - el catalogo en `_global/04-design-system.md` (seccion *Componentes reutilizables clave*);
+   - el directorio `lib/shared/widgets/`;
+   - widgets similares en otras features (solo como referencia visual — no copiar bloques enteros).
+2. **Si el componente ya existe** (`AppPrimaryButton`, `NumberStepper`, `DurationStepper` / `IntervalDurationPicker`, `DialogActionsRow`, `CountdownRing`, etc.), **usarlo**. No reinventar botones, steppers, dialogs de acciones ni anillos de countdown.
+3. **Si el patron se repite en 2 o mas pantallas/features** (mismo layout + misma responsabilidad), extraer a `shared/widgets/` y documentarlo en `04-design-system.md` en el mismo cambio (ver `00-how-to-use-these-specs.md`).
+4. **Widgets solo de una feature** viven en `features/<f>/presentation/`. No subir a `shared/` por anticipacion.
+5. **Prohibido** copiar-pegar un widget de otra feature y renombrarlo. Extraer o importar desde `shared/`.
+
+### DRY y no duplicacion
+
+| Que | Donde debe vivir | No hacer |
+|---|---|---|
+| Modelos de dominio | `data/models/` | Duplicar clases en `features/` |
+| Persistencia / DAOs | `data/local/`, `data/repositories/` | Abrir drift o SQL desde widgets |
+| Utils transversales (contraste, mm:ss, nombres) | `core/utils/` | Copiar helpers en cada feature |
+| Strings de UI | `core/constants/ui_strings.dart` (pre-F28) | Literales dispersos en widgets |
+| Logica de negocio del timer | `features/timer/application/` | Reimplementar avance de tiempo en otra feature |
+| Theme / colores de marca | `Theme.of(context)` / tokens | Hex hardcodeados en widgets |
+
+- **Una sola fuente de verdad** por concepto (tiempo restante, schema de sesion, formato de duracion, etc.).
+- Si dos features necesitan la misma regla de negocio, mover a `core/`, `data/` o a un contrato documentado en `02-architecture-and-structure.md` — no copiar el `if`.
+
+### Capas y clean code (Flutter)
+
+- **`build()` es presentacion:** sin I/O, sin reglas de negocio, sin parseo de DB. Como maximo formatea valores ya resueltos por el controller/provider.
+- **Logica de dominio** → `application/` (`Notifier`) o `domain/` puro. Testeable sin montar UI.
+- **Screens delgadas:** orquestan providers + widgets; el arbol complejo se parte en widgets privados o archivos en `presentation/widgets/`.
+- **Nombres con intencion:** preferir `remainingDurationLabel` a `t` / `data2`.
+- **Funciones cortas y un proposito:** si un metodo mezcla validar + persistir + navegar, separar.
+- **Inmutabilidad de modelos:** preferir `final` / freezed; no mutar entidades de dominio desde la UI.
+- **Imports:**
+  - `presentation` no importa clases generadas por drift (`*Data`, `*Companion`); solo modelos de dominio y repositorios via providers.
+  - Features **no** importan widgets de otra feature; comunicacion por providers/streams (ver arquitectura).
+- **Const y performance basica:** usar `const` en widgets estaticos cuando sea posible; no reconstruir listas grandes sin `ListView.builder` / keys estables si hay scroll.
+
+### Checklist rapido antes de abrir PR / marcar task
+
+- [ ] No hay widget nuevo que duplique uno de `shared/widgets/` o del design system.
+- [ ] No hay modelo/helper copiado que ya exista en `data/` o `core/`.
+- [ ] No hay logica de negocio no trivial solo dentro de un `State`/`build`.
+- [ ] Strings y colores siguen `ui_strings` + theme (no hardcode de marca).
+- [ ] Si se creo un shared widget: entrada en `04-design-system.md`.
+
 ## Persistencia
 
 - Toda tabla nueva requiere una entrada en `05-data-model.md` **antes** de implementarse.
@@ -90,5 +141,7 @@ fakeAsync((async) {
 - [ ] Compila sin warnings nuevos.
 - [ ] Tests relevantes pasan.
 - [ ] No rompe features previas (revisar postrequisitos en su `requirements.md`).
-- [ ] Revisado contra este documento de convenciones.
+- [ ] Revisado contra este documento de convenciones (incluye **Calidad de codigo y reutilizacion**).
+- [ ] No introduce duplicacion evitable de widgets, modelos o helpers (ver checklist de reutilizacion).
 - [ ] Si agrega tablas drift: `05-data-model.md` actualizado antes del merge.
+- [ ] Si agrega widget en `shared/widgets/`: `04-design-system.md` actualizado.

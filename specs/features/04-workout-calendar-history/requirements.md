@@ -30,6 +30,7 @@ La UI de referencia (layout y jerarquia visual) se define en este documento y en
 - **Como** usuario, **quiero** tocar un dia y ver las sesiones de ese dia en cards, **para que** recuerdo que hice y cuanto duro.
 - **Como** usuario, **quiero** escribir una nota en cada sesion del historial, **para que** dejo un recuerdo del entrenamiento.
 - **Como** usuario, **quiero** desde el menu de una card empezar de nuevo esa rutina o eliminarla del historial, **para que** actuo sin salir de la pantalla.
+- **Como** usuario, **quiero** abrir el historial/calendario desde la barra de navegacion inferior, **para que** accedo a mis sesiones con un toque desde cualquier seccion principal.
 
 ## Criterios de Aceptacion — Happy path (formato EARS)
 
@@ -160,6 +161,21 @@ DONDE el dia seleccionado no tiene ningun `SessionLog`, EL SISTEMA DEBE mostrar 
 
 DONDE el usuario entra a Historial, CUANDO los logs aun no estan disponibles, EL SISTEMA DEBE mostrar estado de carga centrado (`CircularProgressIndicator` / patron AsyncNotifier de `_global/04-design-system.md`) y, al resolver, el calendario + lista.
 
+### R22 — Tab Historial en la barra de navegacion inferior
+
+DONDE el usuario esta en el shell principal de la app (no en pantalla de ejecucion a pantalla completa del timer), EL SISTEMA DEBE mostrar en la **barra de navegacion inferior** (`NavigationBar` / `BottomNavigationBar`) un destino **Historial** cuyo icono representa calendario o historial (Material Symbols, p. ej. `Icons.calendar_month` o `Icons.history_edu` — ver `design.md`).
+
+El orden de destinos DEBE ser exactamente:
+
+1. **Temporizador** (o etiqueta equivalente ya usada en el shell, p. ej. Rutina)
+2. **Entrenamientos**
+3. **Historial** ← entre Entrenamientos y Ajustes
+4. **Ajustes**
+
+CUANDO el usuario activa el tab **Historial**, EL SISTEMA DEBE navegar a la pantalla de calendario/historial de esta feature (`HistoryScreen` / ruta dedicada) y marcar ese destino como seleccionado en la barra.
+
+SI el shell previo solo tenia tres destinos (Temporizador | Entrenamientos | Ajustes, p. ej. post-F35), ENTONCES al implementar F04 EL SISTEMA DEBE **insertar** Historial en la posicion 3 y desplazar Ajustes a la 4, sin eliminar los demas destinos.
+
 ## Criterios de Aceptacion — Validacion y error (formato EARS)
 
 ### R18 — Fallo al persistir sesion
@@ -193,7 +209,7 @@ DONDE el mes visible no tiene ningun `SessionLog`, EL SISTEMA DEBE renderizar el
 | Menu overflow v1 | Solo **Empezar** + **Eliminar del historial** (+ cabecera info). |
 | Empezar | Requiere que `sourceId` siga existiendo; no reconstruye rutina solo desde snapshot. |
 | Banners PRO | Fuera de alcance F04 (F06). Pueden existir en shell sin ser requisito de esta feature. |
-| Shell de tabs | F04 provee la **pantalla** Historial; el `BottomNavigationBar`/`NavigationBar` del shell de app (Temporizador / Entrenamientos / Historial / Ajustes) se integra en capa app sin bloquear F04. |
+| Shell de tabs (R22) | **En alcance F04:** registrar tab Historial en la barra inferior **entre Entrenamientos y Ajustes**. La pantalla vive en `features/calendar_history/`; el armado del shell/`go_router` puede editarse en `app/` o el widget de shell existente. Icono: calendario (preferido) alineado a la referencia de producto. |
 | Paquete calendario | `table_calendar` (ver `design.md`); API validada en pub.dev. |
 
 ## Fuera de alcance (explicito)

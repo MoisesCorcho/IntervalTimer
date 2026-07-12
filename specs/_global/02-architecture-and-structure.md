@@ -68,6 +68,22 @@ core/utils/               → utilidades transversales (contrastTextColor, parse
 
 No duplicar modelos de dominio dentro de `features/` si ya existen en `data/models/`.
 
+### Reutilizacion y limites entre capas (resumen)
+
+Detalle operativo en `_global/03-conventions.md` (seccion *Calidad de codigo y reutilizacion*). Resumen arquitectonico:
+
+| Ubicacion | Contiene | No contiene |
+|---|---|---|
+| `shared/widgets/` | UI reutilizable entre features | Logica de negocio, acceso a drift |
+| `features/<f>/presentation/` | Screens y widgets **solo** de esa feature | Repositorios, SQL, reglas de dominio |
+| `features/<f>/application/` | Notifiers/providers de la feature | Widgets de otras features |
+| `data/` | Modelos, DAOs, repositorios | UI |
+| `core/` | Theme, utils, strings, constantes | Features concretas |
+
+- **Preferir** componentes de `shared/widgets/` y utils de `core/` antes de crear duplicados.
+- **Prohibido** importar widgets de `features/A/` desde `features/B/`. Si hace falta compartir UI → `shared/widgets/`.
+- **Prohibido** que `presentation/` dependa de tipos generados por drift; solo dominio + providers.
+
 ## Estructura de carpetas (Flutter)
 
 ```

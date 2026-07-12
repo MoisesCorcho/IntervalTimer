@@ -4,12 +4,12 @@
 
 ## Definition of Done
 
-- [ ] Todos los criterios R1–R21 de `requirements.md` estan implementados y verificados. _(cubre R1–R21)_
+- [ ] Todos los criterios R1–R22 de `requirements.md` estan implementados y verificados. _(cubre R1–R22)_
 - [ ] Tests unitarios y widget listados abajo pasan en CI/local.
 - [ ] Schema `session_logs` documentado en `_global/05-data-model.md` y migracion aditiva aplicada.
 - [ ] No se rompieron F01 (eventos) ni consumidores futuros; listener no acopla UI del timer.
 - [ ] Codigo revisado contra `_global/03-conventions.md`.
-- [ ] UI alineada a wireframe de `design.md` y criterios R4–R13 (mes izq, hoy der, cards, sheet).
+- [ ] UI alineada a wireframe de `design.md` y criterios R4–R13 y R22 (mes izq, hoy der, cards, sheet, tab en bottom bar).
 
 ## Checklist de implementacion
 
@@ -49,6 +49,7 @@
 - [ ] Estado vacio del dia y loading inicial. _(cubre R16, R17)_
 - [ ] SnackBars de error en nota / delete. _(cubre R19, R20)_
 - [ ] Mes sin datos sin error (solo sin markers + vacio). _(cubre R21)_
+- [ ] Registrar destino **Historial** en el shell (`NavigationBar` / `StatefulShellRoute`): orden Temporizador | Entrenamientos | **Historial** | Ajustes; icono calendario; ruta a `HistoryScreen`. _(cubre R22)_
 
 ### Tests
 
@@ -62,6 +63,7 @@
 - [ ] **Widget — cards:** con logs del dia muestra titulo/duracion/ejercicios y placeholder de nota. _(cubre R10, R11)_
 - [ ] **Widget — sheet:** overflow abre sheet con Empezar y Eliminar; no muestra Compartir/Guardar. _(cubre R13)_
 - [ ] **Widget — vacio:** dia sin logs muestra mensaje vacio. _(cubre R16)_
+- [ ] **Widget — shell:** barra inferior incluye 4 destinos en orden correcto; activar Historial muestra `HistoryScreen` y estado selected. _(cubre R22)_
 
 ## Mapa de trazabilidad (resumen)
 
@@ -88,6 +90,7 @@
 | R19 | SnackBar nota |
 | R20 | SnackBar delete |
 | R21 | Mes sin markers + vacio |
+| R22 | Shell NavigationBar + ruta Historial, widget shell |
 
 ## Notas de secuenciacion
 
@@ -96,4 +99,4 @@ Esta feature depende de: **F01** (streams de sesion estables).
 - No iniciar hasta que F01 exponga `SessionCompletedEvent` / `SessionCancelledEvent` segun contrato global.
 - Si F32 ya esta en el codebase, el flujo Empezar debe soportar `workoutId` en `sourceId` (ver `05-data-model.md`).
 - Coordinar numero de `schemaVersion` con migraciones existentes al implementar.
-- Integracion del tab **Historial** en el shell de navegacion inferior puede vivir en la capa app; esta feature entrega `HistoryScreen` lista para montar.
+- **R22 es obligatorio en F04:** insertar tab Historial entre Entrenamientos y Ajustes en `app/` (shell/`go_router`). `HistoryScreen` vive en `features/calendar_history/`.

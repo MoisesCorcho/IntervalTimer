@@ -64,6 +64,8 @@ Aplicar cuando el usuario no elige color explicito. Valores ARGB; override permi
 
 ## Componentes reutilizables clave
 
+**Regla para agentes e implementacion:** antes de crear un boton, stepper, badge, dialog de acciones o visualizacion de tiempo, **usar** el componente de esta tabla si aplica. No duplicar en `features/`. Proceso completo de reutilizacion y extraccion a `shared/widgets/` en `_global/03-conventions.md` (*Calidad de codigo y reutilizacion*). Al agregar un componente nuevo a esta tabla, actualizar este documento en el mismo PR (`00-how-to-use-these-specs.md`).
+
 | Componente | Ubicacion | Uso |
 |---|---|---|
 | `AppPrimaryButton` / `AppSecondaryButton` | `shared/widgets/app_primary_button.dart` | CTA rectangular radio sutil (`buttonRadius`/`radius.sm`) + sombra exterior; `compact` en dialogs; **no** stadium/pill |

@@ -106,6 +106,26 @@ class SessionCancelledEvent {
   - Header del paquete **oculto** (`headerVisible: false`); chrome custom R4 (mes + hoy) encima.
 - Personalizar `CalendarStyle` con colores de `Theme.of(context).colorScheme` (selected = primary o tertiary de acento; today = border; markers = onSurfaceVariant).
 
+### Shell de navegacion inferior (R22)
+
+F35 dejo el shell con **3** destinos: Temporizador/Rutina | Entrenamientos | Ajustes.
+
+F04 **inserta** un cuarto destino:
+
+| Indice | Destino | Ruta (sugerida) | Icono (sugerido) | Label |
+|---|---|---|---|---|
+| 0 | Timer / Rutina | existente | existente | existente |
+| 1 | Entrenamientos | existente | existente | Entrenamientos |
+| 2 | **Historial** | `/history` (o branch shell equivalente) | `Icons.calendar_month` (preferido; alt. `Icons.calendar_today`) | Historial |
+| 3 | Ajustes | existente | existente | Ajustes |
+
+Implementacion tipica:
+
+- Extender `StatefulShellRoute` / `AppShell` / `NavigationBar` en `lib/app/` (no en `features/timer/`).
+- Branch del shell que monta `HistoryScreen`.
+- Area de toque del destino >= 48 dp; estado selected con color del theme.
+- La pantalla de **ejecucion** del timer puede seguir ocultando la barra (comportamiento F01/F35); R22 aplica al shell principal.
+
 ### UI / UX detallada (wireframe logico)
 
 ```
@@ -131,6 +151,8 @@ class SessionCancelledEvent {
 │  ┌────────────────────────────────────┐  │
 │  │ ...                                │  │
 │  └────────────────────────────────────┘  │
+├──────────────────────────────────────────┤
+│ ⏱ Timer │ 📘 Entr. │ 📅 Historial │ ⚙ Ajustes │  ← R22
 └──────────────────────────────────────────┘
          ▲ bottom sheet (R13)
 ┌──────────────────────────────────────────┐
@@ -186,6 +208,9 @@ class SessionCancelledEvent {
 [SessionHistoryListener] --displayName--> [SessionLogRepository.insert]
    |
    v (drift session_logs)
+[AppShell NavigationBar] --tab Historial (R22)--> [HistoryScreen]
+   |
+   v
 [HistoryController] <--> [HistoryScreen]
    |                         |
    | focusedMonth            +-- HistoryMonthHeader (mes / hoy)
