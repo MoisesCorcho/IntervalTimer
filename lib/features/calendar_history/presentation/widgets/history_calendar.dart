@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HistoryCalendar extends StatelessWidget {
@@ -60,6 +61,20 @@ class HistoryCalendar extends StatelessWidget {
         ),
       ),
       calendarBuilders: CalendarBuilders(
+        // Monday-first labels in Spanish (LUN…DOM) — not locale-dependent.
+        dowBuilder: (context, day) {
+          final label = UiStrings.weekdayShort[day.weekday - 1];
+          return Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: scheme.onSurfaceVariant,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          );
+        },
         defaultBuilder: (context, day, focusedDay) =>
             _DayCell(day: day, selected: false, today: false, outside: false, hasMarker: markerDates.contains(_key(day))),
         todayBuilder: (context, day, focusedDay) =>
