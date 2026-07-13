@@ -2066,6 +2066,573 @@ class AppPreferencesCompanion extends UpdateCompanion<AppPreferenceRow> {
   }
 }
 
+class $SessionLogsTable extends SessionLogs
+    with TableInfo<$SessionLogsTable, SessionLogRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SessionLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceIdMeta = const VerificationMeta(
+    'sourceId',
+  );
+  @override
+  late final GeneratedColumn<String> sourceId = GeneratedColumn<String>(
+    'source_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayNameMeta = const VerificationMeta(
+    'displayName',
+  );
+  @override
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
+    'display_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endedAtMeta = const VerificationMeta(
+    'endedAt',
+  );
+  @override
+  late final GeneratedColumn<int> endedAt = GeneratedColumn<int>(
+    'ended_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localDateMeta = const VerificationMeta(
+    'localDate',
+  );
+  @override
+  late final GeneratedColumn<String> localDate = GeneratedColumn<String>(
+    'local_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _totalDurationSecondsMeta =
+      const VerificationMeta('totalDurationSeconds');
+  @override
+  late final GeneratedColumn<int> totalDurationSeconds = GeneratedColumn<int>(
+    'total_duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _itemCountMeta = const VerificationMeta(
+    'itemCount',
+  );
+  @override
+  late final GeneratedColumn<int> itemCount = GeneratedColumn<int>(
+    'item_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sourceId,
+    displayName,
+    endedAt,
+    localDate,
+    status,
+    totalDurationSeconds,
+    itemCount,
+    note,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'session_logs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SessionLogRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('source_id')) {
+      context.handle(
+        _sourceIdMeta,
+        sourceId.isAcceptableOrUnknown(data['source_id']!, _sourceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceIdMeta);
+    }
+    if (data.containsKey('display_name')) {
+      context.handle(
+        _displayNameMeta,
+        displayName.isAcceptableOrUnknown(
+          data['display_name']!,
+          _displayNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayNameMeta);
+    }
+    if (data.containsKey('ended_at')) {
+      context.handle(
+        _endedAtMeta,
+        endedAt.isAcceptableOrUnknown(data['ended_at']!, _endedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_endedAtMeta);
+    }
+    if (data.containsKey('local_date')) {
+      context.handle(
+        _localDateMeta,
+        localDate.isAcceptableOrUnknown(data['local_date']!, _localDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_localDateMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('total_duration_seconds')) {
+      context.handle(
+        _totalDurationSecondsMeta,
+        totalDurationSeconds.isAcceptableOrUnknown(
+          data['total_duration_seconds']!,
+          _totalDurationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_totalDurationSecondsMeta);
+    }
+    if (data.containsKey('item_count')) {
+      context.handle(
+        _itemCountMeta,
+        itemCount.isAcceptableOrUnknown(data['item_count']!, _itemCountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_itemCountMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SessionLogRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SessionLogRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sourceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_id'],
+      )!,
+      displayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name'],
+      )!,
+      endedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}ended_at'],
+      )!,
+      localDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_date'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      totalDurationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_duration_seconds'],
+      )!,
+      itemCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}item_count'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+    );
+  }
+
+  @override
+  $SessionLogsTable createAlias(String alias) {
+    return $SessionLogsTable(attachedDatabase, alias);
+  }
+}
+
+class SessionLogRow extends DataClass implements Insertable<SessionLogRow> {
+  final String id;
+  final String sourceId;
+  final String displayName;
+  final int endedAt;
+  final String localDate;
+  final String status;
+  final int totalDurationSeconds;
+  final int itemCount;
+  final String? note;
+  const SessionLogRow({
+    required this.id,
+    required this.sourceId,
+    required this.displayName,
+    required this.endedAt,
+    required this.localDate,
+    required this.status,
+    required this.totalDurationSeconds,
+    required this.itemCount,
+    this.note,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['source_id'] = Variable<String>(sourceId);
+    map['display_name'] = Variable<String>(displayName);
+    map['ended_at'] = Variable<int>(endedAt);
+    map['local_date'] = Variable<String>(localDate);
+    map['status'] = Variable<String>(status);
+    map['total_duration_seconds'] = Variable<int>(totalDurationSeconds);
+    map['item_count'] = Variable<int>(itemCount);
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    return map;
+  }
+
+  SessionLogsCompanion toCompanion(bool nullToAbsent) {
+    return SessionLogsCompanion(
+      id: Value(id),
+      sourceId: Value(sourceId),
+      displayName: Value(displayName),
+      endedAt: Value(endedAt),
+      localDate: Value(localDate),
+      status: Value(status),
+      totalDurationSeconds: Value(totalDurationSeconds),
+      itemCount: Value(itemCount),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+    );
+  }
+
+  factory SessionLogRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SessionLogRow(
+      id: serializer.fromJson<String>(json['id']),
+      sourceId: serializer.fromJson<String>(json['sourceId']),
+      displayName: serializer.fromJson<String>(json['displayName']),
+      endedAt: serializer.fromJson<int>(json['endedAt']),
+      localDate: serializer.fromJson<String>(json['localDate']),
+      status: serializer.fromJson<String>(json['status']),
+      totalDurationSeconds: serializer.fromJson<int>(
+        json['totalDurationSeconds'],
+      ),
+      itemCount: serializer.fromJson<int>(json['itemCount']),
+      note: serializer.fromJson<String?>(json['note']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sourceId': serializer.toJson<String>(sourceId),
+      'displayName': serializer.toJson<String>(displayName),
+      'endedAt': serializer.toJson<int>(endedAt),
+      'localDate': serializer.toJson<String>(localDate),
+      'status': serializer.toJson<String>(status),
+      'totalDurationSeconds': serializer.toJson<int>(totalDurationSeconds),
+      'itemCount': serializer.toJson<int>(itemCount),
+      'note': serializer.toJson<String?>(note),
+    };
+  }
+
+  SessionLogRow copyWith({
+    String? id,
+    String? sourceId,
+    String? displayName,
+    int? endedAt,
+    String? localDate,
+    String? status,
+    int? totalDurationSeconds,
+    int? itemCount,
+    Value<String?> note = const Value.absent(),
+  }) => SessionLogRow(
+    id: id ?? this.id,
+    sourceId: sourceId ?? this.sourceId,
+    displayName: displayName ?? this.displayName,
+    endedAt: endedAt ?? this.endedAt,
+    localDate: localDate ?? this.localDate,
+    status: status ?? this.status,
+    totalDurationSeconds: totalDurationSeconds ?? this.totalDurationSeconds,
+    itemCount: itemCount ?? this.itemCount,
+    note: note.present ? note.value : this.note,
+  );
+  SessionLogRow copyWithCompanion(SessionLogsCompanion data) {
+    return SessionLogRow(
+      id: data.id.present ? data.id.value : this.id,
+      sourceId: data.sourceId.present ? data.sourceId.value : this.sourceId,
+      displayName: data.displayName.present
+          ? data.displayName.value
+          : this.displayName,
+      endedAt: data.endedAt.present ? data.endedAt.value : this.endedAt,
+      localDate: data.localDate.present ? data.localDate.value : this.localDate,
+      status: data.status.present ? data.status.value : this.status,
+      totalDurationSeconds: data.totalDurationSeconds.present
+          ? data.totalDurationSeconds.value
+          : this.totalDurationSeconds,
+      itemCount: data.itemCount.present ? data.itemCount.value : this.itemCount,
+      note: data.note.present ? data.note.value : this.note,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SessionLogRow(')
+          ..write('id: $id, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('displayName: $displayName, ')
+          ..write('endedAt: $endedAt, ')
+          ..write('localDate: $localDate, ')
+          ..write('status: $status, ')
+          ..write('totalDurationSeconds: $totalDurationSeconds, ')
+          ..write('itemCount: $itemCount, ')
+          ..write('note: $note')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    sourceId,
+    displayName,
+    endedAt,
+    localDate,
+    status,
+    totalDurationSeconds,
+    itemCount,
+    note,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SessionLogRow &&
+          other.id == this.id &&
+          other.sourceId == this.sourceId &&
+          other.displayName == this.displayName &&
+          other.endedAt == this.endedAt &&
+          other.localDate == this.localDate &&
+          other.status == this.status &&
+          other.totalDurationSeconds == this.totalDurationSeconds &&
+          other.itemCount == this.itemCount &&
+          other.note == this.note);
+}
+
+class SessionLogsCompanion extends UpdateCompanion<SessionLogRow> {
+  final Value<String> id;
+  final Value<String> sourceId;
+  final Value<String> displayName;
+  final Value<int> endedAt;
+  final Value<String> localDate;
+  final Value<String> status;
+  final Value<int> totalDurationSeconds;
+  final Value<int> itemCount;
+  final Value<String?> note;
+  final Value<int> rowid;
+  const SessionLogsCompanion({
+    this.id = const Value.absent(),
+    this.sourceId = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.endedAt = const Value.absent(),
+    this.localDate = const Value.absent(),
+    this.status = const Value.absent(),
+    this.totalDurationSeconds = const Value.absent(),
+    this.itemCount = const Value.absent(),
+    this.note = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SessionLogsCompanion.insert({
+    required String id,
+    required String sourceId,
+    required String displayName,
+    required int endedAt,
+    required String localDate,
+    required String status,
+    required int totalDurationSeconds,
+    required int itemCount,
+    this.note = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sourceId = Value(sourceId),
+       displayName = Value(displayName),
+       endedAt = Value(endedAt),
+       localDate = Value(localDate),
+       status = Value(status),
+       totalDurationSeconds = Value(totalDurationSeconds),
+       itemCount = Value(itemCount);
+  static Insertable<SessionLogRow> custom({
+    Expression<String>? id,
+    Expression<String>? sourceId,
+    Expression<String>? displayName,
+    Expression<int>? endedAt,
+    Expression<String>? localDate,
+    Expression<String>? status,
+    Expression<int>? totalDurationSeconds,
+    Expression<int>? itemCount,
+    Expression<String>? note,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sourceId != null) 'source_id': sourceId,
+      if (displayName != null) 'display_name': displayName,
+      if (endedAt != null) 'ended_at': endedAt,
+      if (localDate != null) 'local_date': localDate,
+      if (status != null) 'status': status,
+      if (totalDurationSeconds != null)
+        'total_duration_seconds': totalDurationSeconds,
+      if (itemCount != null) 'item_count': itemCount,
+      if (note != null) 'note': note,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SessionLogsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sourceId,
+    Value<String>? displayName,
+    Value<int>? endedAt,
+    Value<String>? localDate,
+    Value<String>? status,
+    Value<int>? totalDurationSeconds,
+    Value<int>? itemCount,
+    Value<String?>? note,
+    Value<int>? rowid,
+  }) {
+    return SessionLogsCompanion(
+      id: id ?? this.id,
+      sourceId: sourceId ?? this.sourceId,
+      displayName: displayName ?? this.displayName,
+      endedAt: endedAt ?? this.endedAt,
+      localDate: localDate ?? this.localDate,
+      status: status ?? this.status,
+      totalDurationSeconds: totalDurationSeconds ?? this.totalDurationSeconds,
+      itemCount: itemCount ?? this.itemCount,
+      note: note ?? this.note,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sourceId.present) {
+      map['source_id'] = Variable<String>(sourceId.value);
+    }
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (endedAt.present) {
+      map['ended_at'] = Variable<int>(endedAt.value);
+    }
+    if (localDate.present) {
+      map['local_date'] = Variable<String>(localDate.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (totalDurationSeconds.present) {
+      map['total_duration_seconds'] = Variable<int>(totalDurationSeconds.value);
+    }
+    if (itemCount.present) {
+      map['item_count'] = Variable<int>(itemCount.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SessionLogsCompanion(')
+          ..write('id: $id, ')
+          ..write('sourceId: $sourceId, ')
+          ..write('displayName: $displayName, ')
+          ..write('endedAt: $endedAt, ')
+          ..write('localDate: $localDate, ')
+          ..write('status: $status, ')
+          ..write('totalDurationSeconds: $totalDurationSeconds, ')
+          ..write('itemCount: $itemCount, ')
+          ..write('note: $note, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2077,6 +2644,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $AppPreferencesTable appPreferences = $AppPreferencesTable(this);
+  late final $SessionLogsTable sessionLogs = $SessionLogsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2088,6 +2656,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     workouts,
     workoutExercises,
     appPreferences,
+    sessionLogs,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -3900,6 +4469,286 @@ typedef $$AppPreferencesTableProcessedTableManager =
       AppPreferenceRow,
       PrefetchHooks Function()
     >;
+typedef $$SessionLogsTableCreateCompanionBuilder =
+    SessionLogsCompanion Function({
+      required String id,
+      required String sourceId,
+      required String displayName,
+      required int endedAt,
+      required String localDate,
+      required String status,
+      required int totalDurationSeconds,
+      required int itemCount,
+      Value<String?> note,
+      Value<int> rowid,
+    });
+typedef $$SessionLogsTableUpdateCompanionBuilder =
+    SessionLogsCompanion Function({
+      Value<String> id,
+      Value<String> sourceId,
+      Value<String> displayName,
+      Value<int> endedAt,
+      Value<String> localDate,
+      Value<String> status,
+      Value<int> totalDurationSeconds,
+      Value<int> itemCount,
+      Value<String?> note,
+      Value<int> rowid,
+    });
+
+class $$SessionLogsTableFilterComposer
+    extends Composer<_$AppDatabase, $SessionLogsTable> {
+  $$SessionLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get endedAt => $composableBuilder(
+    column: $table.endedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localDate => $composableBuilder(
+    column: $table.localDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalDurationSeconds => $composableBuilder(
+    column: $table.totalDurationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get itemCount => $composableBuilder(
+    column: $table.itemCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SessionLogsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SessionLogsTable> {
+  $$SessionLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sourceId => $composableBuilder(
+    column: $table.sourceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get endedAt => $composableBuilder(
+    column: $table.endedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localDate => $composableBuilder(
+    column: $table.localDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalDurationSeconds => $composableBuilder(
+    column: $table.totalDurationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get itemCount => $composableBuilder(
+    column: $table.itemCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SessionLogsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SessionLogsTable> {
+  $$SessionLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sourceId =>
+      $composableBuilder(column: $table.sourceId, builder: (column) => column);
+
+  GeneratedColumn<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get endedAt =>
+      $composableBuilder(column: $table.endedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get localDate =>
+      $composableBuilder(column: $table.localDate, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get totalDurationSeconds => $composableBuilder(
+    column: $table.totalDurationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get itemCount =>
+      $composableBuilder(column: $table.itemCount, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+}
+
+class $$SessionLogsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SessionLogsTable,
+          SessionLogRow,
+          $$SessionLogsTableFilterComposer,
+          $$SessionLogsTableOrderingComposer,
+          $$SessionLogsTableAnnotationComposer,
+          $$SessionLogsTableCreateCompanionBuilder,
+          $$SessionLogsTableUpdateCompanionBuilder,
+          (
+            SessionLogRow,
+            BaseReferences<_$AppDatabase, $SessionLogsTable, SessionLogRow>,
+          ),
+          SessionLogRow,
+          PrefetchHooks Function()
+        > {
+  $$SessionLogsTableTableManager(_$AppDatabase db, $SessionLogsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SessionLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SessionLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SessionLogsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sourceId = const Value.absent(),
+                Value<String> displayName = const Value.absent(),
+                Value<int> endedAt = const Value.absent(),
+                Value<String> localDate = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> totalDurationSeconds = const Value.absent(),
+                Value<int> itemCount = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SessionLogsCompanion(
+                id: id,
+                sourceId: sourceId,
+                displayName: displayName,
+                endedAt: endedAt,
+                localDate: localDate,
+                status: status,
+                totalDurationSeconds: totalDurationSeconds,
+                itemCount: itemCount,
+                note: note,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sourceId,
+                required String displayName,
+                required int endedAt,
+                required String localDate,
+                required String status,
+                required int totalDurationSeconds,
+                required int itemCount,
+                Value<String?> note = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SessionLogsCompanion.insert(
+                id: id,
+                sourceId: sourceId,
+                displayName: displayName,
+                endedAt: endedAt,
+                localDate: localDate,
+                status: status,
+                totalDurationSeconds: totalDurationSeconds,
+                itemCount: itemCount,
+                note: note,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SessionLogsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SessionLogsTable,
+      SessionLogRow,
+      $$SessionLogsTableFilterComposer,
+      $$SessionLogsTableOrderingComposer,
+      $$SessionLogsTableAnnotationComposer,
+      $$SessionLogsTableCreateCompanionBuilder,
+      $$SessionLogsTableUpdateCompanionBuilder,
+      (
+        SessionLogRow,
+        BaseReferences<_$AppDatabase, $SessionLogsTable, SessionLogRow>,
+      ),
+      SessionLogRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3916,4 +4765,6 @@ class $AppDatabaseManager {
       $$WorkoutExercisesTableTableManager(_db, _db.workoutExercises);
   $$AppPreferencesTableTableManager get appPreferences =>
       $$AppPreferencesTableTableManager(_db, _db.appPreferences);
+  $$SessionLogsTableTableManager get sessionLogs =>
+      $$SessionLogsTableTableManager(_db, _db.sessionLogs);
 }

@@ -70,7 +70,43 @@ abstract final class UiStrings {
   static const workoutsTitle = 'Mis entrenamientos';
   static const navRoutine = 'Rutina';
   static const navWorkouts = 'Entrenamientos';
+  static const navHistory = 'Historial';
   static const navSettings = 'Ajustes';
+
+  // History / calendar (F04)
+  static const historyTitle = 'Historial';
+  static const historyWorkoutsSection = 'Entrenamientos';
+  static const historyEmptyDay = 'No hay entrenamientos este día';
+  static const historyAddNote = 'Añadir una nota...';
+  static const historyEditNoteTitle = 'Nota del entrenamiento';
+  static const historyNoteTooLong =
+      'La nota no puede superar 500 caracteres';
+  static const historyStart = 'Empezar';
+  static const historyDelete = 'Eliminar del historial';
+  static const historyDeleteTitle = '¿Eliminar del historial?';
+  static const historyDeleteMessage =
+      'Esta acción no se puede deshacer. Se borrará el registro de esta sesión.';
+  static const historySourceMissing =
+      'No se encontró la rutina o entrenamiento original.';
+  static const historyGoToToday = 'Ir al día de hoy';
+  static const historySelectMonth = 'Seleccionar mes';
+  static const historyExerciseCount = 'Ejercicios: {count}';
+  static const historyFallbackTitle = 'Entrenamiento a las {time}';
+  static const monthNames = [
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre',
+  ];
+  static const weekdayShort = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
   static const createWorkout = 'Crear entrenamiento';
   static const workoutName = 'Nombre del entrenamiento';
   static const workoutNameTooLong =

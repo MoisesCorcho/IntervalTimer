@@ -4,7 +4,7 @@
 
 ## Definition of Done
 
-- [ ] Todos los criterios R1–R18 de `requirements.md` estan implementados y verificados manualmente. _(cubre R1–R18)_
+- [x] Todos los criterios R1–R18 de `requirements.md` estan implementados y verificados manualmente. _(cubre R1–R18)_
 - [x] Tests unitarios y widget listados abajo pasan en CI/local.
 - [x] Schema drift F32 documentado en `_global/05-data-model.md` y migracion aplicada.
 - [x] No se rompio F01 (timer, eventos de sesion, validaciones de intervalo).

@@ -7,7 +7,7 @@
 | F01 | [Interval Timer Core](../features/01-interval-timer-core/requirements.md) | Fase 0 · Fundacion | En progreso | - |
 | F02 | [Voz: Cuenta Regresiva y Anuncios](../features/02-voice-countdown-announcements/requirements.md) | Fase 0 · Fundacion | No iniciada | F01 |
 | F03 | [Sesiones Preestablecidas con Animacion/Video](../features/03-preset-workout-sessions/requirements.md) | Fase 0 · Fundacion | No iniciada | F01 |
-| F04 | [Calendario e Historial de Sesiones](../features/04-workout-calendar-history/requirements.md) | Fase 0 · Fundacion | No iniciada | F01 |
+| F04 | [Calendario e Historial de Sesiones](../features/04-workout-calendar-history/requirements.md) | Fase 0 · Fundacion | Completado | F01 |
 | F05 | [Editor de Rutinas Propias](../features/05-custom-routine-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01, F03 |
 | F06 | [Capa Pro / Compras In-App](../features/06-pro-tier-iap/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01 |
 | F07 | [Seleccion de Voces (Sistema y Premium)](../features/07-multiple-tts-voices/requirements.md) | Fase 1 · Personalizacion | No iniciada | F02 |
@@ -35,7 +35,7 @@
 | F29 | [Backup y Exportacion de Datos](../features/29-backup-export/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F04, F12 |
 | F30 | [Onboarding](../features/30-onboarding/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
 | F31 | [Accesibilidad](../features/31-accessibility/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
-| F32 | [Constructor de Entrenamientos por Ejercicios](../features/32-workout-exercise-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01 |
+| F32 | [Constructor de Entrenamientos por Ejercicios](../features/32-workout-exercise-builder/requirements.md) | Fase 1 · Personalizacion | Completado | F01 |
 | F33 | [Controles Numericos y de Duracion (Steppers Premium)](../features/33-premium-numeric-steppers/requirements.md) | Fase 7 · Calidad y Pulido | Completado | F01, F32 |
 | F34 | [Descanso entre Sets y Descanso Final del Ejercicio](../features/34-exercise-rest-between-and-final/requirements.md) | Fase 1 · Personalizacion | Completado | F32 |
 | F35 | [Navegacion de Secciones, Preparacion y Ajustes](../features/35-timer-navigation-prep-settings/requirements.md) | Fase 0 · Fundacion | Completado | F01 |

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/app/app_shell.dart';
+import 'package:interval_timer/features/calendar_history/presentation/history_screen.dart';
 import 'package:interval_timer/features/settings/presentation/settings_screen.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
@@ -16,6 +17,8 @@ final _shellNavigatorRoutineKey =
     GlobalKey<NavigatorState>(debugLabel: 'routine');
 final _shellNavigatorWorkoutsKey =
     GlobalKey<NavigatorState>(debugLabel: 'workouts');
+final _shellNavigatorHistoryKey =
+    GlobalKey<NavigatorState>(debugLabel: 'history');
 final _shellNavigatorSettingsKey =
     GlobalKey<NavigatorState>(debugLabel: 'settings');
 
@@ -69,6 +72,15 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/workouts',
                 builder: (context, state) => const MyWorkoutsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorHistoryKey,
+            routes: [
+              GoRoute(
+                path: '/history',
+                builder: (context, state) => const HistoryScreen(),
               ),
             ],
           ),

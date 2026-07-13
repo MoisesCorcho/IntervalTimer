@@ -16,11 +16,12 @@ de forma que el orden de implementacion no sea arbitrario. Ver `06-roadmap-and-d
 ## Flujo de trabajo recomendado con un agente de IA
 
 1. Leer steering docs `01`–`06` y verificar que los prerequisitos de la feature esten **Completos** en el roadmap.
-2. Abrir `requirements.md` de la feature. Si algo es ambiguo, resolverlo ANTES de pasar a design.
-3. Revisar/ajustar `design.md`. No escribir codigo de produccion sin que este archivo refleje el enfoque real.
-4. Si la feature introduce tablas drift o entidades nuevas: actualizar `05-data-model.md` **antes** del primer codigo.
-5. Ejecutar `tasks.md` como checklist, marcando cada item al completarlo.
-6. Antes de dar la feature por terminada, verificar la Definition of Done al final de `tasks.md`.
+2. Aplicar siempre `03-conventions.md` (incluye **Calidad de codigo y reutilizacion**: preferir `shared/widgets/`, DRY, capas, no duplicar). No es opcional al implementar.
+3. Abrir `requirements.md` de la feature. Si algo es ambiguo, resolverlo ANTES de pasar a design.
+4. Revisar/ajustar `design.md`. No escribir codigo de produccion sin que este archivo refleje el enfoque real.
+5. Si la feature introduce tablas drift o entidades nuevas: actualizar `05-data-model.md` **antes** del primer codigo.
+6. Ejecutar `tasks.md` como checklist, marcando cada item al completarlo.
+7. Antes de dar la feature por terminada, verificar la Definition of Done al final de `tasks.md` y el checklist de reutilizacion de `03-conventions.md`.
 
 ## Actualizacion de steering docs (obligatorio)
 

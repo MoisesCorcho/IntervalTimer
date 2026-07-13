@@ -213,6 +213,47 @@ Persistencia via `PreferencesRepository` en `data/repositories/`. Misma semantic
 
 `SessionCompletedEvent.routineId` puede contener `workoutId` cuando la sesion se inicio desde F32.
 
+## SessionLog (F04) — historial de sesiones
+
+Registro historico de una sesion de timer (completada o abortada con progreso). Introducido por F04.
+
+```dart
+enum SessionLogStatus { completed, aborted }
+
+SessionLog {
+  id: String                    // UUID v4
+  sourceId: String              // routineId (F01/F05) o workoutId (F32) del evento
+  displayName: String           // snapshot del nombre al cerrar sesion (puede ser '')
+  endedAt: DateTime             // UTC al persistir (ms epoch)
+  localDate: String             // yyyy-MM-dd en zona local del dispositivo al momento de endedAt
+  status: SessionLogStatus      // completed | aborted
+  totalDurationSeconds: int     // totalElapsedSeconds o elapsedSeconds del evento
+  itemCount: int                // intervalCount o completedIntervalCount
+  note: String?                 // opcional; max 500 chars en validacion UI
+}
+```
+
+### Tabla drift (F04 — migracion aditiva)
+
+| Tabla | Columnas | Notas |
+|---|---|---|
+| `session_logs` | `id` TEXT PK, `source_id` TEXT NOT NULL, `display_name` TEXT NOT NULL, `ended_at` INTEGER NOT NULL, `local_date` TEXT NOT NULL, `status` TEXT NOT NULL, `total_duration_seconds` INTEGER NOT NULL, `item_count` INTEGER NOT NULL, `note` TEXT NULL | Indices: `(local_date)`, `(ended_at DESC)` |
+
+**Integridad:**
+
+- **Sin FK** a `routines` / `workouts`: el origen puede borrarse y el historial permanece (snapshot).
+- `schemaVersion`: **5** (migracion F04: `createTable(sessionLogs)`). Confirmado en `lib/data/local/database.dart`.
+
+**Semantica de escritura (resumen F04):**
+
+| Evento F01 | Condicion | `status` |
+|---|---|---|
+| `SessionCompletedEvent` | siempre | `completed` |
+| `SessionCancelledEvent` | `elapsedSeconds > 0` | `aborted` |
+| `SessionCancelledEvent` | `elapsedSeconds == 0` | no insertar |
+
+Queries tipicas: por `local_date` (lista del dia), rango de `local_date` del mes (marcadores), update de `note`, delete por `id`.
+
 ## Motor de persistencia
 
 | Capa | Tecnologia | Que vive ahi |
@@ -226,7 +267,7 @@ Persistencia via `PreferencesRepository` en `data/repositories/`. Misma semantic
 
 - `Routine` 1-N `RoutineItem` (union de `Interval` y, desde F08, `Block`).
 - `PresetRoutine` N-N `Exercise` (en assets; no FK en drift).
-- `SessionLog` N-1 `Routine` (por id + snapshot del nombre y duracion total).
+- `SessionLog` referencia debil a rutina/workout por `sourceId` + snapshot (`displayName`, duracion, `itemCount`); **sin FK** (F04).
 - `FavoriteRoutine` referencia `routineId` + `routineSource` enum (`user` | `preset`) — resolver join en repositorio (F24).
 - `Workout` 1-N `WorkoutExercise` (orden por `position`).
 
