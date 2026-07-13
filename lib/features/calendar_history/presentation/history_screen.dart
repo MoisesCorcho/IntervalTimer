@@ -46,18 +46,23 @@ class HistoryScreen extends ConsumerWidget {
                 ref.read(historyControllerProvider.notifier).goToToday();
               },
             ),
-            HistoryCalendar(
-              focusedMonth: history.focusedMonth,
-              selectedDate: history.selectedDate,
-              markerDates: markers,
-              onDaySelected: (selected, focused) {
-                ref.read(historyControllerProvider.notifier).selectDay(selected);
-              },
-              onPageChanged: (focused) {
-                ref
-                    .read(historyControllerProvider.notifier)
-                    .setFocusedMonth(focused);
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: HistoryCalendar(
+                focusedMonth: history.focusedMonth,
+                selectedDate: history.selectedDate,
+                markerDates: markers,
+                onDaySelected: (selected, focused) {
+                  ref
+                      .read(historyControllerProvider.notifier)
+                      .selectDay(selected);
+                },
+                onPageChanged: (focused) {
+                  ref
+                      .read(historyControllerProvider.notifier)
+                      .setFocusedMonth(focused);
+                },
+              ),
             ),
             const SizedBox(height: 8),
             Padding(

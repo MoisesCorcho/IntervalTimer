@@ -41,33 +41,11 @@ class HistoryCalendar extends StatelessWidget {
       headerVisible: false,
       onDaySelected: onDaySelected,
       onPageChanged: onPageChanged,
-      calendarStyle: CalendarStyle(
+      // Custom cells own number + marker layout; keep decorations minimal.
+      calendarStyle: const CalendarStyle(
         outsideDaysVisible: true,
-        selectedDecoration: BoxDecoration(
-          color: scheme.primary,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        selectedTextStyle: TextStyle(
-          color: scheme.onPrimary,
-          fontWeight: FontWeight.w600,
-        ),
-        todayDecoration: BoxDecoration(
-          border: Border.all(color: scheme.primary, width: 1.5),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        todayTextStyle: TextStyle(
-          color: scheme.onSurface,
-          fontWeight: FontWeight.w600,
-        ),
-        defaultDecoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        weekendDecoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        outsideDecoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        isTodayHighlighted: false,
+        markersMaxCount: 0,
       ),
       daysOfWeekStyle: DaysOfWeekStyle(
         weekdayStyle: TextStyle(
@@ -82,19 +60,101 @@ class HistoryCalendar extends StatelessWidget {
         ),
       ),
       calendarBuilders: CalendarBuilders(
-        markerBuilder: (context, day, events) {
-          if (!markerDates.contains(_key(day))) return null;
-          return Positioned(
-            bottom: 2,
-            child: Icon(
-              Icons.fitness_center,
-              size: 12,
-              color: isSameDay(day, selectedDate)
-                  ? scheme.onPrimary
-                  : scheme.tertiary,
+        defaultBuilder: (context, day, focusedDay) =>
+            _DayCell(day: day, selected: false, today: false, outside: false, hasMarker: markerDates.contains(_key(day))),
+        todayBuilder: (context, day, focusedDay) =>
+            _DayCell(day: day, selected: isSameDay(day, selectedDate), today: true, outside: false, hasMarker: markerDates.contains(_key(day))),
+        selectedBuilder: (context, day, focusedDay) =>
+            _DayCell(day: day, selected: true, today: isSameDay(day, DateTime.now()), outside: false, hasMarker: markerDates.contains(_key(day))),
+        outsideBuilder: (context, day, focusedDay) =>
+            _DayCell(day: day, selected: false, today: false, outside: true, hasMarker: markerDates.contains(_key(day))),
+      ),
+    );
+  }
+}
+
+/// Number top-left, activity icon bottom-right so neither is clipped.
+class _DayCell extends StatelessWidget {
+  const _DayCell({
+    required this.day,
+    required this.selected,
+    required this.today,
+    required this.outside,
+    required this.hasMarker,
+  });
+
+  final DateTime day;
+  final bool selected;
+  final bool today;
+  final bool outside;
+  final bool hasMarker;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    // Always fill the cell so days read as tiles, not floating numbers.
+    final Color bg;
+    if (selected) {
+      bg = scheme.primary;
+    } else if (outside) {
+      bg = scheme.surfaceContainerHighest.withValues(alpha: 0.45);
+    } else {
+      bg = scheme.surfaceContainerHighest;
+    }
+
+    final Border? border = (!selected && today)
+        ? Border.all(color: scheme.primary, width: 1.5)
+        : null;
+
+    Color numberColor;
+    if (selected) {
+      numberColor = scheme.onPrimary;
+    } else if (outside) {
+      numberColor = scheme.onSurface.withValues(alpha: 0.38);
+    } else {
+      numberColor = scheme.onSurface;
+    }
+
+    final iconColor = selected
+        ? scheme.onPrimary
+        : outside
+            ? scheme.tertiary.withValues(alpha: 0.5)
+            : scheme.tertiary;
+
+    return Container(
+      margin: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: bg,
+        border: border,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 3,
+            left: 5,
+            child: Text(
+              '${day.day}',
+              style: TextStyle(
+                color: numberColor,
+                fontWeight: selected || today ? FontWeight.w600 : FontWeight.w500,
+                fontSize: 13,
+                height: 1.1,
+              ),
             ),
-          );
-        },
+          ),
+          if (hasMarker)
+            Positioned(
+              bottom: 3,
+              right: 4,
+              child: Icon(
+                Icons.fitness_center,
+                size: 14,
+                color: iconColor,
+              ),
+            ),
+        ],
       ),
     );
   }
