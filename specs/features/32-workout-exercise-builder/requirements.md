@@ -1,6 +1,6 @@
 # Requirements: Constructor de Entrenamientos por Ejercicios
 
-> Estado: En progreso
+> Estado: Completado
 
 **ID:** F32 &nbsp;|&nbsp; **Slug:** `32-workout-exercise-builder` &nbsp;|&nbsp; **Fase:** Fase 1 · Personalizacion
 
