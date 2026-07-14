@@ -124,6 +124,19 @@ No requiere tabla drift nueva para prefs. La columna `intervals.announce_text` s
 
 No requiere tabla drift nueva en F35 (reutiliza `app_preferences`). Otras preferencias de F27/F28/F31 pueden convivir en el mismo store con claves propias.
 
+### Preferencias F18 (vibracion — globales)
+
+Misma semantica de store que F02/F35 (`PreferencesRepository` / `app_preferences`). Claves estables; no por rutina. **Independientes** de las claves de voz F02 (`voice_enabled`, `countdown_seconds`).
+
+| Clave | Tipo | Default | Rango | Uso |
+|---|---|---|---|---|
+| `vibration_enabled` | `bool` | `true` | — | Master mute de haptics; `false` suprime todos los patrones sin afectar el timer ni la voz (F18 R3). |
+| `vibration_on_interval_start` | `bool` | `true` | — | Si `false`, omite patron A al iniciar intervalo; countdown haptico sigue si aplica (F18 R4). |
+| `vibration_on_countdown` | `bool` | `true` | — | Si `false`, omite patron B de ticks; inicio de intervalo sigue si aplica (F18 R4). |
+| `vibration_countdown_seconds` | `int` | `3` | `0..10` | Ventana N de cuenta regresiva hapticas; `0` desactiva solo ticks (F18 R2/R5). No reutiliza `countdown_seconds` de F02. |
+
+No requiere tabla drift nueva en F18 (solo key-value en `app_preferences`).
+
 ### Schema F05 (drift) — migracion v2
 
 Columnas aditivas en `routines`:
