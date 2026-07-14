@@ -14,9 +14,9 @@ que introduce o modifica una entidad debe reflejarlo aqui **antes** de implement
 | Entidad | Origen | Descripcion breve |
 |---|---|---|
 | `Interval` | F01 (+ F02) | Unidad basica: nombre, duracion, color, tipo; F02 agrega `announceText` opcional. |
-| `Routine` | F01 | Coleccion ordenada de `RoutineItem` (intervalos y/o bloques). |
-| `RoutineItem` | F01/F08 | Union discriminada: `interval(Interval)` en F01; `block(Block)` en F08. |
-| `Block` | F08 | Agrupacion de intervalos con numero de repeticiones. |
+| `Routine` | F01 | Coleccion ordenada de `RoutineItem` (intervalos; bloques de rutina plana no en MVP de F08). |
+| `RoutineItem` | F01 | Union discriminada: `interval(Interval)` en F01. (Historico: `block` se dejo de lado; F08 vive en Workout.) |
+| `Block` | — (historico) | Agrupacion de intervalos en `Routine` — **no implementado**; F08 usa `WorkoutCircuit` en el eje Workout. |
 | `Exercise` | F03 | Ejercicio con metadata y referencia a media (Lottie/video/imagen). |
 | `PresetRoutine` | F03 | Rutina prediseñada con categoria y ejercicios asociados (assets, no drift). |
 | `SessionLog` | F04 | Registro de una sesion ejecutada (completa o abortada). |
@@ -25,8 +25,9 @@ que introduce o modifica una entidad debe reflejarlo aqui **antes** de implement
 | `Reminder` | F14 | Configuracion de notificaciones recurrentes. |
 | `BodyMeasurement` | F15 | Registro de peso/medidas en el tiempo. |
 | `FavoriteRoutine` | F24 | Marca de rutina favorita (referencia por id + tipo preset/user). |
-| `Workout` | F32 | Entrenamiento del usuario: nombre + lista ordenada de ejercicios. |
-| `WorkoutExercise` | F32 / F34 | Ejercicio dentro de un entrenamiento: nombre, sets, trabajo, descanso entre sets y descanso final (post-ejercicio). |
+| `Workout` | F32 | Entrenamiento del usuario: nombre + lista ordenada de ejercicios (y circuitos F08). |
+| `WorkoutExercise` | F32 / F34 / F08 | Ejercicio dentro de un entrenamiento: nombre, sets, trabajo, descansos; opcional `circuitId` (F08). |
+| `WorkoutCircuit` | F08 | Circuito: `rounds` (1–99) + ejercicios miembros del mismo workout (1 nivel). |
 
 ## Schema F01 (drift) — fundacional
 
@@ -34,7 +35,7 @@ que introduce o modifica una entidad debe reflejarlo aqui **antes** de implement
 
 ```dart
 enum IntervalType { warmup, work, rest, stretch, custom }
-enum RoutineItemType { interval }  // F08 agrega: block
+enum RoutineItemType { interval }  // F08 ya NO agrega block aqui; ver WorkoutCircuit
 ```
 
 ### Entidades de dominio
@@ -63,7 +64,7 @@ enum RoutineSource { custom, presetDerived }
 
 RoutineItem (sealed class / freezed union) {
   F01: solo variante IntervalItem { interval: Interval }
-  F08: agrega BlockItem { block: Block }
+  // Historico F08-sobre-Routine (BlockItem): descartado. Rounds viven en WorkoutCircuit (F08).
 }
 ```
 
@@ -142,7 +143,7 @@ Implementar como `sealed class` (Dart 3) o `@freezed sealed class`:
 ```dart
 sealed class RoutineItem { ... }
 class IntervalRoutineItem extends RoutineItem { final Interval interval; }
-// F08: class BlockRoutineItem extends RoutineItem { final Block block; }
+// No agregar BlockRoutineItem en F08. Circuitos = WorkoutCircuit (abajo).
 ```
 
 En drift, `routine_items.item_type` discrimina la variante; F01 solo persiste `interval`.
@@ -170,44 +171,65 @@ Workout {
 WorkoutExercise {
   id: String                       // UUID v4
   workoutId: String                // FK → workouts.id
-  position: int                    // 0..n-1, unico por workout
+  position: int                    // ver reglas F08 abajo
   name: String                     // max 50 chars
   sets: int                        // 1..99
   workSeconds: int                 // 1..5999
   restSeconds: int                 // 0..5999 — descanso entre sets del mismo ejercicio
                                    //   (omitido si 0 o si es el ultimo set)
   restAfterExerciseSeconds: int    // 0..5999 — F34: descanso final tras el ultimo set
-                                   //   solo si hay ejercicio siguiente; 0 = omitir;
-                                   //   nunca se emite en el ultimo ejercicio del workout
+                                   //   solo si hay "siguiente trabajo" distinto; 0 = omitir;
+                                   //   nunca se emite al cerrar el workout (ultimo work de sesion)
+  circuitId: String?               // F08: null = ejercicio suelto (top-level);
+                                   //   no null = miembro de WorkoutCircuit
+}
+
+WorkoutCircuit {
+  id: String                       // UUID v4
+  workoutId: String                // FK → workouts.id
+  position: int                    // orden entre elementos de nivel superior (sueltos + circuitos)
+  rounds: int                      // 1..99
 }
 ```
 
-### Tablas drift (F32 + F34)
+**Orden (F08):**
+
+- Elementos de **nivel superior**: ejercicios con `circuitId == null` y filas `WorkoutCircuit`, ordenados por su `position` compartida (0..n-1).
+- Miembros de un circuito: ejercicios con ese `circuitId`, ordenados por `position` **intra-circuito** (0..k-1).
+- Maximo un nivel de anidacion; un ejercicio pertenece a 0 o 1 circuito.
+
+### Tablas drift (F32 + F34 + F08)
 
 | Tabla | Columnas | Notas |
 |---|---|---|
 | `workouts` | `id` TEXT PK, `name` TEXT, `created_at` INTEGER, `updated_at` INTEGER | timestamps UTC ms |
-| `workout_exercises` | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `name` TEXT, `sets` INTEGER, `work_seconds` INTEGER, `rest_seconds` INTEGER | indice unico `(workout_id, position)`; F32 schema v3 |
+| `workout_exercises` | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `name` TEXT, `sets` INTEGER, `work_seconds` INTEGER, `rest_seconds` INTEGER | indice unico `(workout_id, position)` en F32; tras F08 el indice de position se interpreta segun suelto vs miembro — ver design F08; F32 schema v3 |
 | `workout_exercises` (F34) | + `rest_after_exercise_seconds` INTEGER NOT NULL DEFAULT 0 | Migracion aditiva schema v4; backfill 0 en filas existentes |
+| `workout_exercises` (F08) | + `circuit_id` TEXT NULL FK→workout_circuits | Schema v6; null = suelto |
+| `workout_circuits` (F08) | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `rounds` INTEGER | Schema v6; `rounds` 1..99 |
 | `app_preferences` | `key` TEXT PK, `value` TEXT nullable | key-value; F32 schema v3 |
 
-### Aplanado a `Interval` (F01) — solo en memoria (F32 extendido por F34)
+### Aplanado a `Interval` (F01) — solo en memoria (F32 extendido por F34 y F08)
 
-Por cada `WorkoutExercise` en orden de `position`:
+**Sin circuitos (F32/F34, o workout pre-F08):** por cada `WorkoutExercise` suelto en orden de `position` top-level:
 
 1. Por cada set de 1 a `sets`:
    1. `Interval` tipo `work`, nombre = `formatDisplayName(exercise.name)` (MAYUSCULAS), duracion = `workSeconds`
    2. Si no es el ultimo set y `restSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO"`, duracion = `restSeconds`
-2. Si el ejercicio **no** es el ultimo del workout y `restAfterExerciseSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO FINAL"`, duracion = `restAfterExerciseSeconds`
+2. Si el ejercicio **no** es el ultimo del workout y `restAfterExerciseSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO FINAL"` / `"Descanso entre ejercicios"`, duracion = `restAfterExerciseSeconds`
 
-**Notas de semantica (F34):**
+**Con circuitos (F08):** recorrer elementos de nivel superior (sueltos + circuitos). Para un circuito con `rounds = R` y miembros E1..Ek, repetir R veces el aplanado de E1..Ek. `restAfterExerciseSeconds` se emite cuando hay un siguiente trabajo que no es otro set del mismo ejercicio (siguiente miembro, primera ronda siguiente, o siguiente top-level). No emitir descanso final tras el ultimo work de la sesion. Cada intervalo de un circuito lleva metadata de ronda (`roundIndex` 1-based, `roundCount`, `circuitId`) para UI "Ronda X de Y". Detalle: `08-circuit-repetition-rounds/design.md`.
+
+**Notas de semantica (F34 + F08):**
 
 - `restSeconds` y `restAfterExerciseSeconds` son independientes (no se reutiliza un solo valor para ambos).
-- `sets = 1` nunca emite descanso entre sets; puede emitir descanso final si hay ejercicio siguiente.
-- El ultimo ejercicio del entrenamiento **no** emite descanso final (no hay cooldown de sesion inventado).
+- `sets = 1` nunca emite descanso entre sets; puede emitir descanso final si hay siguiente trabajo.
+- El ultimo trabajo de la sesion **no** emite descanso final (no hay cooldown de sesion inventado).
 - Default de migracion / alta: `restAfterExerciseSeconds = 0` (comportamiento pre-F34).
+- F08 **no** agrega campos de duracion al circuito; hereda tiempos de cada ejercicio.
+- Workouts sin filas en `workout_circuits` se comportan como pre-F08.
 
-Implementacion: `WorkoutFlattener` en `features/workout_builder/domain/`. Ver `32-workout-exercise-builder/design.md` (base) y `34-exercise-rest-between-and-final/design.md` (dual rest).
+Implementacion: `WorkoutFlattener` en `features/workout_builder/domain/`. Ver `32-workout-exercise-builder/design.md` (base), `34-exercise-rest-between-and-final/design.md` (dual rest) y `08-circuit-repetition-rounds/design.md` (rondas).
 
 ### Preferencias F32 (drift `app_preferences`)
 
@@ -279,11 +301,12 @@ Queries tipicas: por `local_date` (lista del dia), rango de `local_date` del mes
 
 ## Relaciones clave
 
-- `Routine` 1-N `RoutineItem` (union de `Interval` y, desde F08, `Block`).
+- `Routine` 1-N `RoutineItem` (F01: `Interval`; sin `Block` en MVP de F08).
 - `PresetRoutine` N-N `Exercise` (en assets; no FK en drift).
 - `SessionLog` referencia debil a rutina/workout por `sourceId` + snapshot (`displayName`, duracion, `itemCount`); **sin FK** (F04).
 - `FavoriteRoutine` referencia `routineId` + `routineSource` enum (`user` | `preset`) — resolver join en repositorio (F24).
-- `Workout` 1-N `WorkoutExercise` (orden por `position`).
+- `Workout` 1-N `WorkoutExercise` (orden por `position`; F32/F34).
+- `Workout` 1-N `WorkoutCircuit` (F08); `WorkoutExercise` 0..1 `WorkoutCircuit` via `circuitId`.
 
 ## Convenciones drift
 

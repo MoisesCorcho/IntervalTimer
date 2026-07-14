@@ -15,11 +15,12 @@ Biblioteca multi-rutina del usuario: crear, editar, duplicar (incluidos presets 
 
 ## Postrequisitos (features que dependen de esta)
 
-- F08 - Repeticion de Circuitos (Rounds)
 - F09 - Progresion Automatica
 - F11 - Ajuste Rapido de Intensidad
 - F24 - Favoritos
 - F25 - Compartir Rutinas con Otros Usuarios
+
+> **Nota:** F08 (circuit rounds) se re-anclo a F32/F34 y **ya no** depende de F05.
 
 ## User Stories
 
@@ -123,7 +124,7 @@ DONDE el usuario esta en **Mis rutinas**, CUANDO intenta seleccionar "Usar" sobr
 
 - Modelo ejercicio + sets + duracion trabajo/descanso por ejercicio (responsabilidad de **F32** — `32-workout-exercise-builder`).
 - Modificar o eliminar presets empaquetados (assets de F03).
-- Agrupar intervalos en bloques / rounds (F08).
+- Agrupar intervalos en bloques / rounds (F08 se implementa sobre **entrenamientos F32**, no sobre rutinas planas F05).
 - Asociar ejercicios con media a intervalos en rutinas custom (solo nombres/duraciones/colores como F01).
 - Limite de cantidad de rutinas por tier Pro (F06).
 - Historial de sesiones (F04).

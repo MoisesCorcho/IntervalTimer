@@ -111,9 +111,9 @@ lib/
     preset_routines/        # F03
     calendar_history/       # F04
     routine_builder/        # F05
-    workout_builder/        # F32
+    workout_builder/        # F32, F34, F08 (circuitos/rondas extienden este modulo)
     pro/                    # F06
-    circuit_rounds/         # F08
+    # circuit_rounds/       # F08 historico: no usar; F08 vive en workout_builder
     progression/            # F09
     rep_mode/               # F10
     intensity_scaling/      # F11
