@@ -23,6 +23,20 @@ class SettingsRepository {
   static const defaultAnnounceIntervalName =
       PreferencesRepository.defaultAnnounceIntervalName;
 
+  // F18 vibration
+  static const defaultVibrationEnabled =
+      PreferencesRepository.defaultVibrationEnabled;
+  static const defaultVibrationOnIntervalStart =
+      PreferencesRepository.defaultVibrationOnIntervalStart;
+  static const defaultVibrationOnCountdown =
+      PreferencesRepository.defaultVibrationOnCountdown;
+  static const defaultVibrationCountdownSeconds =
+      PreferencesRepository.defaultVibrationCountdownSeconds;
+  static const minVibrationCountdownSeconds =
+      PreferencesRepository.minVibrationCountdownSeconds;
+  static const maxVibrationCountdownSeconds =
+      PreferencesRepository.maxVibrationCountdownSeconds;
+
   Future<int> getPrepSeconds() => _prefs.getPrepSeconds();
 
   Future<void> setPrepSeconds(int value) => _prefs.setPrepSeconds(value);
@@ -40,4 +54,26 @@ class SettingsRepository {
 
   Future<void> setAnnounceIntervalName(bool value) =>
       _prefs.setAnnounceIntervalName(value);
+
+  Future<bool> getVibrationEnabled() => _prefs.getVibrationEnabled();
+
+  Future<void> setVibrationEnabled(bool value) =>
+      _prefs.setVibrationEnabled(value);
+
+  Future<bool> getVibrationOnIntervalStart() =>
+      _prefs.getVibrationOnIntervalStart();
+
+  Future<void> setVibrationOnIntervalStart(bool value) =>
+      _prefs.setVibrationOnIntervalStart(value);
+
+  Future<bool> getVibrationOnCountdown() => _prefs.getVibrationOnCountdown();
+
+  Future<void> setVibrationOnCountdown(bool value) =>
+      _prefs.setVibrationOnCountdown(value);
+
+  Future<int> getVibrationCountdownSeconds() =>
+      _prefs.getVibrationCountdownSeconds();
+
+  Future<void> setVibrationCountdownSeconds(int value) =>
+      _prefs.setVibrationCountdownSeconds(value);
 }

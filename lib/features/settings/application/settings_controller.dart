@@ -11,11 +11,20 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final voiceEnabled = await repo.getVoiceEnabled();
     final countdownSeconds = await repo.getCountdownSeconds();
     final announceIntervalName = await repo.getAnnounceIntervalName();
+    final vibrationEnabled = await repo.getVibrationEnabled();
+    final vibrationOnIntervalStart = await repo.getVibrationOnIntervalStart();
+    final vibrationOnCountdown = await repo.getVibrationOnCountdown();
+    final vibrationCountdownSeconds =
+        await repo.getVibrationCountdownSeconds();
     return AppSettings(
       prepSeconds: prep,
       voiceEnabled: voiceEnabled,
       countdownSeconds: countdownSeconds,
       announceIntervalName: announceIntervalName,
+      vibrationEnabled: vibrationEnabled,
+      vibrationOnIntervalStart: vibrationOnIntervalStart,
+      vibrationOnCountdown: vibrationOnCountdown,
+      vibrationCountdownSeconds: vibrationCountdownSeconds,
     );
   }
 
@@ -54,5 +63,43 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final current =
         state.valueOrNull ?? const AppSettings(prepSeconds: 10);
     state = AsyncData(current.copyWith(announceIntervalName: value));
+  }
+
+  Future<void> setVibrationEnabled(bool value) async {
+    await ref.read(settingsRepositoryProvider).setVibrationEnabled(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(vibrationEnabled: value));
+  }
+
+  Future<void> setVibrationOnIntervalStart(bool value) async {
+    await ref
+        .read(settingsRepositoryProvider)
+        .setVibrationOnIntervalStart(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(vibrationOnIntervalStart: value));
+  }
+
+  Future<void> setVibrationOnCountdown(bool value) async {
+    await ref
+        .read(settingsRepositoryProvider)
+        .setVibrationOnCountdown(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(vibrationOnCountdown: value));
+  }
+
+  Future<void> setVibrationCountdownSeconds(int value) async {
+    final clamped = value.clamp(
+      SettingsRepository.minVibrationCountdownSeconds,
+      SettingsRepository.maxVibrationCountdownSeconds,
+    );
+    await ref
+        .read(settingsRepositoryProvider)
+        .setVibrationCountdownSeconds(clamped);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(vibrationCountdownSeconds: clamped));
   }
 }
