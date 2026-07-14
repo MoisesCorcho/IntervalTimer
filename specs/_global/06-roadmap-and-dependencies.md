@@ -5,13 +5,13 @@
 | ID | Feature | Fase | Estado | Prerequisitos |
 |---|---|---|---|---|
 | F01 | [Interval Timer Core](../features/01-interval-timer-core/requirements.md) | Fase 0 · Fundacion | En progreso | - |
-| F02 | [Voz: Cuenta Regresiva y Anuncios](../features/02-voice-countdown-announcements/requirements.md) | Fase 0 · Fundacion | No iniciada | F01 |
+| F02 | [Voz: Cuenta Regresiva y Anuncios](../features/02-voice-countdown-announcements/requirements.md) | Fase 0 · Fundacion | Completado | F01 |
 | F03 | [Sesiones Preestablecidas con Animacion/Video](../features/03-preset-workout-sessions/requirements.md) | Fase 0 · Fundacion | No iniciada | F01 |
 | F04 | [Calendario e Historial de Sesiones](../features/04-workout-calendar-history/requirements.md) | Fase 0 · Fundacion | Completado | F01 |
 | F05 | [Editor de Rutinas Propias](../features/05-custom-routine-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01, F03 |
 | F06 | [Capa Pro / Compras In-App](../features/06-pro-tier-iap/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01 |
 | F07 | [Seleccion de Voces (Sistema y Premium)](../features/07-multiple-tts-voices/requirements.md) | Fase 1 · Personalizacion | No iniciada | F02 |
-| F08 | [Repeticion de Circuitos (Rounds)](../features/08-circuit-repetition-rounds/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F01, F05 |
+| F08 | [Repeticion de Circuitos (Rounds)](../features/08-circuit-repetition-rounds/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F01, F32, F34 |
 | F09 | [Progresion Automatica](../features/09-automatic-progression/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F05, F04 |
 | F10 | [Modo por Repeticiones](../features/10-rep-based-mode/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F01 |
 | F11 | [Ajuste Rapido de Intensidad](../features/11-quick-intensity-scaling/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F01, F05 |
@@ -73,6 +73,16 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - Caso clave: `sets = 1` + ejercicio siguiente → el descanso entre sets no aplica; el descanso final de A si puede ejecutarse antes de B.
 - Depende solo de F32; F33 no es prerequisito formal, pero el form debe reutilizar `DurationStepper` si ya esta integrado.
 
+### F08 vs F32 / F34 / F05 (circuitos y rondas)
+
+- **F08:** agrupa **ejercicios de un Workout** en un `WorkoutCircuit` con `rounds` (1–99); expande el circuito en `WorkoutFlattener` y muestra "Ronda X de Y" en ejecucion.
+- **Prerequisitos:** F01, F32, F34. **No** depende de F05.
+- Sets (F32) ≠ rondas (F08): sets repiten un ejercicio; rondas repiten el grupo.
+- Tiempos de work/rest se **heredan** de cada ejercicio (F32/F34); F08 no edita duraciones del circuito.
+- UI solo en el **editor de entrenamiento** (multi-select + Agrupar). Sin tab nueva ni opcion "Crear rutina" en el menu del listado.
+- El diseno historico `Routine` + `Block` + prereq F05 queda **descartado** para el MVP de F08.
+- F05 sigue siendo biblioteca de intervalos planos; no es camino critico para circuitos.
+
 ### F35 vs F01 (ejecucion, prep y settings)
 
 - **F01:** motor base (pause/resume, skip forward, cancel, pantalla de ejecucion, eventos de sesion).
@@ -97,7 +107,7 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 
 - **Fase 0 - Fundacion:** F01, luego F35 (extiende ejecucion de F01: nav, prep, settings), luego F02 / F03 / F04 en paralelo (migraciones drift coordinadas).
 - **Fase 1 - Personalizacion y monetizacion:** F32, F34 (tras F32), F05, F06, F07 (F32 puede implementarse antes que F05; no comparten prerequisitos; F34 extiende el aplanado/rest de F32).
-- **Fase 2 - Profundidad de entrenamiento:** F08, F09, F10, F11.
+- **Fase 2 - Profundidad de entrenamiento:** F08 (tras F32+F34; no espera F05), F09, F10, F11.
 - **Fase 3 - Seguimiento y motivacion:** F12, F13, F14, F15, F16.
 - **Fase 4 - Audio y experiencia:** F17, F18, F19, F20, F21 (F21 es fase futura/spike).
 - **Fase 5 - Descubrimiento de contenido:** F22, F23, F24.
@@ -130,7 +140,8 @@ F03 --> F05
 F01 --> F06
 F02 --> F07
 F01 --> F08
-F05 --> F08
+F32 --> F08
+F34 --> F08
 F05 --> F09
 F04 --> F09
 F01 --> F10

@@ -53,12 +53,14 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                     durationSeconds: result.durationSeconds,
                     colorArgb: result.colorArgb,
                     type: result.type,
+                    announceText: result.announceText,
                   ) ??
                   editor.createNewInterval(
                     name: result.name,
                     durationSeconds: result.durationSeconds,
                     colorArgb: result.colorArgb,
                     type: result.type,
+                    announceText: result.announceText,
                   );
 
               if (index != null) {

@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Interval {
 
- String get id; String get name; int get durationSeconds; int get colorArgb; IntervalType get type;
+ String get id; String get name; int get durationSeconds; int get colorArgb; IntervalType get type;/// Optional TTS phrase (F02). Null/blank → speak [name]. Max 80 chars in UI.
+ String? get announceText;
 /// Create a copy of Interval
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,16 @@ $IntervalCopyWith<Interval> get copyWith => _$IntervalCopyWithImpl<Interval>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Interval&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.colorArgb, colorArgb) || other.colorArgb == colorArgb)&&(identical(other.type, type) || other.type == type));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Interval&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.colorArgb, colorArgb) || other.colorArgb == colorArgb)&&(identical(other.type, type) || other.type == type)&&(identical(other.announceText, announceText) || other.announceText == announceText));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,durationSeconds,colorArgb,type);
+int get hashCode => Object.hash(runtimeType,id,name,durationSeconds,colorArgb,type,announceText);
 
 @override
 String toString() {
-  return 'Interval(id: $id, name: $name, durationSeconds: $durationSeconds, colorArgb: $colorArgb, type: $type)';
+  return 'Interval(id: $id, name: $name, durationSeconds: $durationSeconds, colorArgb: $colorArgb, type: $type, announceText: $announceText)';
 }
 
 
@@ -45,7 +46,7 @@ abstract mixin class $IntervalCopyWith<$Res>  {
   factory $IntervalCopyWith(Interval value, $Res Function(Interval) _then) = _$IntervalCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, int durationSeconds, int colorArgb, IntervalType type
+ String id, String name, int durationSeconds, int colorArgb, IntervalType type, String? announceText
 });
 
 
@@ -62,14 +63,15 @@ class _$IntervalCopyWithImpl<$Res>
 
 /// Create a copy of Interval
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? durationSeconds = null,Object? colorArgb = null,Object? type = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? durationSeconds = null,Object? colorArgb = null,Object? type = null,Object? announceText = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,durationSeconds: null == durationSeconds ? _self.durationSeconds : durationSeconds // ignore: cast_nullable_to_non_nullable
 as int,colorArgb: null == colorArgb ? _self.colorArgb : colorArgb // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as IntervalType,
+as IntervalType,announceText: freezed == announceText ? _self.announceText : announceText // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -154,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type,  String? announceText)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Interval() when $default != null:
-return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type);case _:
+return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type,_that.announceText);case _:
   return orElse();
 
 }
@@ -175,10 +177,10 @@ return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type,  String? announceText)  $default,) {final _that = this;
 switch (_that) {
 case _Interval():
-return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type);case _:
+return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type,_that.announceText);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +197,10 @@ return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type,  String? announceText)?  $default,) {final _that = this;
 switch (_that) {
 case _Interval() when $default != null:
-return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type);case _:
+return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type,_that.announceText);case _:
   return null;
 
 }
@@ -210,7 +212,7 @@ return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.
 
 
 class _Interval implements Interval {
-  const _Interval({required this.id, required this.name, required this.durationSeconds, required this.colorArgb, this.type = IntervalType.work});
+  const _Interval({required this.id, required this.name, required this.durationSeconds, required this.colorArgb, this.type = IntervalType.work, this.announceText});
   
 
 @override final  String id;
@@ -218,6 +220,8 @@ class _Interval implements Interval {
 @override final  int durationSeconds;
 @override final  int colorArgb;
 @override@JsonKey() final  IntervalType type;
+/// Optional TTS phrase (F02). Null/blank → speak [name]. Max 80 chars in UI.
+@override final  String? announceText;
 
 /// Create a copy of Interval
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +233,16 @@ _$IntervalCopyWith<_Interval> get copyWith => __$IntervalCopyWithImpl<_Interval>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Interval&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.colorArgb, colorArgb) || other.colorArgb == colorArgb)&&(identical(other.type, type) || other.type == type));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Interval&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.colorArgb, colorArgb) || other.colorArgb == colorArgb)&&(identical(other.type, type) || other.type == type)&&(identical(other.announceText, announceText) || other.announceText == announceText));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,durationSeconds,colorArgb,type);
+int get hashCode => Object.hash(runtimeType,id,name,durationSeconds,colorArgb,type,announceText);
 
 @override
 String toString() {
-  return 'Interval(id: $id, name: $name, durationSeconds: $durationSeconds, colorArgb: $colorArgb, type: $type)';
+  return 'Interval(id: $id, name: $name, durationSeconds: $durationSeconds, colorArgb: $colorArgb, type: $type, announceText: $announceText)';
 }
 
 
@@ -249,7 +253,7 @@ abstract mixin class _$IntervalCopyWith<$Res> implements $IntervalCopyWith<$Res>
   factory _$IntervalCopyWith(_Interval value, $Res Function(_Interval) _then) = __$IntervalCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, int durationSeconds, int colorArgb, IntervalType type
+ String id, String name, int durationSeconds, int colorArgb, IntervalType type, String? announceText
 });
 
 
@@ -266,14 +270,15 @@ class __$IntervalCopyWithImpl<$Res>
 
 /// Create a copy of Interval
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? durationSeconds = null,Object? colorArgb = null,Object? type = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? durationSeconds = null,Object? colorArgb = null,Object? type = null,Object? announceText = freezed,}) {
   return _then(_Interval(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,durationSeconds: null == durationSeconds ? _self.durationSeconds : durationSeconds // ignore: cast_nullable_to_non_nullable
 as int,colorArgb: null == colorArgb ? _self.colorArgb : colorArgb // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as IntervalType,
+as IntervalType,announceText: freezed == announceText ? _self.announceText : announceText // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

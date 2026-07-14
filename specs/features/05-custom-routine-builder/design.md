@@ -19,7 +19,7 @@ Antes de implementar, revisar los steering docs listados en la seccion Referenci
 
 ### Modelo de datos (extension F01)
 
-Alineado con `_global/05-data-model.md`. F05 extiende `Routine` sin cambiar `Interval` ni `RoutineItem` (union interval-only hasta F08).
+Alineado con `_global/05-data-model.md`. F05 extiende `Routine` sin cambiar `Interval` ni `RoutineItem` (union interval-only). F08 de circuitos vive en el eje Workout (`WorkoutCircuit`), no en Routine.
 
 ```dart
 enum RoutineSource { custom, presetDerived }

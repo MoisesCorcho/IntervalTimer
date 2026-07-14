@@ -46,6 +46,7 @@ class RoutineRepository {
               durationSeconds: interval.durationSeconds,
               colorArgb: interval.colorArgb,
               type: interval.type.storageValue,
+              announceText: interval.announceText,
             ),
           );
           itemRows.add(
@@ -76,6 +77,7 @@ class RoutineRepository {
     required int durationSeconds,
     required int colorArgb,
     IntervalType type = IntervalType.work,
+    String? announceText,
   }) {
     return domain.Interval(
       id: _uuid.v4(),
@@ -83,6 +85,7 @@ class RoutineRepository {
       durationSeconds: durationSeconds,
       colorArgb: colorArgb,
       type: type,
+      announceText: announceText,
     );
   }
 

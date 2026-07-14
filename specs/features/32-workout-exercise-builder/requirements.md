@@ -15,7 +15,7 @@ Apartado **Entrenamientos** donde el usuario crea entrenamientos compuestos por 
 ## Postrequisitos (features que dependen de esta)
 
 - F04 - Calendario e Historial de Sesiones (puede registrar sesiones originadas en un `Workout`)
-- F08 - Repeticion de Circuitos (Rounds) (puede extender el modelo en el futuro; no prerequisito de F32)
+- F08 - Repeticion de Circuitos (Rounds) (extiende el editor y el flattener con `WorkoutCircuit`; prereqs de F08: F01, F32, F34)
 - F24 - Favoritos (puede marcar entrenamientos favoritos en iteracion futura)
 - F33 - Controles Numericos y de Duracion (Steppers Premium) (reemplaza TextField de sets/duracion por steppers)
 - F34 - Descanso entre Sets y Descanso Final del Ejercicio (extiende semantica de rest y aplanado; ver nota en R8 / decisiones)
@@ -122,7 +122,7 @@ DONDE el usuario esta en el dialogo de confirmacion de eliminacion, CUANDO cance
 
 - Intervalos sueltos sin modelo ejercicio+sets (F01 draft / F05 rutinas planas).
 - Duplicar presets empaquetados (F03/F05).
-- Bloques anidados y rounds sobre grupos de ejercicios (F08).
+- Bloques anidados y rounds sobre grupos de ejercicios (**alcance de F08**, no de F32 base).
 - Conteo automatico de repeticiones (F10).
 - Limite de entrenamientos por tier Pro (F06).
 - Cualquier comportamiento no listado arriba se considera fuera de alcance para esta version.

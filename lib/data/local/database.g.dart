@@ -58,6 +58,17 @@ class $IntervalsTable extends Intervals
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _announceTextMeta = const VerificationMeta(
+    'announceText',
+  );
+  @override
+  late final GeneratedColumn<String> announceText = GeneratedColumn<String>(
+    'announce_text',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -65,6 +76,7 @@ class $IntervalsTable extends Intervals
     durationSeconds,
     colorArgb,
     type,
+    announceText,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -118,6 +130,15 @@ class $IntervalsTable extends Intervals
     } else if (isInserting) {
       context.missing(_typeMeta);
     }
+    if (data.containsKey('announce_text')) {
+      context.handle(
+        _announceTextMeta,
+        announceText.isAcceptableOrUnknown(
+          data['announce_text']!,
+          _announceTextMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -147,6 +168,10 @@ class $IntervalsTable extends Intervals
         DriftSqlType.string,
         data['${effectivePrefix}type'],
       )!,
+      announceText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}announce_text'],
+      ),
     );
   }
 
@@ -162,12 +187,16 @@ class IntervalRow extends DataClass implements Insertable<IntervalRow> {
   final int durationSeconds;
   final int colorArgb;
   final String type;
+
+  /// F02: optional custom TTS text; null → use [name].
+  final String? announceText;
   const IntervalRow({
     required this.id,
     required this.name,
     required this.durationSeconds,
     required this.colorArgb,
     required this.type,
+    this.announceText,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -177,6 +206,9 @@ class IntervalRow extends DataClass implements Insertable<IntervalRow> {
     map['duration_seconds'] = Variable<int>(durationSeconds);
     map['color_argb'] = Variable<int>(colorArgb);
     map['type'] = Variable<String>(type);
+    if (!nullToAbsent || announceText != null) {
+      map['announce_text'] = Variable<String>(announceText);
+    }
     return map;
   }
 
@@ -187,6 +219,9 @@ class IntervalRow extends DataClass implements Insertable<IntervalRow> {
       durationSeconds: Value(durationSeconds),
       colorArgb: Value(colorArgb),
       type: Value(type),
+      announceText: announceText == null && nullToAbsent
+          ? const Value.absent()
+          : Value(announceText),
     );
   }
 
@@ -201,6 +236,7 @@ class IntervalRow extends DataClass implements Insertable<IntervalRow> {
       durationSeconds: serializer.fromJson<int>(json['durationSeconds']),
       colorArgb: serializer.fromJson<int>(json['colorArgb']),
       type: serializer.fromJson<String>(json['type']),
+      announceText: serializer.fromJson<String?>(json['announceText']),
     );
   }
   @override
@@ -212,6 +248,7 @@ class IntervalRow extends DataClass implements Insertable<IntervalRow> {
       'durationSeconds': serializer.toJson<int>(durationSeconds),
       'colorArgb': serializer.toJson<int>(colorArgb),
       'type': serializer.toJson<String>(type),
+      'announceText': serializer.toJson<String?>(announceText),
     };
   }
 
@@ -221,12 +258,14 @@ class IntervalRow extends DataClass implements Insertable<IntervalRow> {
     int? durationSeconds,
     int? colorArgb,
     String? type,
+    Value<String?> announceText = const Value.absent(),
   }) => IntervalRow(
     id: id ?? this.id,
     name: name ?? this.name,
     durationSeconds: durationSeconds ?? this.durationSeconds,
     colorArgb: colorArgb ?? this.colorArgb,
     type: type ?? this.type,
+    announceText: announceText.present ? announceText.value : this.announceText,
   );
   IntervalRow copyWithCompanion(IntervalsCompanion data) {
     return IntervalRow(
@@ -237,6 +276,9 @@ class IntervalRow extends DataClass implements Insertable<IntervalRow> {
           : this.durationSeconds,
       colorArgb: data.colorArgb.present ? data.colorArgb.value : this.colorArgb,
       type: data.type.present ? data.type.value : this.type,
+      announceText: data.announceText.present
+          ? data.announceText.value
+          : this.announceText,
     );
   }
 
@@ -247,13 +289,15 @@ class IntervalRow extends DataClass implements Insertable<IntervalRow> {
           ..write('name: $name, ')
           ..write('durationSeconds: $durationSeconds, ')
           ..write('colorArgb: $colorArgb, ')
-          ..write('type: $type')
+          ..write('type: $type, ')
+          ..write('announceText: $announceText')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, durationSeconds, colorArgb, type);
+  int get hashCode =>
+      Object.hash(id, name, durationSeconds, colorArgb, type, announceText);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -262,7 +306,8 @@ class IntervalRow extends DataClass implements Insertable<IntervalRow> {
           other.name == this.name &&
           other.durationSeconds == this.durationSeconds &&
           other.colorArgb == this.colorArgb &&
-          other.type == this.type);
+          other.type == this.type &&
+          other.announceText == this.announceText);
 }
 
 class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
@@ -271,6 +316,7 @@ class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
   final Value<int> durationSeconds;
   final Value<int> colorArgb;
   final Value<String> type;
+  final Value<String?> announceText;
   final Value<int> rowid;
   const IntervalsCompanion({
     this.id = const Value.absent(),
@@ -278,6 +324,7 @@ class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
     this.durationSeconds = const Value.absent(),
     this.colorArgb = const Value.absent(),
     this.type = const Value.absent(),
+    this.announceText = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   IntervalsCompanion.insert({
@@ -286,6 +333,7 @@ class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
     required int durationSeconds,
     required int colorArgb,
     required String type,
+    this.announceText = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
@@ -298,6 +346,7 @@ class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
     Expression<int>? durationSeconds,
     Expression<int>? colorArgb,
     Expression<String>? type,
+    Expression<String>? announceText,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -306,6 +355,7 @@ class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
       if (durationSeconds != null) 'duration_seconds': durationSeconds,
       if (colorArgb != null) 'color_argb': colorArgb,
       if (type != null) 'type': type,
+      if (announceText != null) 'announce_text': announceText,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -316,6 +366,7 @@ class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
     Value<int>? durationSeconds,
     Value<int>? colorArgb,
     Value<String>? type,
+    Value<String?>? announceText,
     Value<int>? rowid,
   }) {
     return IntervalsCompanion(
@@ -324,6 +375,7 @@ class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
       durationSeconds: durationSeconds ?? this.durationSeconds,
       colorArgb: colorArgb ?? this.colorArgb,
       type: type ?? this.type,
+      announceText: announceText ?? this.announceText,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -346,6 +398,9 @@ class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
     if (type.present) {
       map['type'] = Variable<String>(type.value);
     }
+    if (announceText.present) {
+      map['announce_text'] = Variable<String>(announceText.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -360,6 +415,7 @@ class IntervalsCompanion extends UpdateCompanion<IntervalRow> {
           ..write('durationSeconds: $durationSeconds, ')
           ..write('colorArgb: $colorArgb, ')
           ..write('type: $type, ')
+          ..write('announceText: $announceText, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2684,6 +2740,7 @@ typedef $$IntervalsTableCreateCompanionBuilder =
       required int durationSeconds,
       required int colorArgb,
       required String type,
+      Value<String?> announceText,
       Value<int> rowid,
     });
 typedef $$IntervalsTableUpdateCompanionBuilder =
@@ -2693,6 +2750,7 @@ typedef $$IntervalsTableUpdateCompanionBuilder =
       Value<int> durationSeconds,
       Value<int> colorArgb,
       Value<String> type,
+      Value<String?> announceText,
       Value<int> rowid,
     });
 
@@ -2750,6 +2808,11 @@ class $$IntervalsTableFilterComposer
 
   ColumnFilters<String> get type => $composableBuilder(
     column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get announceText => $composableBuilder(
+    column: $table.announceText,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2812,6 +2875,11 @@ class $$IntervalsTableOrderingComposer
     column: $table.type,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get announceText => $composableBuilder(
+    column: $table.announceText,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$IntervalsTableAnnotationComposer
@@ -2839,6 +2907,11 @@ class $$IntervalsTableAnnotationComposer
 
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get announceText => $composableBuilder(
+    column: $table.announceText,
+    builder: (column) => column,
+  );
 
   Expression<T> routineItemsRefs<T extends Object>(
     Expression<T> Function($$RoutineItemsTableAnnotationComposer a) f,
@@ -2899,6 +2972,7 @@ class $$IntervalsTableTableManager
                 Value<int> durationSeconds = const Value.absent(),
                 Value<int> colorArgb = const Value.absent(),
                 Value<String> type = const Value.absent(),
+                Value<String?> announceText = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => IntervalsCompanion(
                 id: id,
@@ -2906,6 +2980,7 @@ class $$IntervalsTableTableManager
                 durationSeconds: durationSeconds,
                 colorArgb: colorArgb,
                 type: type,
+                announceText: announceText,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2915,6 +2990,7 @@ class $$IntervalsTableTableManager
                 required int durationSeconds,
                 required int colorArgb,
                 required String type,
+                Value<String?> announceText = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => IntervalsCompanion.insert(
                 id: id,
@@ -2922,6 +2998,7 @@ class $$IntervalsTableTableManager
                 durationSeconds: durationSeconds,
                 colorArgb: colorArgb,
                 type: type,
+                announceText: announceText,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

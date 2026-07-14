@@ -11,5 +11,7 @@ abstract class Interval with _$Interval {
     required int durationSeconds,
     required int colorArgb,
     @Default(IntervalType.work) IntervalType type,
+    /// Optional TTS phrase (F02). Null/blank → speak [name]. Max 80 chars in UI.
+    String? announceText,
   }) = _Interval;
 }

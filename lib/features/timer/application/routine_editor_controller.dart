@@ -63,6 +63,7 @@ class RoutineEditorController extends AsyncNotifier<Routine> {
     required int durationSeconds,
     required int colorArgb,
     IntervalType type = IntervalType.work,
+    String? announceText,
   }) {
     final repo = ref.read(routineRepositoryProvider);
     return repo.newInterval(
@@ -70,6 +71,7 @@ class RoutineEditorController extends AsyncNotifier<Routine> {
       durationSeconds: durationSeconds,
       colorArgb: colorArgb,
       type: type,
+      announceText: announceText,
     );
   }
 }

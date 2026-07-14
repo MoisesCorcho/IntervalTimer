@@ -19,7 +19,7 @@ Corrige el caso habitual: ejercicio A con `sets = 1` + ejercicio B — el descan
 
 ## Postrequisitos (features que dependen de esta)
 
-- Ninguno registrado actualmente (F08 u otras features de rounds/circuitos pueden consumir el aplanado extendido sin prerequisito formal)
+- F08 - Repeticion de Circuitos (Rounds) (consume el aplanado dual; F08 declara F34 como prerequisito formal)
 
 ## User Stories
 

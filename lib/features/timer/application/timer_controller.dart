@@ -19,6 +19,8 @@ class TimerController extends Notifier<TimerState> {
       StreamController<SessionCompletedEvent>.broadcast(sync: true);
   final _sessionCancelledController =
       StreamController<SessionCancelledEvent>.broadcast(sync: true);
+  final _intervalStartedController =
+      StreamController<IntervalStartedEvent>.broadcast(sync: true);
 
   Stream<SessionCompletedEvent> get sessionCompletedStream =>
       _sessionCompletedController.stream;
@@ -26,12 +28,16 @@ class TimerController extends Notifier<TimerState> {
   Stream<SessionCancelledEvent> get sessionCancelledStream =>
       _sessionCancelledController.stream;
 
+  Stream<IntervalStartedEvent> get intervalStartedStream =>
+      _intervalStartedController.stream;
+
   @override
   TimerState build() {
     ref.onDispose(() {
       _uiTicker?.cancel();
       _sessionCompletedController.close();
       _sessionCancelledController.close();
+      _intervalStartedController.close();
     });
     return const TimerState();
   }
@@ -109,6 +115,7 @@ class TimerController extends Notifier<TimerState> {
       isPausePending: false,
       tick: 0,
     );
+    _emitIntervalStarted(first, 0);
     _startUiTicker();
     return true;
   }
@@ -327,9 +334,24 @@ class TimerController extends Notifier<TimerState> {
       tick: state.tick + 1,
     );
 
+    _emitIntervalStarted(interval, index);
+
     if (_uiTicker == null) {
       _startUiTicker();
     }
+  }
+
+  void _emitIntervalStarted(Interval interval, int index) {
+    if (_intervalStartedController.isClosed) return;
+    _intervalStartedController.add(
+      IntervalStartedEvent(
+        intervalId: interval.id,
+        name: interval.name,
+        announceText: interval.announceText,
+        durationSeconds: interval.durationSeconds,
+        index: index,
+      ),
+    );
   }
 
   void _completeSession() {
