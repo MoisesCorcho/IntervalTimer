@@ -9,7 +9,7 @@
 - [x] Preferencias documentadas en `_global/05-data-model.md`.
 - [x] No se rompieron F01 (timer, skip, pause, cancel, completed) ni el mute de voz F02 si esta presente.
 - [x] Codigo revisado contra `_global/03-conventions.md` (Riverpod, capas, sin acoplar UI F01↔vibration).
-- [ ] Patrones A/B validados en **dispositivo fisico** Android y/o iOS (no solo emulador).
+- [x] Patrones A/B validados en **dispositivo fisico** Android y/o iOS (no solo emulador).
 
 ## Checklist de implementacion
 
@@ -50,7 +50,7 @@
 
 ### QA dispositivo
 
-- [ ] Verificar en dispositivo fisico Android y/o iOS que patrones A y B son perceptiblemente distintos y que R7 no muestra errores. _(cubre R1, R2, R7)_
+- [x] Verificar en dispositivo fisico Android y/o iOS que patrones A y B son perceptiblemente distintos y que R7 no muestra errores. _(cubre R1, R2, R7)_
 
 ## Mapa de trazabilidad (resumen)
 
