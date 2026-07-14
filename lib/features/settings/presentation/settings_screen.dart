@@ -5,6 +5,7 @@ import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
+import 'package:interval_timer/features/vibration/presentation/vibration_settings_section.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/number_stepper.dart';
 
@@ -135,6 +136,8 @@ class _SettingsBody extends ConsumerWidget {
                 .setCountdownSeconds(value);
           },
         ),
+        const SizedBox(height: AppTheme.spacingLg),
+        VibrationSettingsSection(settings: settings),
       ],
     );
   }

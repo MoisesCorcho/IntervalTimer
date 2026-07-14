@@ -72,6 +72,22 @@ abstract final class UiStrings {
   static const announceTextTooLong =
       'El texto de anuncio no puede superar 80 caracteres';
 
+  // Vibration (F18)
+  static const vibrationSectionTitle = 'Vibración';
+  static const vibrationEnabledLabel = 'Vibración activada';
+  static const vibrationEnabledHint =
+      'Feedback táctil al cambiar de intervalo y en la cuenta regresiva. Independiente de la voz.';
+  static const vibrationOnIntervalStartLabel = 'Al cambiar de intervalo';
+  static const vibrationOnIntervalStartHint =
+      'Pulso al iniciar cada intervalo.';
+  static const vibrationOnCountdownLabel = 'En cuenta regresiva';
+  static const vibrationOnCountdownHint =
+      'Pulsos en los últimos segundos de cada intervalo.';
+  static const vibrationCountdownSecondsLabel =
+      'Segundos de cuenta regresiva (vibración)';
+  static const vibrationCountdownSecondsHint =
+      'Vibra en los últimos N segundos (0 = solo al cambiar de intervalo).';
+
   // Completed
   static const sessionCompleted = '¡Sesión completada!';
   static const sessionCompletedMessage =

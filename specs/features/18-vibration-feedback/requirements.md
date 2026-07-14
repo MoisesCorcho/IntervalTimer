@@ -1,5 +1,7 @@
 # Requirements: Vibracion como Feedback
 
+> Estado: Completado
+
 **ID:** F18 &nbsp;|&nbsp; **Slug:** `18-vibration-feedback` &nbsp;|&nbsp; **Fase:** Fase 4 · Audio y Experiencia
 
 ## Resumen

@@ -4,6 +4,7 @@ import 'package:interval_timer/app/router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/calendar_history/application/session_history_listener.dart';
+import 'package:interval_timer/features/vibration/application/vibration_providers.dart';
 import 'package:interval_timer/features/voice/application/voice_providers.dart';
 
 class App extends ConsumerWidget {
@@ -15,6 +16,8 @@ class App extends ConsumerWidget {
     ref.watch(sessionHistoryBootstrapProvider);
     // Bootstrap F02 voice announcements (listens to TimerController).
     ref.watch(voiceAnnouncerBootstrapProvider);
+    // Bootstrap F18 vibration feedback (listens to TimerController).
+    ref.watch(vibrationFeedbackBootstrapProvider);
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(

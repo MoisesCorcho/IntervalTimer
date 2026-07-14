@@ -22,6 +22,18 @@ class PreferencesRepository {
   static const maxCountdownSeconds = 10;
   static const defaultAnnounceIntervalName = true;
 
+  // F18 vibration prefs (independent of F02 voice keys)
+  static const vibrationEnabledKey = 'vibration_enabled';
+  static const vibrationOnIntervalStartKey = 'vibration_on_interval_start';
+  static const vibrationOnCountdownKey = 'vibration_on_countdown';
+  static const vibrationCountdownSecondsKey = 'vibration_countdown_seconds';
+  static const defaultVibrationEnabled = true;
+  static const defaultVibrationOnIntervalStart = true;
+  static const defaultVibrationOnCountdown = true;
+  static const defaultVibrationCountdownSeconds = 3;
+  static const minVibrationCountdownSeconds = 0;
+  static const maxVibrationCountdownSeconds = 10;
+
   Future<String?> getString(String key) async {
     final row = await (_db.select(_db.appPreferences)
           ..where((t) => t.key.equals(key)))
@@ -105,4 +117,45 @@ class PreferencesRepository {
 
   Future<void> setAnnounceIntervalName(bool value) =>
       setBool(announceIntervalNameKey, value);
+
+  Future<bool> getVibrationEnabled() => getBool(
+        vibrationEnabledKey,
+        defaultValue: defaultVibrationEnabled,
+      );
+
+  Future<void> setVibrationEnabled(bool value) =>
+      setBool(vibrationEnabledKey, value);
+
+  Future<bool> getVibrationOnIntervalStart() => getBool(
+        vibrationOnIntervalStartKey,
+        defaultValue: defaultVibrationOnIntervalStart,
+      );
+
+  Future<void> setVibrationOnIntervalStart(bool value) =>
+      setBool(vibrationOnIntervalStartKey, value);
+
+  Future<bool> getVibrationOnCountdown() => getBool(
+        vibrationOnCountdownKey,
+        defaultValue: defaultVibrationOnCountdown,
+      );
+
+  Future<void> setVibrationOnCountdown(bool value) =>
+      setBool(vibrationOnCountdownKey, value);
+
+  Future<int> getVibrationCountdownSeconds() async {
+    final value = await getInt(vibrationCountdownSecondsKey);
+    if (value == null) return defaultVibrationCountdownSeconds;
+    return value.clamp(
+      minVibrationCountdownSeconds,
+      maxVibrationCountdownSeconds,
+    );
+  }
+
+  Future<void> setVibrationCountdownSeconds(int value) async {
+    final clamped = value.clamp(
+      minVibrationCountdownSeconds,
+      maxVibrationCountdownSeconds,
+    );
+    await setInt(vibrationCountdownSecondsKey, clamped);
+  }
 }

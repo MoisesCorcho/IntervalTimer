@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- F18: vibration patterns via package:vibration -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <application
         android:label="interval_timer"
         android:name="${applicationName}"
