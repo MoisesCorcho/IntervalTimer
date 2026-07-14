@@ -25,3 +25,21 @@ class SessionCancelledEvent {
   final int elapsedSeconds;
   final int completedIntervalCount;
 }
+
+/// Emitted when an interval segment begins (session start without prep, after
+/// prep, advance, skip). F02 [VoiceAnnouncer] listens without coupling TTS to F01.
+class IntervalStartedEvent {
+  const IntervalStartedEvent({
+    required this.intervalId,
+    required this.name,
+    required this.announceText,
+    required this.durationSeconds,
+    required this.index,
+  });
+
+  final String intervalId;
+  final String name;
+  final String? announceText;
+  final int durationSeconds;
+  final int index;
+}

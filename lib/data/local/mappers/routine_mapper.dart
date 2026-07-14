@@ -13,6 +13,7 @@ domain.Interval mapIntervalRow(IntervalRow row) {
     durationSeconds: row.durationSeconds,
     colorArgb: row.colorArgb,
     type: IntervalType.fromStorage(row.type),
+    announceText: row.announceText,
   );
 }
 
@@ -50,6 +51,7 @@ IntervalsCompanion intervalToCompanion(domain.Interval interval) {
     durationSeconds: interval.durationSeconds,
     colorArgb: interval.colorArgb,
     type: interval.type.storageValue,
+    announceText: Value(interval.announceText),
   );
 }
 

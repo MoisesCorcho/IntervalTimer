@@ -116,5 +116,41 @@ void main() {
     expect(result!.durationSeconds, greaterThanOrEqualTo(1));
     expect(result!.durationSeconds, lessThanOrEqualTo(5));
   });
+
+  testWidgets('rejects announceText >80 chars and does not submit', (
+    tester,
+  ) async {
+    IntervalFormResult? result;
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: IntervalForm(
+              defaultColorArgb: 0xFF4CAF50,
+              onSubmit: (r) => result = r,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.enterText(
+      find.byKey(const Key('interval_name_field')),
+      'Work',
+    );
+    await tester.enterText(
+      find.byKey(const Key('interval_announce_text_field')),
+      'a' * 81,
+    );
+
+    final saveButton = find.byKey(const Key('interval_save_button'));
+    await tester.ensureVisible(saveButton);
+    await tester.tap(saveButton);
+    await tester.pump();
+
+    expect(find.text(UiStrings.announceTextTooLong), findsOneWidget);
+    expect(result, isNull);
+  });
 }
 

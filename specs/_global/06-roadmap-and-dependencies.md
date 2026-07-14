@@ -5,7 +5,7 @@
 | ID | Feature | Fase | Estado | Prerequisitos |
 |---|---|---|---|---|
 | F01 | [Interval Timer Core](../features/01-interval-timer-core/requirements.md) | Fase 0 · Fundacion | En progreso | - |
-| F02 | [Voz: Cuenta Regresiva y Anuncios](../features/02-voice-countdown-announcements/requirements.md) | Fase 0 · Fundacion | No iniciada | F01 |
+| F02 | [Voz: Cuenta Regresiva y Anuncios](../features/02-voice-countdown-announcements/requirements.md) | Fase 0 · Fundacion | Completado | F01 |
 | F03 | [Sesiones Preestablecidas con Animacion/Video](../features/03-preset-workout-sessions/requirements.md) | Fase 0 · Fundacion | No iniciada | F01 |
 | F04 | [Calendario e Historial de Sesiones](../features/04-workout-calendar-history/requirements.md) | Fase 0 · Fundacion | Completado | F01 |
 | F05 | [Editor de Rutinas Propias](../features/05-custom-routine-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01, F03 |

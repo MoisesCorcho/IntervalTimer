@@ -55,6 +55,23 @@ abstract final class UiStrings {
   static const prepSecondsHint =
       'Cuenta regresiva antes del primer intervalo (0 = desactivada).';
 
+  // Voice (F02)
+  static const voiceSectionTitle = 'Voz';
+  static const voiceEnabledLabel = 'Voz activada';
+  static const voiceEnabledHint =
+      'Anuncios y cuenta regresiva hablada. No detiene el temporizador.';
+  static const countdownSecondsLabel = 'Segundos de cuenta regresiva';
+  static const countdownSecondsHint =
+      'Habla los últimos N segundos de cada intervalo (0 = solo anuncio de inicio).';
+  static const announceIntervalNameLabel = 'Anunciar nombre del intervalo';
+  static const announceIntervalNameHint =
+      'Dice el nombre (o texto de anuncio) al empezar cada intervalo.';
+  static const announceTextLabel = 'Texto de anuncio (opcional)';
+  static const announceTextHint =
+      'Si está vacío se usa el nombre del intervalo.';
+  static const announceTextTooLong =
+      'El texto de anuncio no puede superar 80 caracteres';
+
   // Completed
   static const sessionCompleted = '¡Sesión completada!';
   static const sessionCompletedMessage =

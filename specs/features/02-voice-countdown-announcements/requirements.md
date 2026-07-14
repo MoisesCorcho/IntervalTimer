@@ -1,6 +1,6 @@
 # Requirements: Voz: Cuenta Regresiva y Anuncios
 
-> Estado: No iniciada
+> Estado: Completado
 
 **ID:** F02 &nbsp;|&nbsp; **Slug:** `02-voice-countdown-announcements` &nbsp;|&nbsp; **Fase:** Fase 0 · Fundacion
 

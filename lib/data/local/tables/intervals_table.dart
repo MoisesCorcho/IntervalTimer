@@ -7,6 +7,8 @@ class Intervals extends Table {
   IntColumn get durationSeconds => integer()();
   IntColumn get colorArgb => integer()();
   TextColumn get type => text()();
+  /// F02: optional custom TTS text; null → use [name].
+  TextColumn get announceText => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

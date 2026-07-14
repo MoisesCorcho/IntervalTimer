@@ -8,19 +8,20 @@ import 'package:interval_timer/data/models/interval_type.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/interval_duration_picker.dart';
 
-
 class IntervalFormResult {
   const IntervalFormResult({
     required this.name,
     required this.durationSeconds,
     required this.colorArgb,
     required this.type,
+    this.announceText,
   });
 
   final String name;
   final int durationSeconds;
   final int colorArgb;
   final IntervalType type;
+  final String? announceText;
 }
 
 class IntervalForm extends StatefulWidget {
@@ -41,20 +42,25 @@ class IntervalForm extends StatefulWidget {
 
 class IntervalFormState extends State<IntervalForm> {
   late final TextEditingController _nameController;
+  late final TextEditingController _announceController;
   late int _durationSeconds;
   late Color _selectedColor;
   late IntervalType _selectedType;
 
   String? _nameError;
+  String? _announceError;
 
   static const _minDurationSeconds = 1;
   static const _maxDurationSeconds = 5999;
+  static const _maxAnnounceLength = 80;
 
   @override
   void initState() {
     super.initState();
     final initial = widget.initial;
     _nameController = TextEditingController(text: initial?.name ?? '');
+    _announceController =
+        TextEditingController(text: initial?.announceText ?? '');
     _durationSeconds = initial?.durationSeconds ?? 60;
     _selectedColor = Color(initial?.colorArgb ?? widget.defaultColorArgb);
     _selectedType = initial?.type ?? IntervalType.work;
@@ -63,12 +69,15 @@ class IntervalFormState extends State<IntervalForm> {
   @override
   void dispose() {
     _nameController.dispose();
+    _announceController.dispose();
     super.dispose();
   }
 
   bool validate() {
     final name = _nameController.text.trim();
+    final announce = _announceController.text;
     String? nameError;
+    String? announceError;
 
     if (name.isEmpty) {
       nameError = UiStrings.nameRequired;
@@ -76,22 +85,29 @@ class IntervalFormState extends State<IntervalForm> {
       nameError = UiStrings.nameTooLong;
     }
 
+    if (announce.length > _maxAnnounceLength) {
+      announceError = UiStrings.announceTextTooLong;
+    }
+
     setState(() {
       _nameError = nameError;
+      _announceError = announceError;
     });
 
-    return nameError == null;
+    return nameError == null && announceError == null;
   }
 
   void submit() {
     if (!validate()) return;
 
+    final announceTrimmed = _announceController.text.trim();
     widget.onSubmit(
       IntervalFormResult(
         name: formatDisplayName(_nameController.text),
         durationSeconds: _durationSeconds,
         colorArgb: _selectedColor.toARGB32(),
         type: _selectedType,
+        announceText: announceTrimmed.isEmpty ? null : announceTrimmed,
       ),
     );
   }
@@ -113,6 +129,20 @@ class IntervalFormState extends State<IntervalForm> {
             maxLength: 51,
             onChanged: (_) {
               if (_nameError != null) validate();
+            },
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          TextField(
+            key: const Key('interval_announce_text_field'),
+            controller: _announceController,
+            decoration: InputDecoration(
+              labelText: UiStrings.announceTextLabel,
+              hintText: UiStrings.announceTextHint,
+              errorText: _announceError,
+            ),
+            maxLength: _maxAnnounceLength + 1,
+            onChanged: (_) {
+              if (_announceError != null) validate();
             },
           ),
           const SizedBox(height: AppTheme.spacingLg),
