@@ -12,6 +12,7 @@ import 'package:interval_timer/features/workout_builder/application/workout_prov
 import 'package:interval_timer/features/workout_builder/domain/workout_flattener.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 import 'package:interval_timer/features/workout_builder/presentation/widgets/delete_workout_dialog.dart';
+import 'package:interval_timer/features/workout_builder/presentation/widgets/workout_actions_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
@@ -156,6 +157,25 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
     }
   }
 
+  Future<void> _onWorkoutOverflow(Workout workout) async {
+    final action = await showWorkoutActionsSheet(
+      context: context,
+      workout: workout,
+    );
+    if (action == null || !mounted) return;
+
+    switch (action) {
+      case WorkoutAction.train:
+        await _trainWorkout(workout);
+      case WorkoutAction.edit:
+        context.push('/workouts/${workout.id}/edit');
+      case WorkoutAction.duplicate:
+        await _duplicateWorkout(workout);
+      case WorkoutAction.delete:
+        await _deleteWorkout(workout);
+    }
+  }
+
   void _showPersistenceError(VoidCallback onRetry) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -241,37 +261,11 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                         title: Text(workout.name),
                         subtitle: Text(countLabel),
                         isThreeLine: true,
-                        trailing: PopupMenuButton<String>(
-                          onSelected: (action) {
-                            switch (action) {
-                              case 'train':
-                                _trainWorkout(workout);
-                              case 'edit':
-                                context.push('/workouts/${workout.id}/edit');
-                              case 'duplicate':
-                                _duplicateWorkout(workout);
-                              case 'delete':
-                                _deleteWorkout(workout);
-                            }
-                          },
-                          itemBuilder: (context) => [
-                            const PopupMenuItem(
-                              value: 'train',
-                              child: Text(UiStrings.train),
-                            ),
-                            const PopupMenuItem(
-                              value: 'edit',
-                              child: Text(UiStrings.edit),
-                            ),
-                            const PopupMenuItem(
-                              value: 'duplicate',
-                              child: Text(UiStrings.duplicate),
-                            ),
-                            const PopupMenuItem(
-                              value: 'delete',
-                              child: Text(UiStrings.delete),
-                            ),
-                          ],
+                        trailing: IconButton(
+                          key: Key('workout_overflow_${workout.id}'),
+                          tooltip: 'Más opciones',
+                          onPressed: () => _onWorkoutOverflow(workout),
+                          icon: const Icon(Icons.more_vert),
                         ),
                       ),
                     );

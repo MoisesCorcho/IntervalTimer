@@ -118,9 +118,9 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(PopupMenuButton<String>));
+    await tester.tap(find.byKey(const Key('workout_overflow_w-1')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text(UiStrings.train));
+    await tester.tap(find.byKey(const Key('workout_sheet_train')));
     await tester.pumpAndSettle();
 
     final controller = container.read(timerControllerProvider.notifier);
