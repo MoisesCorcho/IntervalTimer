@@ -13,7 +13,7 @@ que introduce o modifica una entidad debe reflejarlo aqui **antes** de implement
 
 | Entidad | Origen | Descripcion breve |
 |---|---|---|
-| `Interval` | F01 | Unidad basica: nombre, duracion, color, tipo. |
+| `Interval` | F01 (+ F02) | Unidad basica: nombre, duracion, color, tipo; F02 agrega `announceText` opcional. |
 | `Routine` | F01 | Coleccion ordenada de `RoutineItem` (intervalos y/o bloques). |
 | `RoutineItem` | F01/F08 | Union discriminada: `interval(Interval)` en F01; `block(Block)` en F08. |
 | `Block` | F08 | Agrupacion de intervalos con numero de repeticiones. |
@@ -46,6 +46,7 @@ Interval {
   durationSeconds: int    // 1..5999 (00:01..99:59)
   colorArgb: int          // 0xAARRGGBB
   type: IntervalType
+  announceText: String?   // F02 — opcional; max 80 chars; null/blank → usar name en TTS
 }
 
 Routine {
@@ -71,6 +72,7 @@ RoutineItem (sealed class / freezed union) {
 | Tabla | Columnas | Notas |
 |---|---|---|
 | `intervals` | `id` TEXT PK, `name` TEXT, `duration_seconds` INTEGER, `color_argb` INTEGER, `type` TEXT | `type` almacena nombre del enum |
+| `intervals` (F02) | + `announce_text` TEXT NULL | Migracion aditiva; null = anunciar `name` |
 | `routines` | `id` TEXT PK, `name` TEXT, `created_at` INTEGER | `created_at` = millisecondsSinceEpoch UTC |
 | `routines` (F05) | + `source` TEXT NOT NULL DEFAULT `'custom'`, `origin_id` TEXT NULL, `updated_at` INTEGER NOT NULL | Migracion v2; backfill `updated_at = created_at` |
 | `routine_items` | `id` TEXT PK, `routine_id` TEXT FK→routines, `position` INTEGER, `item_type` TEXT, `interval_id` TEXT FK→intervals NULL | F01: solo `item_type='interval'` |
@@ -106,6 +108,18 @@ Semantica de clave igual a shared_preferences; implementacion en Drift `app_pref
 | Clave | Tipo | Default | Rango | Uso |
 |---|---|---|---|---|
 | `prep_seconds` | `int` | `10` | `0..60` | Segundos de preparacion antes del primer intervalo al iniciar una sesion. `0` = sin fase prep. Leido **una vez** en `TimerController.start` y copiado a estado de sesion (`sessionPrepSeconds`); cambios posteriores no alteran la sesion activa. |
+
+### Preferencias F02 (voz — globales)
+
+Misma semantica de store que preferencias de app (`PreferencesRepository` / `app_preferences` o el store de preferencias vigente al implementar). Claves estables; no por rutina.
+
+| Clave | Tipo | Default | Rango | Uso |
+|---|---|---|---|---|
+| `voice_enabled` | `bool` | `true` | — | Mute in-app de TTS; `false` detiene utterance y suprime anuncios sin afectar el timer (F02 R4). |
+| `countdown_seconds` | `int` | `3` | `0..10` | Segundos de cuenta regresiva hablada; `0` desactiva countdown (F02 R2/R3). |
+| `announce_interval_name` | `bool` | `true` | — | Si `false`, omite anuncio de inicio de intervalo; countdown sigue si aplica (F02 R6). |
+
+No requiere tabla drift nueva para prefs. La columna `intervals.announce_text` si requiere migracion aditiva en la tabla `intervals` (ver schema F01 arriba).
 
 No requiere tabla drift nueva en F35 (reutiliza `app_preferences`). Otras preferencias de F27/F28/F31 pueden convivir en el mismo store con claves propias.
 

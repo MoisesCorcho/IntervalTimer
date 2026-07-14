@@ -29,6 +29,7 @@ Decidir al implementar F25/F26; hasta entonces, no agregar dependencias de BaaS.
 | `uuid` | IDs de entidades (UUID v4 string) |
 | `freezed` + `freezed_annotation` | Modelos inmutables y union types |
 | `flutter_colorpicker` ^1.1.0 | Selector de color HSV (F01) |
+| `flutter_tts` ^4.2.5 | TTS nativo del sistema (F02; multi-voz/premium en F07) |
 
 Dev: `drift_dev`, `build_runner`, `freezed`, `flutter_test`, `fake_async`.
 
