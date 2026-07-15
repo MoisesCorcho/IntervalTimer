@@ -1,6 +1,6 @@
 # Requirements: Pantalla Siempre Encendida
 
-> Estado: No iniciada
+> Estado: Completado
 
 **ID:** F19 &nbsp;|&nbsp; **Slug:** `19-always-on-screen` &nbsp;|&nbsp; **Fase:** Fase 4 · Audio y Experiencia
 

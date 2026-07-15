@@ -1,4 +1,5 @@
-/// Global app settings (F35+ / F02 voice / F18 vibration). Lightweight value object — not Drift.
+/// Global app settings (F35+ / F02 voice / F18 vibration / F19 always-on).
+/// Lightweight value object — not Drift.
 class AppSettings {
   const AppSettings({
     required this.prepSeconds,
@@ -9,6 +10,7 @@ class AppSettings {
     this.vibrationOnIntervalStart = true,
     this.vibrationOnCountdown = true,
     this.vibrationCountdownSeconds = 3,
+    this.keepScreenOnEnabled = true,
   });
 
   /// Seconds of preparation before the first interval (0–60).
@@ -35,6 +37,9 @@ class AppSettings {
   /// Haptic countdown window in seconds (0–10). Own key, not F02 countdown.
   final int vibrationCountdownSeconds;
 
+  /// Screen wakelock during active session execution (F19).
+  final bool keepScreenOnEnabled;
+
   AppSettings copyWith({
     int? prepSeconds,
     bool? voiceEnabled,
@@ -44,6 +49,7 @@ class AppSettings {
     bool? vibrationOnIntervalStart,
     bool? vibrationOnCountdown,
     int? vibrationCountdownSeconds,
+    bool? keepScreenOnEnabled,
   }) {
     return AppSettings(
       prepSeconds: prepSeconds ?? this.prepSeconds,
@@ -58,6 +64,7 @@ class AppSettings {
           vibrationOnCountdown ?? this.vibrationOnCountdown,
       vibrationCountdownSeconds:
           vibrationCountdownSeconds ?? this.vibrationCountdownSeconds,
+      keepScreenOnEnabled: keepScreenOnEnabled ?? this.keepScreenOnEnabled,
     );
   }
 
@@ -72,7 +79,8 @@ class AppSettings {
             other.vibrationEnabled == vibrationEnabled &&
             other.vibrationOnIntervalStart == vibrationOnIntervalStart &&
             other.vibrationOnCountdown == vibrationOnCountdown &&
-            other.vibrationCountdownSeconds == vibrationCountdownSeconds);
+            other.vibrationCountdownSeconds == vibrationCountdownSeconds &&
+            other.keepScreenOnEnabled == keepScreenOnEnabled);
   }
 
   @override
@@ -85,5 +93,6 @@ class AppSettings {
         vibrationOnIntervalStart,
         vibrationOnCountdown,
         vibrationCountdownSeconds,
+        keepScreenOnEnabled,
       );
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/app/router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
 import 'package:interval_timer/features/calendar_history/application/session_history_listener.dart';
 import 'package:interval_timer/features/vibration/application/vibration_providers.dart';
 import 'package:interval_timer/features/voice/application/voice_providers.dart';
@@ -18,6 +19,8 @@ class App extends ConsumerWidget {
     ref.watch(voiceAnnouncerBootstrapProvider);
     // Bootstrap F18 vibration feedback (listens to TimerController).
     ref.watch(vibrationFeedbackBootstrapProvider);
+    // Bootstrap F19 always-on screen (listens to TimerController + host).
+    ref.watch(alwaysOnBootstrapProvider);
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(

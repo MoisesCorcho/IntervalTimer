@@ -25,6 +25,7 @@ dependencies:
   table_calendar: ^3.2.0
   flutter_tts: ^4.2.5
   vibration: 3.2.0
+  wakelock_plus: ^1.6.1
 
 dev_dependencies:
   flutter_test:
