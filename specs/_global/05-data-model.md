@@ -147,6 +147,16 @@ Misma semantica de store que F02/F18/F35 (`PreferencesRepository` / `app_prefere
 
 No requiere tabla drift nueva en F19 (solo key-value en `app_preferences`). Screen wakelock via paquete `wakelock_plus` (sin permisos de plataforma).
 
+### Preferencias F20 (notificacion / lock screen de sesion — globales)
+
+Misma semantica de store que F02/F18/F19/F35 (`PreferencesRepository` / `app_preferences`). Claves estables; no por rutina. **Independientes** de `keep_screen_on_enabled` (F19), voz (F02) y vibracion (F18).
+
+| Clave | Tipo | Default | Rango | Uso |
+|---|---|---|---|---|
+| `session_lock_screen_enabled` | `bool` | `true` | — | Master on/off de la superficie de sesion (notificacion ongoing Android / Live Activity iOS) durante `preparing`/`running`/`paused` (F20 R9–R10). `false` no muestra la superficie aunque haya sesion activa. |
+
+No requiere tabla drift nueva en F20 (solo key-value en `app_preferences`). Canales de notificacion de sesion deben ser distintos de los de recordatorios F14 (ver design F20).
+
 ### Schema F05 (drift) — migracion v2
 
 Columnas aditivas en `routines`:
