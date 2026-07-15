@@ -34,6 +34,10 @@ class PreferencesRepository {
   static const minVibrationCountdownSeconds = 0;
   static const maxVibrationCountdownSeconds = 10;
 
+  // F19 always-on screen (independent of F02/F18)
+  static const keepScreenOnEnabledKey = 'keep_screen_on_enabled';
+  static const defaultKeepScreenOnEnabled = true;
+
   Future<String?> getString(String key) async {
     final row = await (_db.select(_db.appPreferences)
           ..where((t) => t.key.equals(key)))
@@ -158,4 +162,12 @@ class PreferencesRepository {
     );
     await setInt(vibrationCountdownSecondsKey, clamped);
   }
+
+  Future<bool> getKeepScreenOnEnabled() => getBool(
+        keepScreenOnEnabledKey,
+        defaultValue: defaultKeepScreenOnEnabled,
+      );
+
+  Future<void> setKeepScreenOnEnabled(bool value) =>
+      setBool(keepScreenOnEnabledKey, value);
 }

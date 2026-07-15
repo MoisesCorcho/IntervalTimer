@@ -88,6 +88,12 @@ abstract final class UiStrings {
   static const vibrationCountdownSecondsHint =
       'Vibra en los últimos N segundos (0 = solo al cambiar de intervalo).';
 
+  // Always-on screen (F19)
+  static const keepScreenOnSectionTitle = 'Pantalla';
+  static const keepScreenOnEnabledLabel = 'Pantalla siempre encendida';
+  static const keepScreenOnEnabledHint =
+      'Evita que la pantalla se apague durante el entrenamiento. Puede consumir más batería.';
+
   // Completed
   static const sessionCompleted = '¡Sesión completada!';
   static const sessionCompletedMessage =

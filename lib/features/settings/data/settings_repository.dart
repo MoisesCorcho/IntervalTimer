@@ -37,6 +37,10 @@ class SettingsRepository {
   static const maxVibrationCountdownSeconds =
       PreferencesRepository.maxVibrationCountdownSeconds;
 
+  // F19 always-on
+  static const defaultKeepScreenOnEnabled =
+      PreferencesRepository.defaultKeepScreenOnEnabled;
+
   Future<int> getPrepSeconds() => _prefs.getPrepSeconds();
 
   Future<void> setPrepSeconds(int value) => _prefs.setPrepSeconds(value);
@@ -76,4 +80,9 @@ class SettingsRepository {
 
   Future<void> setVibrationCountdownSeconds(int value) =>
       _prefs.setVibrationCountdownSeconds(value);
+
+  Future<bool> getKeepScreenOnEnabled() => _prefs.getKeepScreenOnEnabled();
+
+  Future<void> setKeepScreenOnEnabled(bool value) =>
+      _prefs.setKeepScreenOnEnabled(value);
 }

@@ -6,6 +6,8 @@ import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/contrast_text_color.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/core/utils/name_format.dart';
+import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
+import 'package:interval_timer/features/always_on/domain/always_on_controller.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
@@ -22,14 +24,26 @@ class TimerExecutionScreen extends ConsumerStatefulWidget {
 
 class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
     with WidgetsBindingObserver {
+  /// Cached so [dispose] can release wakelock without using [ref] after unmount.
+  AlwaysOnController? _alwaysOn;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // F19: mark execution host mounted after first frame (R4 / R1 host gate).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _alwaysOn = ref.read(alwaysOnControllerProvider);
+      _alwaysOn?.setExecutionHostMounted(true);
+    });
   }
 
   @override
   void dispose() {
+    // F19 R4: release wakelock when leaving execution screen (no ref after dispose).
+    _alwaysOn?.setExecutionHostMounted(false);
+    _alwaysOn = null;
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -44,6 +58,10 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
         controller.onAppLifecyclePaused();
       case AppLifecycleState.resumed:
         controller.onAppLifecycleResumed();
+        // F19 R9: reaffirm screen wakelock if policy still requires it.
+        if (mounted) {
+          ref.read(alwaysOnControllerProvider).onAppLifecycleResumed();
+        }
       case AppLifecycleState.detached:
         break;
     }

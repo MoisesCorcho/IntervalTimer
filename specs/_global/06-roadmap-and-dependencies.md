@@ -22,7 +22,7 @@
 | F16 | [Compartir Resumen de Sesion](../features/16-session-summary-sharing/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F04, F12 |
 | F17 | [Integracion de Musica / Audio Ducking](../features/17-background-music-ducking/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01 |
 | F18 | [Vibracion como Feedback](../features/18-vibration-feedback/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01 |
-| F19 | [Pantalla Siempre Encendida](../features/19-always-on-screen/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01 |
+| F19 | [Pantalla Siempre Encendida](../features/19-always-on-screen/requirements.md) | Fase 4 · Audio y Experiencia | Completado | F01 |
 | F20 | [Widget de Pantalla de Bloqueo / Notificacion Persistente](../features/20-lock-screen-widget/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01, F19 |
 | F21 | [Soporte para Smartwatch (Wear OS / Apple Watch)](../features/21-smartwatch-support/requirements.md) | Fase 4 · Audio y Experiencia (Futuro) | No iniciada | F01, F19 |
 | F22 | [Filtros de Rutinas](../features/22-routine-filters/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada | F03 |
