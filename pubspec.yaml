@@ -30,6 +30,9 @@ dependencies:
   flutter_background_service: ^5.1.0
   live_activities: ^2.4.9
   permission_handler: ^12.0.3
+  # F20: MediaStyle + setShowActionsInCompactView (FLN does not expose it).
+  session_compact_notification:
+    path: packages/session_compact_notification
 
 dev_dependencies:
   flutter_test:

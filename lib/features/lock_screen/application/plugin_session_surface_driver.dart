@@ -232,16 +232,11 @@ class PluginSessionSurfaceDriver implements SessionSurfaceDriver {
   Future<void> _showAndroidNotification(
     SessionNotificationSnapshot snapshot,
   ) async {
-    final title = SessionNotificationBuilder.notificationTitle(snapshot);
-    final body = SessionNotificationBuilder.notificationBody(snapshot);
-
     // Post from UI isolate (works if FGS not ready yet).
-    await _notifications.show(
-      id: SessionSurfaceConstants.notificationId,
-      title: title,
-      body: body,
-      notificationDetails: SessionNotificationBuilder.details(snapshot),
-      payload: 'session_open',
+    // MediaStyle + compact actions so Pause/Skip show without expanding.
+    await SessionNotificationBuilder.showAndroid(
+      plugin: _notifications,
+      snapshot: snapshot,
     );
 
     // Authoritative update from FGS isolate (keeps actions on ongoing FGS notif).

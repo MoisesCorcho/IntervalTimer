@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/features/lock_screen/application/session_surface_constants.dart';
 import 'package:interval_timer/features/lock_screen/domain/session_notification_snapshot.dart';
+import 'package:session_compact_notification/session_compact_notification.dart';
 
 /// Shared Android notification layout for F20 (UI isolate + FGS isolate).
 abstract final class SessionNotificationBuilder {
@@ -51,6 +53,66 @@ abstract final class SessionNotificationBuilder {
     ];
   }
 
+  /// Action maps for the compact MediaStyle path (id + title).
+  static List<Map<String, String>> compactActionMaps(
+    SessionNotificationSnapshot snapshot,
+  ) {
+    return [
+      if (snapshot.showPause)
+        {
+          'id': SessionSurfaceConstants.actionPause,
+          'title': UiStrings.pause,
+        },
+      if (snapshot.showResume)
+        {
+          'id': SessionSurfaceConstants.actionResume,
+          'title': UiStrings.resume,
+        },
+      if (snapshot.showSkip)
+        {
+          'id': SessionSurfaceConstants.actionSkip,
+          'title': UiStrings.skip,
+        },
+    ];
+  }
+
+  /// Prefer MediaStyle + compact actions (Pause/Skip visible without expand).
+  ///
+  /// Falls back to [flutter_local_notifications] BigText details if the
+  /// compact plugin channel is unavailable (e.g. tests / non-Android).
+  static Future<void> showAndroid({
+    required FlutterLocalNotificationsPlugin plugin,
+    required SessionNotificationSnapshot snapshot,
+  }) async {
+    final title = notificationTitle(snapshot);
+    final body = notificationBody(snapshot);
+
+    try {
+      await SessionCompactNotification.show(
+        id: SessionSurfaceConstants.notificationId,
+        channelId: SessionSurfaceConstants.channelId,
+        title: title,
+        body: body,
+        actions: compactActionMaps(snapshot),
+        payload: 'session_open',
+      );
+      return;
+    } catch (e, st) {
+      debugPrint(
+        'SessionCompactNotification.show failed, FLN fallback: $e\n$st',
+      );
+    }
+
+    await plugin.show(
+      id: SessionSurfaceConstants.notificationId,
+      title: title,
+      body: body,
+      notificationDetails: details(snapshot),
+      payload: 'session_open',
+    );
+  }
+
+  /// FLN fallback details (expanded actions only on most OEMs).
   static AndroidNotificationDetails androidDetails(
     SessionNotificationSnapshot snapshot,
   ) {
@@ -72,7 +134,8 @@ abstract final class SessionNotificationBuilder {
       visibility: NotificationVisibility.public,
       category: AndroidNotificationCategory.workout,
       actions: actionsFor(snapshot),
-      // BigText keeps interval+status readable; MediaStyle hid action buttons.
+      // BigText fallback only — MediaStyle compact needs setShowActionsInCompactView
+      // which flutter_local_notifications 22.0.1 does not expose.
       styleInformation: BigTextStyleInformation(
         body,
         contentTitle: notificationTitle(snapshot),

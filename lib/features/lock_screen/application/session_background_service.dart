@@ -104,21 +104,15 @@ void sessionBackgroundOnStart(ServiceInstance service) async {
     service.stopSelf();
   });
 
-  // Full notification (actions + public visibility) from FGS isolate.
+  // Full notification (MediaStyle compact actions) from FGS isolate.
   // Avoid setForegroundNotificationInfo — it strips action buttons.
   service.on('sync_snapshot').listen((event) async {
     if (event == null) return;
     try {
       final snapshot = SessionNotificationSnapshot.fromMap(event);
-      final title = SessionNotificationBuilder.notificationTitle(snapshot);
-      final body = SessionNotificationBuilder.notificationBody(snapshot);
-
-      await plugin.show(
-        id: SessionSurfaceConstants.notificationId,
-        title: title,
-        body: body,
-        notificationDetails: SessionNotificationBuilder.details(snapshot),
-        payload: 'session_open',
+      await SessionNotificationBuilder.showAndroid(
+        plugin: plugin,
+        snapshot: snapshot,
       );
     } catch (e, st) {
       debugPrint('sessionBackgroundOnStart sync_snapshot failed: $e\n$st');

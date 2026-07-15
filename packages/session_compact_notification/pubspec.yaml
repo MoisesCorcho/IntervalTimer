@@ -1,0 +1,19 @@
+name: session_compact_notification
+description: Android MediaStyle session notification with compact-view actions.
+version: 0.0.1
+publish_to: "none"
+
+environment:
+  sdk: ^3.12.2
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.session_compact_notification
+        pluginClass: SessionCompactNotificationPlugin
