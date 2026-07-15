@@ -94,6 +94,20 @@ abstract final class UiStrings {
   static const keepScreenOnEnabledHint =
       'Evita que la pantalla se apague durante el entrenamiento. Puede consumir más batería.';
 
+  // Session lock screen / notification (F20)
+  static const sessionLockScreenSectionTitle = 'Controles de sesión';
+  static const sessionLockScreenEnabledLabel =
+      'Notificación de sesión / pantalla de bloqueo';
+  static const sessionLockScreenEnabledHint =
+      'Muestra el intervalo y el tiempo restante con controles de pausa y salto mientras entrenás.';
+  static const sessionLockScreenPermissionDenied =
+      'Se necesita permiso de notificaciones para mostrar la sesión en segundo plano. El temporizador sigue funcionando en la app.';
+  static const sessionLockScreenRetryPermission = 'Reintentar permiso';
+  static const sessionLockScreenOpenSystemSettings = 'Abrir ajustes del sistema';
+  static const sessionSurfaceFallbackTitle = 'Intervalo';
+  static const sessionSurfaceStatusRunning = 'En curso';
+  static const sessionSurfaceStatusPaused = 'Pausado';
+
   // Completed
   static const sessionCompleted = '¡Sesión completada!';
   static const sessionCompletedMessage =

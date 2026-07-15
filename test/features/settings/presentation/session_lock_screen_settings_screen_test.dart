@@ -13,27 +13,27 @@ import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 
 void main() {
-  testWidgets('voice toggles and countdown stepper update state',
+  testWidgets('session lock screen toggle and permission hint (R9, R14)',
       (tester) async {
     final db = AppDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
 
     final prefs = PreferencesRepository(db);
     final settingsRepo = SettingsRepository(prefs);
-    final sessionSurface = NoOpSessionSurfaceDriver();
-    addTearDown(sessionSurface.dispose);
+    final driver = NoOpSessionSurfaceDriver(permissionGranted: false);
+    addTearDown(driver.dispose);
 
     final container = ProviderContainer(
       overrides: [
         databaseProvider.overrideWithValue(db),
         preferencesRepositoryProvider.overrideWithValue(prefs),
         settingsRepositoryProvider.overrideWithValue(settingsRepo),
-        sessionSurfaceDriverProvider.overrideWithValue(sessionSurface),
+        sessionSurfaceDriverProvider.overrideWithValue(driver),
       ],
     );
     addTearDown(container.dispose);
 
-    await tester.binding.setSurfaceSize(const Size(800, 1600));
+    await tester.binding.setSurfaceSize(const Size(800, 2400));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(
@@ -44,27 +44,36 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('voice_enabled_switch')), findsOneWidget);
+    final switchFinder =
+        find.byKey(const Key('session_lock_screen_enabled_switch'));
+    await tester.ensureVisible(switchFinder);
+    expect(switchFinder, findsOneWidget);
+
+    expect(await settingsRepo.getSessionLockScreenEnabled(), true);
+
+    final size = tester.getSize(switchFinder);
+    expect(size.height, greaterThanOrEqualTo(48));
+
+    await tester.tap(switchFinder);
+    await tester.pumpAndSettle();
+    expect(await settingsRepo.getSessionLockScreenEnabled(), false);
+
+    await tester.tap(switchFinder);
+    await tester.pumpAndSettle();
+    expect(await settingsRepo.getSessionLockScreenEnabled(), true);
+
+    // Permission denied → help UI (R14)
     expect(
-      find.byKey(const Key('announce_interval_name_switch')),
+      find.byKey(const Key('session_lock_screen_permission_hint')),
       findsOneWidget,
     );
-    expect(find.byKey(const Key('countdown_seconds_stepper')), findsOneWidget);
-
-    await tester.tap(
-      find.byKey(const Key('countdown_number_stepper_increment')),
+    expect(
+      find.byKey(const Key('session_lock_screen_open_settings')),
+      findsOneWidget,
     );
-    await tester.pumpAndSettle();
 
-    expect(await settingsRepo.getCountdownSeconds(), 4);
-
-    await tester.tap(find.byKey(const Key('voice_enabled_switch')));
-    await tester.pumpAndSettle();
-    expect(await settingsRepo.getVoiceEnabled(), false);
-
-    await tester.tap(find.byKey(const Key('announce_interval_name_switch')));
-    await tester.pumpAndSettle();
-    // Disabled when voice is off — should remain true
-    expect(await settingsRepo.getAnnounceIntervalName(), true);
+    // Independencia de F19
+    expect(await settingsRepo.getKeepScreenOnEnabled(), true);
+    expect(await settingsRepo.getVoiceEnabled(), true);
   });
 }

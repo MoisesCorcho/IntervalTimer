@@ -50,10 +50,12 @@ lifecycle de F19 (screen wakelock ≠ notificacion de sesion).
 **Notas `flutter_background_service`:**
 
 - Android 14+ exige `foregroundServiceType` en manifest + permiso `FOREGROUND_SERVICE_*`
-  correspondiente. Elegir el tipo **menos privilegiado** aceptable para un timer de
-  entrenamiento (candidatos a evaluar en implementacion: `specialUse` con justificacion en
-  Play Console, u otro tipo permitido por politicas vigentes de Google Play). Documentar el
-  tipo final en este design al pinnear.
+  correspondiente.
+- **Tipo final pinneado en implementacion:** `specialUse`
+  (`AndroidForegroundType.specialUse`) + permiso `FOREGROUND_SERVICE_SPECIAL_USE` +
+  property `android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE` =
+  `workout_interval_session_timer` en el service del plugin. Justificar en Play Console
+  como temporizador de sesion de entrenamiento con notificacion ongoing.
 - Comunicacion UI isolate ↔ service isolate: `FlutterBackgroundService().invoke` /
   `service.on(...)` — **no** compartir referencias de Riverpod entre isolates.
 - `autoStart: false` recomendado: el servicio se inicia al entrar en sesion activa (R1), no en
@@ -174,7 +176,7 @@ Solicitar `POST_NOTIFICATIONS` en runtime (API 33+) la primera vez que R1 lo nec
 
 | Uso | Channel id sugerido | Importancia |
 |---|---|---|
-| Sesion F20 | `session_timer_ongoing` | low/default + ongoing |
+| Sesion F20 | `session_timer_ongoing_v2` | default + ongoing + visibility public + actions |
 | Recordatorios F14 | `workout_reminders` (u otro; lo define F14) | default/high |
 
 IDs de notificacion numericos **no** deben colisionar entre F14 y F20.

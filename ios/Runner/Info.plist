@@ -66,5 +66,8 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- F20 phase B: Live Activities (requires Widget Extension for full UI) -->
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 </dict>
 </plist>

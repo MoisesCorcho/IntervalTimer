@@ -1,4 +1,4 @@
-/// Global app settings (F35+ / F02 voice / F18 vibration / F19 always-on).
+/// Global app settings (F35+ / F02 voice / F18 vibration / F19 always-on / F20).
 /// Lightweight value object — not Drift.
 class AppSettings {
   const AppSettings({
@@ -11,6 +11,7 @@ class AppSettings {
     this.vibrationOnCountdown = true,
     this.vibrationCountdownSeconds = 3,
     this.keepScreenOnEnabled = true,
+    this.sessionLockScreenEnabled = true,
   });
 
   /// Seconds of preparation before the first interval (0–60).
@@ -40,6 +41,9 @@ class AppSettings {
   /// Screen wakelock during active session execution (F19).
   final bool keepScreenOnEnabled;
 
+  /// Ongoing session notification / Live Activity surface (F20).
+  final bool sessionLockScreenEnabled;
+
   AppSettings copyWith({
     int? prepSeconds,
     bool? voiceEnabled,
@@ -50,6 +54,7 @@ class AppSettings {
     bool? vibrationOnCountdown,
     int? vibrationCountdownSeconds,
     bool? keepScreenOnEnabled,
+    bool? sessionLockScreenEnabled,
   }) {
     return AppSettings(
       prepSeconds: prepSeconds ?? this.prepSeconds,
@@ -65,6 +70,8 @@ class AppSettings {
       vibrationCountdownSeconds:
           vibrationCountdownSeconds ?? this.vibrationCountdownSeconds,
       keepScreenOnEnabled: keepScreenOnEnabled ?? this.keepScreenOnEnabled,
+      sessionLockScreenEnabled:
+          sessionLockScreenEnabled ?? this.sessionLockScreenEnabled,
     );
   }
 
@@ -80,7 +87,8 @@ class AppSettings {
             other.vibrationOnIntervalStart == vibrationOnIntervalStart &&
             other.vibrationOnCountdown == vibrationOnCountdown &&
             other.vibrationCountdownSeconds == vibrationCountdownSeconds &&
-            other.keepScreenOnEnabled == keepScreenOnEnabled);
+            other.keepScreenOnEnabled == keepScreenOnEnabled &&
+            other.sessionLockScreenEnabled == sessionLockScreenEnabled);
   }
 
   @override
@@ -94,5 +102,6 @@ class AppSettings {
         vibrationOnCountdown,
         vibrationCountdownSeconds,
         keepScreenOnEnabled,
+        sessionLockScreenEnabled,
       );
 }

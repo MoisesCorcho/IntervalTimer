@@ -5,6 +5,7 @@ import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
 import 'package:interval_timer/features/calendar_history/application/session_history_listener.dart';
+import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
 import 'package:interval_timer/features/vibration/application/vibration_providers.dart';
 import 'package:interval_timer/features/voice/application/voice_providers.dart';
 
@@ -21,6 +22,8 @@ class App extends ConsumerWidget {
     ref.watch(vibrationFeedbackBootstrapProvider);
     // Bootstrap F19 always-on screen (listens to TimerController + host).
     ref.watch(alwaysOnBootstrapProvider);
+    // Bootstrap F20 session lock screen / notification surface.
+    ref.watch(sessionLockScreenBootstrapProvider);
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
