@@ -137,6 +137,16 @@ Misma semantica de store que F02/F35 (`PreferencesRepository` / `app_preferences
 
 No requiere tabla drift nueva en F18 (solo key-value en `app_preferences`).
 
+### Preferencias F19 (pantalla siempre encendida — globales)
+
+Misma semantica de store que F02/F18/F35 (`PreferencesRepository` / `app_preferences`). Claves estables; no por rutina. **Independientes** de voz (F02) y vibracion (F18).
+
+| Clave | Tipo | Default | Rango | Uso |
+|---|---|---|---|---|
+| `keep_screen_on_enabled` | `bool` | `true` | — | Master on/off de screen wakelock durante sesion activa (`running` / `preparing`); `false` no solicita wakelock aunque el timer corra (F19 R5–R8, R12). |
+
+No requiere tabla drift nueva en F19 (solo key-value en `app_preferences`). Screen wakelock via paquete `wakelock_plus` (sin permisos de plataforma).
+
 ### Schema F05 (drift) — migracion v2
 
 Columnas aditivas en `routines`:
