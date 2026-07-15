@@ -1,10 +1,14 @@
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/routine.dart';
 import 'package:interval_timer/data/models/routine_item.dart';
+import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
+import 'package:interval_timer/features/always_on/domain/no_op_wakelock_driver.dart';
 import 'package:interval_timer/features/timer/application/timer_controller.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
@@ -40,20 +44,26 @@ void main() {
   late DateTime fakeNow;
   late TimerController timerController;
   late ProviderContainer container;
+  late AppDatabase db;
 
   setUp(() {
     fakeNow = DateTime.utc(2026);
     timerController = TimerController(now: () => fakeNow);
+    // Isolated in-memory DB so F19 always-on → settings prefs share one AppDatabase.
+    db = AppDatabase.forTesting(NativeDatabase.memory());
     container = ProviderContainer(
       overrides: [
+        databaseProvider.overrideWithValue(db),
+        wakelockDriverProvider.overrideWithValue(NoOpWakelockDriver()),
         timerControllerProvider.overrideWith(() => timerController),
       ],
     );
   });
 
-  tearDown(() {
+  tearDown(() async {
     container.read(timerControllerProvider.notifier).resetToIdle();
     container.dispose();
+    await db.close();
   });
 
   Future<void> pumpExecution(WidgetTester tester) async {

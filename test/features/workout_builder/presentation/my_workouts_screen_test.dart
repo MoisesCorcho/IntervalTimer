@@ -1,10 +1,14 @@
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/models/workout.dart';
 import 'package:interval_timer/data/models/workout_exercise.dart';
+import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
+import 'package:interval_timer/features/always_on/domain/no_op_wakelock_driver.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/timer/presentation/timer_execution_screen.dart';
@@ -87,8 +91,14 @@ void main() {
       ],
     );
 
+    // Isolated in-memory DB when navigating to TimerExecutionScreen (F19 always-on prefs).
+    final db = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+
     final container = ProviderContainer(
       overrides: [
+        databaseProvider.overrideWithValue(db),
+        wakelockDriverProvider.overrideWithValue(NoOpWakelockDriver()),
         workoutsListProvider.overrideWith(() => _StaticWorkoutsList([workout])),
         activeWorkoutIdProvider.overrideWith(_TestActiveWorkoutId.new),
       ],
