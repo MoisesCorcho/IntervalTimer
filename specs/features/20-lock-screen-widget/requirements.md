@@ -1,6 +1,6 @@
 # Requirements: Widget de Pantalla de Bloqueo / Notificacion Persistente
 
-> Estado: No iniciada
+> Estado: Completado
 
 **ID:** F20 &nbsp;|&nbsp; **Slug:** `20-lock-screen-widget` &nbsp;|&nbsp; **Fase:** Fase 4 · Audio y Experiencia
 

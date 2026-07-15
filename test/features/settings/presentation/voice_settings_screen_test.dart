@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
+import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
+import 'package:interval_timer/features/lock_screen/domain/no_op_session_surface_driver.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/presentation/settings_screen.dart';
@@ -18,12 +20,15 @@ void main() {
 
     final prefs = PreferencesRepository(db);
     final settingsRepo = SettingsRepository(prefs);
+    final sessionSurface = NoOpSessionSurfaceDriver();
+    addTearDown(sessionSurface.dispose);
 
     final container = ProviderContainer(
       overrides: [
         databaseProvider.overrideWithValue(db),
         preferencesRepositoryProvider.overrideWithValue(prefs),
         settingsRepositoryProvider.overrideWithValue(settingsRepo),
+        sessionSurfaceDriverProvider.overrideWithValue(sessionSurface),
       ],
     );
     addTearDown(container.dispose);

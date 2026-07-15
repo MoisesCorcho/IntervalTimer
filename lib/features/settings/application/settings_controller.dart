@@ -17,6 +17,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final vibrationCountdownSeconds =
         await repo.getVibrationCountdownSeconds();
     final keepScreenOnEnabled = await repo.getKeepScreenOnEnabled();
+    final sessionLockScreenEnabled = await repo.getSessionLockScreenEnabled();
     return AppSettings(
       prepSeconds: prep,
       voiceEnabled: voiceEnabled,
@@ -27,6 +28,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
       vibrationOnCountdown: vibrationOnCountdown,
       vibrationCountdownSeconds: vibrationCountdownSeconds,
       keepScreenOnEnabled: keepScreenOnEnabled,
+      sessionLockScreenEnabled: sessionLockScreenEnabled,
     );
   }
 
@@ -110,5 +112,14 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final current =
         state.valueOrNull ?? const AppSettings(prepSeconds: 10);
     state = AsyncData(current.copyWith(keepScreenOnEnabled: value));
+  }
+
+  Future<void> setSessionLockScreenEnabled(bool value) async {
+    await ref
+        .read(settingsRepositoryProvider)
+        .setSessionLockScreenEnabled(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(sessionLockScreenEnabled: value));
   }
 }

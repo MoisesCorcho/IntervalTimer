@@ -41,6 +41,10 @@ class SettingsRepository {
   static const defaultKeepScreenOnEnabled =
       PreferencesRepository.defaultKeepScreenOnEnabled;
 
+  // F20 session lock screen
+  static const defaultSessionLockScreenEnabled =
+      PreferencesRepository.defaultSessionLockScreenEnabled;
+
   Future<int> getPrepSeconds() => _prefs.getPrepSeconds();
 
   Future<void> setPrepSeconds(int value) => _prefs.setPrepSeconds(value);
@@ -85,4 +89,10 @@ class SettingsRepository {
 
   Future<void> setKeepScreenOnEnabled(bool value) =>
       _prefs.setKeepScreenOnEnabled(value);
+
+  Future<bool> getSessionLockScreenEnabled() =>
+      _prefs.getSessionLockScreenEnabled();
+
+  Future<void> setSessionLockScreenEnabled(bool value) =>
+      _prefs.setSessionLockScreenEnabled(value);
 }

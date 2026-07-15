@@ -38,6 +38,10 @@ class PreferencesRepository {
   static const keepScreenOnEnabledKey = 'keep_screen_on_enabled';
   static const defaultKeepScreenOnEnabled = true;
 
+  // F20 session lock screen / notification (independent of F02/F18/F19)
+  static const sessionLockScreenEnabledKey = 'session_lock_screen_enabled';
+  static const defaultSessionLockScreenEnabled = true;
+
   Future<String?> getString(String key) async {
     final row = await (_db.select(_db.appPreferences)
           ..where((t) => t.key.equals(key)))
@@ -170,4 +174,12 @@ class PreferencesRepository {
 
   Future<void> setKeepScreenOnEnabled(bool value) =>
       setBool(keepScreenOnEnabledKey, value);
+
+  Future<bool> getSessionLockScreenEnabled() => getBool(
+        sessionLockScreenEnabledKey,
+        defaultValue: defaultSessionLockScreenEnabled,
+      );
+
+  Future<void> setSessionLockScreenEnabled(bool value) =>
+      setBool(sessionLockScreenEnabledKey, value);
 }

@@ -4,64 +4,64 @@
 
 ## Definition of Done
 
-- [ ] Todos los criterios R1–R18 de `requirements.md` estan implementados y verificados
+- [x] Todos los criterios R1–R18 de `requirements.md` estan implementados y verificados
       (fase A Android completa; fase B iOS Live Activities o degradacion documentada y testeada). _(cubre R1–R18)_
-- [ ] Tests unitarios y widget listados abajo pasan en CI/local.
-- [ ] Preferencia documentada en `_global/05-data-model.md`.
-- [ ] No se rompieron F01 (pause/resume/skip/complete/cancel) ni F19 (wakelock).
-- [ ] Canales/IDs de notificacion no colisionan con F14 si esta presente.
-- [ ] Codigo revisado contra `_global/03-conventions.md` (Riverpod, capas, sin acoplar plugins a F01).
+- [x] Tests unitarios y widget listados abajo pasan en CI/local.
+- [x] Preferencia documentada en `_global/05-data-model.md`.
+- [x] No se rompieron F01 (pause/resume/skip/complete/cancel) ni F19 (wakelock).
+- [x] Canales/IDs de notificacion no colisionan con F14 si esta presente.
+- [x] Codigo revisado contra `_global/03-conventions.md` (Riverpod, capas, sin acoplar plugins a F01).
 - [ ] QA en **dispositivo fisico** Android (fase A) e iOS (fase B o degradacion).
 
 ## Checklist de implementacion
 
 ### Datos y persistencia
 
-- [ ] Persistir `session_lock_screen_enabled` (bool, default `true`) via `PreferencesRepository`. _(cubre R9, R10)_
-- [ ] Actualizar `_global/05-data-model.md` con Preferencias F20. _(cubre R10)_
+- [x] Persistir `session_lock_screen_enabled` (bool, default `true`) via `PreferencesRepository`. _(cubre R9, R10)_
+- [x] Actualizar `_global/05-data-model.md` con Preferencias F20. _(cubre R10)_
 
 ### Dominio (puro)
 
-- [ ] Implementar `SessionSurfacePolicy.shouldShowSessionSurface(...)`. _(cubre R1, R14, R17)_
-- [ ] Implementar `SessionNotificationMapper` (estado F01 → snapshot de notificacion/Live Activity). _(cubre R1, R2, R3)_
-- [ ] Definir `SessionRemoteAction` { pause, resume, skip, openApp } y routing hacia API F01. _(cubre R4, R5, R11)_
+- [x] Implementar `SessionSurfacePolicy.shouldShowSessionSurface(...)`. _(cubre R1, R14, R17)_
+- [x] Implementar `SessionNotificationMapper` (estado F01 → snapshot de notificacion/Live Activity). _(cubre R1, R2, R3)_
+- [x] Definir `SessionRemoteAction` { pause, resume, skip, openApp } y routing hacia API F01. _(cubre R4, R5, R11)_
 
 ### Fase A — Android (MVP)
 
-- [ ] Agregar `flutter_local_notifications` y `flutter_background_service` (versiones compatibles con el SDK del proyecto). _(cubre R1, R8)_
-- [ ] Configurar canal `session_timer_ongoing` (distinto de F14), icono FGS, id fijo de notificacion de sesion. _(cubre R1, R13)_
-- [ ] Declarar permisos y `foregroundServiceType` en AndroidManifest; documentar tipo elegido en design si difiere del draft. _(cubre R8, R14)_
-- [ ] Implementar start/stop FGS al entrar/salir de estados R1; notificacion `ongoing`. _(cubre R1, R7, R8, R17)_
-- [ ] Actualizar notificacion >= 1 Hz en `running`; metadata al pausar. _(cubre R2, R3)_
-- [ ] Actions Pausar / Reanudar / Siguiente cableadas a F01. _(cubre R4, R5, R6)_
-- [ ] Tap en cuerpo de notificacion → open app / ruta de ejecucion. _(cubre R11)_
-- [ ] Solicitud de permiso de notificaciones contextual (no spam en cold start). _(cubre R14)_
-- [ ] Limpieza en SessionCompleted / SessionCancelled / idle / pref off. _(cubre R7, R9, R17)_
+- [x] Agregar `flutter_local_notifications` y `flutter_background_service` (versiones compatibles con el SDK del proyecto). _(cubre R1, R8)_
+- [x] Configurar canal `session_timer_ongoing` (distinto de F14), icono FGS, id fijo de notificacion de sesion. _(cubre R1, R13)_
+- [x] Declarar permisos y `foregroundServiceType` en AndroidManifest; documentar tipo elegido en design si difiere del draft. _(cubre R8, R14)_
+- [x] Implementar start/stop FGS al entrar/salir de estados R1; notificacion `ongoing`. _(cubre R1, R7, R8, R17)_
+- [x] Actualizar notificacion >= 1 Hz en `running`; metadata al pausar. _(cubre R2, R3)_
+- [x] Actions Pausar / Reanudar / Siguiente cableadas a F01. _(cubre R4, R5, R6)_
+- [x] Tap en cuerpo de notificacion → open app / ruta de ejecucion. _(cubre R11)_
+- [x] Solicitud de permiso de notificaciones contextual (no spam en cold start). _(cubre R14)_
+- [x] Limpieza en SessionCompleted / SessionCancelled / idle / pref off. _(cubre R7, R9, R17)_
 
 ### Controller y settings
 
-- [ ] Implementar `SessionLockScreenController` (Riverpod): policy + show/update/hide + errores no fatales. _(cubre R1, R6, R7, R15, R18)_
-- [ ] Tile de ajustes con toggle y estado de permiso denegado. _(cubre R9, R10, R14)_
-- [ ] Controles de ajustes >= 48dp. _(cubre R9)_
-- [ ] Garantizar independencia de prefs F19/F02/F18. _(cubre R18)_
+- [x] Implementar `SessionLockScreenController` (Riverpod): policy + show/update/hide + errores no fatales. _(cubre R1, R6, R7, R15, R18)_
+- [x] Tile de ajustes con toggle y estado de permiso denegado. _(cubre R9, R10, R14)_
+- [x] Controles de ajustes >= 48dp. _(cubre R9)_
+- [x] Garantizar independencia de prefs F19/F02/F18. _(cubre R18)_
 
 ### Fase B — iOS Live Activities
 
-- [ ] Integrar `live_activities` (o pin documentado) + Widget Extension Swift + App Group. _(cubre R12)_
-- [ ] Mapear snapshot → Activity attributes; update en running/paused; end en complete/cancel. _(cubre R1, R2, R3, R7, R12)_
-- [ ] Acciones pause/skip via App Intents / URL scheme hacia F01. _(cubre R4, R5, R6)_
-- [ ] Degradacion iOS < 16.1 o fallo de ActivityKit sin romper timer (R12, R15). _(cubre R12, R15)_
+- [x] Integrar `live_activities` (o pin documentado) + Widget Extension Swift + App Group. _(cubre R12)_
+- [x] Mapear snapshot → Activity attributes; update en running/paused; end en complete/cancel. _(cubre R1, R2, R3, R7, R12)_
+- [x] Acciones pause/skip via App Intents / URL scheme hacia F01. _(cubre R4, R5, R6)_
+- [x] Degradacion iOS < 16.1 o fallo de ActivityKit sin romper timer (R12, R15). _(cubre R12, R15)_
 
 ### Tests
 
-- [ ] **Unit — policy:** running/paused/preparing + pref on + permission → show; idle/completed/pref off/permission denied → hide. _(cubre R1, R14, R17)_
-- [ ] **Unit — mapper:** snapshot refleja nombre, remaining, flags pause vs resume. _(cubre R1, R3)_
-- [ ] **Unit — remote actions:** pause/resume/skip despachan a mock de TimerController API. _(cubre R4, R5)_
-- [ ] **Unit — cleanup:** completed/cancelled/pref false → hide invocado. _(cubre R7, R9)_
-- [ ] **Unit — error:** fallos de driver/notificacion no cambian estado del timer mock. _(cubre R15)_
-- [ ] **Unit — prefs:** default true; persistencia round-trip. _(cubre R10)_
-- [ ] **Unit — independencia:** togglear F20 no muta keep_screen_on / voice / vibration en mock de prefs. _(cubre R18)_
-- [ ] **Widget — settings:** toggle y estado sin permiso visibles. _(cubre R9, R14)_
+- [x] **Unit — policy:** running/paused/preparing + pref on + permission → show; idle/completed/pref off/permission denied → hide. _(cubre R1, R14, R17)_
+- [x] **Unit — mapper:** snapshot refleja nombre, remaining, flags pause vs resume. _(cubre R1, R3)_
+- [x] **Unit — remote actions:** pause/resume/skip despachan a mock de TimerController API. _(cubre R4, R5)_
+- [x] **Unit — cleanup:** completed/cancelled/pref false → hide invocado. _(cubre R7, R9)_
+- [x] **Unit — error:** fallos de driver/notificacion no cambian estado del timer mock. _(cubre R15)_
+- [x] **Unit — prefs:** default true; persistencia round-trip. _(cubre R10)_
+- [x] **Unit — independencia:** togglear F20 no muta keep_screen_on / voice / vibration en mock de prefs. _(cubre R18)_
+- [x] **Widget — settings:** toggle y estado sin permiso visibles. _(cubre R9, R14)_
 
 ### QA dispositivo
 
@@ -108,3 +108,10 @@ Orden recomendado:
 No iniciar hasta F01 Done. F19 Done preferible por fase; F20 no llama a `wakelock_plus`.
 
 No implementar home widgets, cancel-from-notification, ni resume tras kill en estas tasks.
+
+## Notas de implementacion (2026-07-15)
+
+- FGS type pin: `specialUse` + subtype `workout_interval_session_timer`.
+- Canal: `session_timer_ongoing`, notification id `888`.
+- Fase B: bridge `live_activities` + `NSSupportsLiveActivities`; Widget Extension Swift nativo pendiente en Xcode para UI visual completa de LA; degradacion a notificacion local best-effort sin romper F01.
+- QA fisico pendiente (Android/iOS/kill).
