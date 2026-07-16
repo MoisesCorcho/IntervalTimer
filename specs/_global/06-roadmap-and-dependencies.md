@@ -30,7 +30,7 @@
 | F24 | [Favoritos](../features/24-favorites/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada | F03, F05 |
 | F25 | [Compartir Rutinas con Otros Usuarios](../features/25-routine-sharing/requirements.md) | Fase 6 · Social (Futuro) | No iniciada | F05, F06 |
 | F26 | [Retos Grupales](../features/26-group-challenges/requirements.md) | Fase 6 · Social (Futuro) | No iniciada | F25, F12 |
-| F27 | [Modo Oscuro](../features/27-dark-mode/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
+| F27 | [Modo Oscuro](../features/27-dark-mode/requirements.md) | Fase 7 · Calidad y Pulido | Completado | F01 |
 | F28 | [Multilenguaje (i18n)](../features/28-multi-language-i18n/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
 | F29 | [Backup y Exportacion de Datos](../features/29-backup-export/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F04, F12 |
 | F30 | [Onboarding](../features/30-onboarding/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |

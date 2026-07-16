@@ -65,6 +65,38 @@ class _SettingsBody extends ConsumerWidget {
       padding: const EdgeInsets.all(AppTheme.spacingMd),
       children: [
         Text(
+          UiStrings.themeLabel,
+          style: theme.textTheme.titleMedium,
+        ),
+        const SizedBox(height: AppTheme.spacingSm),
+        SegmentedButton<ThemeMode>(
+          key: const Key('theme_segmented_button'),
+          segments: const [
+            ButtonSegment<ThemeMode>(
+              value: ThemeMode.light,
+              label: Text(UiStrings.themeLight),
+              icon: Icon(Icons.light_mode),
+            ),
+            ButtonSegment<ThemeMode>(
+              value: ThemeMode.dark,
+              label: Text(UiStrings.themeDark),
+              icon: Icon(Icons.dark_mode),
+            ),
+            ButtonSegment<ThemeMode>(
+              value: ThemeMode.system,
+              label: Text(UiStrings.themeSystem),
+              icon: Icon(Icons.settings_brightness),
+            ),
+          ],
+          selected: {settings.themeMode},
+          onSelectionChanged: (selected) {
+            ref
+                .read(settingsControllerProvider.notifier)
+                .setThemeMode(selected.first);
+          },
+        ),
+        const SizedBox(height: AppTheme.spacingLg),
+        Text(
           UiStrings.prepSecondsLabel,
           style: theme.textTheme.titleMedium,
         ),

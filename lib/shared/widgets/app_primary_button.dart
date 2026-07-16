@@ -89,7 +89,7 @@ class AppPrimaryButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: enabled ? bg : bg.withValues(alpha: 0.38),
           borderRadius: borderRadius,
-          boxShadow: enabled ? AppTheme.buttonOuterShadow : null,
+          boxShadow: enabled ? AppTheme.buttonShadowFor(context) : null,
         ),
         child: Material(
           type: MaterialType.transparency,
@@ -195,7 +195,7 @@ class AppSecondaryButton extends StatelessWidget {
                 : colorScheme.outline.withValues(alpha: 0.35),
             width: 1.5,
           ),
-          boxShadow: enabled ? AppTheme.buttonOuterShadow : null,
+          boxShadow: enabled ? AppTheme.buttonShadowFor(context) : null,
         ),
         child: Material(
           type: MaterialType.transparency,

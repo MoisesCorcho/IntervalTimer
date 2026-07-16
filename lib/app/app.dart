@@ -6,6 +6,7 @@ import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
 import 'package:interval_timer/features/calendar_history/application/session_history_listener.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
+import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/vibration/application/vibration_providers.dart';
 import 'package:interval_timer/features/voice/application/voice_providers.dart';
 
@@ -25,10 +26,14 @@ class App extends ConsumerWidget {
     // Bootstrap F20 session lock screen / notification surface.
     ref.watch(sessionLockScreenBootstrapProvider);
     final router = ref.watch(routerProvider);
+    final settingsAsync = ref.watch(settingsControllerProvider);
+    final themeMode = settingsAsync.valueOrNull?.themeMode ?? ThemeMode.system;
 
     return MaterialApp.router(
       title: UiStrings.appTitle,
       theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: themeMode,
       routerConfig: router,
     );
   }

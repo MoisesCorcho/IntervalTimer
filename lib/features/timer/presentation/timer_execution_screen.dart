@@ -466,7 +466,7 @@ class _RectControlButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: bg,
           borderRadius: borderRadius,
-          boxShadow: enabled ? AppTheme.buttonOuterShadow : null,
+          boxShadow: enabled ? AppTheme.buttonShadowFor(context) : null,
         ),
         child: Material(
           type: MaterialType.transparency,

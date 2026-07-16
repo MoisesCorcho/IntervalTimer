@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 import 'package:interval_timer/data/local/database.dart';
 
 class PreferencesRepository {
@@ -8,9 +9,11 @@ class PreferencesRepository {
 
   static const activeWorkoutIdKey = 'active_workout_id';
   static const prepSecondsKey = 'prep_seconds';
+  static const themeModeKey = 'theme_mode';
   static const defaultPrepSeconds = 10;
   static const minPrepSeconds = 0;
   static const maxPrepSeconds = 60;
+  static const defaultThemeMode = ThemeMode.system;
 
   // F02 voice prefs
   static const voiceEnabledKey = 'voice_enabled';
@@ -182,4 +185,18 @@ class PreferencesRepository {
 
   Future<void> setSessionLockScreenEnabled(bool value) =>
       setBool(sessionLockScreenEnabledKey, value);
+
+  /// F27: theme mode preference (default: follow system).
+  Future<ThemeMode> getThemeMode() async {
+    final raw = await getString(themeModeKey);
+    return switch (raw) {
+      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
+      _ => defaultThemeMode,
+    };
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    await setString(themeModeKey, mode.name);
+  }
 }

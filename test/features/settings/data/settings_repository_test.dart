@@ -1,4 +1,5 @@
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
@@ -42,6 +43,26 @@ void main() {
       await repo.setPrepSeconds(25);
       final again = SettingsRepository(PreferencesRepository(db));
       expect(await again.getPrepSeconds(), 25);
+    });
+
+    test('default themeMode is system when preference absent', () async {
+      expect(await repo.getThemeMode(), ThemeMode.system);
+    });
+
+    test('set and get themeMode light', () async {
+      await repo.setThemeMode(ThemeMode.light);
+      expect(await repo.getThemeMode(), ThemeMode.light);
+    });
+
+    test('set and get themeMode dark', () async {
+      await repo.setThemeMode(ThemeMode.dark);
+      expect(await repo.getThemeMode(), ThemeMode.dark);
+    });
+
+    test('themeMode survives re-read', () async {
+      await repo.setThemeMode(ThemeMode.dark);
+      final again = SettingsRepository(PreferencesRepository(db));
+      expect(await again.getThemeMode(), ThemeMode.dark);
     });
   });
 }

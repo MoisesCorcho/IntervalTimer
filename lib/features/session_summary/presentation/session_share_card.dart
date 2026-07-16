@@ -114,7 +114,7 @@ class _TransparentTemplate extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
                   child: Material(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(999),
                     child: InkWell(
                       onTap: onAddPhoto,
@@ -127,14 +127,21 @@ class _TransparentTemplate extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.photo_camera_outlined, size: 18),
+                            Icon(
+                              Icons.photo_camera_outlined,
+                              size: 18,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                             const SizedBox(width: AppTheme.spacingSm),
                             Text(
                               UiStrings.sessionSummaryShareAddPhoto,
                               style: Theme.of(context)
                                   .textTheme
                                   .labelLarge
-                                  ?.copyWith(fontWeight: FontWeight.w700),
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
                             ),
                           ],
                         ),

@@ -59,6 +59,10 @@ abstract final class UiStrings {
   static const prepSecondsLabel = 'Segundos de preparación';
   static const prepSecondsHint =
       'Cuenta regresiva antes del primer intervalo (0 = desactivada).';
+  static const themeLabel = 'Tema';
+  static const themeLight = 'Claro';
+  static const themeDark = 'Oscuro';
+  static const themeSystem = 'Sistema';
 
   // Voice (F02)
   static const voiceSectionTitle = 'Voz';

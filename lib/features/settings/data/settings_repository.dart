@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
 
-/// Feature-facing settings store (F35 / F02).
+/// Feature-facing settings store (F35 / F02 / F27).
 ///
 /// Uses the project-wide [PreferencesRepository] (Drift `app_preferences`)
 /// with the same semantics as shared_preferences keys from the data model.
@@ -95,4 +96,8 @@ class SettingsRepository {
 
   Future<void> setSessionLockScreenEnabled(bool value) =>
       _prefs.setSessionLockScreenEnabled(value);
+
+  Future<ThemeMode> getThemeMode() => _prefs.getThemeMode();
+
+  Future<void> setThemeMode(ThemeMode mode) => _prefs.setThemeMode(mode);
 }
