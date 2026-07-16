@@ -109,6 +109,21 @@ class SessionLogRepository {
         .map((rows) => rows.map(_fromRow).toList());
   }
 
+  /// Latest completed log for [sourceId] (F16 R15 — resolve after insert).
+  Future<SessionLog?> latestCompletedForSource(String sourceId) async {
+    final rows = await (_db.select(_db.sessionLogs)
+          ..where(
+            (t) =>
+                t.sourceId.equals(sourceId) &
+                t.status.equals(SessionLogStatus.completed.storageValue),
+          )
+          ..orderBy([(t) => OrderingTerm.desc(t.endedAt)])
+          ..limit(1))
+        .get();
+    if (rows.isEmpty) return null;
+    return _fromRow(rows.first);
+  }
+
   SessionLogRow _toRow(SessionLog log) {
     return SessionLogRow(
       id: log.id,

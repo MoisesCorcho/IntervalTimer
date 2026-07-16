@@ -1,6 +1,6 @@
 # Requirements: Compartir Resumen de Sesion
 
-> Estado: No iniciada
+> Estado: En progreso
 
 **ID:** F16 &nbsp;|&nbsp; **Slug:** `16-session-summary-sharing` &nbsp;|&nbsp; **Fase:** Fase 3 · Seguimiento y Motivacion
 
@@ -43,22 +43,20 @@ CUANDO el `TimerController` (F01) emite `SessionCompleted` / la sesion transicio
 feature (no solo un SnackBar) y **no** debe regresar automaticamente al editor sin accion del
 usuario.
 
-### R2 — Layout celebratorio
+### R2 — Layout celebratorio (hero + sheet)
 
 DONDE el usuario esta en la pantalla de fin de sesion,
-EL SISTEMA DEBE mostrar al menos:
+EL SISTEMA DEBE seguir esta secuencia de presentacion:
 
-1. zona hero superior con acento visual de marca (ej. icono de fuego/celebracion sobre fondo
-   con color de marca o `colorScheme.primary` / verde de `work` del design system);
-2. titulo de refuerzo visible (ej. "¡Gran trabajo!" o copy i18n equivalente);
-3. bloque de metricas de la sesion (R3);
-4. bloque de compartir (R5–R7);
-5. zona de nota opcional (R9–R11);
-6. CTA principal **Listo** (R12).
+1. **Fase intro (~1–1.5 s):** fondo de marca; icono de llama **centrado** en pantalla con
+   **ondas/anillos blancos animados** expandiendose desde la llama.
+2. **Fase sheet:** al terminar la intro, un **bottom sheet** sube desde abajo hasta cubrir
+   aproximadamente el **50%** inferior de la pantalla (mitad superior llama, mitad inferior
+   contenido). El sheet DEBE ser **arrastrable hacia arriba** (hasta ~90%) para ver mas detalle.
+3. Contenido del sheet (cuando esta visible): titulo de refuerzo (ej. "¡Gran trabajo!"),
+   metricas (R3), CTA de compartir (R5), zona de nota (R9–R11), CTA **Listo** (R12).
 
-La jerarquia DEBE ser legible sin scroll horizontal; scroll vertical permitido si el teclado o
-contenido lo requieren. Tokens de color/radio/spacing desde `_global/04-design-system.md`
-(no hex hardcodeados fuera del tema).
+Tokens de color/radio/spacing desde `_global/04-design-system.md`.
 
 ### R3 — Metricas de la sesion en pantalla
 
@@ -87,38 +85,61 @@ DONDE el usuario ve la pantalla de fin de sesion, EL SISTEMA DEBE disponer de:
 
 Estos datos alimentan la tarjeta de share (R6) aunque no todos deban verse como tiles en R3.
 
-### R5 — Oferta de compartir
+### R5 — Estudio de compartir (plantillas)
 
 DONDE el usuario esta en la pantalla de fin de sesion,
-EL SISTEMA DEBE mostrar un control accionable **Compartir** (boton o fila con CTA) con area de
-toque >= 48dp, sin requerir conexion a internet para habilitar el control.
+CUANDO activa **Compartir**, EL SISTEMA DEBE abrir un **estudio de compartir** a pantalla
+completa (no solo el share sheet del SO de inmediato) con:
+
+1. carrusel de **plantillas** de tarjeta (al menos: transparente/checkerboard, solida oscura,
+   solida de marca);
+2. previsualizacion grande de la plantilla seleccionada;
+3. acciones **Compartir** y **Guardar en la galeria** (area de toque >= 48dp).
+
+Sin requerir red para habilitar el estudio.
+
+### R5b — Foto en plantilla transparente
+
+DONDE la plantilla activa es la de tipo **transparente**,
+EL SISTEMA DEBE permitir **anadir una foto** de fondo mediante:
+
+- **Hacer foto** (camara), o
+- **Seleccionar imagen** (galeria),
+
+presentados en un bottom sheet de origen. Con foto cargada, DEBE ofrecer editar (reemplazar)
+y eliminar la foto. La foto es **opcional**; se puede compartir sin ella.
 
 ### R6 — Contenido de la imagen resumen
 
-CUANDO el usuario activa Compartir, EL SISTEMA DEBE generar una **imagen** (no solo texto
-plano) que incluya al menos:
+CUANDO el usuario confirma Compartir o Guardar en el estudio, EL SISTEMA DEBE generar una
+**imagen** local (PNG) de la plantilla visible que incluya al menos:
 
 | Campo | Fuente |
 |---|---|
-| Nombre de rutina/sesion | `displayName` (R4) |
-| Duracion total | `totalDurationSeconds` formateado |
-| Calorias estimadas | Formula F12 R5 sobre la sesion (marcar como estimacion en la card o con etiqueta breve) |
-| Racha actual | `StatsService` / reglas F12 R6 **despues** de persistir el `SessionLog` de esta sesion |
+| Duracion total | `totalDurationSeconds` (formato mm:ss) |
+| Etiqueta sesion | "Entrenamiento" (o i18n) |
+| Sets | cantidad de intervalos `work` del plan |
+| Trabajo | `trainingSeconds` (R3) |
+| Descanso | `restSeconds` (R3) |
+| Branding app | nombre + tagline sutil |
+| Foto de fondo | si el usuario la anadio (R5b), solo en plantilla transparente |
 
-La generacion DEBE ejecutarse **localmente** (sin red). Ver `design.md` para captura
-(`RepaintBoundary` / PNG).
+Calorias/racha pueden mostrarse en plantillas secundarias o en el sheet de fin de sesion;
+la plantilla principal de referencia prioriza sets/trabajo/descanso.
 
-### R7 — Share sheet nativo
+### R7 — Share sheet nativo y galeria
 
-CUANDO la imagen se genero con exito, EL SISTEMA DEBE invocar el share sheet nativo del SO
-con esa imagen (archivo o bytes compartibles). El usuario elige la app destino (WhatsApp,
-Instagram, etc.); la app **no** integra SDKs de redes sociales en F16.
+CUANDO el usuario activa **Compartir** en el estudio y la imagen se genero con exito,
+EL SISTEMA DEBE invocar el share sheet nativo con esa imagen.
+
+CUANDO activa **Guardar en la galeria**, EL SISTEMA DEBE persistir la PNG en la galeria del
+dispositivo (pidiendo permisos si hace falta) y mostrar feedback de exito o error.
 
 ### R8 — Offline total del share
 
-CUANDO el dispositivo no tiene conectividad, EL SISTEMA DEBE permitir generar la imagen y
-abrir el share sheet (R6–R7) sin error bloqueante por red. Fallos de red **no** aplican como
-precondicion del flujo.
+CUANDO el dispositivo no tiene conectividad, EL SISTEMA DEBE permitir abrir el estudio,
+elegir plantilla, tomar/seleccionar foto (camara/galeria local), generar la imagen y
+compartir o guardar **sin** error bloqueante por red.
 
 ### R9 — Nota opcional post-sesion
 
