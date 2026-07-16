@@ -21,6 +21,7 @@ que introduce o modifica una entidad debe reflejarlo aqui **antes** de implement
 | `PresetRoutine` | F03 | Rutina prediseñada con categoria y ejercicios asociados (assets, no drift). |
 | `SessionLog` | F04 | Registro de una sesion ejecutada (completa o abortada). |
 | `StatsSummary` / `DayMinutes` | F12 | Metricas derivadas de `SessionLog` (no persistidas). |
+| `SessionCompleteViewData` / `ShareCardData` / `SessionPhaseBreakdown` | F16 | Presentacion post-sesion + card de share (no persistidos). |
 | `ProgressionPlan` / `WeekAdjustment` | F09 | Plan de incremento automatico de dificultad. |
 | `Achievement` / `UnlockedAchievement` | F13 | Catalogo de logros y su estado de desbloqueo. |
 | `Reminder` | F14 | Configuracion de notificaciones recurrentes. |
@@ -352,6 +353,38 @@ StatsSummary {
 `kcal_sesion = MET * peso_kg * (totalDurationSeconds / 3600)`.
 
 Consumidores futuros (misma logica, no UI): F13, F16.
+
+## Session complete / share (F16) — solo presentacion
+
+F16 **no** agrega tablas ni columnas. Reutiliza `SessionLog.note` (F04) y metricas de F12.
+
+```dart
+SessionPhaseBreakdown {
+  trainingSeconds: int  // sum duration type ∈ {work, warmup, stretch, custom}
+  restSeconds: int      // sum duration type == rest
+}
+
+SessionCompleteViewData {
+  sourceId: String
+  displayName: String
+  totalDurationSeconds: int
+  trainingSeconds: int
+  restSeconds: int
+  sessionLogId: String?   // null hasta resolver insert F04
+  estimatedKcal: int      // StatsService / formula F12 sobre esta sesion
+  currentStreakDays: int  // StatsService post-insert
+}
+
+ShareCardData {
+  displayName: String
+  totalDurationSeconds: int
+  estimatedKcal: int
+  currentStreakDays: int
+}
+```
+
+Persistencia de nota: `SessionLogRepository.updateNote(id, note)` (max 500, F04).  
+Share: PNG local + `share_plus` (ver `features/16-session-summary-sharing/design.md`).
 
 ## Motor de persistencia
 
