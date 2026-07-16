@@ -145,6 +145,35 @@ abstract final class UiStrings {
   static const historySelectMonth = 'Seleccionar mes';
   static const historyExerciseCount = 'Ejercicios: {count}';
   static const historyFallbackTitle = 'Entrenamiento a las {time}';
+
+  // Progress / stats (F12) — embedded in History
+  static const progressSectionTitle = 'Tu progreso';
+  static const progressStreakLabel = 'Racha';
+  static const progressWeekMinutesLabel = 'Min. sem.';
+  static const progressMonthSessionsLabel = 'Ses. mes';
+  static const progressKcalLabel = 'kcal (est.)';
+  static const progressChartWeek = 'Semana';
+  static const progressChartMonth = 'Mes';
+  static const progressChartCaption = 'Minutos por día';
+  static const progressStatsError = 'No se pudieron cargar las estadísticas';
+  static const progressWeightEstimated =
+      'Peso estimado {kg} kg';
+  /// Short always-visible honesty line for kcal method (F12).
+  static const progressKcalMethodCaption =
+      'kcal estimadas: MET {met} × peso × duración de sesión. No es un gasto medido.';
+  static const progressKcalInfoTooltip = 'Cómo se estiman las calorías';
+  static const progressKcalInfoTitle = 'Calorías estimadas';
+  /// Full explanation shown in the info dialog (not a medical claim).
+  static const progressKcalInfoBody =
+      'Estimamos la energía con la fórmula estándar MET × peso (kg) × horas de sesión '
+      '(definición práctica del Compendium of Physical Activities).\n\n'
+      'Usamos MET {met} como referencia de actividad vigorosa de intervalos. '
+      'Es un valor poblacional genérico, no una medición de tu metabolismo ni de un sensor.\n\n'
+      'Sirve como referencia y para ver tendencias, no como dato clínico ni nutricional exacto.';
+  static const progressKcalInfoClose = 'Entendido';
+  static const progressTotalLine = 'Total: {totals} · {sessions} sesiones';
+  static const progressDaysSuffix = 'días';
+
   static const monthNames = [
     'Enero',
     'Febrero',

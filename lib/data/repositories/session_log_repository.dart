@@ -93,6 +93,22 @@ class SessionLogRepository {
     await (_db.delete(_db.sessionLogs)..where((t) => t.id.equals(id))).go();
   }
 
+  /// All session logs ordered by [endedAt] descending (F12 stats aggregation).
+  Future<List<SessionLog>> getAll() async {
+    final rows = await (_db.select(_db.sessionLogs)
+          ..orderBy([(t) => OrderingTerm.desc(t.endedAt)]))
+        .get();
+    return rows.map(_fromRow).toList();
+  }
+
+  /// Watches all session logs; emits on insert/update/delete (F12 R8).
+  Stream<List<SessionLog>> watchAll() {
+    return (_db.select(_db.sessionLogs)
+          ..orderBy([(t) => OrderingTerm.desc(t.endedAt)]))
+        .watch()
+        .map((rows) => rows.map(_fromRow).toList());
+  }
+
   SessionLogRow _toRow(SessionLog log) {
     return SessionLogRow(
       id: log.id,
