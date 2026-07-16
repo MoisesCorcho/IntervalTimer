@@ -73,6 +73,13 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - Caso clave: `sets = 1` + ejercicio siguiente → el descanso entre sets no aplica; el descanso final de A si puede ejecutarse antes de B.
 - Depende solo de F32; F33 no es prerequisito formal, pero el form debe reutilizar `DurationStepper` si ya esta integrado.
 
+### F12 vs F04 (stats en Historial)
+
+- **F12:** metricas y graficas derivadas de `SessionLog`; UI embebida en `HistoryScreen` (bloque encima del calendario).
+- **No** agrega tab en bottom nav (sigue: Temporizador | Entrenamientos | Historial | Ajustes).
+- Sin tabla nueva; `StatsService` en `features/stats/`. Prerequisito solo F04 (F03/F15 opcionales para MET/peso).
+- **F16** reutiliza el servicio de metricas (racha, kcal), no la grafica.
+
 ### F08 vs F32 / F34 / F05 (circuitos y rondas)
 
 - **F08:** agrupa **ejercicios de un Workout** en un `WorkoutCircuit` con `rounds` (1–99); expande el circuito en `WorkoutFlattener` y muestra "Ronda X de Y" en ejecucion.

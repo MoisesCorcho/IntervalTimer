@@ -20,6 +20,7 @@ que introduce o modifica una entidad debe reflejarlo aqui **antes** de implement
 | `Exercise` | F03 | Ejercicio con metadata y referencia a media (Lottie/video/imagen). |
 | `PresetRoutine` | F03 | Rutina prediseñada con categoria y ejercicios asociados (assets, no drift). |
 | `SessionLog` | F04 | Registro de una sesion ejecutada (completa o abortada). |
+| `StatsSummary` / `DayMinutes` | F12 | Metricas derivadas de `SessionLog` (no persistidas). |
 | `ProgressionPlan` / `WeekAdjustment` | F09 | Plan de incremento automatico de dificultad. |
 | `Achievement` / `UnlockedAchievement` | F13 | Catalogo de logros y su estado de desbloqueo. |
 | `Reminder` | F14 | Configuracion de notificaciones recurrentes. |
@@ -322,6 +323,35 @@ SessionLog {
 | `SessionCancelledEvent` | `elapsedSeconds == 0` | no insertar |
 
 Queries tipicas: por `local_date` (lista del dia), rango de `local_date` del mes (marcadores), update de `note`, delete por `id`.
+
+## Stats derivadas (F12) — sin tabla
+
+F12 **no** introduce tablas ni migracion. Las metricas se agregan en memoria desde `session_logs` via `StatsService` (`features/stats/`).
+
+```dart
+enum ChartPeriod { week, month }
+
+DayMinutes {
+  localDate: String   // yyyy-MM-dd
+  minutes: int        // floor(sum(totalDurationSeconds)/60) ese dia
+}
+
+StatsSummary {
+  currentStreakDays: int
+  weekMinutes: int
+  monthSessionCount: int
+  totalMinutes: int
+  totalSessionCount: int
+  totalEstimatedKcal: int
+  isWeightEstimated: bool
+  weightKgUsed: double
+}
+```
+
+**Constantes de calculo (F12):** `MET = 8.0`; peso default `70` kg si F15 no aporta peso.  
+`kcal_sesion = MET * peso_kg * (totalDurationSeconds / 3600)`.
+
+Consumidores futuros (misma logica, no UI): F13, F16.
 
 ## Motor de persistencia
 
