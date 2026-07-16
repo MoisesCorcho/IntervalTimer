@@ -70,39 +70,57 @@ class ProgressSummarySection extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppTheme.spacingXs),
-              Row(
+              const SizedBox(height: AppTheme.spacingSm),
+              // 2×2 metric grid (F12 presentation polish)
+              Column(
+                key: const Key('stat_metrics_grid'),
                 children: [
-                  Expanded(
-                    child: StatMetricCard(
-                      key: const Key('stat_metric_streak'),
-                      value: '${summary.currentStreakDays}',
-                      label: UiStrings.progressStreakLabel,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: StatMetricCard(
+                          key: const Key('stat_metric_streak'),
+                          value: '${summary.currentStreakDays}',
+                          label: UiStrings.progressStreakLabel,
+                          icon: Icons.local_fire_department_rounded,
+                          accent: AppTheme.warmupColor,
+                        ),
+                      ),
+                      const SizedBox(width: AppTheme.spacingSm),
+                      Expanded(
+                        child: StatMetricCard(
+                          key: const Key('stat_metric_week_minutes'),
+                          value: '${summary.weekMinutes}',
+                          label: UiStrings.progressWeekMinutesLabel,
+                          icon: Icons.timer_rounded,
+                          accent: AppTheme.restColor,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: AppTheme.spacingSm),
-                  Expanded(
-                    child: StatMetricCard(
-                      key: const Key('stat_metric_week_minutes'),
-                      value: '${summary.weekMinutes}',
-                      label: UiStrings.progressWeekMinutesLabel,
-                    ),
-                  ),
-                  const SizedBox(width: AppTheme.spacingSm),
-                  Expanded(
-                    child: StatMetricCard(
-                      key: const Key('stat_metric_month_sessions'),
-                      value: '${summary.monthSessionCount}',
-                      label: UiStrings.progressMonthSessionsLabel,
-                    ),
-                  ),
-                  const SizedBox(width: AppTheme.spacingSm),
-                  Expanded(
-                    child: StatMetricCard(
-                      key: const Key('stat_metric_kcal'),
-                      value: '${summary.totalEstimatedKcal}',
-                      label: UiStrings.progressKcalLabel,
-                    ),
+                  const SizedBox(height: AppTheme.spacingSm),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: StatMetricCard(
+                          key: const Key('stat_metric_month_sessions'),
+                          value: '${summary.monthSessionCount}',
+                          label: UiStrings.progressMonthSessionsLabel,
+                          icon: Icons.fitness_center_rounded,
+                          accent: AppTheme.workColor,
+                        ),
+                      ),
+                      const SizedBox(width: AppTheme.spacingSm),
+                      Expanded(
+                        child: StatMetricCard(
+                          key: const Key('stat_metric_kcal'),
+                          value: '${summary.totalEstimatedKcal}',
+                          label: UiStrings.progressKcalLabel,
+                          icon: Icons.bolt_rounded,
+                          accent: AppTheme.stretchColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -218,50 +236,117 @@ class ProgressSummarySection extends ConsumerWidget {
   }
 }
 
-/// Value + label metric card (F12 R2).
+/// Stylized metric tile: tinted gradient, icon bubble, value hierarchy.
+///
+/// Used in the History progress 2×2 grid (F12 R2).
 class StatMetricCard extends StatelessWidget {
   const StatMetricCard({
     super.key,
     required this.value,
     required this.label,
+    required this.icon,
+    required this.accent,
   });
 
   final String value;
   final String label;
+  final IconData icon;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppTheme.spacingXs,
-          vertical: AppTheme.spacingSm,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: scheme.onSurface,
-                  ),
+    final textTheme = Theme.of(context).textTheme;
+
+    final tintStrong = Color.alphaBlend(
+      accent.withValues(alpha: 0.14),
+      scheme.surface,
+    );
+    final tintSoft = Color.alphaBlend(
+      accent.withValues(alpha: 0.05),
+      scheme.surface,
+    );
+    final bubbleFill = accent.withValues(alpha: 0.18);
+    final borderColor = accent.withValues(alpha: 0.22);
+
+    return Semantics(
+      label: '$value, $label',
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [tintStrong, tintSoft],
+          ),
+          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+          border: Border.all(color: borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: accent.withValues(alpha: 0.14),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+              spreadRadius: -2,
             ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
+            const BoxShadow(
+              color: Color(0x0F000000), // ~6% black — soft lift
+              blurRadius: 6,
+              offset: Offset(0, 2),
+              spreadRadius: -1,
             ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppTheme.spacingMd,
+            AppTheme.spacingSm + 2,
+            AppTheme.spacingMd,
+            AppTheme.spacingSm + 2,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: bubbleFill,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppTheme.spacingSm),
+                  child: Icon(
+                    icon,
+                    size: 20,
+                    color: accent,
+                    semanticLabel: label,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: scheme.onSurface,
+                  height: 1.1,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                maxLines: 2,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.labelSmall?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                  height: 1.2,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

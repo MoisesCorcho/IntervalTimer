@@ -65,9 +65,32 @@ void main() {
     expect(find.byKey(const Key('activity_bar_chart')), findsOneWidget);
     expect(find.text(UiStrings.progressSectionTitle), findsOneWidget);
 
-    // Metric zeros
+    // Metric zeros + 2×2 stylized grid
+    expect(find.byKey(const Key('stat_metrics_grid')), findsOneWidget);
     expect(find.byKey(const Key('stat_metric_streak')), findsOneWidget);
+    expect(find.byKey(const Key('stat_metric_week_minutes')), findsOneWidget);
+    expect(find.byKey(const Key('stat_metric_month_sessions')), findsOneWidget);
+    expect(find.byKey(const Key('stat_metric_kcal')), findsOneWidget);
+    expect(find.text(UiStrings.progressStreakLabel), findsOneWidget);
+    expect(find.text(UiStrings.progressWeekMinutesLabel), findsOneWidget);
+    expect(find.text(UiStrings.progressMonthSessionsLabel), findsOneWidget);
+    expect(find.text(UiStrings.progressKcalLabel), findsOneWidget);
     expect(find.text('0'), findsWidgets);
+
+    // 2×2 layout: streak top-left, week top-right, month bottom-left, kcal bottom-right
+    final streakTop =
+        tester.getTopLeft(find.byKey(const Key('stat_metric_streak')));
+    final weekTop =
+        tester.getTopLeft(find.byKey(const Key('stat_metric_week_minutes')));
+    final monthTop =
+        tester.getTopLeft(find.byKey(const Key('stat_metric_month_sessions')));
+    final kcalTop =
+        tester.getTopLeft(find.byKey(const Key('stat_metric_kcal')));
+    expect(streakTop.dy, closeTo(weekTop.dy, 1));
+    expect(monthTop.dy, closeTo(kcalTop.dy, 1));
+    expect(streakTop.dy, lessThan(monthTop.dy));
+    expect(streakTop.dx, lessThan(weekTop.dx));
+    expect(monthTop.dx, lessThan(kcalTop.dx));
 
     // Order: progress section appears before calendar in tree
     final progressY = tester
@@ -90,7 +113,14 @@ void main() {
     await tester.tap(find.byKey(const Key('progress_kcal_info')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('progress_kcal_info_dialog')), findsOneWidget);
-    expect(find.text(UiStrings.progressKcalInfoTitle), findsOneWidget);
+    // Title reuses the same wording as the metric card label.
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('progress_kcal_info_dialog')),
+        matching: find.text(UiStrings.progressKcalInfoTitle),
+      ),
+      findsOneWidget,
+    );
     expect(find.textContaining('Compendium'), findsOneWidget);
     await tester.tap(find.byKey(const Key('progress_kcal_info_close')));
     await tester.pumpAndSettle();

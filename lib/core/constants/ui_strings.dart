@@ -149,9 +149,9 @@ abstract final class UiStrings {
   // Progress / stats (F12) — embedded in History
   static const progressSectionTitle = 'Tu progreso';
   static const progressStreakLabel = 'Racha';
-  static const progressWeekMinutesLabel = 'Min. sem.';
-  static const progressMonthSessionsLabel = 'Ses. mes';
-  static const progressKcalLabel = 'kcal (est.)';
+  static const progressWeekMinutesLabel = 'Minutos esta semana';
+  static const progressMonthSessionsLabel = 'Sesiones este mes';
+  static const progressKcalLabel = 'Calorías estimadas';
   static const progressChartWeek = 'Semana';
   static const progressChartMonth = 'Mes';
   static const progressChartCaption = 'Minutos por día';
