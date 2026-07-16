@@ -55,31 +55,57 @@ final result = await SharePlus.instance.share(
 compatible con el SDK del repo **sin** cambiar la semantica `SharePlus.instance.share` +
 `ShareParams(files: ...)`.
 
-### Captura de imagen (sin red)
+### Secuencia UI fin de sesion (R2)
 
-1. Widget offstage o seccion dedicada `SessionShareCard` con layout de marca (nombre, duracion,
-   kcal est., racha, branding).
-2. Envolver en `RepaintBoundary` con `GlobalKey`.
-3. `boundary.toImage(pixelRatio: 2 or 3)` → `ByteData` PNG via `dart:ui`.
-4. Escribir a archivo temp (`path_provider`) → `XFile` → share.
+```
+[status=completed] → SessionCompleteScreen
+   │
+   ├─ t0: fondo marca + AnimatedFlameHero CENTRADO
+   │      anillos blancos en loop (AnimationController.repeat)
+   │
+   ├─ t ≈ 1.4s: sheetVisible=true
+   │      SlideTransition + DraggableScrollableSheet
+   │      initial/min ≈ 0.50, max ≈ 0.92, snap
+   │      llama se alinea al tercio superior
+   │
+   └─ sheet: metricas | CTA Compartir → SessionShareStudioScreen
+              | nota | Listo → idle
+```
 
-**Por que no servicio cloud / screenshot del SO:** offline-first y control de plantilla.
+### Estudio de compartir (R5–R8) — referencia producto
 
-**Plantilla visual (card):**
+Pantalla full-screen oscura (`SessionShareStudioScreen`):
 
-- Fondo surface / primary container del tema.
-- Tipografia legible; numeros tabulares si hay tiempos.
-- Campos minimos R6; marca de agua o nombre de app sutil.
-- No copiar assets de terceros; usar iconografia Material o assets propios.
+| Elemento | Comportamiento |
+|---|---|
+| AppBar | "Compartir" + back (pop; no resetea timer) |
+| PageView plantillas | `transparent` (checkerboard + foto opcional), `solidDark`, `solidBrand` |
+| Card | `SessionShareCard`: total mm:ss, badge Entrenamiento, Sets / Trabajo / Descanso, branding |
+| Foto (solo transparent) | CTA "Anadir foto" → sheet **Hacer foto** / **Seleccionar imagen** (`image_picker`) |
+| Con foto | botones trash + edit superpuestos; foto como `BoxFit.cover` bajo el overlay de stats |
+| Compartir | captura `RepaintBoundary` → PNG → `SharePlus.instance.share` |
+| Guardar galeria | misma captura → `gal` (`Gal.putImage`) con requestAccess |
+
+**Paquetes:** `image_picker`, `gal`, `share_plus`, `path_provider` (ya en proyecto).
+
+**Permisos:** camara / fotos / galeria via plugins; fallos → SnackBar, no crash (R16 analogo).
+
+**Captura:**
+
+1. Plantilla actual dentro de `RepaintBoundary` + `GlobalKey`.
+2. `toImage(pixelRatio: 3)` → PNG.
+3. Temp file → share o galeria.
 
 ### Capas y ubicacion de codigo
 
 ```
 features/session_summary/
-  application/   → SessionSummaryController (Riverpod), coordinacion share/nota/listo
-  domain/        → SessionPhaseBreakdown (pure), ShareCardData, ShareImageRenderer (abstract)
-  presentation/  → SessionCompleteScreen, SessionShareCard, metric tiles, note field
-data/repositories/ → reutilizar SessionLogRepository (F04); StatsService (F12)
+  application/   → SessionSummaryController (Riverpod), nota/listo/bootstrap
+  domain/        → SessionPhaseBreakdown, ShareCardData, ShareTemplateStyle,
+                   ShareImageRenderer, ShareSheetDriver, GallerySaver
+  presentation/  → SessionCompleteScreen, AnimatedFlameHero,
+                   SessionShareStudioScreen, SessionShareCard, metric tiles
+data/repositories/ → SessionLogRepository (F04); StatsService (F12)
 ```
 
 - **No** carpeta `features/16-...` en `lib/`; slug de codigo: `session_summary`.

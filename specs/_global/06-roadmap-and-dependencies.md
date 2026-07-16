@@ -19,7 +19,7 @@
 | F13 | [Logros y Badges](../features/13-achievements-badges/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F12 |
 | F14 | [Recordatorios y Notificaciones](../features/14-reminders-notifications/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F04 |
 | F15 | [Registro de Peso y Medidas](../features/15-body-measurements-tracking/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F04 |
-| F16 | [Compartir Resumen de Sesion](../features/16-session-summary-sharing/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F04, F12 |
+| F16 | [Compartir Resumen de Sesion](../features/16-session-summary-sharing/requirements.md) | Fase 3 · Seguimiento y Motivacion | En progreso | F04, F12 |
 | F17 | [Integracion de Musica / Audio Ducking](../features/17-background-music-ducking/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01 |
 | F18 | [Vibracion como Feedback](../features/18-vibration-feedback/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01 |
 | F19 | [Pantalla Siempre Encendida](../features/19-always-on-screen/requirements.md) | Fase 4 · Audio y Experiencia | Completado | F01 |

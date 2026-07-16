@@ -7,7 +7,7 @@ import 'package:interval_timer/features/settings/presentation/settings_screen.da
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/timer/presentation/routine_editor_screen.dart';
-import 'package:interval_timer/features/timer/presentation/session_completed_screen.dart';
+import 'package:interval_timer/features/session_summary/presentation/session_complete_screen.dart';
 import 'package:interval_timer/features/timer/presentation/timer_execution_screen.dart';
 import 'package:interval_timer/features/workout_builder/presentation/my_workouts_screen.dart';
 import 'package:interval_timer/features/workout_builder/presentation/workout_editor_screen.dart';
@@ -111,7 +111,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/completed',
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const SessionCompletedScreen(),
+        builder: (context, state) => const SessionCompleteScreen(),
       ),
     ],
   );

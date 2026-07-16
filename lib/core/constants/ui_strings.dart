@@ -108,11 +108,53 @@ abstract final class UiStrings {
   static const sessionSurfaceStatusRunning = 'En curso';
   static const sessionSurfaceStatusPaused = 'Pausado';
 
-  // Completed
+  // Completed (F01 placeholder / F16 post-session)
   static const sessionCompleted = '¡Sesión completada!';
   static const sessionCompletedMessage =
       'Has terminado todos los intervalos de la rutina.';
   static const backToRoutine = 'Volver';
+  static const sessionSummaryGreatJob = '¡Gran trabajo!';
+  static const sessionSummaryTraining = 'Entrenamiento';
+  static const sessionSummaryRest = 'Descanso total';
+  static const sessionSummarySharePrompt = '¡Comparte tus resultados con estilo!';
+  static const sessionSummarySharePromptDetail =
+      'Elegí plantilla, sumá una foto y compartí o guardá en la galería.';
+  static const sessionSummaryShare = 'Compartir';
+  static const sessionSummarySharing = 'Compartiendo…';
+  static const sessionSummaryShareFailed =
+      'No se pudo generar o compartir la imagen. Intenta de nuevo.';
+  static const sessionSummaryNotePrompt = '¿Cómo fue tu entrenamiento?';
+  static const sessionSummaryNoteUnavailable =
+      'La nota estará disponible en un momento. Podés añadirla también en Historial.';
+  static const sessionSummaryNoteSaveFailed =
+      'No se pudo guardar la nota. Reintentá o salí sin guardar.';
+  static const sessionSummaryDoneAnyway = 'Salir sin nota';
+  static const sessionSummaryDone = 'Listo';
+  static const sessionSummaryShareBrand = 'Temporizador de intervalos';
+  static const sessionSummaryShareTagline = 'Tu asistente de entrenamiento';
+  static const sessionSummaryFallbackName = 'Entrenamiento';
+  static const sessionSummaryShareDuration = 'Duración';
+  static const sessionSummaryShareKcal = 'kcal (est.)';
+  static const sessionSummaryShareStreak = 'Racha (días)';
+  static const sessionSummaryShareTitle = 'Compartir';
+  static const sessionSummaryShareTransparent = 'TRANSPARENTE';
+  static const sessionSummaryShareAddPhoto = 'Añadir foto';
+  static const sessionSummaryShareTakePhoto = 'Hacer foto';
+  static const sessionSummarySharePickGallery = 'Seleccionar imagen';
+  static const sessionSummarySharePhotoFailed =
+      'No se pudo obtener la foto. Revisá los permisos e intentá de nuevo.';
+  static const sessionSummaryShareSaveGallery = 'Guardar en la galería';
+  static const sessionSummaryShareSavedGallery = 'Imagen guardada en la galería';
+  static const sessionSummaryShareSaveGalleryFailed =
+      'No se pudo guardar en la galería. Revisá los permisos.';
+  static const sessionSummaryShareOfflineHint =
+      'Plantillas y foto funcionan sin conexión';
+  static const sessionSummaryShareWorkoutBadge = 'Entrenamiento';
+  static const sessionSummaryShareSets = 'Sets';
+  static const sessionSummaryShareWork = 'Trabajo';
+  static const sessionSummaryShareRest = 'Descanso';
+  static const sessionSummarySheetHint =
+      'Deslizá hacia arriba para ver más detalle';
 
   // Errors
   static const persistenceError =

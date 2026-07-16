@@ -34,6 +34,9 @@ dependencies:
   session_compact_notification:
     path: packages/session_compact_notification
   fl_chart: ^1.2.0
+  share_plus: ^13.2.1
+  image_picker: ^1.2.3
+  gal: ^2.3.2
 
 dev_dependencies:
   flutter_test:

@@ -1,54 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
-import 'package:interval_timer/core/theme/app_theme.dart';
-import 'package:interval_timer/features/timer/application/timer_providers.dart';
-import 'package:interval_timer/shared/widgets/app_primary_button.dart';
+import 'package:interval_timer/features/session_summary/presentation/session_complete_screen.dart';
 
-class SessionCompletedScreen extends ConsumerWidget {
+/// Back-compat alias: F01 R18 UI is implemented by F16 [SessionCompleteScreen].
+class SessionCompletedScreen extends StatelessWidget {
   const SessionCompletedScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingLg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.check_circle_outline,
-                size: 80,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: AppTheme.spacingLg),
-              Text(
-                UiStrings.sessionCompleted,
-                key: const Key('session_completed_title'),
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppTheme.spacingMd),
-              Text(
-                UiStrings.sessionCompletedMessage,
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppTheme.spacingLg),
-              AppPrimaryButton(
-                key: const Key('back_to_routine_button'),
-                onPressed: () {
-                  ref.read(timerControllerProvider.notifier).resetToIdle();
-                  context.go('/');
-                },
-                label: UiStrings.backToRoutine,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const SessionCompleteScreen();
 }
