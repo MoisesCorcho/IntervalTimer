@@ -145,16 +145,15 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
         ),
         child: Stack(
           children: [
-            // Phase 1 / top: centered flame (stays in upper half when sheet open).
+            // Phase 1: full-center flame. After sheet: center of the UPPER 50%.
+            // Alignment y=-0.5 is the vertical midpoint of the top half.
             Align(
               alignment: _sheetVisible
-                  ? const Alignment(0, -0.35)
+                  ? const Alignment(0, -0.5)
                   : Alignment.center,
-              child: SafeArea(
-                child: AnimatedFlameHero(
-                  animation: _ringController,
-                  size: _sheetVisible ? 100 : 128,
-                ),
+              child: AnimatedFlameHero(
+                animation: _ringController,
+                size: _sheetVisible ? 100 : 128,
               ),
             ),
             // Phase 2: draggable info sheet from bottom (~50% initial).

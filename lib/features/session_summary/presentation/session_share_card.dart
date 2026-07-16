@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:interval_timer/core/branding/app_branding.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
@@ -108,13 +109,6 @@ class _TransparentTemplate extends StatelessWidget {
           padding: const EdgeInsets.all(AppTheme.spacingMd),
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: _Pill(
-                  label: UiStrings.sessionSummaryShareTransparent,
-                  filled: false,
-                ),
-              ),
               const Spacer(),
               if (showAddPhotoPlaceholder && !hasPhoto && onAddPhoto != null)
                 Padding(
@@ -148,7 +142,7 @@ class _TransparentTemplate extends StatelessWidget {
                     ),
                   ),
                 ),
-              _StatsOverlay(data: data, lightText: hasPhoto || true),
+              _StatsOverlay(data: data, lightText: true),
             ],
           ),
         ),
@@ -175,11 +169,7 @@ class _SolidTemplate extends StatelessWidget {
         child: Column(
           children: [
             const Spacer(),
-            Icon(
-              Icons.local_fire_department_rounded,
-              size: 48,
-              color: Colors.white.withValues(alpha: 0.9),
-            ),
+            AppBranding.logo(size: 56),
             const SizedBox(height: AppTheme.spacingMd),
             _StatsOverlay(data: data, lightText: true),
             const Spacer(),
@@ -263,40 +253,30 @@ class _StatsOverlay extends StatelessWidget {
         const SizedBox(height: AppTheme.spacingMd),
         Row(
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [
-                    AppTheme.workColor,
-                    AppTheme.restColor,
-                  ],
-                ),
-              ),
-              child: const Icon(Icons.timer_outlined,
-                  color: Colors.white, size: 18),
-            ),
+            AppBranding.logo(size: 36),
             const SizedBox(width: AppTheme.spacingSm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    UiStrings.sessionSummaryShareBrand,
+                    AppBranding.displayName,
                     style: TextStyle(
                       color: textColor,
                       fontWeight: FontWeight.w700,
                       fontSize: 13,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    UiStrings.sessionSummaryShareTagline,
+                    AppBranding.tagline,
                     style: TextStyle(
                       color: textColor.withValues(alpha: 0.8),
                       fontSize: 11,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -359,33 +339,6 @@ class _ColorChip extends StatelessWidget {
           color: Colors.white,
           fontSize: 11,
           fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
-}
-
-class _Pill extends StatelessWidget {
-  const _Pill({required this.label, required this.filled});
-
-  final String label;
-  final bool filled;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: filled ? Colors.white : Colors.black.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: filled ? Colors.black87 : Colors.white,
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.6,
         ),
       ),
     );

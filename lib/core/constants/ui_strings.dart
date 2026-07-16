@@ -1,6 +1,11 @@
 /// Spanish UI strings (pre-F28 i18n).
 abstract final class UiStrings {
+  /// Product display name — single source for MaterialApp + share branding.
+  /// Change here when the temporary package name is replaced.
   static const appTitle = 'Interval Timer';
+
+  /// Tagline under [appTitle] on share cards (via [AppBranding.tagline]).
+  static const appTagline = 'Tu asistente de entrenamiento';
 
   // Creation / edit
   static const routineTitle = 'Mi rutina';
@@ -130,14 +135,11 @@ abstract final class UiStrings {
       'No se pudo guardar la nota. Reintentá o salí sin guardar.';
   static const sessionSummaryDoneAnyway = 'Salir sin nota';
   static const sessionSummaryDone = 'Listo';
-  static const sessionSummaryShareBrand = 'Temporizador de intervalos';
-  static const sessionSummaryShareTagline = 'Tu asistente de entrenamiento';
   static const sessionSummaryFallbackName = 'Entrenamiento';
   static const sessionSummaryShareDuration = 'Duración';
   static const sessionSummaryShareKcal = 'kcal (est.)';
   static const sessionSummaryShareStreak = 'Racha (días)';
   static const sessionSummaryShareTitle = 'Compartir';
-  static const sessionSummaryShareTransparent = 'TRANSPARENTE';
   static const sessionSummaryShareAddPhoto = 'Añadir foto';
   static const sessionSummaryShareTakePhoto = 'Hacer foto';
   static const sessionSummarySharePickGallery = 'Seleccionar imagen';
