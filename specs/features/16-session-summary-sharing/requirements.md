@@ -1,15 +1,21 @@
 # Requirements: Compartir Resumen de Sesion
 
+> Estado: No iniciada
+
 **ID:** F16 &nbsp;|&nbsp; **Slug:** `16-session-summary-sharing` &nbsp;|&nbsp; **Fase:** Fase 3 · Seguimiento y Motivacion
 
 ## Resumen
 
-Genera una imagen resumen de la sesion completada (rutina, duracion, calorias, racha) para compartir en redes sociales.
+Pantalla de **fin de sesion completada** (celebracion + metricas de la sesion + compartir imagen
+offline + nota opcional) que aparece de inmediato al terminar cualquier timer/sesion con exito.
+Cumple el contrato de confirmacion de F01 R18 con UI rica; la nota escribe el mismo campo
+`SessionLog.note` del historial (F04). Offline-first: generar y compartir la tarjeta sin red.
 
 ## Prerequisitos (deben estar completos antes de iniciar esta feature)
 
-- F04 - Calendario e Historial de Sesiones
-- F12 - Estadisticas y Progreso
+- F01 - Interval Timer Core (`SessionCompleted` + estado `completed` + R18)
+- F04 - Calendario e Historial de Sesiones (`SessionLog`, `updateNote`)
+- F12 - Estadisticas y Progreso (`StatsService`: racha, kcal estimadas)
 
 ## Postrequisitos (features que dependen de esta)
 
@@ -17,21 +23,236 @@ Genera una imagen resumen de la sesion completada (rutina, duracion, calorias, r
 
 ## User Stories
 
-- **Como** usuario, **quiero** compartir un resumen visual de mi entrenamiento, **para que** puedo motivar a otros y llevar registro publico de mi progreso.
+- **Como** usuario, **quiero** ver una pantalla celebratoria al terminar mi entrenamiento,
+  **para que** siento cierre y motivacion sin volver en seco al editor de rutina.
+- **Como** usuario, **quiero** ver metricas claras de lo que acabo de entrenar (trabajo vs descanso),
+  **para que** entiendo de un vistazo como fue la sesion.
+- **Como** usuario, **quiero** compartir una imagen resumen de la sesion en redes o mensajeria,
+  **para que** puedo motivar a otros y llevar un registro visual fuera de la app.
+- **Como** usuario, **quiero** anadir una nota opcional al terminar, **para que** dejo el mismo
+  recuerdo que despues veo en el calendario/historial.
+- **Como** usuario, **quiero** cerrar con "Listo" y volver al flujo de rutina en estado idle,
+  **para que** no quedo atrapado en la pantalla de fin.
 
-## Criterios de Aceptacion (formato EARS)
+## Criterios de Aceptacion — Happy path (formato EARS)
 
-1. CUANDO una sesion termina exitosamente, EL SISTEMA DEBE ofrecer un boton 'Compartir resumen'.
-2. EL SISTEMA DEBE generar una imagen (no solo texto) con: nombre de rutina, duracion, calorias estimadas y racha actual.
-3. EL SISTEMA DEBE usar el share sheet nativo del sistema operativo para compartir la imagen generada.
-4. LA generacion de la imagen DEBE funcionar completamente offline.
+### R1 — Apertura de pantalla post-completado
+
+CUANDO el `TimerController` (F01) emite `SessionCompleted` / la sesion transiciona a estado
+`completed`, EL SISTEMA DEBE mostrar de inmediato la **pantalla de fin de sesion** de esta
+feature (no solo un SnackBar) y **no** debe regresar automaticamente al editor sin accion del
+usuario.
+
+### R2 — Layout celebratorio
+
+DONDE el usuario esta en la pantalla de fin de sesion,
+EL SISTEMA DEBE mostrar al menos:
+
+1. zona hero superior con acento visual de marca (ej. icono de fuego/celebracion sobre fondo
+   con color de marca o `colorScheme.primary` / verde de `work` del design system);
+2. titulo de refuerzo visible (ej. "¡Gran trabajo!" o copy i18n equivalente);
+3. bloque de metricas de la sesion (R3);
+4. bloque de compartir (R5–R7);
+5. zona de nota opcional (R9–R11);
+6. CTA principal **Listo** (R12).
+
+La jerarquia DEBE ser legible sin scroll horizontal; scroll vertical permitido si el teclado o
+contenido lo requieren. Tokens de color/radio/spacing desde `_global/04-design-system.md`
+(no hex hardcodeados fuera del tema).
+
+### R3 — Metricas de la sesion en pantalla
+
+DONDE el usuario ve la pantalla de fin de sesion, EL SISTEMA DEBE mostrar al menos dos metricas
+de la sesion recien completada:
+
+| Metrica | Definicion |
+|---|---|
+| Entrenamiento | Suma de segundos de intervalos con `type` ∈ {`work`, `warmup`, `stretch`, `custom`} del plan ejecutado de la sesion |
+| Descanso total | Suma de segundos de intervalos con `type` = `rest` del plan ejecutado de la sesion |
+
+Cada metrica DEBE mostrar valor formateado (segundos cortos como `3s` / `mm:ss` / `h:mm:ss`
+coherente con F04) + etiqueta legible.
+
+SI el plan no tiene intervalos de un tipo, ENTONCES esa metrica DEBE mostrar `0` (o `0s`), no
+ocultar el tile de forma ambigua.
+
+### R4 — Datos de contexto (nombre y total)
+
+DONDE el usuario ve la pantalla de fin de sesion, EL SISTEMA DEBE disponer de:
+
+- `displayName` de la sesion (snapshot / nombre de rutina o workout; fallback coherente con F04
+  si vacio);
+- `totalDurationSeconds` alineado al `SessionLog` / evento (`totalElapsedSeconds` del
+  `SessionCompletedEvent`).
+
+Estos datos alimentan la tarjeta de share (R6) aunque no todos deban verse como tiles en R3.
+
+### R5 — Oferta de compartir
+
+DONDE el usuario esta en la pantalla de fin de sesion,
+EL SISTEMA DEBE mostrar un control accionable **Compartir** (boton o fila con CTA) con area de
+toque >= 48dp, sin requerir conexion a internet para habilitar el control.
+
+### R6 — Contenido de la imagen resumen
+
+CUANDO el usuario activa Compartir, EL SISTEMA DEBE generar una **imagen** (no solo texto
+plano) que incluya al menos:
+
+| Campo | Fuente |
+|---|---|
+| Nombre de rutina/sesion | `displayName` (R4) |
+| Duracion total | `totalDurationSeconds` formateado |
+| Calorias estimadas | Formula F12 R5 sobre la sesion (marcar como estimacion en la card o con etiqueta breve) |
+| Racha actual | `StatsService` / reglas F12 R6 **despues** de persistir el `SessionLog` de esta sesion |
+
+La generacion DEBE ejecutarse **localmente** (sin red). Ver `design.md` para captura
+(`RepaintBoundary` / PNG).
+
+### R7 — Share sheet nativo
+
+CUANDO la imagen se genero con exito, EL SISTEMA DEBE invocar el share sheet nativo del SO
+con esa imagen (archivo o bytes compartibles). El usuario elige la app destino (WhatsApp,
+Instagram, etc.); la app **no** integra SDKs de redes sociales en F16.
+
+### R8 — Offline total del share
+
+CUANDO el dispositivo no tiene conectividad, EL SISTEMA DEBE permitir generar la imagen y
+abrir el share sheet (R6–R7) sin error bloqueante por red. Fallos de red **no** aplican como
+precondicion del flujo.
+
+### R9 — Nota opcional post-sesion
+
+DONDE el usuario esta en la pantalla de fin de sesion,
+EL SISTEMA DEBE ofrecer una zona de nota opcional con:
+
+- pregunta o label de contexto (ej. "¿Cómo fue tu entrenamiento?");
+- campo o accion para escribir texto;
+- la nota **no** es obligatoria para pulsar Listo (R12).
+
+### R10 — Persistencia de nota = `SessionLog.note` (F04)
+
+CUANDO el usuario guarda o confirma una nota en la pantalla de fin de sesion, EL SISTEMA DEBE
+persistir el texto en el campo `note` del `SessionLog` creado por F04 al recibir
+`SessionCompleted` (mismo registro del historial/calendario).
+
+CUANDO el usuario abre el Historial (F04) y ve la card de esa sesion, EL SISTEMA DEBE mostrar
+esa misma nota (F04 R11).
+
+EL SISTEMA DEBE reutilizar `SessionLogRepository.updateNote` (o API equivalente de F04); **no**
+crear una tabla o campo paralelo de notas.
+
+### R11 — Limite de nota
+
+CUANDO el usuario intenta guardar una nota de mas de **500** caracteres, EL SISTEMA DEBE
+rechazar el guardado o impedir exceder el limite en el campo (misma regla F04 R12) y mostrar
+feedback visible sin truncar en silencio de forma confusa.
+
+### R12 — Listo → idle + retorno (cumple F01 R18)
+
+CUANDO el usuario activa **Listo** (o equivalente de cierre primario) en la pantalla de fin de
+sesion, EL SISTEMA DEBE:
+
+1. transicionar el `TimerController` a estado `idle` (si aun esta en `completed`);
+2. cerrar la pantalla de fin de sesion;
+3. regresar a la pantalla de creacion/edicion de rutina (o destino de retorno del flujo de
+   ejecucion documentado en F01 R18).
+
+SI el usuario no escribio nota, ENTONCES Listo DEBE funcionar igual (`note` permanece null/vacio).
+
+### R13 — Solo sesiones completadas
+
+CUANDO la sesion emite `SessionCancelled` (abortada), EL SISTEMA NO DEBE abrir la pantalla de
+fin de sesion de F16. El historial de abortados con progreso sigue siendo responsabilidad de F04.
+
+### R14 — Sin pantalla duplicada de F01
+
+DONDE F16 esta implementada, EL SISTEMA DEBE usar esta pantalla como la **confirmacion visible**
+exigida por F01 R18. EL SISTEMA NO DEBE mostrar una segunda pantalla/dialog generico de
+"sesion finalizada" en paralelo (evitar doble cierre).
+
+### R15 — Resolucion del `SessionLog` recien creado
+
+CUANDO se abre la pantalla de fin de sesion, EL SISTEMA DEBE asociar el flujo a un
+`SessionLog` con `status = completed` correspondiente a la sesion (via id devuelto al insertar,
+o consulta del log mas reciente para el `sourceId` / `endedAt` del evento — ver `design.md`).
+
+SI el log aun no esta disponible (carrera con el insert de F04), ENTONCES EL SISTEMA DEBE
+reintentar de forma acotada o esperar al provider/repositorio sin crashear; la UI de
+celebracion y metricas DEBE poder mostrarse con datos del evento aunque la nota quede
+deshabilitada temporalmente hasta resolver el id.
+
+## Criterios de Aceptacion — Validacion y error (formato EARS)
+
+### R16 — Fallo al generar imagen
+
+SI falla la captura/export de la imagen de share (error de render, IO, memoria), ENTONCES EL
+SISTEMA DEBE mostrar feedback visible (SnackBar o equivalente), **no** crashear, y dejar al
+usuario en la pantalla de fin de sesion con Compartir y Listo disponibles para reintentar o
+salir.
+
+### R17 — Fallo o cancelacion del share sheet
+
+SI el share sheet no puede abrirse o el usuario lo descarta sin compartir, ENTONCES EL SISTEMA
+DEBE permanecer en la pantalla de fin de sesion sin borrar metricas ni nota en edicion. Descartar
+el sheet **no** equivale a Listo (R12).
+
+### R18 — Fallo al guardar nota
+
+SI falla la persistencia al guardar la nota (R10), ENTONCES EL SISTEMA DEBE mostrar SnackBar
+con opcion de reintentar (o feedback equivalente) y **mantener** el texto en el editor hasta
+confirmar o descartar (alineado a F04 R19). Listo DEBE seguir disponible; no bloquear el
+cierre por un fallo de nota.
+
+### R19 — iPad / ancla del popover de share
+
+DONDE la plataforma es iPad (o requiere origen del popover),
+CUANDO el usuario activa Compartir, EL SISTEMA DEBE pasar un origen de anclaje valido
+(`sharePositionOrigin` o equivalente del paquete) para no crashear ni dejar la UI colgada.
+
+### R20 — Independencia del motor del timer
+
+EL SISTEMA DEBE implementar F16 en `features/session_summary/` (o slug de carpeta acordado en
+`design.md`) sin que `TimerController` (F01) importe widgets ni servicios de share/nota de F16.
+La integracion es por navegacion/host al detectar `completed` + consumo de repositorios F04/F12.
+
+## Decisiones de producto
+
+| Tema | Decision |
+|---|---|
+| Alcance de F16 | Pantalla post-completado **completa** (hero + metricas + share + nota + Listo), no solo un boton "Compartir" suelto |
+| Relacion F01 R18 | F01 R18 **no se reescribe**; F16 **es** la implementacion de la confirmacion + Listo → idle |
+| Canceladas / abortadas | Sin pantalla F16 (R13) |
+| Work vs rest | Por `Interval.type` del plan de la sesion completada (R3); no se inventan tipos nuevos |
+| Nota | Mismo `SessionLog.note` (max 500); opcional; editable tambien despues en Historial (F04) |
+| Share | Imagen local + share sheet nativo; sin SDKs de redes; sin backend |
+| Kcal / racha | Reutilizar reglas y `StatsService` de F12; no recalcular con formulas distintas |
+| Marca de agua / branding en card | Permitido texto o logo de app en la plantilla de imagen (design system) |
+| Bookmark / favoritos en chrome de referencia | Fuera de alcance F16 (F24 si aplica) |
+| Compartir rutina a otros usuarios | F25, no F16 |
+| Idioma de copy | Strings en capa UI; i18n formal es F28 |
 
 ## Fuera de alcance (explicito)
 
-- Cualquier comportamiento no listado arriba se considera fuera de alcance para esta version de la feature.
-- Cambios de UI/UX no especificados aqui deben resolverse consultando `_global/04-design-system.md`.
+- Compartir rutinas entre usuarios o deep links de rutina (F25).
+- Logros/badges desbloqueados en esta pantalla (F13 puede reaccionar aparte).
+- Edicion del entrenamiento desde la pantalla de fin.
+- Publicacion automatica a redes sin share sheet.
+- Calculo medico de calorias o integracion con HealthKit/Google Fit.
+- Mostrar graficas de F12 en esta pantalla.
+- Cambiar el schema de `session_logs` (salvo que una task de implementacion demuestre
+  necesidad; default: reutilizar columnas existentes).
+- Reescribir F01 R18 u otros criterios de F01.
 
 ## Referencias
 
-- Ver `_global/05-data-model.md` para el modelo de datos completo del proyecto.
-- Ver `_global/02-architecture-and-structure.md` para convenciones de arquitectura.
+- `_global/01-vision-and-principles.md` — offline-first; compartir como plus, no requisito basico.
+- `_global/02-architecture-and-structure.md` — features aisladas; contratos `SessionCompletedEvent`.
+- `_global/03-conventions.md` — Riverpod; tests; reutilizar `shared/widgets/`.
+- `_global/04-design-system.md` — tokens, botones, contraste, tipos de intervalo.
+- `_global/05-data-model.md` — `SessionLog.note`, `StatsSummary`.
+- `_global/06-roadmap-and-dependencies.md` — F16 prereqs F04, F12.
+- `features/01-interval-timer-core/` — R6, R18; eventos de sesion.
+- `features/04-workout-calendar-history/` — insert log, R11–R12 nota, `updateNote`.
+- `features/12-statistics-progress/` — R5 kcal, R6 racha, `StatsService`.
+- Referencia visual de producto: capturas post-timer (hero fuego, "¡Gran trabajo!", tiles
+  entrenamiento/descanso, Compartir, nota, Listo).

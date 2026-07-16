@@ -33,6 +33,13 @@ void main() {
   }
 
   Future<void> pumpHistory(WidgetTester tester, ProviderContainer container) {
+    // Tall surface so F12 progress + calendar + day list fit without flaky scroll.
+    final view = tester.view;
+    view.physicalSize = const Size(800, 2000);
+    view.devicePixelRatio = 1.0;
+    addTearDown(view.resetPhysicalSize);
+    addTearDown(view.resetDevicePixelRatio);
+
     return tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,

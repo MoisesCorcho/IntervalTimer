@@ -33,6 +33,7 @@ dependencies:
   # F20: MediaStyle + setShowActionsInCompactView (FLN does not expose it).
   session_compact_notification:
     path: packages/session_compact_notification
+  fl_chart: ^1.2.0
 
 dev_dependencies:
   flutter_test:

@@ -15,7 +15,7 @@
 | F09 | [Progresion Automatica](../features/09-automatic-progression/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F05, F04 |
 | F10 | [Modo por Repeticiones](../features/10-rep-based-mode/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F01 |
 | F11 | [Ajuste Rapido de Intensidad](../features/11-quick-intensity-scaling/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F01, F05 |
-| F12 | [Estadisticas y Progreso](../features/12-statistics-progress/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F04 |
+| F12 | [Estadisticas y Progreso](../features/12-statistics-progress/requirements.md) | Fase 3 · Seguimiento y Motivacion | Completada | F04 |
 | F13 | [Logros y Badges](../features/13-achievements-badges/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F12 |
 | F14 | [Recordatorios y Notificaciones](../features/14-reminders-notifications/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F04 |
 | F15 | [Registro de Peso y Medidas](../features/15-body-measurements-tracking/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F04 |
@@ -72,6 +72,13 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - Default de migracion `restAfterExerciseSeconds = 0` preserva el comportamiento pre-F34.
 - Caso clave: `sets = 1` + ejercicio siguiente → el descanso entre sets no aplica; el descanso final de A si puede ejecutarse antes de B.
 - Depende solo de F32; F33 no es prerequisito formal, pero el form debe reutilizar `DurationStepper` si ya esta integrado.
+
+### F12 vs F04 (stats en Historial)
+
+- **F12:** metricas y graficas derivadas de `SessionLog`; UI embebida en `HistoryScreen` (bloque encima del calendario).
+- **No** agrega tab en bottom nav (sigue: Temporizador | Entrenamientos | Historial | Ajustes).
+- Sin tabla nueva; `StatsService` en `features/stats/`. Prerequisito solo F04 (F03/F15 opcionales para MET/peso).
+- **F16** reutiliza el servicio de metricas (racha, kcal), no la grafica.
 
 ### F08 vs F32 / F34 / F05 (circuitos y rondas)
 

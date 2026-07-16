@@ -13,6 +13,7 @@ import 'package:interval_timer/features/calendar_history/presentation/widgets/se
 import 'package:interval_timer/features/calendar_history/presentation/widgets/session_note_editor.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
+import 'package:interval_timer/features/stats/presentation/progress_summary_section.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_flattener.dart';
@@ -32,8 +33,8 @@ class HistoryScreen extends ConsumerWidget {
     return Scaffold(
       key: const Key('history_screen'),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
+          key: const Key('history_scroll'),
           children: [
             HistoryMonthHeader(
               focusedMonth: history.focusedMonth,
@@ -46,6 +47,8 @@ class HistoryScreen extends ConsumerWidget {
                 ref.read(historyControllerProvider.notifier).goToToday();
               },
             ),
+            // F12: progress block between chrome and calendar (R1, R9)
+            const ProgressSummarySection(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: HistoryCalendar(
@@ -75,43 +78,66 @@ class HistoryScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 4),
-            Expanded(
-              child: logsAsync.when(
-                loading: () => const Center(
-                  child: CircularProgressIndicator(
-                    key: Key('history_loading'),
-                  ),
-                ),
-                error: (_, _) => Center(
-                  child: Text(UiStrings.persistenceError),
-                ),
-                data: (logs) {
-                  if (logs.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        key: Key('history_empty_day'),
-                        UiStrings.historyEmptyDay,
-                      ),
-                    );
-                  }
-                  return ListView.builder(
-                    key: const Key('history_session_list'),
-                    itemCount: logs.length,
-                    itemBuilder: (context, index) {
-                      final log = logs[index];
-                      return SessionLogCard(
-                        log: log,
-                        onOverflow: () => _onOverflow(context, ref, log),
-                        onNoteTap: () => _onNote(context, ref, log),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
+            ..._sessionChildren(context, ref, logsAsync),
           ],
         ),
       ),
+    );
+  }
+
+  List<Widget> _sessionChildren(
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue<List<SessionLog>> logsAsync,
+  ) {
+    return logsAsync.when(
+      loading: () => [
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 32),
+          child: Center(
+            child: CircularProgressIndicator(
+              key: Key('history_loading'),
+            ),
+          ),
+        ),
+      ],
+      error: (_, _) => [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+          child: Center(child: Text(UiStrings.persistenceError)),
+        ),
+      ],
+      data: (logs) {
+        if (logs.isEmpty) {
+          return [
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(
+                child: Text(
+                  key: Key('history_empty_day'),
+                  UiStrings.historyEmptyDay,
+                ),
+              ),
+            ),
+          ];
+        }
+        return [
+          KeyedSubtree(
+            key: const Key('history_session_list'),
+            child: Column(
+              children: [
+                for (final log in logs)
+                  SessionLogCard(
+                    log: log,
+                    onOverflow: () => _onOverflow(context, ref, log),
+                    onNoteTap: () => _onNote(context, ref, log),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ];
+      },
     );
   }
 
