@@ -6,7 +6,7 @@
 
 ## Resumen
 
-Apartado **Entrenamientos** donde el usuario crea entrenamientos compuestos por uno o mas ejercicios. Cada ejercicio define nombre, cantidad de sets, duracion del trabajo y duracion del descanso entre sets. Al iniciar el entrenamiento, el sistema convierte la estructura en una secuencia lineal de intervalos para el motor del timer (F01).
+Apartado **Entrenamientos** donde el usuario crea entrenamientos compuestos por uno o mas ejercicios. Cada ejercicio define nombre, cantidad de sets, duracion del trabajo y duracion del descanso entre sets. El entrenamiento completo puede repetirse en **rondas** (`Workout.rounds`, 1–99). Al iniciar el entrenamiento, el sistema convierte la estructura en una secuencia lineal de intervalos para el motor del timer (F01).
 
 ## Prerequisitos (deben estar completos antes de iniciar esta feature)
 
@@ -15,7 +15,7 @@ Apartado **Entrenamientos** donde el usuario crea entrenamientos compuestos por 
 ## Postrequisitos (features que dependen de esta)
 
 - F04 - Calendario e Historial de Sesiones (puede registrar sesiones originadas en un `Workout`)
-- F08 - Repeticion de Circuitos (Rounds) (extiende el editor y el flattener con `WorkoutCircuit`; prereqs de F08: F01, F32, F34)
+- F08 - Repeticion de Circuitos (Rounds) (agrupa **subconjuntos** de ejercicios en `WorkoutCircuit`; distinto de `Workout.rounds` global de F32; prereqs de F08: F01, F32, F34)
 - F24 - Favoritos (puede marcar entrenamientos favoritos en iteracion futura)
 - F33 - Controles Numericos y de Duracion (Steppers Premium) (reemplaza TextField de sets/duracion por steppers)
 - F34 - Descanso entre Sets y Descanso Final del Ejercicio (extiende semantica de rest y aplanado; ver nota en R8 / decisiones)
@@ -26,6 +26,7 @@ Apartado **Entrenamientos** donde el usuario crea entrenamientos compuestos por 
 - **Como** usuario, **quiero** crear un entrenamiento y agregar ejercicios con sets, duracion de trabajo y duracion de descanso, **para que** armo sesiones estructuradas sin calcular intervalos a mano.
 - **Como** usuario, **quiero** iniciar un entrenamiento guardado, **para que** el timer ejecute automaticamente todos los sets y descansos en orden.
 - **Como** usuario, **quiero** duplicar un entrenamiento existente, **para que** puedo variar una base sin empezar de cero.
+- **Como** usuario, **quiero** configurar cuantas veces se repite todo el bloque de ejercicios (rondas del entrenamiento), **para que** no tengo que duplicar ejercicios a mano.
 
 ## Criterios de Aceptacion — Happy path (formato EARS)
 
@@ -105,6 +106,36 @@ CUANDO el temporizador esta en estado `running` o `paused`, EL SISTEMA DEBE impe
 
 DONDE el usuario esta en el dialogo de confirmacion de eliminacion, CUANDO cancela o cierra el dialogo, EL SISTEMA DEBE mantener el entrenamiento sin cambios.
 
+### R19 — Rondas del entrenamiento (modelo)
+
+DONDE existe un `Workout`, EL SISTEMA DEBE persistir `rounds` como entero en rango 1–99 con default `1` al crear. CUANDO `rounds == 1`, EL SISTEMA DEBE comportarse como el aplanado historico de F32/F34 (un solo pase por la lista de ejercicios). CUANDO `rounds > 1`, EL SISTEMA DEBE expandir el pase completo (sets + descansos F34) `rounds` veces al aplanar.
+
+### R20 — Descanso entre rondas (solo final del ultimo ejercicio del pase)
+
+CUANDO el flattener expande un workout con `rounds > 1`, EL SISTEMA DEBE **no** inventar un intervalo de cooldown aparte entre el final de la ronda N y el inicio de la ronda N+1. SI el **ultimo ejercicio del pase** tiene `restAfterExerciseSeconds > 0` y existe una ronda siguiente (`roundIndex < rounds`), ENTONCES EL SISTEMA DEBE emitir ese descanso final F34 **entre** el ultimo work de la ronda N y el primer work de la ronda N+1. SI `restAfterExerciseSeconds = 0` en ese ultimo ejercicio, EL SISTEMA DEBE pasar de ronda a ronda sin intervalo de descanso entre ellas. CUANDO se procesa la **ultima ronda**, EL SISTEMA DEBE **no** emitir descanso final tras el ultimo ejercicio de la sesion (misma regla de fin de sesion que un workout de una ronda).
+
+### R21 — Editor: seccion de rondas
+
+DONDE el usuario esta en la pantalla de edicion de un entrenamiento, EL SISTEMA DEBE mostrar una seccion/card elegante **"Rondas del entrenamiento"** (icono de bucle, titulo, helper corto, `NumberStepper` 1–99) integrada al lenguaje visual del producto (tokens de tema, radio, gradiente sutil o borde de acento — no un stepper suelto sin contexto). CUANDO el usuario cambia el valor, EL SISTEMA DEBE validar el rango, persistir `rounds` y actualizar `updatedAt`. CUANDO `rounds > 1`, EL SISTEMA DEBE mostrar un chip o linea secundaria del estilo "Todo el bloque × N".
+
+### R22 — Listado: indicador de rondas
+
+DONDE el usuario esta en **Mis entrenamientos** y un entrenamiento tiene `rounds > 1`, EL SISTEMA DEBE mostrar un indicador elegante (chip o texto sutil con icono de bucle, p. ej. "N rondas" / "×N"). CUANDO `rounds == 1`, EL SISTEMA DEBE **no** mostrar spam del tipo "sin rondas" ni "1 ronda" obligatorio — la lista se mantiene limpia.
+
+### R23 — Ejecucion: etiqueta de ronda
+
+DONDE el usuario ejecuta un entrenamiento con `rounds > 1`, EL SISTEMA DEBE mostrar en la pantalla de ejecucion del timer la etiqueta **"Ronda X de Y"** (X 1-based) derivada de metadata en los intervalos aplanados, sin rediseñar el chrome completo del timer. CUANDO `rounds == 1`, EL SISTEMA DEBE omitir esa etiqueta.
+
+### R24 — Duplicar copia `rounds`
+
+DONDE el usuario duplica un entrenamiento (R10), EL SISTEMA DEBE copiar el valor de `rounds` a la copia independiente.
+
+## Criterios de Aceptacion — Validacion y error (formato EARS) — extension rondas
+
+### R25 — Rondas invalidas
+
+CUANDO el usuario intenta fijar `rounds` fuera de 1–99 (o valor nulo/no numerico en el stepper), EL SISTEMA DEBE clampear o rechazar la operacion de forma que el valor persistido quede siempre en 1–99, y no dejar la UI inconsistente con lo persistido.
+
 ## Decisiones de producto (resuelven ambiguedades)
 
 | Tema | Decision |
@@ -117,12 +148,18 @@ DONDE el usuario esta en el dialogo de confirmacion de eliminacion, CUANDO cance
 | Entrenamiento activo | Clave `active_workout_id` en drift (`app_preferences`); independiente de `active_routine_id` de F05. |
 | Colores en intervalos aplanados | Trabajo: color `work` por defecto de tema; descanso: color `rest` por defecto (`04-design-system.md`). |
 | Media / animaciones de ejercicio | Fuera de alcance (F03 catalogo empaquetado). F32 solo usa nombre textual. |
+| Rondas globales vs F08 | **F32** modela `Workout.rounds`: repite **todo** el bloque de ejercicios. **F08** modela circuitos parciales (`WorkoutCircuit`) con multi-select sobre subconjuntos. No se mezclan en esta feature. |
+| Descanso entre rondas (R20) | **Sin cooldown inventado** entre pases. El puente entre ronda N y N+1 es el `restAfterExerciseSeconds` del **ultimo ejercicio del pase** cuando hay ronda siguiente y valor > 0. En la ultima ronda no se emite descanso final tras el ultimo work de la sesion. |
+| Metadata de ronda en `Interval` | Campos opcionales efimeros `roundIndex` / `roundCount` (null si `rounds == 1`) solo en memoria al aplanar; no se persisten en drift. |
+| Naming UI | Preferir **"Rondas"** (no "Repeticiones"; sets ya cubren series). |
 
 ## Fuera de alcance (explicito)
 
 - Intervalos sueltos sin modelo ejercicio+sets (F01 draft / F05 rutinas planas).
 - Duplicar presets empaquetados (F03/F05).
-- Bloques anidados y rounds sobre grupos de ejercicios (**alcance de F08**, no de F32 base).
+- Multi-select, agrupacion de subconjuntos y `WorkoutCircuit` (**alcance de F08**, no de F32).
+- Campo de rondas **por ejercicio** (solo a nivel workout).
+- Entidad peer "Rutina" en el listado de entrenamientos (F05).
 - Conteo automatico de repeticiones (F10).
 - Limite de entrenamientos por tier Pro (F06).
 - Cualquier comportamiento no listado arriba se considera fuera de alcance para esta version.

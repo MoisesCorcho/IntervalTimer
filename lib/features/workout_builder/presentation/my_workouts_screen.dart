@@ -255,12 +255,39 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                     final workout = workouts[index];
                     final countLabel = UiStrings.exerciseCountLabel
                         .replaceAll('{count}', '${workout.exercises.length}');
+                    final showRounds = workout.rounds > 1;
+                    final roundsLabel = UiStrings.workoutRoundsListLabel
+                        .replaceAll('{count}', '${workout.rounds}');
 
                     return Card(
                       child: ListTile(
                         title: Text(workout.name),
-                        subtitle: Text(countLabel),
-                        isThreeLine: true,
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(countLabel),
+                            if (showRounds) ...[
+                              const SizedBox(height: 6),
+                              Chip(
+                                key: Key('workout_rounds_chip_${workout.id}'),
+                                avatar: Icon(
+                                  Icons.loop_rounded,
+                                  size: 16,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                label: Text(roundsLabel),
+                                visualDensity: VisualDensity.compact,
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                labelStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ],
+                        ),
+                        isThreeLine: showRounds,
                         trailing: IconButton(
                           key: Key('workout_overflow_${workout.id}'),
                           tooltip: 'Más opciones',

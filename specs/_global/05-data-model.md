@@ -210,6 +210,7 @@ Workout {
   name: String            // max 80 chars
   createdAt: DateTime     // UTC
   updatedAt: DateTime     // UTC
+  rounds: int             // 1..99, default 1 — F32: repite todo el bloque de ejercicios
   exercises: List<WorkoutExercise>  // orden por position
 }
 
@@ -248,33 +249,38 @@ WorkoutCircuit {
 | Tabla | Columnas | Notas |
 |---|---|---|
 | `workouts` | `id` TEXT PK, `name` TEXT, `created_at` INTEGER, `updated_at` INTEGER | timestamps UTC ms |
+| `workouts` (F32 rondas) | + `rounds` INTEGER NOT NULL DEFAULT 1 | Migracion aditiva schema **v7**; backfill 1; rango 1–99 |
 | `workout_exercises` | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `name` TEXT, `sets` INTEGER, `work_seconds` INTEGER, `rest_seconds` INTEGER | indice unico `(workout_id, position)` en F32; tras F08 el indice de position se interpreta segun suelto vs miembro — ver design F08; F32 schema v3 |
 | `workout_exercises` (F34) | + `rest_after_exercise_seconds` INTEGER NOT NULL DEFAULT 0 | Migracion aditiva schema v4; backfill 0 en filas existentes |
-| `workout_exercises` (F08) | + `circuit_id` TEXT NULL FK→workout_circuits | Schema v6; null = suelto |
-| `workout_circuits` (F08) | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `rounds` INTEGER | Schema v6; `rounds` 1..99 |
+| `workout_exercises` (F08) | + `circuit_id` TEXT NULL FK→workout_circuits | Schema futuro F08; null = suelto |
+| `workout_circuits` (F08) | `id` TEXT PK, `workout_id` TEXT FK→workouts ON DELETE CASCADE, `position` INTEGER, `rounds` INTEGER | Schema futuro F08; `rounds` 1..99 del **circuito** (parcial) |
 | `app_preferences` | `key` TEXT PK, `value` TEXT nullable | key-value; F32 schema v3 |
 
-### Aplanado a `Interval` (F01) — solo en memoria (F32 extendido por F34 y F08)
+### Aplanado a `Interval` (F01) — solo en memoria (F32 extendido por F34, rondas globales y F08)
 
-**Sin circuitos (F32/F34, o workout pre-F08):** por cada `WorkoutExercise` suelto en orden de `position` top-level:
+**Un pase (F32/F34, sin circuitos):** por cada `WorkoutExercise` suelto en orden de `position` top-level:
 
 1. Por cada set de 1 a `sets`:
    1. `Interval` tipo `work`, nombre = `formatDisplayName(exercise.name)` (MAYUSCULAS), duracion = `workSeconds`
    2. Si no es el ultimo set y `restSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO"`, duracion = `restSeconds`
-2. Si el ejercicio **no** es el ultimo del workout y `restAfterExerciseSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO FINAL"` / `"Descanso entre ejercicios"`, duracion = `restAfterExerciseSeconds`
+2. Si hay un **siguiente work** para ese ejercicio y `restAfterExerciseSeconds > 0`: `Interval` tipo `rest`, nombre = `"DESCANSO FINAL"` / `"Descanso entre ejercicios"`, duracion = `restAfterExerciseSeconds`. Hay siguiente work cuando: (a) el ejercicio **no** es el ultimo del pase, o (b) es el ultimo del pase y existe una **ronda global siguiente** (`roundIndex < rounds`). **Nunca** tras el ultimo work de la sesion (ultima ronda, ultimo ejercicio).
+
+**Rondas globales del workout (F32, `Workout.rounds`):** repetir el pase completo `rounds` veces (1–99). **Sin** cooldown inventado entre rondas: el puente N → N+1 es el `restAfterExerciseSeconds` del **ultimo ejercicio del pase** cuando hay ronda siguiente y valor > 0; si es 0, la ronda siguiente arranca de inmediato. En la **ultima ronda** no se emite descanso final tras el ultimo ejercicio. Si `rounds > 1`, cada intervalo aplanado lleva metadata efimera `roundIndex` (1-based) y `roundCount` para UI "Ronda X de Y". Si `rounds == 1`, metadata null.
 
 **Con circuitos (F08):** recorrer elementos de nivel superior (sueltos + circuitos). Para un circuito con `rounds = R` y miembros E1..Ek, repetir R veces el aplanado de E1..Ek. `restAfterExerciseSeconds` se emite cuando hay un siguiente trabajo que no es otro set del mismo ejercicio (siguiente miembro, primera ronda siguiente, o siguiente top-level). No emitir descanso final tras el ultimo work de la sesion. Cada intervalo de un circuito lleva metadata de ronda (`roundIndex` 1-based, `roundCount`, `circuitId`) para UI "Ronda X de Y". Detalle: `08-circuit-repetition-rounds/design.md`.
 
-**Notas de semantica (F34 + F08):**
+> **Distincion:** `Workout.rounds` (F32) = repite **todo** el entrenamiento. `WorkoutCircuit.rounds` (F08) = repite un **subconjunto** de ejercicios. F08 no reemplaza ni elimina las rondas globales de F32.
+
+**Notas de semantica (F34 + rondas F32 + F08):**
 
 - `restSeconds` y `restAfterExerciseSeconds` son independientes (no se reutiliza un solo valor para ambos).
-- `sets = 1` nunca emite descanso entre sets; puede emitir descanso final si hay siguiente trabajo.
+- `sets = 1` nunca emite descanso entre sets; puede emitir descanso final si hay siguiente trabajo (ejercicio siguiente en el pase, o primera ronda global siguiente).
 - El ultimo trabajo de la sesion **no** emite descanso final (no hay cooldown de sesion inventado).
-- Default de migracion / alta: `restAfterExerciseSeconds = 0` (comportamiento pre-F34).
+- Default de migracion / alta: `restAfterExerciseSeconds = 0` (comportamiento pre-F34); `Workout.rounds = 1` (comportamiento pre-rondas).
 - F08 **no** agrega campos de duracion al circuito; hereda tiempos de cada ejercicio.
-- Workouts sin filas en `workout_circuits` se comportan como pre-F08.
+- Workouts sin filas en `workout_circuits` se comportan como F32/F34 (+ rondas globales si `rounds > 1`).
 
-Implementacion: `WorkoutFlattener` en `features/workout_builder/domain/`. Ver `32-workout-exercise-builder/design.md` (base), `34-exercise-rest-between-and-final/design.md` (dual rest) y `08-circuit-repetition-rounds/design.md` (rondas).
+Implementacion: `WorkoutFlattener` en `features/workout_builder/domain/`. Ver `32-workout-exercise-builder/design.md` (base + rondas globales), `34-exercise-rest-between-and-final/design.md` (dual rest) y `08-circuit-repetition-rounds/design.md` (circuitos parciales).
 
 ### Preferencias F32 (drift `app_preferences`)
 
@@ -323,7 +329,7 @@ SessionLog {
 **Integridad:**
 
 - **Sin FK** a `routines` / `workouts`: el origen puede borrarse y el historial permanece (snapshot).
-- `schemaVersion`: **5** (migracion F04: `createTable(sessionLogs)`). Confirmado en `lib/data/local/database.dart`.
+- `schemaVersion`: **7** (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32). Confirmado en `lib/data/local/database.dart`.
 
 **Semantica de escritura (resumen F04):**
 

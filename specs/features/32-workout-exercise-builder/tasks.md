@@ -5,8 +5,11 @@
 ## Definition of Done
 
 - [x] Todos los criterios R1–R18 de `requirements.md` estan implementados y verificados manualmente. _(cubre R1–R18)_
+- [x] Criterios R19–R25 (rondas globales) implementados y verificados.
 - [x] Tests unitarios y widget listados abajo pasan en CI/local.
+- [x] Tests de rondas (flattener, repo, validacion, UI) pasan.
 - [x] Schema drift F32 documentado en `_global/05-data-model.md` y migracion aplicada.
+- [x] Schema v7 `workouts.rounds` documentado y migrado.
 - [x] No se rompio F01 (timer, eventos de sesion, validaciones de intervalo).
 - [x] Codigo revisado contra `_global/03-conventions.md`.
 
@@ -82,6 +85,39 @@
 | R16 | SnackBar + reintentar |
 | R17 | Bloqueo delete en sesion, unit error |
 | R18 | Cancelar dialogo, widget eliminar |
+| R19 | Workout.rounds, schema v7, flattener expand |
+| R20 | Flattener: sin cooldown inventado; final rest del ultimo ejercicio del pase entre rondas si > 0 |
+| R21 | WorkoutRoundsCard + editor controller |
+| R22 | Chip listado MyWorkoutsScreen |
+| R23 | Metadata Interval + TimerExecutionScreen |
+| R24 | duplicateWorkout copia rounds |
+| R25 | validateRounds + clamp persistencia |
+
+## Extension — Rondas globales del entrenamiento (R19–R25)
+
+### Datos y dominio
+
+- [x] Agregar `rounds` (1–99, default 1) a modelo Freezed `Workout` + regenerar. _(cubre R19)_
+- [x] Columna drift `workouts.rounds` + migracion schema **v7** (DEFAULT 1). _(cubre R19)_
+- [x] Mapper y `WorkoutRepository`: create default 1, `updateWorkoutRounds`, duplicate copia rounds. _(cubre R19, R24, R25)_
+- [x] `WorkoutValidators.validateRounds` + clamp en repo/controller. _(cubre R25)_
+- [x] Extender `flattenWorkout`: expandir pase × rounds; emitir `restAfterExerciseSeconds` del ultimo ejercicio del pase cuando hay ronda siguiente; sin trailing final rest tras ultima ronda; metadata `roundIndex`/`roundCount` si rounds > 1. _(cubre R8, R19, R20, R23)_
+- [x] Actualizar `_global/05-data-model.md` y nota F32 vs F08 en `_global/06-roadmap-and-dependencies.md`. _(cubre R19)_
+
+### UI
+
+- [x] Strings ES en `ui_strings.dart` ("Rondas", helper, "Ronda X de Y", chip listado). _(cubre R21–R23)_
+- [x] Widget `WorkoutRoundsCard` elegante (gradiente/borde, icono loop, NumberStepper, chip ×N). _(cubre R21)_
+- [x] Integrar card en `WorkoutEditorScreen` + `updateRounds` en editor controller. _(cubre R21, R25)_
+- [x] Indicador en `MyWorkoutsScreen` solo si `rounds > 1`. _(cubre R22)_
+- [x] Etiqueta "Ronda X de Y" en `TimerExecutionScreen` cuando metadata presente. _(cubre R23)_
+
+### Tests
+
+- [x] **Unit — flattener rounds:** rounds=1 identico a hoy; rounds=3 con final rest del ultimo ejercicio entre pases; final rest 0 sin gap; sin trailing final rest tras ultima ronda; metadata round. _(cubre R19, R20, R23)_
+- [x] **Unit — repo:** create rounds=1; updateRounds; duplicate preserva rounds. _(cubre R19, R24)_
+- [x] **Unit — validators:** rounds 0/100 rechazados; 1 y 99 ok. _(cubre R25)_
+- [x] **Widget — listado:** no muestra chip si rounds=1; muestra si rounds>1. _(cubre R22)_
 
 ## Notas de secuenciacion
 
@@ -90,3 +126,5 @@ No iniciar tasks de este archivo hasta que F01 este en estado "Done".
 Orden recomendado: modelos/migracion → WorkoutFlattener → repository → providers → UI listado → UI editor → integracion TimerController → tests.
 
 **Post-feature:** la semantica de descanso final entre ejercicios y el campo `restAfterExerciseSeconds` se implementan en **F34** (`34-exercise-rest-between-and-final/`), que extiende el flattener y el form de esta feature sin reemplazar el resto del CRUD F32.
+
+**Rondas globales:** se implementan como extension de F32 (este archivo). F08 permanece para circuitos parciales (multi-select); no bloquear F08 ni redefinir `WorkoutCircuit`.

@@ -15,7 +15,9 @@ T _$identity<T>(T value) => value;
 mixin _$Interval {
 
  String get id; String get name; int get durationSeconds; int get colorArgb; IntervalType get type;/// Optional TTS phrase (F02). Null/blank → speak [name]. Max 80 chars in UI.
- String? get announceText;
+ String? get announceText;/// Ephemeral F32 workout-round metadata (1-based). Null when rounds == 1.
+ int? get roundIndex;/// Total workout rounds when [roundIndex] is set.
+ int? get roundCount;
 /// Create a copy of Interval
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +28,16 @@ $IntervalCopyWith<Interval> get copyWith => _$IntervalCopyWithImpl<Interval>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Interval&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.colorArgb, colorArgb) || other.colorArgb == colorArgb)&&(identical(other.type, type) || other.type == type)&&(identical(other.announceText, announceText) || other.announceText == announceText));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Interval&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.colorArgb, colorArgb) || other.colorArgb == colorArgb)&&(identical(other.type, type) || other.type == type)&&(identical(other.announceText, announceText) || other.announceText == announceText)&&(identical(other.roundIndex, roundIndex) || other.roundIndex == roundIndex)&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,durationSeconds,colorArgb,type,announceText);
+int get hashCode => Object.hash(runtimeType,id,name,durationSeconds,colorArgb,type,announceText,roundIndex,roundCount);
 
 @override
 String toString() {
-  return 'Interval(id: $id, name: $name, durationSeconds: $durationSeconds, colorArgb: $colorArgb, type: $type, announceText: $announceText)';
+  return 'Interval(id: $id, name: $name, durationSeconds: $durationSeconds, colorArgb: $colorArgb, type: $type, announceText: $announceText, roundIndex: $roundIndex, roundCount: $roundCount)';
 }
 
 
@@ -46,7 +48,7 @@ abstract mixin class $IntervalCopyWith<$Res>  {
   factory $IntervalCopyWith(Interval value, $Res Function(Interval) _then) = _$IntervalCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, int durationSeconds, int colorArgb, IntervalType type, String? announceText
+ String id, String name, int durationSeconds, int colorArgb, IntervalType type, String? announceText, int? roundIndex, int? roundCount
 });
 
 
@@ -63,7 +65,7 @@ class _$IntervalCopyWithImpl<$Res>
 
 /// Create a copy of Interval
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? durationSeconds = null,Object? colorArgb = null,Object? type = null,Object? announceText = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? durationSeconds = null,Object? colorArgb = null,Object? type = null,Object? announceText = freezed,Object? roundIndex = freezed,Object? roundCount = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -71,7 +73,9 @@ as String,durationSeconds: null == durationSeconds ? _self.durationSeconds : dur
 as int,colorArgb: null == colorArgb ? _self.colorArgb : colorArgb // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as IntervalType,announceText: freezed == announceText ? _self.announceText : announceText // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,roundIndex: freezed == roundIndex ? _self.roundIndex : roundIndex // ignore: cast_nullable_to_non_nullable
+as int?,roundCount: freezed == roundCount ? _self.roundCount : roundCount // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -156,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type,  String? announceText)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type,  String? announceText,  int? roundIndex,  int? roundCount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Interval() when $default != null:
-return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type,_that.announceText);case _:
+return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type,_that.announceText,_that.roundIndex,_that.roundCount);case _:
   return orElse();
 
 }
@@ -177,10 +181,10 @@ return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type,  String? announceText)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type,  String? announceText,  int? roundIndex,  int? roundCount)  $default,) {final _that = this;
 switch (_that) {
 case _Interval():
-return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type,_that.announceText);case _:
+return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type,_that.announceText,_that.roundIndex,_that.roundCount);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +201,10 @@ return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type,  String? announceText)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  int durationSeconds,  int colorArgb,  IntervalType type,  String? announceText,  int? roundIndex,  int? roundCount)?  $default,) {final _that = this;
 switch (_that) {
 case _Interval() when $default != null:
-return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type,_that.announceText);case _:
+return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.type,_that.announceText,_that.roundIndex,_that.roundCount);case _:
   return null;
 
 }
@@ -212,7 +216,7 @@ return $default(_that.id,_that.name,_that.durationSeconds,_that.colorArgb,_that.
 
 
 class _Interval implements Interval {
-  const _Interval({required this.id, required this.name, required this.durationSeconds, required this.colorArgb, this.type = IntervalType.work, this.announceText});
+  const _Interval({required this.id, required this.name, required this.durationSeconds, required this.colorArgb, this.type = IntervalType.work, this.announceText, this.roundIndex, this.roundCount});
   
 
 @override final  String id;
@@ -222,6 +226,10 @@ class _Interval implements Interval {
 @override@JsonKey() final  IntervalType type;
 /// Optional TTS phrase (F02). Null/blank → speak [name]. Max 80 chars in UI.
 @override final  String? announceText;
+/// Ephemeral F32 workout-round metadata (1-based). Null when rounds == 1.
+@override final  int? roundIndex;
+/// Total workout rounds when [roundIndex] is set.
+@override final  int? roundCount;
 
 /// Create a copy of Interval
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +241,16 @@ _$IntervalCopyWith<_Interval> get copyWith => __$IntervalCopyWithImpl<_Interval>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Interval&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.colorArgb, colorArgb) || other.colorArgb == colorArgb)&&(identical(other.type, type) || other.type == type)&&(identical(other.announceText, announceText) || other.announceText == announceText));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Interval&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.durationSeconds, durationSeconds) || other.durationSeconds == durationSeconds)&&(identical(other.colorArgb, colorArgb) || other.colorArgb == colorArgb)&&(identical(other.type, type) || other.type == type)&&(identical(other.announceText, announceText) || other.announceText == announceText)&&(identical(other.roundIndex, roundIndex) || other.roundIndex == roundIndex)&&(identical(other.roundCount, roundCount) || other.roundCount == roundCount));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,durationSeconds,colorArgb,type,announceText);
+int get hashCode => Object.hash(runtimeType,id,name,durationSeconds,colorArgb,type,announceText,roundIndex,roundCount);
 
 @override
 String toString() {
-  return 'Interval(id: $id, name: $name, durationSeconds: $durationSeconds, colorArgb: $colorArgb, type: $type, announceText: $announceText)';
+  return 'Interval(id: $id, name: $name, durationSeconds: $durationSeconds, colorArgb: $colorArgb, type: $type, announceText: $announceText, roundIndex: $roundIndex, roundCount: $roundCount)';
 }
 
 
@@ -253,7 +261,7 @@ abstract mixin class _$IntervalCopyWith<$Res> implements $IntervalCopyWith<$Res>
   factory _$IntervalCopyWith(_Interval value, $Res Function(_Interval) _then) = __$IntervalCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, int durationSeconds, int colorArgb, IntervalType type, String? announceText
+ String id, String name, int durationSeconds, int colorArgb, IntervalType type, String? announceText, int? roundIndex, int? roundCount
 });
 
 
@@ -270,7 +278,7 @@ class __$IntervalCopyWithImpl<$Res>
 
 /// Create a copy of Interval
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? durationSeconds = null,Object? colorArgb = null,Object? type = null,Object? announceText = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? durationSeconds = null,Object? colorArgb = null,Object? type = null,Object? announceText = freezed,Object? roundIndex = freezed,Object? roundCount = freezed,}) {
   return _then(_Interval(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -278,7 +286,9 @@ as String,durationSeconds: null == durationSeconds ? _self.durationSeconds : dur
 as int,colorArgb: null == colorArgb ? _self.colorArgb : colorArgb // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as IntervalType,announceText: freezed == announceText ? _self.announceText : announceText // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,roundIndex: freezed == roundIndex ? _self.roundIndex : roundIndex // ignore: cast_nullable_to_non_nullable
+as int?,roundCount: freezed == roundCount ? _self.roundCount : roundCount // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

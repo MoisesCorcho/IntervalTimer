@@ -13,6 +13,7 @@ import 'package:interval_timer/features/workout_builder/application/workout_prov
 import 'package:interval_timer/features/workout_builder/domain/workout_flattener.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 import 'package:interval_timer/features/workout_builder/presentation/widgets/exercise_form.dart';
+import 'package:interval_timer/features/workout_builder/presentation/widgets/workout_rounds_card.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
@@ -255,80 +256,120 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
           return Column(
             children: [
               Expanded(
-                child: workout.exercises.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppTheme.spacingLg),
-                          child: Text(
-                            UiStrings.emptyWorkoutStart,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleMedium,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppTheme.spacingMd,
+                        AppTheme.spacingMd,
+                        AppTheme.spacingMd,
+                        AppTheme.spacingSm,
+                      ),
+                      sliver: SliverToBoxAdapter(
+                        child: WorkoutRoundsCard(
+                          key: const Key('workout_rounds_card'),
+                          rounds: workout.rounds,
+                          enabled: canEdit,
+                          onChanged: (value) async {
+                            final ok = await _editor.updateRounds(value);
+                            if (!ok && mounted) {
+                              _showPersistenceError(
+                                () => _editor.updateRounds(value),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    if (workout.exercises.isEmpty)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(AppTheme.spacingLg),
+                            child: Text(
+                              UiStrings.emptyWorkoutStart,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
                           ),
                         ),
                       )
-                    : ReorderableListView.builder(
-                        padding: const EdgeInsets.all(AppTheme.spacingMd),
-                        itemCount: workout.exercises.length,
-                        onReorder: (oldIndex, newIndex) async {
-                          if (!canEdit) return;
-                          if (newIndex > oldIndex) newIndex--;
-                          final ids = workout.exercises
-                              .map((e) => e.id)
-                              .toList();
-                          final moved = ids.removeAt(oldIndex);
-                          ids.insert(newIndex, moved);
-                          final ok = await _editor.reorderExercises(ids);
-                          if (!ok && mounted) {
-                            _showPersistenceError(
-                              () => _editor.reorderExercises(ids),
-                            );
-                          }
-                        },
-                        itemBuilder: (context, index) {
-                          final exercise = workout.exercises[index];
-                          return Card(
-                            key: ValueKey(exercise.id),
-                            child: ListTile(
-                              onTap: canEdit
-                                  ? () => _showExerciseSheet(
-                                        existing: exercise,
-                                      )
-                                  : null,
-                              title: Text(exercise.name),
-                              subtitle: Text(
-                                '${exercise.sets} sets · '
-                                '${formatDurationMmSs(exercise.workSeconds)} · '
-                                'entre ${formatDurationMmSs(exercise.restSeconds)}'
-                                '${exercise.restAfterExerciseSeconds > 0 ? ' · final ${formatDurationMmSs(exercise.restAfterExerciseSeconds)}' : ''}',
-                              ),
-                              trailing: canEdit
-                                  ? Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(Icons.drag_handle),
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.delete_outline,
+                    else
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(
+                          AppTheme.spacingMd,
+                          0,
+                          AppTheme.spacingMd,
+                          AppTheme.spacingMd,
+                        ),
+                        sliver: SliverReorderableList(
+                          itemCount: workout.exercises.length,
+                          onReorder: (oldIndex, newIndex) async {
+                            if (!canEdit) return;
+                            if (newIndex > oldIndex) newIndex--;
+                            final ids =
+                                workout.exercises.map((e) => e.id).toList();
+                            final moved = ids.removeAt(oldIndex);
+                            ids.insert(newIndex, moved);
+                            final ok = await _editor.reorderExercises(ids);
+                            if (!ok && mounted) {
+                              _showPersistenceError(
+                                () => _editor.reorderExercises(ids),
+                              );
+                            }
+                          },
+                          itemBuilder: (context, index) {
+                            final exercise = workout.exercises[index];
+                            return Card(
+                              key: ValueKey(exercise.id),
+                              child: ListTile(
+                                onTap: canEdit
+                                    ? () => _showExerciseSheet(
+                                          existing: exercise,
+                                        )
+                                    : null,
+                                title: Text(exercise.name),
+                                subtitle: Text(
+                                  '${exercise.sets} sets · '
+                                  '${formatDurationMmSs(exercise.workSeconds)} · '
+                                  'entre ${formatDurationMmSs(exercise.restSeconds)}'
+                                  '${exercise.restAfterExerciseSeconds > 0 ? ' · final ${formatDurationMmSs(exercise.restAfterExerciseSeconds)}' : ''}',
+                                ),
+                                trailing: canEdit
+                                    ? Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          ReorderableDragStartListener(
+                                            index: index,
+                                            child: const Icon(Icons.drag_handle),
                                           ),
-                                          onPressed: () async {
-                                            final ok = await _editor
-                                                .deleteExercise(exercise.id);
-                                            if (!ok && mounted) {
-                                              _showPersistenceError(
-                                                () => _editor.deleteExercise(
-                                                  exercise.id,
-                                                ),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    )
-                                  : null,
-                            ),
-                          );
-                        },
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.delete_outline,
+                                            ),
+                                            onPressed: () async {
+                                              final ok = await _editor
+                                                  .deleteExercise(exercise.id);
+                                              if (!ok && mounted) {
+                                                _showPersistenceError(
+                                                  () => _editor.deleteExercise(
+                                                    exercise.id,
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      )
+                                    : null,
+                              ),
+                            );
+                          },
+                        ),
                       ),
+                  ],
+                ),
               ),
               if (_actionError != null)
                 Padding(

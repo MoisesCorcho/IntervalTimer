@@ -37,6 +37,18 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
     });
   }
 
+  Future<bool> updateRounds(int rounds) async {
+    if (!canEdit) return false;
+    final clamped = WorkoutValidators.clampRounds(rounds);
+    if (WorkoutValidators.validateRounds(clamped) != null) return false;
+
+    return _persist(() async {
+      final repo = ref.read(workoutRepositoryProvider);
+      await repo.updateWorkoutRounds(arg, clamped);
+      return (await repo.getWorkout(arg))!;
+    });
+  }
+
   Future<bool> addExercise({
     required String name,
     required int sets,
