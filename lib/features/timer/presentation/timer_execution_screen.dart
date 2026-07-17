@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
-import 'package:interval_timer/core/utils/contrast_text_color.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
+import 'package:interval_timer/core/utils/execution_chrome.dart';
 import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
 import 'package:interval_timer/features/always_on/domain/always_on_controller.dart';
@@ -132,12 +132,17 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
 
     final current = timerState.currentInterval;
     final isPrep = timerState.isInPreparation;
-    final bgColor = isPrep
-        ? (timerState.nextInterval != null
-            ? Color(timerState.nextInterval!.colorArgb)
-            : Theme.of(context).colorScheme.surfaceContainerHighest)
-        : Color(current?.colorArgb ?? 0xFF4CAF50);
-    final textColor = contrastTextColor(bgColor);
+    // Phase color + chrome: brand work/rest always dark fill + white text/ring
+    // (F35), independent of app light/dark theme and of light colorArgb leftovers.
+    final phaseInterval = isPrep ? timerState.nextInterval : current;
+    final bgColor = executionBackgroundColor(
+      interval: phaseInterval,
+      prepFallback: Theme.of(context).colorScheme.surfaceContainerHighest,
+    );
+    final textColor = executionChromeColor(
+      background: bgColor,
+      type: phaseInterval?.type,
+    );
     final segmentTimeText = formatRemainingMs(timerState.remainingMs);
     final totalTimeText = formatTotalRemainingMs(timerState.totalRemainingMs);
     final phaseName = isPrep
@@ -466,7 +471,7 @@ class _RectControlButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: bg,
           borderRadius: borderRadius,
-          boxShadow: enabled ? AppTheme.buttonOuterShadow : null,
+          boxShadow: enabled ? AppTheme.buttonShadowFor(context) : null,
         ),
         child: Material(
           type: MaterialType.transparency,

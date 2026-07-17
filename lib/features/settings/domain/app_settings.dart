@@ -1,5 +1,7 @@
-/// Global app settings (F35+ / F02 voice / F18 vibration / F19 always-on / F20).
-/// Lightweight value object — not Drift.
+import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
+
+/// Global app settings (F35+ / F02 voice / F18 vibration / F19 always-on / F20 / F27).
+/// Lightweight value object — not Drift. Pure domain (no Flutter imports).
 class AppSettings {
   const AppSettings({
     required this.prepSeconds,
@@ -12,6 +14,7 @@ class AppSettings {
     this.vibrationCountdownSeconds = 3,
     this.keepScreenOnEnabled = true,
     this.sessionLockScreenEnabled = true,
+    this.themeMode = AppThemeMode.system,
   });
 
   /// Seconds of preparation before the first interval (0–60).
@@ -44,6 +47,9 @@ class AppSettings {
   /// Ongoing session notification / Live Activity surface (F20).
   final bool sessionLockScreenEnabled;
 
+  /// Theme preference: light, dark, or follow system (F27).
+  final AppThemeMode themeMode;
+
   AppSettings copyWith({
     int? prepSeconds,
     bool? voiceEnabled,
@@ -55,6 +61,7 @@ class AppSettings {
     int? vibrationCountdownSeconds,
     bool? keepScreenOnEnabled,
     bool? sessionLockScreenEnabled,
+    AppThemeMode? themeMode,
   }) {
     return AppSettings(
       prepSeconds: prepSeconds ?? this.prepSeconds,
@@ -72,6 +79,7 @@ class AppSettings {
       keepScreenOnEnabled: keepScreenOnEnabled ?? this.keepScreenOnEnabled,
       sessionLockScreenEnabled:
           sessionLockScreenEnabled ?? this.sessionLockScreenEnabled,
+      themeMode: themeMode ?? this.themeMode,
     );
   }
 
@@ -88,7 +96,8 @@ class AppSettings {
             other.vibrationOnCountdown == vibrationOnCountdown &&
             other.vibrationCountdownSeconds == vibrationCountdownSeconds &&
             other.keepScreenOnEnabled == keepScreenOnEnabled &&
-            other.sessionLockScreenEnabled == sessionLockScreenEnabled);
+            other.sessionLockScreenEnabled == sessionLockScreenEnabled &&
+            other.themeMode == themeMode);
   }
 
   @override
@@ -103,5 +112,6 @@ class AppSettings {
         vibrationCountdownSeconds,
         keepScreenOnEnabled,
         sessionLockScreenEnabled,
+        themeMode,
       );
 }

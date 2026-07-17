@@ -34,6 +34,29 @@ abstract final class AppTheme {
     ),
   ];
 
+  /// Dark mode shadow — white tint for visibility on dark surfaces.
+  static const buttonOuterShadowDark = [
+    BoxShadow(
+      color: Color(0x26FFFFFF), // ~15% white
+      blurRadius: 6,
+      offset: Offset(0, 4),
+      spreadRadius: -1,
+    ),
+    BoxShadow(
+      color: Color(0x26FFFFFF),
+      blurRadius: 4,
+      offset: Offset(0, 2),
+      spreadRadius: -2,
+    ),
+  ];
+
+  /// Returns the appropriate button shadow for the current theme brightness.
+  static List<BoxShadow> buttonShadowFor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? buttonOuterShadowDark
+        : buttonOuterShadow;
+  }
+
   /// Default interval colors per type (ARGB).
   /// Work/rest use deeper tones so execution UI text/ring stay white
   /// ([contrastTextColor] → white when luminance ≤ 0.179), matching routine
@@ -48,6 +71,42 @@ abstract final class AppTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: const Color(0xFF4CAF50),
       brightness: Brightness.light,
+    );
+
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      appBarTheme: AppBarTheme(
+        centerTitle: true,
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
+      ),
+      cardTheme: CardThemeData(
+        elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radiusSm),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: spacingMd,
+          vertical: spacingSm,
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+      ),
+    );
+  }
+
+  static ThemeData dark() {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFF4CAF50),
+      brightness: Brightness.dark,
     );
 
     return ThemeData(

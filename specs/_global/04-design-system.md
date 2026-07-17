@@ -26,7 +26,15 @@ Definir en `core/theme/app_theme.dart`. Los widgets consumen via `Theme.of(conte
 | `radius.sm/md/lg` | 8 / 12 / 16 dp | Cards, botones, campos |
 | `timerDisplay` | `headlineLarge` + fuente mono tabular | Contador mm:ss |
 
-F27 agrega variantes dark de cada token; este documento es la fuente de verdad de nombres y proposito.
+### Dark mode (F27)
+
+- **Implementacion:** `AppTheme.light()` y `AppTheme.dark()` en `lib/core/theme/app_theme.dart`.
+- **Enfoque:** ambos usan `ColorScheme.fromSeed(seedColor: Color(0xFF4CAF50), brightness: …)` — no hay tabla manual de tokens dark; Material 3 genera la paleta desde el mismo seed.
+- **Spacing / radius / button geometry:** independientes del tema (mismas constantes).
+- **Sombras de boton:** `AppTheme.buttonOuterShadow` (light) y `buttonOuterShadowDark` (white-tint); consumir via `AppTheme.buttonShadowFor(context)`.
+- **Colores de intervalo** (`warmupColor`, `workColor`, etc.): fijos por tipo (fondo de ejecucion); texto via `contrastTextColor`.
+- **Chrome in-app:** widgets deben usar `Theme.of(context)` / `colorScheme` (R8). Excepcion documentada en F27: assets exportados de share (F16) pueden usar paleta de marca fija.
+- **Fuente de verdad de nombres y proposito:** este documento + `AppTheme`.
 
 ## Color
 

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
+import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 
 void main() {
   group('SettingsRepository', () {
@@ -42,6 +43,33 @@ void main() {
       await repo.setPrepSeconds(25);
       final again = SettingsRepository(PreferencesRepository(db));
       expect(await again.getPrepSeconds(), 25);
+    });
+
+    test('default themeMode is system when preference absent', () async {
+      expect(await repo.getThemeMode(), AppThemeMode.system);
+    });
+
+    test('set and get themeMode light', () async {
+      await repo.setThemeMode(AppThemeMode.light);
+      expect(await repo.getThemeMode(), AppThemeMode.light);
+    });
+
+    test('set and get themeMode dark', () async {
+      await repo.setThemeMode(AppThemeMode.dark);
+      expect(await repo.getThemeMode(), AppThemeMode.dark);
+    });
+
+    test('themeMode survives re-read', () async {
+      await repo.setThemeMode(AppThemeMode.dark);
+      final again = SettingsRepository(PreferencesRepository(db));
+      expect(await again.getThemeMode(), AppThemeMode.dark);
+    });
+
+    test('preferences layer stores theme_mode as string', () async {
+      final prefs = PreferencesRepository(db);
+      await repo.setThemeMode(AppThemeMode.dark);
+      expect(await prefs.getThemeMode(), 'dark');
+      expect(await prefs.getString(PreferencesRepository.themeModeKey), 'dark');
     });
   });
 }

@@ -5,6 +5,7 @@ import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
+import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 import 'package:interval_timer/features/always_on/presentation/keep_screen_on_settings_section.dart';
 import 'package:interval_timer/features/lock_screen/presentation/session_lock_screen_settings_section.dart';
 import 'package:interval_timer/features/vibration/presentation/vibration_settings_section.dart';
@@ -64,6 +65,38 @@ class _SettingsBody extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(AppTheme.spacingMd),
       children: [
+        Text(
+          UiStrings.themeLabel,
+          style: theme.textTheme.titleMedium,
+        ),
+        const SizedBox(height: AppTheme.spacingSm),
+        SegmentedButton<AppThemeMode>(
+          key: const Key('theme_segmented_button'),
+          segments: const [
+            ButtonSegment<AppThemeMode>(
+              value: AppThemeMode.light,
+              label: Text(UiStrings.themeLight),
+              icon: Icon(Icons.light_mode),
+            ),
+            ButtonSegment<AppThemeMode>(
+              value: AppThemeMode.dark,
+              label: Text(UiStrings.themeDark),
+              icon: Icon(Icons.dark_mode),
+            ),
+            ButtonSegment<AppThemeMode>(
+              value: AppThemeMode.system,
+              label: Text(UiStrings.themeSystem),
+              icon: Icon(Icons.settings_brightness),
+            ),
+          ],
+          selected: {settings.themeMode},
+          onSelectionChanged: (selected) {
+            ref
+                .read(settingsControllerProvider.notifier)
+                .setThemeMode(selected.first);
+          },
+        ),
+        const SizedBox(height: AppTheme.spacingLg),
         Text(
           UiStrings.prepSecondsLabel,
           style: theme.textTheme.titleMedium,

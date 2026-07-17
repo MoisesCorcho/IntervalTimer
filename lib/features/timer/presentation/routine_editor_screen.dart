@@ -31,7 +31,9 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
     final editor = ref.read(routineEditorProvider.notifier);
     if (!editor.canEdit) return;
 
-    final defaultColor = Theme.of(context).colorScheme.primary.toARGB32();
+    // Brand work green (dark enough for white execution chrome) — never Theme
+    // primary, which is light mint under dark mode and forces black timer text.
+    final defaultColor = AppTheme.workColor.toARGB32();
 
     await showModalBottomSheet<void>(
       context: context,

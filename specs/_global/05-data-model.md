@@ -159,6 +159,16 @@ Misma semantica de store que F02/F18/F19/F35 (`PreferencesRepository` / `app_pre
 
 No requiere tabla drift nueva en F20 (solo key-value en `app_preferences`). Canales de notificacion de sesion deben ser distintos de los de recordatorios F14 (ver design F20).
 
+### Preferencias F27 (tema / modo oscuro — globales)
+
+Misma semantica de store que F02/F18/F19/F20/F35 (`PreferencesRepository` / `app_preferences`). Claves estables; no por rutina. **Independientes** de las demas preferencias de settings.
+
+| Clave | Tipo | Default | Valores | Uso |
+|---|---|---|---|---|
+| `theme_mode` | `string` | `system` | `light` \| `dark` \| `system` | Preferencia de tema de la app (F27). `system` = seguir tema del SO. Persistido como string en Drift; el dominio usa `AppThemeMode` y el mapeo a Flutter `ThemeMode` ocurre solo en `App` / presentacion. |
+
+No requiere tabla drift nueva en F27 (solo key-value en `app_preferences`).
+
 ### Schema F05 (drift) — migracion v2
 
 Columnas aditivas en `routines`:
