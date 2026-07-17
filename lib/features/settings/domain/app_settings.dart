@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 
 /// Global app settings (F35+ / F02 voice / F18 vibration / F19 always-on / F20 / F27).
-/// Lightweight value object — not Drift.
+/// Lightweight value object — not Drift. Pure domain (no Flutter imports).
 class AppSettings {
   const AppSettings({
     required this.prepSeconds,
@@ -14,7 +14,7 @@ class AppSettings {
     this.vibrationCountdownSeconds = 3,
     this.keepScreenOnEnabled = true,
     this.sessionLockScreenEnabled = true,
-    this.themeMode = ThemeMode.system,
+    this.themeMode = AppThemeMode.system,
   });
 
   /// Seconds of preparation before the first interval (0–60).
@@ -47,8 +47,8 @@ class AppSettings {
   /// Ongoing session notification / Live Activity surface (F20).
   final bool sessionLockScreenEnabled;
 
-  /// Theme mode: light, dark, or follow system (F27).
-  final ThemeMode themeMode;
+  /// Theme preference: light, dark, or follow system (F27).
+  final AppThemeMode themeMode;
 
   AppSettings copyWith({
     int? prepSeconds,
@@ -61,7 +61,7 @@ class AppSettings {
     int? vibrationCountdownSeconds,
     bool? keepScreenOnEnabled,
     bool? sessionLockScreenEnabled,
-    ThemeMode? themeMode,
+    AppThemeMode? themeMode,
   }) {
     return AppSettings(
       prepSeconds: prepSeconds ?? this.prepSeconds,

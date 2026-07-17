@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart';
 import 'package:interval_timer/data/local/database.dart';
 
 class PreferencesRepository {
@@ -13,7 +12,8 @@ class PreferencesRepository {
   static const defaultPrepSeconds = 10;
   static const minPrepSeconds = 0;
   static const maxPrepSeconds = 60;
-  static const defaultThemeMode = ThemeMode.system;
+  /// Storage default for F27 theme preference (`light` | `dark` | `system`).
+  static const defaultThemeMode = 'system';
 
   // F02 voice prefs
   static const voiceEnabledKey = 'voice_enabled';
@@ -186,17 +186,25 @@ class PreferencesRepository {
   Future<void> setSessionLockScreenEnabled(bool value) =>
       setBool(sessionLockScreenEnabledKey, value);
 
-  /// F27: theme mode preference (default: follow system).
-  Future<ThemeMode> getThemeMode() async {
+  /// F27: theme mode preference as storage string (default: `system`).
+  ///
+  /// Valid values: `light`, `dark`, `system`. Unknown/null → [defaultThemeMode].
+  /// Domain mapping lives in settings layer (no Flutter / domain types here).
+  Future<String> getThemeMode() async {
     final raw = await getString(themeModeKey);
     return switch (raw) {
-      'light' => ThemeMode.light,
-      'dark' => ThemeMode.dark,
+      'light' => 'light',
+      'dark' => 'dark',
+      'system' => 'system',
       _ => defaultThemeMode,
     };
   }
 
-  Future<void> setThemeMode(ThemeMode mode) async {
-    await setString(themeModeKey, mode.name);
+  Future<void> setThemeMode(String mode) async {
+    final value =
+        (mode == 'light' || mode == 'dark' || mode == 'system')
+            ? mode
+            : defaultThemeMode;
+    await setString(themeModeKey, value);
   }
 }

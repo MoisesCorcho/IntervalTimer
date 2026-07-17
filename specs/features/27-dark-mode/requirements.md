@@ -57,13 +57,18 @@ DONDE el usuario esta en la pantalla de ejecucion del timer, EL SISTEMA DEBE cal
 
 #### R8 — Sin colores hardcodeados en widgets
 
-EL SISTEMA DEBE prohibir colores ARGB hardcodeados en widgets; todo color DEBE consumirse via `Theme.of(context)` o desde constantes del design system que dependan del tema.
+EL SISTEMA DEBE prohibir colores ARGB hardcodeados en **chrome in-app** (pantallas, cards, botones, listas, chrome de navegacion); todo color DEBE consumirse via `Theme.of(context)` o desde constantes del design system que dependan del tema (`AppTheme`, `ColorScheme`).
+
+**Excepciones explicitas (no violan R8):**
+- **Colores de intervalo por tipo** (`warmupColor`, `workColor`, `restColor`, `stretchColor`): constantes de marca usadas como fondo de segmento; el texto se resuelve con `contrastTextColor`.
+- **Assets exportados de share (F16):** plantillas / arte de `session_share_studio` y tarjetas de share pueden usar paleta de marca fija para el **bitmap exportado**, de modo que la imagen compartida no dependa del tema del dispositivo. El chrome de la app que rodea el flujo de share sigue R8 (theme tokens).
 
 ## Fuera de alcance (explicito)
 
 - Cambios de animaciones, motion o transiciones no especificados aqui.
 - Cambios de layout o posicionamiento de widgets.
 - Temas personalizados o seleccion de color primario por el usuario.
+- Rebranding de export share (F16) para seguir el tema del SO — fuera de alcance; se mantiene paleta fija de marca en el asset exportado.
 - Cualquier comportamiento no listado arriba se considera fuera de alcance para esta version de la feature.
 
 ## Referencias

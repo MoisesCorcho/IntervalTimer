@@ -11,8 +11,8 @@ La app ya cuenta con:
 - `AppTheme.light()` en `lib/core/theme/app_theme.dart` (tokens de spacing, radius, button, interval colors).
 - `PreferencesRepository` en `lib/data/repositories/preferences_repository.dart` (Drift `app_preferences`, patron get/set generico).
 - `SettingsController` (AsyncNotifier) + `SettingsRepository` + `AppSettings` en `features/settings/`.
-- `SettingsScreen` con un unico control (`prepSeconds`).
-- `App` widget en `lib/app/app.dart` con `MaterialApp.router(theme: AppTheme.light())`.
+- `SettingsScreen` con controles de prep / voz / vibracion / always-on / lock screen.
+- `App` widget en `lib/app/app.dart` con `MaterialApp.router`.
 
 ## Decisiones de diseno
 
@@ -23,11 +23,16 @@ Valores almacenados como string: `"light"`, `"dark"`, `"system"` (default).
 
 No se agrega tabla nueva — se reutiliza `app_preferences` (schema v4 existente, sin migracion).
 
-### D2 — ThemeMode en Riverpod (criterio R2, R5)
+**Pureza de capas:** `PreferencesRepository` solo lee/escribe **string** (sin import de Flutter). El mapeo a dominio ocurre en settings.
 
-- `AppSettings` se extiende con un campo `ThemeMode themeMode`.
-- `SettingsController` expone `Future<void> setThemeMode(ThemeMode)`.
-- `App` widget lee `settingsControllerProvider` y pasa `themeMode:` a `MaterialApp.router`.
+### D2 — Dominio `AppThemeMode` + Riverpod (criterio R2, R5)
+
+- Enum de dominio puro `AppThemeMode { light, dark, system }` en `features/settings/domain/app_theme_mode.dart` (sin Flutter).
+- `AppSettings.themeMode` es `AppThemeMode` (domain puro; sin `package:flutter`).
+- `SettingsRepository` mapea string ↔ `AppThemeMode` (`fromStorage` / `storageValue`).
+- `SettingsController` expone `Future<void> setThemeMode(AppThemeMode)`.
+- `App` widget mapea `AppThemeMode` → Flutter `ThemeMode` solo al pasar `themeMode:` a `MaterialApp.router`.
+- `SettingsScreen` usa `SegmentedButton<AppThemeMode>` (presentacion puede usar Flutter UI, pero el valor es de dominio).
 
 Flutter maneja automaticamente el seguimiento del tema del sistema cuando `themeMode == ThemeMode.system`, sin necesidad de `WidgetsBindingObserver`.
 
@@ -44,12 +49,13 @@ ColorScheme.fromSeed(
 
 Los tokens de spacing, radius, button son independientes del tema (no cambian).
 Los colores de intervalo (warmup, work, rest, stretch) son fijos por tipo — no cambian entre temas.
-La sombra de botones (`buttonOuterShadow`) puede necesitar ajuste de opacidad en dark.
+Sombra de botones: `buttonOuterShadow` (light) + `buttonOuterShadowDark` (white-tint); helper `buttonShadowFor(context)`.
 
 ### D4 — Selector de tema en SettingsScreen (criterio R1)
 
-Agregar un `SegmentedButton<ThemeMode>` (Material 3) con tres opciones: Claro / Oscuro / Sistema.
+Agregar un `SegmentedButton<AppThemeMode>` (Material 3) con tres opciones: Claro / Oscuro / Seguir sistema.
 Posicion: encima del control de `prepSeconds` existente.
+Copy: `UiStrings.themeSystem = 'Seguir sistema'` (alineado a R1).
 
 ### D5 — Contraste dinamico en dark mode (criterio R7)
 
@@ -59,17 +65,23 @@ La funcion no necesita cambios — el contraste se recalcula al rebuild del widg
 
 Verificar en `timer_execution_screen.dart` que el texto/nombre del intervalo use `contrastTextColor(interval.color)` y no un color fijo.
 
+### D6 — Excepcion R8: export share F16 (criterio R8)
+
+El chrome in-app debe usar theme tokens. Las plantillas / arte de export share (F16 — `session_share_studio`, share card templates) pueden conservar paleta de marca fija en el **bitmap exportado**, para que la imagen compartida sea estable y no cambie con el tema del dispositivo. Documentado en requirements R8.
+
 ## Archivos a modificar
 
 | Archivo | Cambio |
 |---|---|
-| `lib/core/theme/app_theme.dart` | Agregar `static ThemeData dark()` con `Brightness.dark` |
-| `lib/data/repositories/preferences_repository.dart` | Agregar `themeModeKey`, `getThemeMode()`, `setThemeMode(ThemeMode)` |
-| `lib/features/settings/domain/app_settings.dart` | Agregar campo `ThemeMode themeMode` |
-| `lib/features/settings/data/settings_repository.dart` | Agregar `getThemeMode()`, `setThemeMode(ThemeMode)` |
-| `lib/features/settings/application/settings_controller.dart` | Agregar `setThemeMode(ThemeMode)` |
-| `lib/features/settings/presentation/settings_screen.dart` | Agregar `SegmentedButton<ThemeMode>` |
-| `lib/app/app.dart` | Agregar `darkTheme: AppTheme.dark()`, `themeMode:` desde settings |
+| `lib/core/theme/app_theme.dart` | `static ThemeData dark()`, sombras dark, `buttonShadowFor` |
+| `lib/features/settings/domain/app_theme_mode.dart` | Enum puro `AppThemeMode` + fromStorage |
+| `lib/data/repositories/preferences_repository.dart` | `themeModeKey`, get/set **string** (sin Flutter) |
+| `lib/features/settings/domain/app_settings.dart` | Campo `AppThemeMode themeMode` (sin Flutter) |
+| `lib/features/settings/data/settings_repository.dart` | get/set `AppThemeMode` |
+| `lib/features/settings/application/settings_controller.dart` | `setThemeMode(AppThemeMode)` |
+| `lib/features/settings/presentation/settings_screen.dart` | `SegmentedButton<AppThemeMode>` |
+| `lib/app/app.dart` | `darkTheme: AppTheme.dark()`, map `AppThemeMode` → `ThemeMode` |
+| `lib/core/constants/ui_strings.dart` | Labels de tema (incl. "Seguir sistema") |
 
 ## Diagrama de flujo
 
@@ -77,12 +89,12 @@ Verificar en `timer_execution_screen.dart` que el texto/nombre del intervalo use
 Usuario abre Ajustes
         |
         v
-SegmentedButton (Claro / Oscuro / Sistema)
+SegmentedButton (Claro / Oscuro / Seguir sistema)
         |
         v
-SettingsController.setThemeMode(mode)
+SettingsController.setThemeMode(AppThemeMode.dark)
         |
-        +---> PreferencesRepository.setThemeMode("dark")
+        +---> SettingsRepository → PreferencesRepository.setThemeMode("dark")
         |         |
         |         v
         |     Drift app_preferences (key: "theme_mode", value: "dark")
@@ -96,7 +108,7 @@ SettingsController.setThemeMode(mode)
             MaterialApp.router(
               theme: AppTheme.light(),
               darkTheme: AppTheme.dark(),
-              themeMode: ThemeMode.dark,  <-- desde settings
+              themeMode: ThemeMode.dark,  <-- map desde AppThemeMode
             )
                   |
                   v
@@ -105,13 +117,15 @@ SettingsController.setThemeMode(mode)
 
 ## Riesgos y consideraciones
 
-- **Colores hardcodeados existentes:** auditar todos los widgets en `lib/` y `lib/shared/widgets/` para reemplazar hex fijos por `Theme.of(context)`. Los colores de intervalo (`warmupColor`, `workColor`, etc.) son correctos como constantes porque se usan como fondo y el texto se calcula con `contrastTextColor`.
-- **Sombra de botones en dark:** `buttonOuterShadow` usa `Color(0x1A000000)` (negro 10%). En fondo oscuro puede no ser visible. Considerar `Color(0x33FFFFFF)` (blanco 20%) para dark.
+- **Colores hardcodeados en chrome:** auditar widgets in-app; reemplazar hex fijos por `Theme.of(context)` / `colorScheme`. Interval colors y export share F16 son excepciones documentadas (R8).
+- **Sombra de botones en dark:** `buttonOuterShadowDark` con tint blanco; consumir via `buttonShadowFor`.
 - **CountdownRing y ProgressBar:** verificar que usan el color del intervalo (no hardcoded) y que el anillo de fondo respeta el tema.
 - **No requiere migracion Drift** — se reutiliza `app_preferences` existente.
+- **Pureza data/domain:** no importar `package:flutter` en `PreferencesRepository` ni en `AppSettings` por ThemeMode.
 
 ## Alternativas consideradas
 
 - **shared_preferences:** descartado porque el proyecto unifico preferencias en Drift `app_preferences` desde F32/F35.
 - **Package `dynamic_theme`:** descartado; Flutter 3 soporta `themeMode` nativamente en `MaterialApp`.
 - **ColorScheme.fromSeed vs ColorScheme.dark():** se elige `fromSeed` con mismo seed que light para mantener coherencia de marca entre temas.
+- **ThemeMode en dominio:** descartado; viola pureza de capas. Se usa `AppThemeMode` + map en `App`.

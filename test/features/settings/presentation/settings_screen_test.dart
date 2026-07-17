@@ -2,12 +2,14 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
 import 'package:interval_timer/features/lock_screen/domain/no_op_session_surface_driver.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
+import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 import 'package:interval_timer/features/settings/presentation/settings_screen.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
@@ -72,9 +74,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('theme_segmented_button')), findsOneWidget);
-      expect(find.text('Claro'), findsOneWidget);
-      expect(find.text('Oscuro'), findsOneWidget);
-      expect(find.text('Sistema'), findsOneWidget);
+      expect(find.text(UiStrings.themeLight), findsOneWidget);
+      expect(find.text(UiStrings.themeDark), findsOneWidget);
+      expect(find.text(UiStrings.themeSystem), findsOneWidget);
+      expect(find.text('Seguir sistema'), findsOneWidget);
     });
 
     testWidgets('default theme selection is system', (tester) async {
@@ -86,10 +89,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final button = tester.widget<SegmentedButton<ThemeMode>>(
+      final button = tester.widget<SegmentedButton<AppThemeMode>>(
         find.byKey(const Key('theme_segmented_button')),
       );
-      expect(button.selected, {ThemeMode.system});
+      expect(button.selected, {AppThemeMode.system});
     });
 
     testWidgets('selecting dark persists and updates repo', (tester) async {
@@ -101,15 +104,15 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Oscuro'));
+      await tester.tap(find.text(UiStrings.themeDark));
       await tester.pumpAndSettle();
 
-      expect(await settingsRepo.getThemeMode(), ThemeMode.dark);
+      expect(await settingsRepo.getThemeMode(), AppThemeMode.dark);
 
-      final button = tester.widget<SegmentedButton<ThemeMode>>(
+      final button = tester.widget<SegmentedButton<AppThemeMode>>(
         find.byKey(const Key('theme_segmented_button')),
       );
-      expect(button.selected, {ThemeMode.dark});
+      expect(button.selected, {AppThemeMode.dark});
     });
   });
 }

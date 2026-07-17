@@ -62,7 +62,7 @@ abstract final class UiStrings {
   static const themeLabel = 'Tema';
   static const themeLight = 'Claro';
   static const themeDark = 'Oscuro';
-  static const themeSystem = 'Sistema';
+  static const themeSystem = 'Seguir sistema';
 
   // Voice (F02)
   static const voiceSectionTitle = 'Voz';

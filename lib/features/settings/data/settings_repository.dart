@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
+import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 
 /// Feature-facing settings store (F35 / F02 / F27).
 ///
@@ -97,7 +97,12 @@ class SettingsRepository {
   Future<void> setSessionLockScreenEnabled(bool value) =>
       _prefs.setSessionLockScreenEnabled(value);
 
-  Future<ThemeMode> getThemeMode() => _prefs.getThemeMode();
+  /// F27: maps storage string ↔ domain [AppThemeMode] (no Flutter ThemeMode).
+  Future<AppThemeMode> getThemeMode() async {
+    final raw = await _prefs.getThemeMode();
+    return AppThemeMode.fromStorage(raw);
+  }
 
-  Future<void> setThemeMode(ThemeMode mode) => _prefs.setThemeMode(mode);
+  Future<void> setThemeMode(AppThemeMode mode) =>
+      _prefs.setThemeMode(mode.storageValue);
 }

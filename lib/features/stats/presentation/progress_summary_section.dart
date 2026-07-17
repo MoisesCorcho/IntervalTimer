@@ -287,10 +287,10 @@ class StatMetricCard extends StatelessWidget {
               offset: const Offset(0, 4),
               spreadRadius: -2,
             ),
-            const BoxShadow(
-              color: Color(0x0F000000), // ~6% black — soft lift
+            BoxShadow(
+              color: scheme.shadow.withValues(alpha: 0.06),
               blurRadius: 6,
-              offset: Offset(0, 2),
+              offset: const Offset(0, 2),
               spreadRadius: -1,
             ),
           ],

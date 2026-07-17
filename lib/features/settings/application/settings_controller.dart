@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
+import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 
 class SettingsController extends AsyncNotifier<AppSettings> {
   @override
@@ -126,7 +126,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     state = AsyncData(current.copyWith(sessionLockScreenEnabled: value));
   }
 
-  Future<void> setThemeMode(ThemeMode mode) async {
+  Future<void> setThemeMode(AppThemeMode mode) async {
     await ref.read(settingsRepositoryProvider).setThemeMode(mode);
     final current =
         state.valueOrNull ?? const AppSettings(prepSeconds: 10);

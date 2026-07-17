@@ -7,6 +7,7 @@ import 'package:interval_timer/features/always_on/application/always_on_provider
 import 'package:interval_timer/features/calendar_history/application/session_history_listener.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
+import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 import 'package:interval_timer/features/vibration/application/vibration_providers.dart';
 import 'package:interval_timer/features/voice/application/voice_providers.dart';
 
@@ -27,7 +28,9 @@ class App extends ConsumerWidget {
     ref.watch(sessionLockScreenBootstrapProvider);
     final router = ref.watch(routerProvider);
     final settingsAsync = ref.watch(settingsControllerProvider);
-    final themeMode = settingsAsync.valueOrNull?.themeMode ?? ThemeMode.system;
+    final themeMode = _toFlutterThemeMode(
+      settingsAsync.valueOrNull?.themeMode ?? AppThemeMode.system,
+    );
 
     return MaterialApp.router(
       title: UiStrings.appTitle,
@@ -37,4 +40,13 @@ class App extends ConsumerWidget {
       routerConfig: router,
     );
   }
+}
+
+/// Maps domain [AppThemeMode] → Flutter [ThemeMode] at the app shell only.
+ThemeMode _toFlutterThemeMode(AppThemeMode mode) {
+  return switch (mode) {
+    AppThemeMode.light => ThemeMode.light,
+    AppThemeMode.dark => ThemeMode.dark,
+    AppThemeMode.system => ThemeMode.system,
+  };
 }
