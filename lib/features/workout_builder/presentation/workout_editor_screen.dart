@@ -221,6 +221,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
     return Scaffold(
       appBar: AppBar(
         title: workoutAsync.when(
+          skipLoadingOnReload: true,
           data: (workout) => Text(workout.name),
           loading: () => const Text(UiStrings.editWorkout),
           error: (_, __) => const Text(UiStrings.editWorkout),
@@ -236,6 +237,8 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
         ],
       ),
       body: workoutAsync.when(
+        // Keep editor mounted while reloading / mid-mutation if data exists.
+        skipLoadingOnReload: true,
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
           child: Column(

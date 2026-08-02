@@ -624,5 +624,30 @@ void main() {
       expect(result.length, 1);
       expect(result.first.roundIndex, isNull);
     });
+
+    test('rounds clamp: values above 99 behave as 99 passes', () {
+      final workout = _workoutWithExercises([
+        const WorkoutExercise(
+          id: 'ex-1',
+          workoutId: 'workout-1',
+          position: 0,
+          name: 'Solo',
+          sets: 1,
+          workSeconds: 10,
+          restSeconds: 0,
+        ),
+      ]).copyWith(rounds: 150);
+
+      final result = flattenWorkout(
+        workout,
+        workColorArgb: _workColor,
+        restColorArgb: _restColor,
+      );
+
+      expect(result.length, 99);
+      expect(result.first.roundIndex, 1);
+      expect(result.last.roundIndex, 99);
+      expect(result.every((i) => i.roundCount == 99), isTrue);
+    });
   });
 }
