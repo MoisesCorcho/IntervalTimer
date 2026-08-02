@@ -268,4 +268,15 @@ abstract final class UiStrings {
   static const deleteBlockedDuringSession =
       'Finaliza o cancela la sesión antes de eliminar un entrenamiento';
   static const exerciseCountLabel = '{count} ejercicios';
+
+  // Workout rounds (F32 extension)
+  static const workoutRoundsTitle = 'Rondas del entrenamiento';
+  static const workoutRoundsShort = 'Rondas';
+  static const workoutRoundsHelper =
+      'Todo el bloque de ejercicios se repite N veces';
+  static const workoutRoundsBlockChip = 'Todo el bloque × {count}';
+  static const workoutRoundsListLabel = '{count} rondas';
+  static const workoutRoundProgress = 'Ronda {current} de {total}';
+  static const workoutRoundsInvalid =
+      'Las rondas deben estar entre 1 y 99';
 }

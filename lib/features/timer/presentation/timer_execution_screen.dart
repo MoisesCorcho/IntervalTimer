@@ -185,6 +185,22 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
                         color: textColor.withValues(alpha: 0.85),
                       ),
                 ),
+                if (current?.roundCount != null &&
+                    current!.roundCount! > 1 &&
+                    current.roundIndex != null) ...[
+                  const SizedBox(height: AppTheme.spacingXs),
+                  Text(
+                    UiStrings.workoutRoundProgress
+                        .replaceAll('{current}', '${current.roundIndex}')
+                        .replaceAll('{total}', '${current.roundCount}'),
+                    key: const Key('workout_round_progress'),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: textColor.withValues(alpha: 0.9),
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.3,
+                        ),
+                  ),
+                ],
               ],
               const Spacer(),
               CountdownRing(

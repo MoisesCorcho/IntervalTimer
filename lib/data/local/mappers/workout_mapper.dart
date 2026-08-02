@@ -11,6 +11,7 @@ domain.Workout mapWorkoutRow(
     name: row.name,
     createdAt: DateTime.fromMillisecondsSinceEpoch(row.createdAt, isUtc: true),
     updatedAt: DateTime.fromMillisecondsSinceEpoch(row.updatedAt, isUtc: true),
+    rounds: row.rounds,
     exercises: exerciseRows
         .map(
           (e) => domain.WorkoutExercise(

@@ -111,5 +111,41 @@ void main() {
       final loaded = await repo.getWorkout(workout.id);
       expect(loaded!.exercises.first.restAfterExerciseSeconds, 0);
     });
+
+    test('create workout defaults rounds to 1', () async {
+      final workout = await repo.createWorkout('Rounds default');
+      expect(workout.rounds, 1);
+      final loaded = await repo.getWorkout(workout.id);
+      expect(loaded!.rounds, 1);
+    });
+
+    test('updateWorkoutRounds persists clamped value', () async {
+      final workout = await repo.createWorkout('Rounds update');
+      await repo.updateWorkoutRounds(workout.id, 4);
+      expect((await repo.getWorkout(workout.id))!.rounds, 4);
+
+      await repo.updateWorkoutRounds(workout.id, 0);
+      expect((await repo.getWorkout(workout.id))!.rounds, 1);
+
+      await repo.updateWorkoutRounds(workout.id, 150);
+      expect((await repo.getWorkout(workout.id))!.rounds, 99);
+    });
+
+    test('duplicate workout copies rounds', () async {
+      final workout = await repo.createWorkout('With rounds');
+      await repo.updateWorkoutRounds(workout.id, 5);
+      await repo.addExercise(
+        workoutId: workout.id,
+        name: 'Rows',
+        sets: 2,
+        workSeconds: 30,
+        restSeconds: 10,
+        restAfterExerciseSeconds: 0,
+      );
+
+      final copy = await repo.duplicateWorkout(workout.id);
+      expect(copy.rounds, 5);
+      expect(copy.exercises.length, 1);
+    });
   });
 }

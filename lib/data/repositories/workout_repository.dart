@@ -11,6 +11,15 @@ class WorkoutRepository {
   final AppDatabase _db;
   final Uuid _uuid;
 
+  static const _minRounds = 1;
+  static const _maxRounds = 99;
+
+  static int _clampRounds(int rounds) {
+    if (rounds < _minRounds) return _minRounds;
+    if (rounds > _maxRounds) return _maxRounds;
+    return rounds;
+  }
+
   Stream<List<domain.Workout>> watchWorkouts() {
     return (_db.select(_db.workouts)
           ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))
@@ -27,6 +36,7 @@ class WorkoutRepository {
             name: name,
             createdAt: now.millisecondsSinceEpoch,
             updatedAt: now.millisecondsSinceEpoch,
+            rounds: 1,
           ),
         );
     return domain.Workout(
@@ -34,6 +44,7 @@ class WorkoutRepository {
       name: name,
       createdAt: now,
       updatedAt: now,
+      rounds: 1,
       exercises: const [],
     );
   }
@@ -50,6 +61,17 @@ class WorkoutRepository {
     await (_db.update(_db.workouts)..where((t) => t.id.equals(id))).write(
       WorkoutsCompanion(
         name: Value(name),
+        updatedAt: Value(now.millisecondsSinceEpoch),
+      ),
+    );
+  }
+
+  Future<void> updateWorkoutRounds(String id, int rounds) async {
+    final clamped = _clampRounds(rounds);
+    final now = DateTime.now().toUtc();
+    await (_db.update(_db.workouts)..where((t) => t.id.equals(id))).write(
+      WorkoutsCompanion(
+        rounds: Value(clamped),
         updatedAt: Value(now.millisecondsSinceEpoch),
       ),
     );
@@ -182,6 +204,7 @@ class WorkoutRepository {
               name: copyName,
               createdAt: now.millisecondsSinceEpoch,
               updatedAt: now.millisecondsSinceEpoch,
+              rounds: _clampRounds(source.rounds),
             ),
           );
 

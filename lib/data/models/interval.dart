@@ -13,5 +13,9 @@ abstract class Interval with _$Interval {
     @Default(IntervalType.work) IntervalType type,
     /// Optional TTS phrase (F02). Null/blank → speak [name]. Max 80 chars in UI.
     String? announceText,
+    /// Ephemeral F32 workout-round metadata (1-based). Null when rounds == 1.
+    int? roundIndex,
+    /// Total workout rounds when [roundIndex] is set.
+    int? roundCount,
   }) = _Interval;
 }

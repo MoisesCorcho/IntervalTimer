@@ -53,6 +53,7 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 ### F32 vs F01 / F05 (entrenamientos estructurados)
 
 - **F32:** apartado **Entrenamientos** — modelo ejercicio + sets + duracion trabajo/descanso; aplanado efimero a intervalos para F01.
+- **F32 (extension rondas globales):** `Workout.rounds` (1–99, default 1) repite **todo** el bloque de ejercicios al aplanar. No es multi-select ni circuito parcial.
 - **F05:** rutinas con intervalos planos (sin entidad ejercicio+sets).
 - F32 **no depende** de F03 ni F05; solo de F01 para ejecutar el timer.
 - Priorizar F32 si el flujo principal del producto es crear entrenamientos con ejercicios; F05 queda para usuarios avanzados que prefieren intervalos sueltos.
@@ -82,11 +83,13 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 
 ### F08 vs F32 / F34 / F05 (circuitos y rondas)
 
-- **F08:** agrupa **ejercicios de un Workout** en un `WorkoutCircuit` con `rounds` (1–99); expande el circuito en `WorkoutFlattener` y muestra "Ronda X de Y" en ejecucion.
-- **Prerequisitos:** F01, F32, F34. **No** depende de F05.
-- Sets (F32) ≠ rondas (F08): sets repiten un ejercicio; rondas repiten el grupo.
+- **F32 ya incluye rondas globales** del entrenamiento (`Workout.rounds`): repite todo el bloque 1–N veces. UI en editor + indicador en listado + etiqueta en timer.
+- **F08:** agrupa **subconjuntos** de ejercicios de un Workout en un `WorkoutCircuit` con `rounds` (1–99); multi-select + Agrupar; expande el circuito en `WorkoutFlattener` y muestra "Ronda X de Y" a nivel de circuito.
+- **Prerequisitos F08:** F01, F32, F34. **No** depende de F05.
+- Sets (F32) ≠ rondas globales (F32 `Workout.rounds`) ≠ rondas de circuito (F08): sets repiten un ejercicio; `Workout.rounds` repite todo el workout; F08 repite un **grupo parcial**.
+- F08 **permanece** para circuitos parciales; no reimplementar F08 solo para "repetir todo" (ya cubierto por F32).
 - Tiempos de work/rest se **heredan** de cada ejercicio (F32/F34); F08 no edita duraciones del circuito.
-- UI solo en el **editor de entrenamiento** (multi-select + Agrupar). Sin tab nueva ni opcion "Crear rutina" en el menu del listado.
+- UI F08 solo en el **editor de entrenamiento** (multi-select + Agrupar). Sin tab nueva ni opcion "Crear rutina" en el menu del listado.
 - El diseno historico `Routine` + `Block` + prereq F05 queda **descartado** para el MVP de F08.
 - F05 sigue siendo biblioteca de intervalos planos; no es camino critico para circuitos.
 

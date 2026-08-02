@@ -37,6 +37,18 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
     });
   }
 
+  Future<bool> updateRounds(int rounds) async {
+    if (!canEdit) return false;
+    final clamped = WorkoutValidators.clampRounds(rounds);
+    if (WorkoutValidators.validateRounds(clamped) != null) return false;
+
+    return _persist(() async {
+      final repo = ref.read(workoutRepositoryProvider);
+      await repo.updateWorkoutRounds(arg, clamped);
+      return (await repo.getWorkout(arg))!;
+    });
+  }
+
   Future<bool> addExercise({
     required String name,
     required int sets,
@@ -110,10 +122,23 @@ class WorkoutEditorController extends FamilyAsyncNotifier<Workout, String> {
     });
   }
 
+  /// Persists a mutation without clearing previous [AsyncData].
+  ///
+  /// Mutations must not emit pure [AsyncLoading] — the editor UI remounts on
+  /// loading-without-value and flickers a full-screen spinner on every save
+  /// (rounds, reorder, rename, exercises).
+  ///
+  /// On success: [AsyncData] with the updated workout.
+  /// On failure: previous state is kept so the form stays mounted; returns
+  /// `false` for the screen snackbar/retry path.
   Future<bool> _persist(Future<Workout> Function() action) async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(action);
-    return !state.hasError;
+    try {
+      final result = await action();
+      state = AsyncData(result);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   bool _hasValidationErrors({

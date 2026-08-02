@@ -35,5 +35,20 @@ void main() {
       expect(WorkoutValidators.validateRestAfterExerciseSeconds(0), isNull);
       expect(WorkoutValidators.validateRestAfterExerciseSeconds(5999), isNull);
     });
+
+    test('rejects rounds 0 or 100 and accepts 1–99', () {
+      expect(WorkoutValidators.validateRounds(0), isNotNull);
+      expect(WorkoutValidators.validateRounds(100), isNotNull);
+      expect(WorkoutValidators.validateRounds(null), isNotNull);
+      expect(WorkoutValidators.validateRounds(1), isNull);
+      expect(WorkoutValidators.validateRounds(99), isNull);
+    });
+
+    test('clampRounds maps out-of-range to bounds', () {
+      expect(WorkoutValidators.clampRounds(0), 1);
+      expect(WorkoutValidators.clampRounds(-5), 1);
+      expect(WorkoutValidators.clampRounds(100), 99);
+      expect(WorkoutValidators.clampRounds(3), 3);
+    });
   });
 }

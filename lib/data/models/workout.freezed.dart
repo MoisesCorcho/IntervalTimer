@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Workout {
 
- String get id; String get name; DateTime get createdAt; DateTime get updatedAt; List<WorkoutExercise> get exercises;
+ String get id; String get name; DateTime get createdAt; DateTime get updatedAt;/// Global workout rounds (1–99). Default 1 = single pass (legacy F32).
+ int get rounds; List<WorkoutExercise> get exercises;
 /// Create a copy of Workout
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,16 @@ $WorkoutCopyWith<Workout> get copyWith => _$WorkoutCopyWithImpl<Workout>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Workout&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.exercises, exercises));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Workout&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.rounds, rounds) || other.rounds == rounds)&&const DeepCollectionEquality().equals(other.exercises, exercises));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,createdAt,updatedAt,const DeepCollectionEquality().hash(exercises));
+int get hashCode => Object.hash(runtimeType,id,name,createdAt,updatedAt,rounds,const DeepCollectionEquality().hash(exercises));
 
 @override
 String toString() {
-  return 'Workout(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, exercises: $exercises)';
+  return 'Workout(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, rounds: $rounds, exercises: $exercises)';
 }
 
 
@@ -45,7 +46,7 @@ abstract mixin class $WorkoutCopyWith<$Res>  {
   factory $WorkoutCopyWith(Workout value, $Res Function(Workout) _then) = _$WorkoutCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, DateTime createdAt, DateTime updatedAt, List<WorkoutExercise> exercises
+ String id, String name, DateTime createdAt, DateTime updatedAt, int rounds, List<WorkoutExercise> exercises
 });
 
 
@@ -62,13 +63,14 @@ class _$WorkoutCopyWithImpl<$Res>
 
 /// Create a copy of Workout
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? exercises = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? rounds = null,Object? exercises = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,exercises: null == exercises ? _self.exercises : exercises // ignore: cast_nullable_to_non_nullable
+as DateTime,rounds: null == rounds ? _self.rounds : rounds // ignore: cast_nullable_to_non_nullable
+as int,exercises: null == exercises ? _self.exercises : exercises // ignore: cast_nullable_to_non_nullable
 as List<WorkoutExercise>,
   ));
 }
@@ -154,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  DateTime createdAt,  DateTime updatedAt,  List<WorkoutExercise> exercises)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  DateTime createdAt,  DateTime updatedAt,  int rounds,  List<WorkoutExercise> exercises)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Workout() when $default != null:
-return $default(_that.id,_that.name,_that.createdAt,_that.updatedAt,_that.exercises);case _:
+return $default(_that.id,_that.name,_that.createdAt,_that.updatedAt,_that.rounds,_that.exercises);case _:
   return orElse();
 
 }
@@ -175,10 +177,10 @@ return $default(_that.id,_that.name,_that.createdAt,_that.updatedAt,_that.exerci
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  DateTime createdAt,  DateTime updatedAt,  List<WorkoutExercise> exercises)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  DateTime createdAt,  DateTime updatedAt,  int rounds,  List<WorkoutExercise> exercises)  $default,) {final _that = this;
 switch (_that) {
 case _Workout():
-return $default(_that.id,_that.name,_that.createdAt,_that.updatedAt,_that.exercises);case _:
+return $default(_that.id,_that.name,_that.createdAt,_that.updatedAt,_that.rounds,_that.exercises);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +197,10 @@ return $default(_that.id,_that.name,_that.createdAt,_that.updatedAt,_that.exerci
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  DateTime createdAt,  DateTime updatedAt,  List<WorkoutExercise> exercises)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  DateTime createdAt,  DateTime updatedAt,  int rounds,  List<WorkoutExercise> exercises)?  $default,) {final _that = this;
 switch (_that) {
 case _Workout() when $default != null:
-return $default(_that.id,_that.name,_that.createdAt,_that.updatedAt,_that.exercises);case _:
+return $default(_that.id,_that.name,_that.createdAt,_that.updatedAt,_that.rounds,_that.exercises);case _:
   return null;
 
 }
@@ -210,13 +212,15 @@ return $default(_that.id,_that.name,_that.createdAt,_that.updatedAt,_that.exerci
 
 
 class _Workout implements Workout {
-  const _Workout({required this.id, required this.name, required this.createdAt, required this.updatedAt, final  List<WorkoutExercise> exercises = const []}): _exercises = exercises;
+  const _Workout({required this.id, required this.name, required this.createdAt, required this.updatedAt, this.rounds = 1, final  List<WorkoutExercise> exercises = const []}): _exercises = exercises;
   
 
 @override final  String id;
 @override final  String name;
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
+/// Global workout rounds (1–99). Default 1 = single pass (legacy F32).
+@override@JsonKey() final  int rounds;
  final  List<WorkoutExercise> _exercises;
 @override@JsonKey() List<WorkoutExercise> get exercises {
   if (_exercises is EqualUnmodifiableListView) return _exercises;
@@ -235,16 +239,16 @@ _$WorkoutCopyWith<_Workout> get copyWith => __$WorkoutCopyWithImpl<_Workout>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Workout&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._exercises, _exercises));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Workout&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.rounds, rounds) || other.rounds == rounds)&&const DeepCollectionEquality().equals(other._exercises, _exercises));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,createdAt,updatedAt,const DeepCollectionEquality().hash(_exercises));
+int get hashCode => Object.hash(runtimeType,id,name,createdAt,updatedAt,rounds,const DeepCollectionEquality().hash(_exercises));
 
 @override
 String toString() {
-  return 'Workout(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, exercises: $exercises)';
+  return 'Workout(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, rounds: $rounds, exercises: $exercises)';
 }
 
 
@@ -255,7 +259,7 @@ abstract mixin class _$WorkoutCopyWith<$Res> implements $WorkoutCopyWith<$Res> {
   factory _$WorkoutCopyWith(_Workout value, $Res Function(_Workout) _then) = __$WorkoutCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, DateTime createdAt, DateTime updatedAt, List<WorkoutExercise> exercises
+ String id, String name, DateTime createdAt, DateTime updatedAt, int rounds, List<WorkoutExercise> exercises
 });
 
 
@@ -272,13 +276,14 @@ class __$WorkoutCopyWithImpl<$Res>
 
 /// Create a copy of Workout
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? exercises = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? rounds = null,Object? exercises = null,}) {
   return _then(_Workout(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,exercises: null == exercises ? _self._exercises : exercises // ignore: cast_nullable_to_non_nullable
+as DateTime,rounds: null == rounds ? _self.rounds : rounds // ignore: cast_nullable_to_non_nullable
+as int,exercises: null == exercises ? _self._exercises : exercises // ignore: cast_nullable_to_non_nullable
 as List<WorkoutExercise>,
   ));
 }

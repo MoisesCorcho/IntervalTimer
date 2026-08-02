@@ -70,6 +70,65 @@ void main() {
 
     expect(find.text('Full body'), findsOneWidget);
     expect(find.text('1 ejercicios'), findsOneWidget);
+    expect(find.textContaining('rondas'), findsNothing);
+  });
+
+  testWidgets('list shows rounds chip only when rounds > 1', (tester) async {
+    final single = Workout(
+      id: 'w-1',
+      name: 'Single pass',
+      createdAt: DateTime.utc(2026, 1, 1),
+      updatedAt: DateTime.utc(2026, 1, 1),
+      rounds: 1,
+      exercises: const [
+        WorkoutExercise(
+          id: 'e-1',
+          workoutId: 'w-1',
+          position: 0,
+          name: 'Rows',
+          sets: 1,
+          workSeconds: 30,
+          restSeconds: 0,
+        ),
+      ],
+    );
+    final multi = Workout(
+      id: 'w-2',
+      name: 'Multi round',
+      createdAt: DateTime.utc(2026, 1, 2),
+      updatedAt: DateTime.utc(2026, 1, 2),
+      rounds: 3,
+      exercises: const [
+        WorkoutExercise(
+          id: 'e-2',
+          workoutId: 'w-2',
+          position: 0,
+          name: 'Squats',
+          sets: 1,
+          workSeconds: 40,
+          restSeconds: 0,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          workoutsListProvider.overrideWith(
+            () => _StaticWorkoutsList([single, multi]),
+          ),
+        ],
+        child: const MaterialApp(
+          home: MyWorkoutsScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('workout_rounds_chip_w-1')), findsNothing);
+    expect(find.byKey(const Key('workout_rounds_chip_w-2')), findsOneWidget);
+    expect(find.text('3 rondas'), findsOneWidget);
   });
 
   testWidgets('train starts timer and navigates to execute', (tester) async {

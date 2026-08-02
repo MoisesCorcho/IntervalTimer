@@ -10,6 +10,8 @@ abstract class Workout with _$Workout {
     required String name,
     required DateTime createdAt,
     required DateTime updatedAt,
+    /// Global workout rounds (1–99). Default 1 = single pass (legacy F32).
+    @Default(1) int rounds,
     @Default([]) List<WorkoutExercise> exercises,
   }) = _Workout;
 }
