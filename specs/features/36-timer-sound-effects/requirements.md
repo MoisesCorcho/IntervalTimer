@@ -46,11 +46,19 @@ CUANDO el temporizador avanza a un nuevo intervalo cuyo `type` es distinto de `r
 `soundEnabled` es `true` y `soundOnWorkStart` es `true`, EL SISTEMA DEBE reproducir el clip
 asignado al slot `work_start` (default de fabrica: `sfx_work_start_01`).
 
+Esto incluye avance automatico al terminar preparacion, skip/siguiente desde `preparing` hacia
+el primer intervalo, skip entre intervalos, y reinicio del intervalo actual que dispare un
+nuevo inicio de intervalo segun contratos F01/F35. No incluye reanudar desde `paused` sobre el
+mismo intervalo ya iniciado (ver R17).
+
 ### R2 — SFX al iniciar intervalo de descanso
 
 CUANDO el temporizador avanza a un nuevo intervalo cuyo `type` es `rest`, la sesion esta en
 estado `running`, `soundEnabled` es `true` y `soundOnRestStart` es `true`, EL SISTEMA DEBE
 reproducir el clip asignado al slot `rest_start` (default: `sfx_rest_start_01`).
+
+Mismas fuentes de avance que R1 (automatico, skip, fin de prep), excluyendo resume del mismo
+intervalo.
 
 ### R3 — SFX al completar la sesion
 
@@ -110,8 +118,12 @@ DONDE el usuario esta en la configuracion de SFX, CUANDO elige un `soundId` vali
 catalogo empaquetado para un slot
 (`work_start` | `rest_start` | `session_complete` | `prep_tick` | `phase_warning`),
 EL SISTEMA DEBE persistir la asignacion y usarla en reproducciones futuras de ese slot.
-El catalogo incluye al menos los assets en `assets/sfx/default/` y `assets/sfx/catalog/`
-declarados en el empaquetado (ver `design.md` y `assets/sfx/ATTRIBUTION.md`).
+
+El picker de cada slot DEBE listar **todo** el catalogo unificado (defaults + variantes de
+catalogo empaquetadas, incluidos clips como `sfx_click_*` aunque no tengan slot de fabrica).
+No filtrar por “sugerido para este evento”: el usuario puede asignar cualquier id a cualquier
+slot. El catalogo empaquetado se documenta en `assets/sfx/ATTRIBUTION.md` y el empaquetado en
+`design.md`.
 
 ### R10 — Preview en Ajustes
 
@@ -208,14 +220,17 @@ catalogo empaquetado (defaults + catalogo local). No hay descarga remota de pack
 | Phase warning | Ultimos N s de **cada** intervalo en `running` (work, rest y demas). |
 | Mismo default, dos slots | `prep_tick` y `phase_warning` default al mismo archivo `sfx_tick_01`; IDs de preferencia y pickers **separados**. |
 | Mapeo type → slot inicio | `rest` → `rest_start`; cualquier otro `IntervalType` → `work_start`. |
-| Catalogo + picker + preview | **In scope** v1 (defaults + `assets/sfx/catalog/`). |
+| Skip / fin de prep | Disparan R1/R2 igual que un avance de intervalo; resume no. |
+| Catalogo + picker + preview | **In scope** v1. Picker = **catalogo completo** unificado (no filtro por slot). |
+| Solape de clips | Permitido en v1: varios one-shots pueden sonar a la vez (p. ej. warning + work_start, SFX + TTS). Ver politica de player en `design.md`. |
+| Silent switch / DND | Respetar silenciamiento del SO; si no se oye, aplica R12 (sin error de UI). No forzar audio sobre el switch de silencio. |
 | Volumen relativo SFX | **Fuera** de v1; se usa volumen del sistema / stream del player. |
 | Pause / resume SFX | **Fuera** de alcance; el feedback de pause/resume queda en vibracion (F18) y UI. |
 | Packs remotos / Pro / import usuario | **Fuera** de v1. |
 | Ducking musica externa | **No** prerequisito; nota blanda hacia F17 para incluir SFX cuando se implemente. |
 | Default de fabrica | Ver tabla de defaults en `design.md` (master y toggles `true`, N=3, IDs `*_01`). |
 | Persistencia | Preferencias globales via `PreferencesRepository` / `app_preferences`. |
-| Integracion F01/F35 | `SoundEffectsController` se suscribe a estado/eventos del timer; F01 no importa UI ni player de SFX. |
+| Integracion F01/F35 | Controller de SFX se suscribe a estado/eventos del timer; F01 no importa UI ni player de SFX. |
 | Fallos | Silenciosos; el timer nunca se frena por audio. |
 
 ## Fuera de alcance (explicito)

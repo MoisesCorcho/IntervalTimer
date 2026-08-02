@@ -68,11 +68,19 @@ flutter:
 | `SfxPlayer` / driver | `play(assetPath)` one-shot; errores → no-op (R12) | No decide *cuándo* tocar |
 | UI Settings | Lee/escribe prefs; preview via player | No suscribe al timer para logica de sesion |
 
-### Plugin de audio
+### Plugin de audio (fijado)
 
-- Preferir un player de **one-shots** cortos (evaluar `audioplayers` o `just_audio` al implementar; un solo player reentrante o pool de 1–2 instancias).
-- Modo: mezcla con otras apps por defecto (no robar audio focus de forma agresiva en v1); F17 refinara ducking/session.
-- Cargar desde `AssetSource` / path de Flutter assets; sin red.
+- **Paquete:** [`audioplayers`](https://pub.dev/packages/audioplayers) (Blue Fire) — one-shots y varios `AudioPlayer` concurrentes sin playlist.
+- **Version al implementar:** resolver la ultima estable compatible con el SDK del proyecto (`flutter pub add audioplayers`) y dejar el constraint en `pubspec.yaml`; no usar `just_audio` en F36 v1 (mas orientado a colas/gapless).
+- **Fuente:** `AssetSource` con path **relativo al arbol de assets del pubspec**, **sin** prefijo `assets/`.
+  - Archivo en repo: `assets/sfx/default/sfx_tick_01.wav`
+  - `AssetSource('sfx/default/sfx_tick_01.wav')` si se declara la carpeta `assets/sfx/...` en pubspec
+  - Verificar en device: un path incorrecto cae en R12 (no-op), no en crash
+- **Concurrencia (solape):** permitir solape. Usar un **pool pequeno** (p. ej. 2–3 `AudioPlayer` en `PlayerMode.lowLatency` si la plataforma lo soporta, o `mediaPlayer` si lowLatency falla en algun OS) o crear player por disparo y liberar al terminar. **No** hacer stop global del SFX anterior al tocar el siguiente (evita cortar un whistle por un tick).
+- **Preview vs sesion:** preview en Settings puede solapar un SFX de sesion en curso; aceptable en v1. Opcional: un player dedicado a preview.
+- **Mezcla con otras apps:** no robar audio focus de forma agresiva en v1; F17 refinara session/ducking.
+- **Silent switch / DND:** no intentar bypassear el interruptor de silencio del SO; si el SO no emite audio, R12.
+- Sin red: solo assets empaquetados.
 
 ### Eventos y reglas de disparo
 
@@ -81,11 +89,13 @@ Reutilizar el mismo espiritu que F18:
 **Inicio de intervalo (R1/R2)**
 
 - Fuente: `IntervalStartedEvent` (o primer frame del nuevo `intervalId` en `running`).
+- Incluye: fin natural de prep → primer intervalo, **skip/siguiente desde preparing**, skip entre
+  intervalos, y cualquier contrato F01/F35 que emita un **nuevo** inicio de intervalo.
+- Excluye: resume `paused` → `running` sobre el **mismo** `intervalId` (R17).
 - Resolver slot:
   - `type == rest` → `rest_start`
   - else → `work_start`
 - Gate: `soundEnabled` && toggle del slot && status coherente con inicio en `running`.
-- No re-disparar al resume del mismo intervalo (R17).
 
 **Session complete (R3)**
 
@@ -101,9 +111,13 @@ Reutilizar el mismo espiritu que F18:
 
 **Phase warning (R5)**
 
-- Fuente: `remainingMs` del intervalo + `status == running`.
-- Condicion: `ceil(remainingMs/1000) == S` con `1 <= S <= soundCountdownSeconds`, no emitido en este `intervalId`.
-- Set: `warnedSecondsForInterval` (reset en `IntervalStartedEvent`).
+- Fuente: `remainingMs` del intervalo + `status == running` (misma semantica de cruce que F18).
+- Condicion: `ceil(remainingMs/1000) == S` con `1 <= S <= soundCountdownSeconds`, y `S` **no**
+  fue ya emitido en este `intervalId` (set `warnedSecondsForInterval`).
+- Reset del set en `IntervalStartedEvent` (nuevo intervalo / skip a otro intervalo).
+- Si al entrar al intervalo `ceil(duration) <= N`, emitir ticks solo para los `S` que el reloj
+  **alcance o cruce** mientras `running` (alineado a F18 R9 / requirements R15); no inventar
+  ticks de segundos que el remaining nunca muestra.
 
 **Pausa / cancel / complete**
 
@@ -131,17 +145,18 @@ class SfxEntry {
 
 **Defaults de fabrica (IDs):**
 
-| Slot | soundId default | Archivo |
-|---|---|---|
-| `work_start` | `sfx_work_start_01` | `assets/sfx/default/sfx_work_start_01.mp3` |
-| `rest_start` | `sfx_rest_start_01` | `assets/sfx/default/sfx_rest_start_01.wav` |
-| `session_complete` | `sfx_session_complete_01` | `assets/sfx/default/sfx_session_complete_01.wav` |
-| `prep_tick` | `sfx_tick_01` | `assets/sfx/default/sfx_tick_01.wav` |
-| `phase_warning` | `sfx_tick_01` | mismo archivo (path unico; dos prefs de id) |
+| Slot | soundId default | Path en repo | `AssetSource` (ejemplo) |
+|---|---|---|---|
+| `work_start` | `sfx_work_start_01` | `assets/sfx/default/sfx_work_start_01.mp3` | `sfx/default/sfx_work_start_01.mp3` |
+| `rest_start` | `sfx_rest_start_01` | `assets/sfx/default/sfx_rest_start_01.wav` | `sfx/default/sfx_rest_start_01.wav` |
+| `session_complete` | `sfx_session_complete_01` | `assets/sfx/default/sfx_session_complete_01.wav` | `sfx/default/sfx_session_complete_01.wav` |
+| `prep_tick` | `sfx_tick_01` | `assets/sfx/default/sfx_tick_01.wav` | `sfx/default/sfx_tick_01.wav` |
+| `phase_warning` | `sfx_tick_01` | mismo archivo (path unico; dos prefs de id) | igual `prep_tick` |
 
-El picker puede mostrar **todo** el catalogo unificado (default + catalog) o filtrar por
-`suggestedFor`; en ambos casos el usuario puede asignar cualquier id a cualquier slot (R9).
-Si id invalido → fallback al default del slot (R14).
+**Picker (R9):** mostrar **siempre el catalogo completo** unificado (`default/` + `catalog/`),
+incluyendo `sfx_click_*` y cualquier variante. El campo `suggestedFor` en `SfxEntry` es
+**opcional solo para ordenar o etiquetar** en UI (ej. badge “recomendado”), **nunca** para
+ocultar entradas. Cualquier id → cualquier slot. Id invalido → fallback al default del slot (R14).
 
 ### Modelo de datos / preferencias
 
@@ -185,7 +200,7 @@ Seccion “Efectos de sonido” en shell `features/settings/` (F35):
 3. `NumberStepper` 0–10 para `soundCountdownSeconds` (reutilizar shared; deshabilitar si master
    off o toggle phase warning off).
 4. Por cada slot: fila con nombre del evento + clip actual + accion “Cambiar” / “Probar”.
-5. Picker: lista de clips (nombre amigable o id) + preview al seleccionar o boton play.
+5. Picker: **lista completa** del catalogo (id o etiqueta legible) + preview; sin ocultar por slot.
 6. Areas de toque >= 48dp; textos via convenciones i18n si F28 aplica; si no, strings locales
    consistentes con el resto de Settings.
 
@@ -235,6 +250,9 @@ Seccion “Efectos de sonido” en shell `features/settings/` (F35):
 | SFX en pause/resume | Feedback ya cubierto por vibracion/UI; ruido extra. |
 | Packs remotos / Pro | Fuera de v1; catalogo empaquetado suficiente. |
 | Llamar player desde `TimerController` | Acopla F01 a audio; rompe limites de features. |
+| `just_audio` como player F36 | Mejor para colas/gapless; `audioplayers` cubre one-shots concurrentes con menos ceremonia. |
+| Un solo `AudioPlayer` + stop antes de cada play | Corta silbatos/chimes si llega un tick; viola la politica de solape. |
+| Picker filtrado solo por `suggestedFor` | Impide reutilizar un click o chime en otro slot; el valor de producto es libertad de asignacion. |
 
 ## Nota F17 (ducking)
 

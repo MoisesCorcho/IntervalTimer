@@ -17,9 +17,9 @@
 ### Datos, assets y catalogo
 
 - [ ] Declarar `assets/sfx/default/` y `assets/sfx/catalog/` (o archivos) en `pubspec.yaml`. _(cubre R21)_
-- [ ] Implementar `SfxCatalog` estatico alineado a `assets/sfx/ATTRIBUTION.md` (ids, paths, suggested slots). _(cubre R9, R14, R21)_
+- [ ] Implementar `SfxCatalog` estatico alineado a `assets/sfx/ATTRIBUTION.md` (ids + paths `AssetSource` sin prefijo `assets/`; `suggestedFor` solo metadato opcional, picker lista **todo**). _(cubre R9, R14, R21)_
 - [ ] Persistir preferencias globales SFX (master, 5 toggles, `sound_countdown_seconds`, 5 `sound_id_*`) con defaults y rangos del data model. _(cubre R6–R8, R11, R13, R14)_
-- [ ] Actualizar `_global/05-data-model.md` con seccion Preferencias F36. _(cubre R11)_
+- [ ] Verificar seccion Preferencias F36 en `_global/05-data-model.md` (ya anadida en el pack SDD; alinear codigo a esas claves si hubo drift). _(cubre R11)_
 
 ### Contratos F01 / F35
 
@@ -29,24 +29,25 @@
 
 ### Player y logica SFX
 
-- [ ] Agregar dependencia de audio one-shot (`audioplayers` o `just_audio`) y encapsular `SfxPlayer` + `NoOpSfxPlayer` (tests). _(cubre R12, R21)_
-- [ ] Implementar resolucion slot inicio: `rest` → rest_start; otro type → work_start. _(cubre R1, R2)_
+- [ ] Agregar dependencia `audioplayers` (constraint estable en pubspec) y encapsular `SfxPlayer` con pool/solape (2–3 players o liberar al complete) + `NoOpSfxPlayer` (tests). Paths via `AssetSource('sfx/...')` sin prefijo `assets/`. _(cubre R12, R20, R21)_
+- [ ] Implementar resolucion slot inicio: `rest` → rest_start; otro type → work_start; incluir skip y fin de prep como inicio de intervalo (no resume). _(cubre R1, R2)_
 - [ ] Implementar `SoundEffectsController` (Riverpod): gates de prefs, disparos R1–R5, idempotencia, politicas pause/cancel/complete. _(cubre R1–R8, R12, R14–R20)_
 - [ ] Fallback a default de slot si `soundId` invalido o asset faltante. _(cubre R14)_
-- [ ] Fallo de `play` → no-op; timer intacto. _(cubre R12)_
-- [ ] Independencia de `voiceEnabled` y `vibrationEnabled`. _(cubre R7, R20)_
+- [ ] Fallo de `play` → no-op; timer intacto; no bypassear silent switch del SO. _(cubre R12)_
+- [ ] Independencia de `voiceEnabled` y `vibrationEnabled`; permitir solape TTS + SFX. _(cubre R7, R20)_
 
 ### UI Settings
 
 - [ ] Seccion “Efectos de sonido” en shell Settings: master, toggles granulares, stepper N 0–10. _(cubre R6–R8, R11, R13)_
-- [ ] Picker por slot + preview de clip (preview usable en Settings). _(cubre R9, R10)_
+- [ ] Picker por slot con **catalogo completo** (sin filtrar por slot) + preview usable en Settings. _(cubre R9, R10)_
 - [ ] Deshabilitar controles granulares / stepper segun master (y warning off para N) — UX. _(cubre R7, R8)_
 - [ ] Controles con area de toque >= 48dp; reutilizar `NumberStepper` si existe. _(cubre R6)_
 
 ### Tests
 
-- [ ] **Unit — happy path:** IntervalStarted work → work_start; rest → rest_start; SessionCompleted → complete. _(cubre R1–R3)_
+- [ ] **Unit — happy path:** IntervalStarted work → work_start; rest → rest_start; SessionCompleted → complete; skip/fin de prep hacia primer intervalo → R1/R2 (no en resume). _(cubre R1–R3)_
 - [ ] **Unit — prep ticks:** preparing S=3,2,1 con prep on → 3 plays; no tick extra en transicion a work (solo work_start). _(cubre R4)_
+- [ ] **Unit — solape:** dos plays seguidos no cancelan el anterior a nivel de API del player mock/pool (o documentar contrato del fake). _(cubre R20)_
 - [ ] **Unit — phase warning:** N=3, remaining cruza 3,2,1 → 3 plays phase_warning; N=0 → ninguno. _(cubre R5, R6)_
 - [ ] **Unit — toggles/master:** cada toggle off omite su evento; master off omite todos. _(cubre R7, R8)_
 - [ ] **Unit — independencia:** voice/vibration off + sound on sigue reproduciendo (mock player). _(cubre R20)_
@@ -99,3 +100,6 @@ No iniciar tasks de este archivo hasta que F01 y F35 esten en estado Done.
 No implementar SFX de pause/resume, volumen relativo, packs remotos, ni ducking F17 en estas tasks.
 
 No acoplar la cola TTS de F02; solo reutilizar contratos de timer y permitir solape.
+
+No sustituir `audioplayers` por `just_audio` en v1 sin actualizar design + requirements.
+No filtrar el picker por `suggestedFor` de forma que oculte clips del catalogo.
