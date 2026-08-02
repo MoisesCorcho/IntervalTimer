@@ -139,6 +139,27 @@ Misma semantica de store que F02/F35 (`PreferencesRepository` / `app_preferences
 
 No requiere tabla drift nueva en F18 (solo key-value en `app_preferences`).
 
+### Preferencias F36 (efectos de sonido / SFX — globales)
+
+Misma semantica de store que F02/F18/F35 (`PreferencesRepository` / `app_preferences`). Claves estables; no por rutina. **Independientes** de voz F02 (`voice_enabled`, `countdown_seconds`) y vibracion F18 (`vibration_*`). Canal de feedback distinto: assets empaquetados en `assets/sfx/`, no TTS ni haptics.
+
+| Clave | Tipo | Default | Rango | Uso |
+|---|---|---|---|---|
+| `sound_enabled` | `bool` | `true` | — | Master mute de SFX; `false` suprime todos los clips de sesion sin afectar timer, voz ni vibracion (F36 R7). |
+| `sound_on_work_start` | `bool` | `true` | — | Si `false`, omite SFX al iniciar intervalo no-`rest` (F36 R1/R8). |
+| `sound_on_rest_start` | `bool` | `true` | — | Si `false`, omite SFX al iniciar intervalo `rest` (F36 R2/R8). |
+| `sound_on_session_complete` | `bool` | `true` | — | Si `false`, omite SFX de fin de sesion (F36 R3/R8). |
+| `sound_on_prep_tick` | `bool` | `true` | — | Si `false`, omite ticks durante `preparing` (F36 R4/R8). |
+| `sound_on_phase_warning` | `bool` | `true` | — | Si `false`, omite cuenta regresiva final de fase (F36 R5/R8). |
+| `sound_countdown_seconds` | `int` | `3` | `0..10` | Ventana N de phase warning; `0` desactiva solo R5 (F36 R5/R6). **No** reutiliza `countdown_seconds` (F02) ni `vibration_countdown_seconds` (F18). |
+| `sound_id_work_start` | `string` | `sfx_work_start_01` | id de catalogo | Clip del slot work_start (F36 R9). |
+| `sound_id_rest_start` | `string` | `sfx_rest_start_01` | id de catalogo | Clip del slot rest_start (F36 R9). |
+| `sound_id_session_complete` | `string` | `sfx_session_complete_01` | id de catalogo | Clip del slot session_complete (F36 R9). |
+| `sound_id_prep_tick` | `string` | `sfx_tick_01` | id de catalogo | Clip del slot prep_tick (F36 R9). |
+| `sound_id_phase_warning` | `string` | `sfx_tick_01` | id de catalogo | Clip del slot phase_warning; default igual a prep_tick pero preferencia separada (F36 R5/R9). |
+
+No requiere tabla drift nueva en F36 (solo key-value en `app_preferences`). Catalogo de assets: `assets/sfx/default/` + `assets/sfx/catalog/` (ver `assets/sfx/ATTRIBUTION.md` y design F36). Id invalido o asset faltante → fallback al default del slot (F36 R14).
+
 ### Preferencias F19 (pantalla siempre encendida — globales)
 
 Misma semantica de store que F02/F18/F35 (`PreferencesRepository` / `app_preferences`). Claves estables; no por rutina. **Independientes** de voz (F02) y vibracion (F18).
