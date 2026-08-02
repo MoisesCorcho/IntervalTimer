@@ -39,7 +39,7 @@
 | F33 | [Controles Numericos y de Duracion (Steppers Premium)](../features/33-premium-numeric-steppers/requirements.md) | Fase 7 · Calidad y Pulido | Completado | F01, F32 |
 | F34 | [Descanso entre Sets y Descanso Final del Ejercicio](../features/34-exercise-rest-between-and-final/requirements.md) | Fase 1 · Personalizacion | Completado | F32 |
 | F35 | [Navegacion de Secciones, Preparacion y Ajustes](../features/35-timer-navigation-prep-settings/requirements.md) | Fase 0 · Fundacion | Completado | F01 |
-| F36 | [Efectos de Sonido del Temporizador (SFX)](../features/36-timer-sound-effects/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01, F35 |
+| F36 | [Efectos de Sonido del Temporizador (SFX)](../features/36-timer-sound-effects/requirements.md) | Fase 4 · Audio y Experiencia | En progreso | F01, F35 |
 
 Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `requirements.md`.
 

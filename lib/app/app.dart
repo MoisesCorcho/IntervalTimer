@@ -8,6 +8,7 @@ import 'package:interval_timer/features/calendar_history/application/session_his
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
+import 'package:interval_timer/features/sound_effects/application/sound_effects_providers.dart';
 import 'package:interval_timer/features/vibration/application/vibration_providers.dart';
 import 'package:interval_timer/features/voice/application/voice_providers.dart';
 
@@ -22,6 +23,8 @@ class App extends ConsumerWidget {
     ref.watch(voiceAnnouncerBootstrapProvider);
     // Bootstrap F18 vibration feedback (listens to TimerController).
     ref.watch(vibrationFeedbackBootstrapProvider);
+    // Bootstrap F36 timer SFX (listens to TimerController).
+    ref.watch(soundEffectsBootstrapProvider);
     // Bootstrap F19 always-on screen (listens to TimerController + host).
     ref.watch(alwaysOnBootstrapProvider);
     // Bootstrap F20 session lock screen / notification surface.

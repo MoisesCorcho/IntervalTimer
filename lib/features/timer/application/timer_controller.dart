@@ -350,6 +350,7 @@ class TimerController extends Notifier<TimerState> {
         announceText: interval.announceText,
         durationSeconds: interval.durationSeconds,
         index: index,
+        type: interval.type,
       ),
     );
   }

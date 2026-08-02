@@ -1,6 +1,6 @@
 # Requirements: Efectos de Sonido del Temporizador (SFX)
 
-> Estado: No iniciada
+> Estado: En progreso
 
 **ID:** F36 &nbsp;|&nbsp; **Slug:** `36-timer-sound-effects` &nbsp;|&nbsp; **Fase:** Fase 4 · Audio y Experiencia
 
