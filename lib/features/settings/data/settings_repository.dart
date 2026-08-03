@@ -39,6 +39,15 @@ class SettingsRepository {
   static const maxVibrationCountdownSeconds =
       PreferencesRepository.maxVibrationCountdownSeconds;
 
+  // F36 SFX
+  static const defaultSoundEnabled = PreferencesRepository.defaultSoundEnabled;
+  static const defaultSoundCountdownSeconds =
+      PreferencesRepository.defaultSoundCountdownSeconds;
+  static const minSoundCountdownSeconds =
+      PreferencesRepository.minSoundCountdownSeconds;
+  static const maxSoundCountdownSeconds =
+      PreferencesRepository.maxSoundCountdownSeconds;
+
   // F19 always-on
   static const defaultKeepScreenOnEnabled =
       PreferencesRepository.defaultKeepScreenOnEnabled;
@@ -86,6 +95,67 @@ class SettingsRepository {
 
   Future<void> setVibrationCountdownSeconds(int value) =>
       _prefs.setVibrationCountdownSeconds(value);
+
+  Future<bool> getSoundEnabled() => _prefs.getSoundEnabled();
+
+  Future<void> setSoundEnabled(bool value) => _prefs.setSoundEnabled(value);
+
+  Future<bool> getSoundOnWorkStart() => _prefs.getSoundOnWorkStart();
+
+  Future<void> setSoundOnWorkStart(bool value) =>
+      _prefs.setSoundOnWorkStart(value);
+
+  Future<bool> getSoundOnRestStart() => _prefs.getSoundOnRestStart();
+
+  Future<void> setSoundOnRestStart(bool value) =>
+      _prefs.setSoundOnRestStart(value);
+
+  Future<bool> getSoundOnSessionComplete() =>
+      _prefs.getSoundOnSessionComplete();
+
+  Future<void> setSoundOnSessionComplete(bool value) =>
+      _prefs.setSoundOnSessionComplete(value);
+
+  Future<bool> getSoundOnPrepTick() => _prefs.getSoundOnPrepTick();
+
+  Future<void> setSoundOnPrepTick(bool value) =>
+      _prefs.setSoundOnPrepTick(value);
+
+  Future<bool> getSoundOnPhaseWarning() => _prefs.getSoundOnPhaseWarning();
+
+  Future<void> setSoundOnPhaseWarning(bool value) =>
+      _prefs.setSoundOnPhaseWarning(value);
+
+  Future<int> getSoundCountdownSeconds() => _prefs.getSoundCountdownSeconds();
+
+  Future<void> setSoundCountdownSeconds(int value) =>
+      _prefs.setSoundCountdownSeconds(value);
+
+  Future<String> getSoundIdWorkStart() => _prefs.getSoundIdWorkStart();
+
+  Future<void> setSoundIdWorkStart(String value) =>
+      _prefs.setSoundIdWorkStart(value);
+
+  Future<String> getSoundIdRestStart() => _prefs.getSoundIdRestStart();
+
+  Future<void> setSoundIdRestStart(String value) =>
+      _prefs.setSoundIdRestStart(value);
+
+  Future<String> getSoundIdSessionComplete() =>
+      _prefs.getSoundIdSessionComplete();
+
+  Future<void> setSoundIdSessionComplete(String value) =>
+      _prefs.setSoundIdSessionComplete(value);
+
+  Future<String> getSoundIdPrepTick() => _prefs.getSoundIdPrepTick();
+
+  Future<void> setSoundIdPrepTick(String value) =>
+      _prefs.setSoundIdPrepTick(value);
+
+  Future<String> getSoundIdPhaseWarning() => _prefs.getSoundIdPhaseWarning();
+
+  Future<void> setSoundIdPhaseWarning(String value) =>
+      _prefs.setSoundIdPhaseWarning(value);
 
   Future<bool> getKeepScreenOnEnabled() => _prefs.getKeepScreenOnEnabled();
 

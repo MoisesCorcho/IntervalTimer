@@ -19,6 +19,18 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final vibrationOnCountdown = await repo.getVibrationOnCountdown();
     final vibrationCountdownSeconds =
         await repo.getVibrationCountdownSeconds();
+    final soundEnabled = await repo.getSoundEnabled();
+    final soundOnWorkStart = await repo.getSoundOnWorkStart();
+    final soundOnRestStart = await repo.getSoundOnRestStart();
+    final soundOnSessionComplete = await repo.getSoundOnSessionComplete();
+    final soundOnPrepTick = await repo.getSoundOnPrepTick();
+    final soundOnPhaseWarning = await repo.getSoundOnPhaseWarning();
+    final soundCountdownSeconds = await repo.getSoundCountdownSeconds();
+    final soundIdWorkStart = await repo.getSoundIdWorkStart();
+    final soundIdRestStart = await repo.getSoundIdRestStart();
+    final soundIdSessionComplete = await repo.getSoundIdSessionComplete();
+    final soundIdPrepTick = await repo.getSoundIdPrepTick();
+    final soundIdPhaseWarning = await repo.getSoundIdPhaseWarning();
     final keepScreenOnEnabled = await repo.getKeepScreenOnEnabled();
     final sessionLockScreenEnabled = await repo.getSessionLockScreenEnabled();
     final themeMode = await repo.getThemeMode();
@@ -32,6 +44,18 @@ class SettingsController extends AsyncNotifier<AppSettings> {
       vibrationOnIntervalStart: vibrationOnIntervalStart,
       vibrationOnCountdown: vibrationOnCountdown,
       vibrationCountdownSeconds: vibrationCountdownSeconds,
+      soundEnabled: soundEnabled,
+      soundOnWorkStart: soundOnWorkStart,
+      soundOnRestStart: soundOnRestStart,
+      soundOnSessionComplete: soundOnSessionComplete,
+      soundOnPrepTick: soundOnPrepTick,
+      soundOnPhaseWarning: soundOnPhaseWarning,
+      soundCountdownSeconds: soundCountdownSeconds,
+      soundIdWorkStart: soundIdWorkStart,
+      soundIdRestStart: soundIdRestStart,
+      soundIdSessionComplete: soundIdSessionComplete,
+      soundIdPrepTick: soundIdPrepTick,
+      soundIdPhaseWarning: soundIdPhaseWarning,
       keepScreenOnEnabled: keepScreenOnEnabled,
       sessionLockScreenEnabled: sessionLockScreenEnabled,
       themeMode: themeMode,
@@ -112,6 +136,98 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final current =
         state.valueOrNull ?? const AppSettings(prepSeconds: 10);
     state = AsyncData(current.copyWith(vibrationCountdownSeconds: clamped));
+  }
+
+  Future<void> setSoundEnabled(bool value) async {
+    await ref.read(settingsRepositoryProvider).setSoundEnabled(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundEnabled: value));
+  }
+
+  Future<void> setSoundOnWorkStart(bool value) async {
+    await ref.read(settingsRepositoryProvider).setSoundOnWorkStart(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundOnWorkStart: value));
+  }
+
+  Future<void> setSoundOnRestStart(bool value) async {
+    await ref.read(settingsRepositoryProvider).setSoundOnRestStart(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundOnRestStart: value));
+  }
+
+  Future<void> setSoundOnSessionComplete(bool value) async {
+    await ref.read(settingsRepositoryProvider).setSoundOnSessionComplete(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundOnSessionComplete: value));
+  }
+
+  Future<void> setSoundOnPrepTick(bool value) async {
+    await ref.read(settingsRepositoryProvider).setSoundOnPrepTick(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundOnPrepTick: value));
+  }
+
+  Future<void> setSoundOnPhaseWarning(bool value) async {
+    await ref.read(settingsRepositoryProvider).setSoundOnPhaseWarning(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundOnPhaseWarning: value));
+  }
+
+  Future<void> setSoundCountdownSeconds(int value) async {
+    final clamped = value.clamp(
+      SettingsRepository.minSoundCountdownSeconds,
+      SettingsRepository.maxSoundCountdownSeconds,
+    );
+    await ref
+        .read(settingsRepositoryProvider)
+        .setSoundCountdownSeconds(clamped);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundCountdownSeconds: clamped));
+  }
+
+  Future<void> setSoundIdWorkStart(String value) async {
+    await ref.read(settingsRepositoryProvider).setSoundIdWorkStart(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundIdWorkStart: value));
+  }
+
+  Future<void> setSoundIdRestStart(String value) async {
+    await ref.read(settingsRepositoryProvider).setSoundIdRestStart(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundIdRestStart: value));
+  }
+
+  Future<void> setSoundIdSessionComplete(String value) async {
+    await ref
+        .read(settingsRepositoryProvider)
+        .setSoundIdSessionComplete(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundIdSessionComplete: value));
+  }
+
+  Future<void> setSoundIdPrepTick(String value) async {
+    await ref.read(settingsRepositoryProvider).setSoundIdPrepTick(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundIdPrepTick: value));
+  }
+
+  Future<void> setSoundIdPhaseWarning(String value) async {
+    await ref.read(settingsRepositoryProvider).setSoundIdPhaseWarning(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(soundIdPhaseWarning: value));
   }
 
   Future<void> setKeepScreenOnEnabled(bool value) async {

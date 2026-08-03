@@ -97,6 +97,39 @@ abstract final class UiStrings {
   static const vibrationCountdownSecondsHint =
       'Vibra en los últimos N segundos (0 = solo al cambiar de intervalo).';
 
+  // Sound effects (F36)
+  static const soundSectionTitle = 'Efectos de sonido';
+  static const soundEnabledLabel = 'Efectos de sonido activados';
+  static const soundEnabledHint =
+      'Beeps y chimes del temporizador. Independiente de la voz y la vibración.';
+  static const soundOnWorkStartLabel = 'Inicio de trabajo';
+  static const soundOnWorkStartHint =
+      'Sonido al empezar un intervalo de trabajo (u otro no-descanso).';
+  static const soundOnRestStartLabel = 'Inicio de descanso';
+  static const soundOnRestStartHint = 'Sonido al empezar un intervalo de descanso.';
+  static const soundOnSessionCompleteLabel = 'Fin de sesión';
+  static const soundOnSessionCompleteHint =
+      'Sonido al completar el entrenamiento.';
+  static const soundOnPrepTickLabel = 'Ticks de preparación';
+  static const soundOnPrepTickHint =
+      'Un tick por cada segundo de la cuenta de preparación.';
+  static const soundOnPhaseWarningLabel = 'Cuenta regresiva final';
+  static const soundOnPhaseWarningHint =
+      'Ticks en los últimos N segundos de cada intervalo.';
+  static const soundCountdownSecondsLabel =
+      'Segundos de cuenta regresiva (sonido)';
+  static const soundCountdownSecondsHint =
+      'Reproduce el aviso en los últimos N segundos (0 = desactivado).';
+  static const soundClipLabel = 'Sonido';
+  static const soundChangeClip = 'Cambiar';
+  static const soundPreviewClip = 'Probar';
+  static const soundPickClipTitle = 'Elegir sonido';
+  static const soundSlotWorkStart = 'Inicio de trabajo';
+  static const soundSlotRestStart = 'Inicio de descanso';
+  static const soundSlotSessionComplete = 'Fin de sesión';
+  static const soundSlotPrepTick = 'Tick de preparación';
+  static const soundSlotPhaseWarning = 'Aviso de cuenta regresiva';
+
   // Always-on screen (F19)
   static const keepScreenOnSectionTitle = 'Pantalla';
   static const keepScreenOnEnabledLabel = 'Pantalla siempre encendida';

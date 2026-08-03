@@ -37,6 +37,34 @@ class PreferencesRepository {
   static const minVibrationCountdownSeconds = 0;
   static const maxVibrationCountdownSeconds = 10;
 
+  // F36 SFX prefs (independent of F02 voice and F18 vibration)
+  static const soundEnabledKey = 'sound_enabled';
+  static const soundOnWorkStartKey = 'sound_on_work_start';
+  static const soundOnRestStartKey = 'sound_on_rest_start';
+  static const soundOnSessionCompleteKey = 'sound_on_session_complete';
+  static const soundOnPrepTickKey = 'sound_on_prep_tick';
+  static const soundOnPhaseWarningKey = 'sound_on_phase_warning';
+  static const soundCountdownSecondsKey = 'sound_countdown_seconds';
+  static const soundIdWorkStartKey = 'sound_id_work_start';
+  static const soundIdRestStartKey = 'sound_id_rest_start';
+  static const soundIdSessionCompleteKey = 'sound_id_session_complete';
+  static const soundIdPrepTickKey = 'sound_id_prep_tick';
+  static const soundIdPhaseWarningKey = 'sound_id_phase_warning';
+  static const defaultSoundEnabled = true;
+  static const defaultSoundOnWorkStart = true;
+  static const defaultSoundOnRestStart = true;
+  static const defaultSoundOnSessionComplete = true;
+  static const defaultSoundOnPrepTick = true;
+  static const defaultSoundOnPhaseWarning = true;
+  static const defaultSoundCountdownSeconds = 3;
+  static const minSoundCountdownSeconds = 0;
+  static const maxSoundCountdownSeconds = 10;
+  static const defaultSoundIdWorkStart = 'sfx_work_start_01';
+  static const defaultSoundIdRestStart = 'sfx_rest_start_01';
+  static const defaultSoundIdSessionComplete = 'sfx_session_complete_01';
+  static const defaultSoundIdPrepTick = 'sfx_tick_01';
+  static const defaultSoundIdPhaseWarning = 'sfx_tick_01';
+
   // F19 always-on screen (independent of F02/F18)
   static const keepScreenOnEnabledKey = 'keep_screen_on_enabled';
   static const defaultKeepScreenOnEnabled = true;
@@ -173,6 +201,89 @@ class PreferencesRepository {
     );
     await setInt(vibrationCountdownSecondsKey, clamped);
   }
+
+  Future<bool> getSoundEnabled() =>
+      getBool(soundEnabledKey, defaultValue: defaultSoundEnabled);
+
+  Future<void> setSoundEnabled(bool value) =>
+      setBool(soundEnabledKey, value);
+
+  Future<bool> getSoundOnWorkStart() =>
+      getBool(soundOnWorkStartKey, defaultValue: defaultSoundOnWorkStart);
+
+  Future<void> setSoundOnWorkStart(bool value) =>
+      setBool(soundOnWorkStartKey, value);
+
+  Future<bool> getSoundOnRestStart() =>
+      getBool(soundOnRestStartKey, defaultValue: defaultSoundOnRestStart);
+
+  Future<void> setSoundOnRestStart(bool value) =>
+      setBool(soundOnRestStartKey, value);
+
+  Future<bool> getSoundOnSessionComplete() => getBool(
+        soundOnSessionCompleteKey,
+        defaultValue: defaultSoundOnSessionComplete,
+      );
+
+  Future<void> setSoundOnSessionComplete(bool value) =>
+      setBool(soundOnSessionCompleteKey, value);
+
+  Future<bool> getSoundOnPrepTick() =>
+      getBool(soundOnPrepTickKey, defaultValue: defaultSoundOnPrepTick);
+
+  Future<void> setSoundOnPrepTick(bool value) =>
+      setBool(soundOnPrepTickKey, value);
+
+  Future<bool> getSoundOnPhaseWarning() => getBool(
+        soundOnPhaseWarningKey,
+        defaultValue: defaultSoundOnPhaseWarning,
+      );
+
+  Future<void> setSoundOnPhaseWarning(bool value) =>
+      setBool(soundOnPhaseWarningKey, value);
+
+  Future<int> getSoundCountdownSeconds() async {
+    final value = await getInt(soundCountdownSecondsKey);
+    if (value == null) return defaultSoundCountdownSeconds;
+    return value.clamp(minSoundCountdownSeconds, maxSoundCountdownSeconds);
+  }
+
+  Future<void> setSoundCountdownSeconds(int value) async {
+    final clamped =
+        value.clamp(minSoundCountdownSeconds, maxSoundCountdownSeconds);
+    await setInt(soundCountdownSecondsKey, clamped);
+  }
+
+  Future<String> getSoundIdWorkStart() async =>
+      (await getString(soundIdWorkStartKey)) ?? defaultSoundIdWorkStart;
+
+  Future<void> setSoundIdWorkStart(String value) =>
+      setString(soundIdWorkStartKey, value);
+
+  Future<String> getSoundIdRestStart() async =>
+      (await getString(soundIdRestStartKey)) ?? defaultSoundIdRestStart;
+
+  Future<void> setSoundIdRestStart(String value) =>
+      setString(soundIdRestStartKey, value);
+
+  Future<String> getSoundIdSessionComplete() async =>
+      (await getString(soundIdSessionCompleteKey)) ??
+      defaultSoundIdSessionComplete;
+
+  Future<void> setSoundIdSessionComplete(String value) =>
+      setString(soundIdSessionCompleteKey, value);
+
+  Future<String> getSoundIdPrepTick() async =>
+      (await getString(soundIdPrepTickKey)) ?? defaultSoundIdPrepTick;
+
+  Future<void> setSoundIdPrepTick(String value) =>
+      setString(soundIdPrepTickKey, value);
+
+  Future<String> getSoundIdPhaseWarning() async =>
+      (await getString(soundIdPhaseWarningKey)) ?? defaultSoundIdPhaseWarning;
+
+  Future<void> setSoundIdPhaseWarning(String value) =>
+      setString(soundIdPhaseWarningKey, value);
 
   Future<bool> getKeepScreenOnEnabled() => getBool(
         keepScreenOnEnabledKey,

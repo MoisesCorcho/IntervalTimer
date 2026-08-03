@@ -9,6 +9,7 @@ import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 import 'package:interval_timer/features/always_on/presentation/keep_screen_on_settings_section.dart';
 import 'package:interval_timer/features/body_tracking/presentation/body_weight_unit_settings_section.dart';
 import 'package:interval_timer/features/lock_screen/presentation/session_lock_screen_settings_section.dart';
+import 'package:interval_timer/features/sound_effects/presentation/sound_effects_settings_section.dart';
 import 'package:interval_timer/features/vibration/presentation/vibration_settings_section.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/number_stepper.dart';
@@ -176,6 +177,8 @@ class _SettingsBody extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.spacingLg),
         VibrationSettingsSection(settings: settings),
+        const SizedBox(height: AppTheme.spacingLg),
+        SoundEffectsSettingsSection(settings: settings),
         const SizedBox(height: AppTheme.spacingLg),
         KeepScreenOnSettingsSection(settings: settings),
         const SizedBox(height: AppTheme.spacingLg),

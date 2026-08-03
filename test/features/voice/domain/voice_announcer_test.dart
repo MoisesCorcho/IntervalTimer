@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:interval_timer/data/models/interval_type.dart';
 import 'package:interval_timer/features/timer/application/timer_session_events.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/voice/domain/announce_text.dart';
@@ -39,6 +40,7 @@ IntervalStartedEvent _started({
     announceText: announceText,
     durationSeconds: durationSeconds,
     index: index,
+    type: IntervalType.work,
   );
 }
 
