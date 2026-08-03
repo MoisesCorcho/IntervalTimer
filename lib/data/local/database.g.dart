@@ -3255,6 +3255,236 @@ class BodyMeasurementsCompanion extends UpdateCompanion<BodyMeasurementRow> {
   }
 }
 
+class $UnlockedAchievementsTable extends UnlockedAchievements
+    with TableInfo<$UnlockedAchievementsTable, UnlockedAchievementRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UnlockedAchievementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _achievementIdMeta = const VerificationMeta(
+    'achievementId',
+  );
+  @override
+  late final GeneratedColumn<String> achievementId = GeneratedColumn<String>(
+    'achievement_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unlockedAtMeta = const VerificationMeta(
+    'unlockedAt',
+  );
+  @override
+  late final GeneratedColumn<int> unlockedAt = GeneratedColumn<int>(
+    'unlocked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [achievementId, unlockedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'unlocked_achievements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UnlockedAchievementRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('achievement_id')) {
+      context.handle(
+        _achievementIdMeta,
+        achievementId.isAcceptableOrUnknown(
+          data['achievement_id']!,
+          _achievementIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_achievementIdMeta);
+    }
+    if (data.containsKey('unlocked_at')) {
+      context.handle(
+        _unlockedAtMeta,
+        unlockedAt.isAcceptableOrUnknown(data['unlocked_at']!, _unlockedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unlockedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {achievementId};
+  @override
+  UnlockedAchievementRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UnlockedAchievementRow(
+      achievementId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}achievement_id'],
+      )!,
+      unlockedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}unlocked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $UnlockedAchievementsTable createAlias(String alias) {
+    return $UnlockedAchievementsTable(attachedDatabase, alias);
+  }
+}
+
+class UnlockedAchievementRow extends DataClass
+    implements Insertable<UnlockedAchievementRow> {
+  final String achievementId;
+  final int unlockedAt;
+  const UnlockedAchievementRow({
+    required this.achievementId,
+    required this.unlockedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['achievement_id'] = Variable<String>(achievementId);
+    map['unlocked_at'] = Variable<int>(unlockedAt);
+    return map;
+  }
+
+  UnlockedAchievementsCompanion toCompanion(bool nullToAbsent) {
+    return UnlockedAchievementsCompanion(
+      achievementId: Value(achievementId),
+      unlockedAt: Value(unlockedAt),
+    );
+  }
+
+  factory UnlockedAchievementRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UnlockedAchievementRow(
+      achievementId: serializer.fromJson<String>(json['achievementId']),
+      unlockedAt: serializer.fromJson<int>(json['unlockedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'achievementId': serializer.toJson<String>(achievementId),
+      'unlockedAt': serializer.toJson<int>(unlockedAt),
+    };
+  }
+
+  UnlockedAchievementRow copyWith({String? achievementId, int? unlockedAt}) =>
+      UnlockedAchievementRow(
+        achievementId: achievementId ?? this.achievementId,
+        unlockedAt: unlockedAt ?? this.unlockedAt,
+      );
+  UnlockedAchievementRow copyWithCompanion(UnlockedAchievementsCompanion data) {
+    return UnlockedAchievementRow(
+      achievementId: data.achievementId.present
+          ? data.achievementId.value
+          : this.achievementId,
+      unlockedAt: data.unlockedAt.present
+          ? data.unlockedAt.value
+          : this.unlockedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UnlockedAchievementRow(')
+          ..write('achievementId: $achievementId, ')
+          ..write('unlockedAt: $unlockedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(achievementId, unlockedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UnlockedAchievementRow &&
+          other.achievementId == this.achievementId &&
+          other.unlockedAt == this.unlockedAt);
+}
+
+class UnlockedAchievementsCompanion
+    extends UpdateCompanion<UnlockedAchievementRow> {
+  final Value<String> achievementId;
+  final Value<int> unlockedAt;
+  final Value<int> rowid;
+  const UnlockedAchievementsCompanion({
+    this.achievementId = const Value.absent(),
+    this.unlockedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UnlockedAchievementsCompanion.insert({
+    required String achievementId,
+    required int unlockedAt,
+    this.rowid = const Value.absent(),
+  }) : achievementId = Value(achievementId),
+       unlockedAt = Value(unlockedAt);
+  static Insertable<UnlockedAchievementRow> custom({
+    Expression<String>? achievementId,
+    Expression<int>? unlockedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (achievementId != null) 'achievement_id': achievementId,
+      if (unlockedAt != null) 'unlocked_at': unlockedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UnlockedAchievementsCompanion copyWith({
+    Value<String>? achievementId,
+    Value<int>? unlockedAt,
+    Value<int>? rowid,
+  }) {
+    return UnlockedAchievementsCompanion(
+      achievementId: achievementId ?? this.achievementId,
+      unlockedAt: unlockedAt ?? this.unlockedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (achievementId.present) {
+      map['achievement_id'] = Variable<String>(achievementId.value);
+    }
+    if (unlockedAt.present) {
+      map['unlocked_at'] = Variable<int>(unlockedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UnlockedAchievementsCompanion(')
+          ..write('achievementId: $achievementId, ')
+          ..write('unlockedAt: $unlockedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3270,6 +3500,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $BodyMeasurementsTable bodyMeasurements = $BodyMeasurementsTable(
     this,
   );
+  late final $UnlockedAchievementsTable unlockedAchievements =
+      $UnlockedAchievementsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3283,6 +3515,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     appPreferences,
     sessionLogs,
     bodyMeasurements,
+    unlockedAchievements,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -5682,6 +5915,169 @@ typedef $$BodyMeasurementsTableProcessedTableManager =
       BodyMeasurementRow,
       PrefetchHooks Function()
     >;
+typedef $$UnlockedAchievementsTableCreateCompanionBuilder =
+    UnlockedAchievementsCompanion Function({
+      required String achievementId,
+      required int unlockedAt,
+      Value<int> rowid,
+    });
+typedef $$UnlockedAchievementsTableUpdateCompanionBuilder =
+    UnlockedAchievementsCompanion Function({
+      Value<String> achievementId,
+      Value<int> unlockedAt,
+      Value<int> rowid,
+    });
+
+class $$UnlockedAchievementsTableFilterComposer
+    extends Composer<_$AppDatabase, $UnlockedAchievementsTable> {
+  $$UnlockedAchievementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get achievementId => $composableBuilder(
+    column: $table.achievementId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get unlockedAt => $composableBuilder(
+    column: $table.unlockedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UnlockedAchievementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $UnlockedAchievementsTable> {
+  $$UnlockedAchievementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get achievementId => $composableBuilder(
+    column: $table.achievementId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get unlockedAt => $composableBuilder(
+    column: $table.unlockedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UnlockedAchievementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UnlockedAchievementsTable> {
+  $$UnlockedAchievementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get achievementId => $composableBuilder(
+    column: $table.achievementId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get unlockedAt => $composableBuilder(
+    column: $table.unlockedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$UnlockedAchievementsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UnlockedAchievementsTable,
+          UnlockedAchievementRow,
+          $$UnlockedAchievementsTableFilterComposer,
+          $$UnlockedAchievementsTableOrderingComposer,
+          $$UnlockedAchievementsTableAnnotationComposer,
+          $$UnlockedAchievementsTableCreateCompanionBuilder,
+          $$UnlockedAchievementsTableUpdateCompanionBuilder,
+          (
+            UnlockedAchievementRow,
+            BaseReferences<
+              _$AppDatabase,
+              $UnlockedAchievementsTable,
+              UnlockedAchievementRow
+            >,
+          ),
+          UnlockedAchievementRow,
+          PrefetchHooks Function()
+        > {
+  $$UnlockedAchievementsTableTableManager(
+    _$AppDatabase db,
+    $UnlockedAchievementsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UnlockedAchievementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UnlockedAchievementsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$UnlockedAchievementsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> achievementId = const Value.absent(),
+                Value<int> unlockedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UnlockedAchievementsCompanion(
+                achievementId: achievementId,
+                unlockedAt: unlockedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String achievementId,
+                required int unlockedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => UnlockedAchievementsCompanion.insert(
+                achievementId: achievementId,
+                unlockedAt: unlockedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UnlockedAchievementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UnlockedAchievementsTable,
+      UnlockedAchievementRow,
+      $$UnlockedAchievementsTableFilterComposer,
+      $$UnlockedAchievementsTableOrderingComposer,
+      $$UnlockedAchievementsTableAnnotationComposer,
+      $$UnlockedAchievementsTableCreateCompanionBuilder,
+      $$UnlockedAchievementsTableUpdateCompanionBuilder,
+      (
+        UnlockedAchievementRow,
+        BaseReferences<
+          _$AppDatabase,
+          $UnlockedAchievementsTable,
+          UnlockedAchievementRow
+        >,
+      ),
+      UnlockedAchievementRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5702,4 +6098,6 @@ class $AppDatabaseManager {
       $$SessionLogsTableTableManager(_db, _db.sessionLogs);
   $$BodyMeasurementsTableTableManager get bodyMeasurements =>
       $$BodyMeasurementsTableTableManager(_db, _db.bodyMeasurements);
+  $$UnlockedAchievementsTableTableManager get unlockedAchievements =>
+      $$UnlockedAchievementsTableTableManager(_db, _db.unlockedAchievements);
 }

@@ -8,6 +8,7 @@ import 'package:interval_timer/data/local/tables/intervals_table.dart';
 import 'package:interval_timer/data/local/tables/routine_items_table.dart';
 import 'package:interval_timer/data/local/tables/routines_table.dart';
 import 'package:interval_timer/data/local/tables/session_logs_table.dart';
+import 'package:interval_timer/data/local/tables/unlocked_achievements_table.dart';
 import 'package:interval_timer/data/local/tables/workout_exercises_table.dart';
 import 'package:interval_timer/data/local/tables/workouts_table.dart';
 import 'package:path/path.dart' as p;
@@ -25,6 +26,7 @@ part 'database.g.dart';
     AppPreferences,
     SessionLogs,
     BodyMeasurements,
+    UnlockedAchievements,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -33,7 +35,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -62,6 +64,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 8) {
             await migrator.createTable(bodyMeasurements);
+          }
+          if (from < 9) {
+            await migrator.createTable(unlockedAchievements);
           }
         },
       );

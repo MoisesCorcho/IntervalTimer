@@ -350,7 +350,7 @@ SessionLog {
 **Integridad:**
 
 - **Sin FK** a `routines` / `workouts`: el origen puede borrarse y el historial permanece (snapshot).
-- `schemaVersion`: **8** en codigo actual (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32; v8 `body_measurements` F15). Confirmado en `lib/data/local/database.dart`. Planificado: **F13 v9** (`unlocked_achievements`) → **F14 v10** (`reminders`).
+- `schemaVersion`: **9** en codigo actual (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32; v8 `body_measurements` F15; v9 `unlocked_achievements` F13). Confirmado en `lib/data/local/database.dart`. Planificado: **F14 v10** (`reminders`).
 
 **Semantica de escritura (resumen F04):**
 

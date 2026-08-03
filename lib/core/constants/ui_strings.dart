@@ -194,6 +194,60 @@ abstract final class UiStrings {
   static const sessionSummaryShareRest = 'Descanso';
   static const sessionSummarySheetHint =
       'Deslizá hacia arriba para ver más detalle';
+  static const sessionSummaryNewAchievementsOne = '¡1 logro nuevo!';
+  static const sessionSummaryNewAchievementsMany = '¡{count} logros nuevos!';
+  static const sessionSummaryViewAchievements = 'Ver logros';
+
+  // Achievements / badges (F13)
+  static const achievementsTitle = 'Logros';
+  static const achievementsEntryTitle = 'Logros';
+  static const achievementsEntrySubtitle = 'Ver desbloqueados y progreso';
+  static const achievementsUnlockedBadge = 'Desbloqueado';
+  static const achievementsLockedBadge = 'Pendiente';
+  static const achievementsError = 'No se pudieron cargar los logros';
+  static const achievementsEmptyHint = 'Completa sesiones para desbloquear logros';
+  static const achievementsSheetTitle = '¡Logros desbloqueados!';
+  static const achievementsSheetClose = 'Genial';
+  static const achievementsUnlockedOn = 'Desbloqueado el {date}';
+  static const achievementsProgressSessions = '{current}/{target} sesiones';
+  static const achievementsProgressDays = '{current}/{target} días';
+  static const achievementsProgressMinutes = '{current}/{target} min';
+
+  static String achievementTitle(String id) {
+    return switch (id) {
+      'first_session' => 'Primera sesión',
+      'sessions_10' => '10 sesiones',
+      'sessions_25' => '25 sesiones',
+      'sessions_50' => '50 sesiones',
+      'sessions_100' => '100 sesiones',
+      'streak_3' => 'Racha de 3 días',
+      'streak_7' => 'Racha de 7 días',
+      'streak_14' => 'Racha de 14 días',
+      'streak_30' => 'Racha de 30 días',
+      'minutes_60' => '60 minutos',
+      'minutes_300' => '300 minutos',
+      'minutes_1000' => '1000 minutos',
+      _ => id,
+    };
+  }
+
+  static String achievementDescription(String id) {
+    return switch (id) {
+      'first_session' => 'Completá tu primera sesión de entrenamiento.',
+      'sessions_10' => 'Completá 10 sesiones en total.',
+      'sessions_25' => 'Completá 25 sesiones en total.',
+      'sessions_50' => 'Completá 50 sesiones en total.',
+      'sessions_100' => 'Completá 100 sesiones en total.',
+      'streak_3' => 'Entrená al menos un día durante 3 días seguidos.',
+      'streak_7' => 'Entrená al menos un día durante 7 días seguidos.',
+      'streak_14' => 'Entrená al menos un día durante 14 días seguidos.',
+      'streak_30' => 'Entrená al menos un día durante 30 días seguidos.',
+      'minutes_60' => 'Acumulá 60 minutos de sesiones completadas.',
+      'minutes_300' => 'Acumulá 300 minutos de sesiones completadas.',
+      'minutes_1000' => 'Acumulá 1000 minutos de sesiones completadas.',
+      _ => '',
+    };
+  }
 
   // Errors
   static const persistenceError =
