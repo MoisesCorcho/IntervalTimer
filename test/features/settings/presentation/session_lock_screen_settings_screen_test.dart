@@ -33,7 +33,8 @@ void main() {
     );
     addTearDown(container.dispose);
 
-    await tester.binding.setSurfaceSize(const Size(800, 2400));
+    // Tall surface still needs scroll once F36 SFX section is present.
+    await tester.binding.setSurfaceSize(const Size(800, 3200));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(
@@ -44,9 +45,17 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    // Settings ListView only builds viewport children. F36 SFX section pushed
+    // session-lock below the fold — scroll to lazy-build, then ensure hit-testable.
     final switchFinder =
         find.byKey(const Key('session_lock_screen_enabled_switch'));
+    await tester.scrollUntilVisible(
+      switchFinder,
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.ensureVisible(switchFinder);
+    await tester.pumpAndSettle();
     expect(switchFinder, findsOneWidget);
 
     expect(await settingsRepo.getSessionLockScreenEnabled(), true);
@@ -58,15 +67,23 @@ void main() {
     await tester.pumpAndSettle();
     expect(await settingsRepo.getSessionLockScreenEnabled(), false);
 
+    await tester.ensureVisible(switchFinder);
+    await tester.pumpAndSettle();
     await tester.tap(switchFinder);
     await tester.pumpAndSettle();
     expect(await settingsRepo.getSessionLockScreenEnabled(), true);
 
     // Permission denied → help UI (R14)
-    expect(
-      find.byKey(const Key('session_lock_screen_permission_hint')),
-      findsOneWidget,
+    final hintFinder =
+        find.byKey(const Key('session_lock_screen_permission_hint'));
+    await tester.scrollUntilVisible(
+      hintFinder,
+      200,
+      scrollable: find.byType(Scrollable).first,
     );
+    await tester.ensureVisible(hintFinder);
+    await tester.pumpAndSettle();
+    expect(hintFinder, findsOneWidget);
     expect(
       find.byKey(const Key('session_lock_screen_open_settings')),
       findsOneWidget,

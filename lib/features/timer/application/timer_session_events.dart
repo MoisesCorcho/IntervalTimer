@@ -1,3 +1,5 @@
+import 'package:interval_timer/data/models/interval_type.dart';
+
 class SessionCompletedEvent {
   const SessionCompletedEvent({
     required this.routineId,
@@ -35,6 +37,7 @@ class IntervalStartedEvent {
     required this.announceText,
     required this.durationSeconds,
     required this.index,
+    required this.type,
   });
 
   final String intervalId;
@@ -42,4 +45,7 @@ class IntervalStartedEvent {
   final String? announceText;
   final int durationSeconds;
   final int index;
+
+  /// Interval type for channel-specific feedback (e.g. F36 work vs rest SFX).
+  final IntervalType type;
 }

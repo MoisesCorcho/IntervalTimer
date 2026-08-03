@@ -39,6 +39,7 @@
 | F33 | [Controles Numericos y de Duracion (Steppers Premium)](../features/33-premium-numeric-steppers/requirements.md) | Fase 7 · Calidad y Pulido | Completado | F01, F32 |
 | F34 | [Descanso entre Sets y Descanso Final del Ejercicio](../features/34-exercise-rest-between-and-final/requirements.md) | Fase 1 · Personalizacion | Completado | F32 |
 | F35 | [Navegacion de Secciones, Preparacion y Ajustes](../features/35-timer-navigation-prep-settings/requirements.md) | Fase 0 · Fundacion | Completado | F01 |
+| F36 | [Efectos de Sonido del Temporizador (SFX)](../features/36-timer-sound-effects/requirements.md) | Fase 4 · Audio y Experiencia | En progreso | F01, F35 |
 
 Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `requirements.md`.
 
@@ -101,6 +102,17 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - F33 no es prerequisito formal de F35, pero el control de prep en Settings **debe** reutilizar `NumberStepper` si ya esta en `shared/widgets/`.
 - Prep se aplica **una vez** al inicio de la secuencia efectiva del controller (rutina F01 o lista aplanada F32/F34), no por ejercicio.
 
+### F36 vs F02 / F18 / F17 / F35 (SFX del timer)
+
+- **F36:** efectos de sonido **empaquetados** (assets) en eventos del timer + settings (master, toggles, N countdown, picker por slot, preview).
+- **No** es F02: F02 es TTS-only y excluye beeps/assets pregrabados.
+- **No** es F18: F18 es haptics; no reproduce audio ni catalogo de clips.
+- **No** es F17: F17 baja musica externa ante voz; no define SFX. Al implementar F17, contemplar ducking tambien para SFX (dependencia blanda).
+- **Prerequisitos hard:** F01 (eventos/estado) + F35 (`preparing` + shell Settings). Soft: F18 como referencia de UX (N 0–10, granulares); F02 solo para independencia de mute y solape permitido.
+- Canales independientes: `voiceEnabled` ≠ `vibrationEnabled` ≠ `soundEnabled`.
+- Tres ventanas N distintas si el usuario quiere: `countdown_seconds` (voz), `vibration_countdown_seconds`, `sound_countdown_seconds`.
+- Pause/resume **sin** SFX en F36 (feedback de pause cubierto por UI + F18).
+
 ### F01 vs F04 (eventos de sesion)
 
 - F04 consume `SessionCompletedEvent` y `SessionCancelledEvent` expuestos por `TimerController` (F01).
@@ -112,6 +124,8 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 |---|---|---|
 | F06 | F03, F07 | IAP puede gatear contenido premium y voces |
 | F25 | F06 | Compartir rutinas puede ser feature Pro |
+| F17 | F36 | Ducking de musica externa deberia contemplar SFX ademas de TTS cuando ambos existan |
+| F36 | F18 | Mismo patron de UX (master + granulares + N); no bloquea implementacion |
 
 ## Orden de implementacion sugerido (por fase)
 
@@ -119,7 +133,7 @@ Sincronizar la columna **Estado** con el bloque `> Estado:` al inicio de cada `r
 - **Fase 1 - Personalizacion y monetizacion:** F32, F34 (tras F32), F05, F06, F07 (F32 puede implementarse antes que F05; no comparten prerequisitos; F34 extiende el aplanado/rest de F32).
 - **Fase 2 - Profundidad de entrenamiento:** F08 (tras F32+F34; no espera F05), F09, F10, F11.
 - **Fase 3 - Seguimiento y motivacion:** F12, F13, F14, F15, F16.
-- **Fase 4 - Audio y experiencia:** F17, F18, F19, F20, F21 (F21 es fase futura/spike).
+- **Fase 4 - Audio y experiencia:** F18, F36 (SFX; tras F35), F17 (ducking; contemplar SFX si F36 ya existe), F19, F20, F21 (F21 es fase futura/spike).
 - **Fase 5 - Descubrimiento de contenido:** F22, F23, F24.
 - **Fase 6 - Social (futuro, requiere backend real):** F25, F26.
 - **Fase 7 - Calidad y pulido:** F27, F28, F29, F30, F31, F33.
@@ -189,11 +203,13 @@ F01 --> F33
 F32 --> F33
 F32 --> F34
 F01 --> F35
+F01 --> F36
+F35 --> F36
 ```
 
 ## Como agregar una nueva feature al roadmap
 
-1. Asignar el siguiente ID disponible (`F35`, etc.).
+1. Asignar el siguiente ID disponible (`F37`, etc.).
 2. Crear carpeta `specs/features/NN-slug/` con los 3 archivos usando las existentes como referencia.
 3. Declarar sus prerequisitos reales.
 4. Actualizar la tabla de este archivo (con columna Estado) y el grafo de dependencias.
