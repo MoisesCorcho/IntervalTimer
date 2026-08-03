@@ -247,6 +247,10 @@ abstract final class UiStrings {
   static const bodyWeightUnitsSectionTitle = 'Unidades';
   static const bodyWeightUnitPreferenceLabel = 'Peso';
   static const bodyWeightRecentTitle = 'Últimos registros';
+  static const bodyWeightViewRecords = 'Ver registros';
+  static const bodyWeightViewRecordsCount = 'Ver registros ({count})';
+  static const bodyWeightHistorySheetTitle = 'Registros de peso';
+  static const bodyWeightLastLine = 'Último: {value} {unit} · {date}';
   static const bodyWeightDeleteTitle = '¿Eliminar registro?';
   static const bodyWeightDeleteMessage =
       'Se eliminará este registro de peso. Esta acción no se puede deshacer.';

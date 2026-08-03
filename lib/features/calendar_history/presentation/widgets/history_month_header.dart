@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
 
+/// Month selector + optional "today" control for the History calendar chrome.
+///
+/// [showGoToToday] is false when the selected day is already today (less noise).
 class HistoryMonthHeader extends StatelessWidget {
   const HistoryMonthHeader({
     super.key,
     required this.focusedMonth,
     required this.onMonthSelected,
     required this.onGoToToday,
+    this.showGoToToday = true,
   });
 
   final DateTime focusedMonth;
   final ValueChanged<DateTime> onMonthSelected;
   final VoidCallback onGoToToday;
+
+  /// When false, the today button is omitted (already on today).
+  final bool showGoToToday;
 
   @override
   Widget build(BuildContext context) {
@@ -62,31 +70,37 @@ class HistoryMonthHeader extends StatelessWidget {
               ),
             ),
           ),
-          Semantics(
-            button: true,
-            label: UiStrings.historyGoToToday,
-            child: IconButton(
-              key: const Key('history_today_button'),
-              tooltip: UiStrings.historyGoToToday,
-              onPressed: onGoToToday,
-              icon: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Icon(Icons.calendar_today_outlined),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      '$today',
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
-                          ),
+          if (showGoToToday)
+            Semantics(
+              button: true,
+              label: UiStrings.historyGoToToday,
+              child: IconButton(
+                key: const Key('history_today_button'),
+                tooltip: UiStrings.historyGoToToday,
+                onPressed: onGoToToday,
+                constraints: const BoxConstraints(
+                  minWidth: AppTheme.buttonMinHeight,
+                  minHeight: AppTheme.buttonMinHeight,
+                ),
+                icon: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(Icons.calendar_today_outlined),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        '$today',
+                        style:
+                            Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

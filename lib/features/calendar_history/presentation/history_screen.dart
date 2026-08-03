@@ -37,8 +37,17 @@ class HistoryScreen extends ConsumerWidget {
         child: ListView(
           key: const Key('history_scroll'),
           children: [
+            // F12: progress block at top of History scroll (R1, R9)
+            const ProgressSummarySection(),
+            // F15: body weight section between progress and calendar (R2, R13)
+            const BodyWeightSection(),
+            // Calendar chrome (month + today) sits with the calendar, not at scroll top.
             HistoryMonthHeader(
               focusedMonth: history.focusedMonth,
+              showGoToToday: !_isSameCalendarDay(
+                history.selectedDate,
+                DateTime.now(),
+              ),
               onMonthSelected: (month) {
                 ref
                     .read(historyControllerProvider.notifier)
@@ -48,10 +57,6 @@ class HistoryScreen extends ConsumerWidget {
                 ref.read(historyControllerProvider.notifier).goToToday();
               },
             ),
-            // F12: progress block between chrome and calendar (R1, R9)
-            const ProgressSummarySection(),
-            // F15: body weight section between progress and calendar (R2, R13)
-            const BodyWeightSection(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: HistoryCalendar(
@@ -86,6 +91,12 @@ class HistoryScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  static bool _isSameCalendarDay(DateTime a, DateTime b) {
+    final al = a.toLocal();
+    final bl = b.toLocal();
+    return al.year == bl.year && al.month == bl.month && al.day == bl.day;
   }
 
   List<Widget> _sessionChildren(

@@ -69,7 +69,8 @@ void main() {
     expect(sectionY, lessThan(calendarY));
   });
 
-  testWidgets('with measurement shows chart not empty (R5)', (tester) async {
+  testWidgets('with measurement shows chart and opens history sheet (R5, R6)',
+      (tester) async {
     await bodyRepo.upsertByLocalDate(
       localDate: '2026-08-01',
       weightKg: 75,
@@ -82,6 +83,15 @@ void main() {
 
     expect(find.byKey(const Key('body_weight_empty')), findsNothing);
     expect(find.byKey(const Key('body_weight_line_chart')), findsOneWidget);
+    // Compact section: no inline tiles; history lives in sheet.
+    expect(find.byKey(const Key('body_weight_view_records')), findsOneWidget);
+    expect(find.byKey(const Key('body_weight_last_line')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('body_weight_view_records')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('body_weight_history_sheet')), findsOneWidget);
+    expect(find.byKey(const Key('body_weight_history_list')), findsOneWidget);
   });
 
   testWidgets('form rejects invalid weight (R10)', (tester) async {

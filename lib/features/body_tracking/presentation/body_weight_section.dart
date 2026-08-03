@@ -6,18 +6,16 @@ import 'package:interval_timer/features/body_tracking/application/body_tracking_
 import 'package:interval_timer/features/body_tracking/domain/body_measurement.dart';
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
 import 'package:interval_timer/features/body_tracking/presentation/body_measurement_form.dart';
+import 'package:interval_timer/features/body_tracking/presentation/body_weight_history_sheet.dart';
 import 'package:interval_timer/features/body_tracking/presentation/body_weight_line_chart.dart';
 import 'package:interval_timer/features/stats/application/stats_providers.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
-import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
-/// Body weight block embedded in History (F15 R2, R5, R6, R12).
+/// Compact body weight block in History (F15 R2, R5, R12).
 ///
-/// Placement: after F12 progress, before calendar.
+/// Full measurement list lives in [showBodyWeightHistorySheet] (not inline).
 class BodyWeightSection extends ConsumerWidget {
   const BodyWeightSection({super.key});
-
-  static const _recentLimit = 5;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -84,7 +82,7 @@ class BodyWeightSection extends ConsumerWidget {
                   onRegister: () => _openForm(context, ref),
                 );
               }
-              final recent = list.reversed.take(_recentLimit).toList();
+              final latest = list.last; // watchAll is asc by localDate
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -92,29 +90,33 @@ class BodyWeightSection extends ConsumerWidget {
                     measurements: list,
                     unit: unit,
                   ),
-                  const SizedBox(height: AppTheme.spacingSm),
-                  Text(
-                    UiStrings.bodyWeightRecentTitle,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
+                  const SizedBox(height: AppTheme.spacingXs),
+                  InkWell(
+                    key: const Key('body_weight_last_line'),
+                    onTap: () => showBodyWeightHistorySheet(context: context),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppTheme.spacingSm,
+                      ),
+                      child: Text(
+                        _lastLineText(latest, unit),
+                        style: captionStyle,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: AppTheme.spacingXs),
-                  for (final m in recent)
-                    _MeasurementTile(
-                      measurement: m,
-                      unit: unit,
-                      onEdit: () => _openForm(context, ref, existing: m),
-                      onDelete: () => _confirmDelete(context, ref, m),
-                    ),
-                  const SizedBox(height: AppTheme.spacingSm),
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: TextButton.icon(
-                      key: const Key('body_weight_add_another'),
-                      onPressed: () => _openForm(context, ref),
-                      icon: const Icon(Icons.add, size: 20),
-                      label: const Text(UiStrings.bodyWeightRegisterButton),
+                    child: TextButton(
+                      key: const Key('body_weight_view_records'),
+                      onPressed: () =>
+                          showBodyWeightHistorySheet(context: context),
+                      child: Text(
+                        UiStrings.bodyWeightViewRecordsCount.replaceAll(
+                          '{count}',
+                          '${list.length}',
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -133,8 +135,9 @@ class BodyWeightSection extends ConsumerWidget {
     BodyWeightUnit unit,
   ) {
     final value = BodyWeightUnit.formatDisplay(weightKg, unit);
-    final unitLabel =
-        unit == BodyWeightUnit.kg ? UiStrings.bodyWeightUnitKg : UiStrings.bodyWeightUnitLb;
+    final unitLabel = unit == BodyWeightUnit.kg
+        ? UiStrings.bodyWeightUnitKg
+        : UiStrings.bodyWeightUnitLb;
     if (estimated) {
       return UiStrings.bodyWeightCaptionEstimated
           .replaceAll('{value}', value)
@@ -143,6 +146,17 @@ class BodyWeightSection extends ConsumerWidget {
     return UiStrings.bodyWeightCaptionRegistered
         .replaceAll('{value}', value)
         .replaceAll('{valueUnit}', unitLabel);
+  }
+
+  static String _lastLineText(BodyMeasurement m, BodyWeightUnit unit) {
+    final value = BodyWeightUnit.formatDisplay(m.weightKg, unit);
+    final unitLabel = unit == BodyWeightUnit.kg
+        ? UiStrings.bodyWeightUnitKg
+        : UiStrings.bodyWeightUnitLb;
+    return UiStrings.bodyWeightLastLine
+        .replaceAll('{value}', value)
+        .replaceAll('{unit}', unitLabel)
+        .replaceAll('{date}', m.localDate);
   }
 
   static Future<void> _openForm(
@@ -157,51 +171,6 @@ class BodyWeightSection extends ConsumerWidget {
     if (saved == true && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text(UiStrings.bodyWeightSaved)),
-      );
-    }
-  }
-
-  static Future<void> _confirmDelete(
-    BuildContext context,
-    WidgetRef ref,
-    BodyMeasurement measurement,
-  ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        key: const Key('body_weight_delete_dialog'),
-        title: const Text(UiStrings.bodyWeightDeleteTitle),
-        content: const Text(UiStrings.bodyWeightDeleteMessage),
-        actions: [
-          DialogActionsRow(
-            children: [
-              AppSecondaryButton(
-                compact: true,
-                onPressed: () => Navigator.pop(context, false),
-                label: UiStrings.cancel,
-              ),
-              AppPrimaryButton(
-                key: const Key('body_weight_delete_confirm'),
-                compact: true,
-                onPressed: () => Navigator.pop(context, true),
-                label: UiStrings.delete,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || !context.mounted) return;
-    try {
-      await ref.read(bodyMeasurementControllerProvider).delete(measurement.id);
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(UiStrings.bodyWeightDeleted)),
-      );
-    } catch (_) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(UiStrings.persistenceError)),
       );
     }
   }
@@ -264,75 +233,5 @@ class _BodyWeightError extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _MeasurementTile extends StatelessWidget {
-  const _MeasurementTile({
-    required this.measurement,
-    required this.unit,
-    required this.onEdit,
-    required this.onDelete,
-  });
-
-  final BodyMeasurement measurement;
-  final BodyWeightUnit unit;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    final value =
-        BodyWeightUnit.formatDisplay(measurement.weightKg, unit);
-    final unitLabel = unit == BodyWeightUnit.kg
-        ? UiStrings.bodyWeightUnitKg
-        : UiStrings.bodyWeightUnitLb;
-
-    return ListTile(
-      key: Key('body_weight_tile_${measurement.id}'),
-      contentPadding: EdgeInsets.zero,
-      title: Text('${measurement.localDate} · $value $unitLabel'),
-      subtitle: _measuresSubtitle(measurement),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            key: Key('body_weight_edit_${measurement.id}'),
-            tooltip: UiStrings.edit,
-            icon: const Icon(Icons.edit_outlined),
-            constraints: const BoxConstraints(
-              minWidth: AppTheme.buttonMinHeight,
-              minHeight: AppTheme.buttonMinHeight,
-            ),
-            onPressed: onEdit,
-          ),
-          IconButton(
-            key: Key('body_weight_delete_${measurement.id}'),
-            tooltip: UiStrings.delete,
-            icon: const Icon(Icons.delete_outline),
-            constraints: const BoxConstraints(
-              minWidth: AppTheme.buttonMinHeight,
-              minHeight: AppTheme.buttonMinHeight,
-            ),
-            onPressed: onDelete,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget? _measuresSubtitle(BodyMeasurement m) {
-    final parts = <String>[];
-    if (m.waistCm != null) {
-      parts.add('Cintura ${m.waistCm!.toStringAsFixed(0)} cm');
-    }
-    if (m.armCm != null) {
-      parts.add('Brazo ${m.armCm!.toStringAsFixed(0)} cm');
-    }
-    if (m.legCm != null) {
-      parts.add('Pierna ${m.legCm!.toStringAsFixed(0)} cm');
-    }
-    if (parts.isEmpty) return null;
-    return Text(parts.join(' · '));
   }
 }

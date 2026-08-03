@@ -56,8 +56,19 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('history_month_selector')), findsOneWidget);
-    expect(find.byKey(const Key('history_today_button')), findsOneWidget);
     expect(find.byKey(const Key('history_table_calendar')), findsOneWidget);
+    // Already on today → today button hidden (calendar chrome, less noise).
+    expect(find.byKey(const Key('history_today_button')), findsNothing);
+
+    // Month chrome sits with the calendar (below progress / body weight).
+    final headerY =
+        tester.getTopLeft(find.byKey(const Key('history_month_selector'))).dy;
+    final calendarY =
+        tester.getTopLeft(find.byKey(const Key('history_table_calendar'))).dy;
+    final progressY =
+        tester.getTopLeft(find.byKey(const Key('progress_summary_section'))).dy;
+    expect(progressY, lessThan(headerY));
+    expect(headerY, lessThan(calendarY));
 
     container.read(historyControllerProvider.notifier).setFocusedMonth(
           DateTime(2025, 3),
@@ -71,6 +82,8 @@ void main() {
       container.read(historyControllerProvider).focusedMonth.year,
       2025,
     );
+    // Off today → today button visible next to calendar.
+    expect(find.byKey(const Key('history_today_button')), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('history_today_button')));
     await tester.pumpAndSettle();
@@ -78,6 +91,7 @@ void main() {
     final now = DateTime.now();
     final state = container.read(historyControllerProvider);
     expect(state.selectedDate.day, now.day);
+    expect(find.byKey(const Key('history_today_button')), findsNothing);
     expect(state.focusedMonth.month, now.month);
   });
 
