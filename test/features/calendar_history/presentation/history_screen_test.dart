@@ -59,6 +59,8 @@ void main() {
     expect(find.byKey(const Key('history_table_calendar')), findsOneWidget);
     // Already on today → today button hidden (calendar chrome, less noise).
     expect(find.byKey(const Key('history_today_button')), findsNothing);
+    // Subtle rules between progress | weight | calendar | sessions.
+    expect(find.byKey(const Key('history_section_divider')), findsNWidgets(3));
 
     // Month chrome sits with the calendar (below progress / body weight).
     final headerY =
