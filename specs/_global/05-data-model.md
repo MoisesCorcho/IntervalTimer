@@ -329,7 +329,7 @@ SessionLog {
 **Integridad:**
 
 - **Sin FK** a `routines` / `workouts`: el origen puede borrarse y el historial permanece (snapshot).
-- `schemaVersion`: **7** en codigo actual (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32). Confirmado en `lib/data/local/database.dart`. Planificado: **F15 v8** (`body_measurements`) → **F13 v9** (`unlocked_achievements`).
+- `schemaVersion`: **7** en codigo actual (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32). Confirmado en `lib/data/local/database.dart`. Planificado: **F15 v8** (`body_measurements`) → **F13 v9** (`unlocked_achievements`) → **F14 v10** (`reminders`).
 
 **Semantica de escritura (resumen F04):**
 
@@ -444,6 +444,34 @@ UnlockedAchievement {
 - Nunca revocar aunque se borren `session_logs`.
 - Conteos/minutos: solo logs `completed`. Racha: misma regla F12 R6.
 - Catalogo MVP: `first_session`, `sessions_10|25|50|100`, `streak_3|7|14|30`, `minutes_60|300|1000`.
+
+## Reminder (F14) — recordatorios locales
+
+Configuracion de avisos semanales para entrenar. Max **3** filas. Notificaciones locales (no push).
+
+```dart
+Reminder {
+  id: String              // UUID v4
+  hour: int               // 0..23 local
+  minute: int             // 0..59
+  weekdays: Set<int>      // ISO 1=lun .. 7=dom; al menos 1
+  enabled: bool
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+```
+
+### Tabla drift (F14 — migracion aditiva schema **v10**, tras F15 v8 y F13 v9)
+
+| Tabla | Columnas | Notas |
+|---|---|---|
+| `reminders` | `id` TEXT PK, `hour` INTEGER NOT NULL, `minute` INTEGER NOT NULL, `weekdays` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL | `weekdays` JSON array de ints ISO; max 3 filas en dominio |
+
+**Semantica:**
+
+- Supresion del dia: si existe `session_logs` `completed` con `local_date` = hoy → no mostrar reminder de hoy (cancel al completar).
+- Canal notificacion: `workout_reminders` (nombre UI sin voseo). IDs en rango **1400+**; **no** usar `888` ni `session_timer_ongoing_v2` (F20).
+- Copy fijo notificacion (ejemplo): titulo `Recordatorio de entrenamiento`, cuerpo `Hora de entrenar` — **sin voseo**.
 
 ## Session complete / share (F16) — solo presentacion
 
