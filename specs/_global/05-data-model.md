@@ -329,7 +329,7 @@ SessionLog {
 **Integridad:**
 
 - **Sin FK** a `routines` / `workouts`: el origen puede borrarse y el historial permanece (snapshot).
-- `schemaVersion`: **7** (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32). Confirmado en `lib/data/local/database.dart`.
+- `schemaVersion`: **7** en codigo actual (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32). Confirmado en `lib/data/local/database.dart`. **F15** introduce migracion aditiva a **v8** (`body_measurements`).
 
 **Semantica de escritura (resumen F04):**
 
@@ -368,7 +368,47 @@ StatsSummary {
 **Constantes de calculo (F12):** `MET = 8.0`; peso default `70` kg si F15 no aporta peso.  
 `kcal_sesion = MET * peso_kg * (totalDurationSeconds / 3600)`.
 
-Consumidores futuros (misma logica, no UI): F13, F16.
+Consumidores de la misma logica de metricas (no UI de graficas F12): F13, F16.  
+Peso inyectado via `WeightReader` / `weightReaderProvider` (F12); F15 hace override cuando hay registros.
+
+## BodyMeasurement (F15) — peso y medidas
+
+Registro opcional de peso corporal y medidas por dia local. Canonico en metrico (kg, cm). Un registro por `localDate` (upsert).
+
+```dart
+enum BodyWeightUnit { kg, lb }  // solo presentacion; preferencia app
+
+BodyMeasurement {
+  id: String                 // UUID v4
+  localDate: String          // yyyy-MM-dd zona local; UNIQUE en DB
+  weightKg: double           // 20..300; siempre kg en persistencia
+  waistCm: double?           // opcional; si presente 0 exclusivo .. 300
+  armCm: double?
+  legCm: double?
+  createdAt: DateTime        // UTC
+  updatedAt: DateTime        // UTC
+}
+```
+
+### Tabla drift (F15 — migracion aditiva schema **v8**)
+
+| Tabla | Columnas | Notas |
+|---|---|---|
+| `body_measurements` | `id` TEXT PK, `local_date` TEXT NOT NULL UNIQUE, `weight_kg` REAL NOT NULL, `waist_cm` REAL NULL, `arm_cm` REAL NULL, `leg_cm` REAL NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL | Indice/unique en `local_date`; timestamps UTC ms |
+
+**Semantica:**
+
+- Upsert por `local_date`: re-guardar el mismo dia actualiza peso/medidas y `updated_at`.
+- Ultimo peso para F12: fila con `local_date` maximo (yyyy-MM-dd lexicografico = orden cronologico).
+- Sin filas → F12 usa 70 kg estimado (`DefaultWeightReader` / reader F15 delegando default).
+
+### Preferencias F15 (`app_preferences`)
+
+| Clave | Tipo | Default | Uso |
+|---|---|---|---|
+| `body_weight_unit` | `kg` \| `lb` | `kg` | Unidad de visualizacion/edicion de peso en UI |
+
+No requiere tabla nueva para la preferencia (reutiliza `app_preferences`).
 
 ## Session complete / share (F16) — solo presentacion
 
