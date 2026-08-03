@@ -121,7 +121,7 @@ class WorkoutRoundsCard extends StatelessWidget {
                     avatar: Icon(
                       Icons.repeat_rounded,
                       size: 16,
-                      color: accent,
+                      color: scheme.onSecondaryContainer,
                     ),
                     label: Text(
                       UiStrings.workoutRoundsBlockChip
@@ -129,10 +129,11 @@ class WorkoutRoundsCard extends StatelessWidget {
                     ),
                     visualDensity: VisualDensity.compact,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    side: BorderSide(color: borderColor),
-                    backgroundColor: accent.withValues(alpha: 0.10),
+                    side: BorderSide(color: scheme.outlineVariant),
+                    backgroundColor: scheme.secondaryContainer,
+                    surfaceTintColor: Colors.transparent,
                     labelStyle: theme.textTheme.labelMedium?.copyWith(
-                      color: scheme.onSurface,
+                      color: scheme.onSecondaryContainer,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

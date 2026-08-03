@@ -13,6 +13,7 @@ import 'package:interval_timer/features/workout_builder/domain/workout_flattener
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 import 'package:interval_timer/features/workout_builder/presentation/widgets/delete_workout_dialog.dart';
 import 'package:interval_timer/features/workout_builder/presentation/widgets/workout_actions_sheet.dart';
+import 'package:interval_timer/features/workout_builder/presentation/widgets/workout_rounds_list_chip.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
@@ -256,8 +257,6 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                     final countLabel = UiStrings.exerciseCountLabel
                         .replaceAll('{count}', '${workout.exercises.length}');
                     final showRounds = workout.rounds > 1;
-                    final roundsLabel = UiStrings.workoutRoundsListLabel
-                        .replaceAll('{count}', '${workout.rounds}');
 
                     return Card(
                       child: ListTile(
@@ -268,21 +267,9 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                             Text(countLabel),
                             if (showRounds) ...[
                               const SizedBox(height: 6),
-                              Chip(
-                                key: Key('workout_rounds_chip_${workout.id}'),
-                                avatar: Icon(
-                                  Icons.loop_rounded,
-                                  size: 16,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                                label: Text(roundsLabel),
-                                visualDensity: VisualDensity.compact,
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                labelStyle: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium
-                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              WorkoutRoundsListChip(
+                                workoutId: workout.id,
+                                rounds: workout.rounds,
                               ),
                             ],
                           ],

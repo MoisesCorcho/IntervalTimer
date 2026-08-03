@@ -33,7 +33,8 @@ void main() {
     );
     addTearDown(container.dispose);
 
-    await tester.binding.setSurfaceSize(const Size(800, 2000));
+    // Tall surface still needs scroll once F36 SFX section is present.
+    await tester.binding.setSurfaceSize(const Size(800, 2400));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(
@@ -44,8 +45,16 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    // Settings ListView only builds viewport children. F36 SFX section pushed
+    // keep-screen below the fold — scroll to lazy-build, then ensure hit-testable.
     final switchFinder = find.byKey(const Key('keep_screen_on_enabled_switch'));
+    await tester.scrollUntilVisible(
+      switchFinder,
+      400,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.ensureVisible(switchFinder);
+    await tester.pumpAndSettle();
     expect(switchFinder, findsOneWidget);
 
     // Default on
@@ -59,6 +68,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(await settingsRepo.getKeepScreenOnEnabled(), false);
 
+    await tester.ensureVisible(switchFinder);
+    await tester.pumpAndSettle();
     await tester.tap(switchFinder);
     await tester.pumpAndSettle();
     expect(await settingsRepo.getKeepScreenOnEnabled(), true);
