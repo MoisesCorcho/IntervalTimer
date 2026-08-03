@@ -16,7 +16,7 @@
 | F10 | [Modo por Repeticiones](../features/10-rep-based-mode/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F01 |
 | F11 | [Ajuste Rapido de Intensidad](../features/11-quick-intensity-scaling/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F01, F05 |
 | F12 | [Estadisticas y Progreso](../features/12-statistics-progress/requirements.md) | Fase 3 · Seguimiento y Motivacion | Completada | F04 |
-| F13 | [Logros y Badges](../features/13-achievements-badges/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F12 |
+| F13 | [Logros y Badges](../features/13-achievements-badges/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada (specs SDD corregidas) | F12 (+ F04 SessionLog) |
 | F14 | [Recordatorios y Notificaciones](../features/14-reminders-notifications/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada | F04 |
 | F15 | [Registro de Peso y Medidas](../features/15-body-measurements-tracking/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada (specs SDD corregidas) | F04 (+ F12 contrato WeightReader en codigo) |
 | F16 | [Compartir Resumen de Sesion](../features/16-session-summary-sharing/requirements.md) | Fase 3 · Seguimiento y Motivacion | En progreso | F04, F12 |

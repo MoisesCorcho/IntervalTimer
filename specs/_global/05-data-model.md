@@ -329,7 +329,7 @@ SessionLog {
 **Integridad:**
 
 - **Sin FK** a `routines` / `workouts`: el origen puede borrarse y el historial permanece (snapshot).
-- `schemaVersion`: **7** en codigo actual (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32). Confirmado en `lib/data/local/database.dart`. **F15** introduce migracion aditiva a **v8** (`body_measurements`).
+- `schemaVersion`: **7** en codigo actual (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32). Confirmado en `lib/data/local/database.dart`. Planificado: **F15 v8** (`body_measurements`) → **F13 v9** (`unlocked_achievements`).
 
 **Semantica de escritura (resumen F04):**
 
@@ -409,6 +409,41 @@ BodyMeasurement {
 | `body_weight_unit` | `kg` \| `lb` | `kg` | Unidad de visualizacion/edicion de peso en UI |
 
 No requiere tabla nueva para la preferencia (reutiliza `app_preferences`).
+
+## Achievement / UnlockedAchievement (F13) — logros
+
+Catalogo de logros: **estatico en codigo** (no tabla). Solo se persisten desbloqueos.
+
+```dart
+enum AchievementMetricKind { completedSessionCount, currentStreakDays, completedTotalMinutes }
+
+// Catalogo (const, no Drift) — ver F13 requirements R1 (12 ids)
+AchievementDef {
+  id: String
+  title / description: via UiStrings
+  icon: IconData
+  kind: AchievementMetricKind
+  threshold: int
+}
+
+UnlockedAchievement {
+  achievementId: String   // PK; id del catalogo
+  unlockedAt: DateTime    // UTC; inmutable
+}
+```
+
+### Tabla drift (F13 — migracion aditiva schema **v9**, tras F15 v8)
+
+| Tabla | Columnas | Notas |
+|---|---|---|
+| `unlocked_achievements` | `achievement_id` TEXT PK, `unlocked_at` INTEGER NOT NULL | Insert ignore si ya existe; no delete en MVP |
+
+**Semantica:**
+
+- Desbloqueo solo tras sesion `completed` evaluada (F13 R4).
+- Nunca revocar aunque se borren `session_logs`.
+- Conteos/minutos: solo logs `completed`. Racha: misma regla F12 R6.
+- Catalogo MVP: `first_session`, `sessions_10|25|50|100`, `streak_3|7|14|30`, `minutes_60|300|1000`.
 
 ## Session complete / share (F16) — solo presentacion
 
