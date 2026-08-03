@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/data/models/session_log_status.dart';
 import 'package:interval_timer/data/repositories/session_log_repository.dart';
+import 'package:interval_timer/features/achievements/application/achievements_providers.dart';
 import 'package:interval_timer/features/calendar_history/application/calendar_history_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_session_events.dart';
@@ -33,6 +34,15 @@ final sessionHistoryBootstrapProvider = Provider<void>((ref) {
       );
     } catch (e, st) {
       debugPrint('SessionHistoryListener completed insert failed: $e\n$st');
+      return;
+    }
+    // F13: evaluate only after completed log is persisted (R4).
+    try {
+      await ref
+          .read(achievementsControllerProvider.notifier)
+          .evaluateAfterCompletedSession(now: event.completedAt);
+    } catch (e, st) {
+      debugPrint('SessionHistoryListener achievements evaluate failed: $e\n$st');
     }
   });
 

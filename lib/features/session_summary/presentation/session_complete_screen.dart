@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/features/achievements/application/achievements_providers.dart';
+import 'package:interval_timer/features/achievements/domain/achievement_def.dart';
+import 'package:interval_timer/features/achievements/presentation/achievements_unlocked_sheet.dart';
 import 'package:interval_timer/features/session_summary/application/session_summary_providers.dart';
 import 'package:interval_timer/features/session_summary/domain/session_complete_models.dart';
 import 'package:interval_timer/features/session_summary/presentation/animated_flame_hero.dart';
@@ -95,6 +98,9 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
 
   Future<void> _onDone() async {
     final messenger = ScaffoldMessenger.of(context);
+    final pending = List<AchievementDef>.from(
+      ref.read(pendingUnlockCelebrationProvider),
+    );
     final ok =
         await ref.read(sessionSummaryControllerProvider.notifier).finish();
     if (!mounted) return;
@@ -111,7 +117,8 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                 final left = await ref
                     .read(sessionSummaryControllerProvider.notifier)
                     .finishDiscardingNote();
-                if (left && mounted) context.go('/');
+                if (!left || !mounted) return;
+                await _leaveAfterDone(pending);
               },
             ),
           ),
@@ -119,7 +126,23 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
       }
       return;
     }
-    context.go('/');
+    await _leaveAfterDone(pending);
+  }
+
+  /// Shows F13 multi-unlock sheet (if any) then returns to home (R7).
+  Future<void> _leaveAfterDone(List<AchievementDef> pending) async {
+    if (pending.isNotEmpty && mounted) {
+      await showAchievementsUnlockedSheet(
+        context: context,
+        unlocked: pending,
+        onClosed: () {
+          ref.read(achievementsControllerProvider.notifier).clearPendingCelebration();
+        },
+      );
+    } else {
+      ref.read(achievementsControllerProvider.notifier).clearPendingCelebration();
+    }
+    if (mounted) context.go('/');
   }
 
   @override
@@ -210,6 +233,56 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                       ),
                                       const SizedBox(
                                         height: AppTheme.spacingSm,
+                                      ),
+                                      // F13: non-destructive chip for pending unlocks (R7)
+                                      Consumer(
+                                        builder: (context, ref, _) {
+                                          final pending = ref.watch(
+                                            pendingUnlockCelebrationProvider,
+                                          );
+                                          if (pending.isEmpty) {
+                                            return const SizedBox.shrink();
+                                          }
+                                          final label = pending.length == 1
+                                              ? UiStrings
+                                                  .sessionSummaryNewAchievementsOne
+                                              : UiStrings
+                                                  .sessionSummaryNewAchievementsMany
+                                                  .replaceAll(
+                                                    '{count}',
+                                                    '${pending.length}',
+                                                  );
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                              bottom: AppTheme.spacingMd,
+                                            ),
+                                            child: ActionChip(
+                                              key: const Key(
+                                                'session_summary_achievements_chip',
+                                              ),
+                                              avatar: Icon(
+                                                Icons.emoji_events_rounded,
+                                                color: theme.colorScheme.primary,
+                                                size: 18,
+                                              ),
+                                              label: Text(label),
+                                              onPressed: () {
+                                                showAchievementsUnlockedSheet(
+                                                  context: context,
+                                                  unlocked: pending,
+                                                  onClosed: () {
+                                                    ref
+                                                        .read(
+                                                          achievementsControllerProvider
+                                                              .notifier,
+                                                        )
+                                                        .clearPendingCelebration();
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
                                       ),
                                       Row(
                                         children: [

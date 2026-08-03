@@ -14,6 +14,7 @@ import 'package:interval_timer/features/calendar_history/presentation/widgets/se
 import 'package:interval_timer/features/calendar_history/presentation/widgets/session_note_editor.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
+import 'package:interval_timer/features/achievements/presentation/achievements_entry_tile.dart';
 import 'package:interval_timer/features/body_tracking/presentation/body_weight_section.dart';
 import 'package:interval_timer/features/stats/presentation/progress_summary_section.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
@@ -48,6 +49,9 @@ class HistoryScreen extends ConsumerWidget {
             const HistorySectionDivider(),
             // F15: body weight section between progress and calendar (R2, R13)
             const BodyWeightSection(),
+            const HistorySectionDivider(),
+            // F13: achievements entry (after F15, before calendar)
+            const AchievementsEntryTile(),
             const HistorySectionDivider(),
             // Calendar chrome (month + today) + grid — one visual unit.
             HistoryMonthHeader(

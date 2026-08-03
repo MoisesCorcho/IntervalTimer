@@ -59,17 +59,21 @@ void main() {
     expect(find.byKey(const Key('history_table_calendar')), findsOneWidget);
     // Already on today → today button hidden (calendar chrome, less noise).
     expect(find.byKey(const Key('history_today_button')), findsNothing);
-    // Subtle rules between progress | weight | calendar | sessions.
-    expect(find.byKey(const Key('history_section_divider')), findsNWidgets(3));
+    // Subtle rules between progress | weight | achievements (F13) | calendar | sessions.
+    expect(find.byKey(const Key('history_section_divider')), findsNWidgets(4));
+    expect(find.byKey(const Key('achievements_entry_tile')), findsOneWidget);
 
-    // Month chrome sits with the calendar (below progress / body weight).
+    // Month chrome sits with the calendar (below progress / body weight / achievements).
     final headerY =
         tester.getTopLeft(find.byKey(const Key('history_month_selector'))).dy;
     final calendarY =
         tester.getTopLeft(find.byKey(const Key('history_table_calendar'))).dy;
     final progressY =
         tester.getTopLeft(find.byKey(const Key('progress_summary_section'))).dy;
+    final achievementsY =
+        tester.getTopLeft(find.byKey(const Key('achievements_entry_tile'))).dy;
     expect(progressY, lessThan(headerY));
+    expect(achievementsY, lessThan(headerY));
     expect(headerY, lessThan(calendarY));
 
     container.read(historyControllerProvider.notifier).setFocusedMonth(

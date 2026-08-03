@@ -4,50 +4,50 @@
 
 ## Definition of Done
 
-- [ ] Todos los criterios R1–R12 de `requirements.md` estan implementados y verificados. _(cubre R1–R12)_
-- [ ] Tests unitarios y widget listados abajo pasan en CI/local.
-- [ ] `UnlockedAchievement` documentado en `_global/05-data-model.md`; migracion Drift aplicada.
-- [ ] Racha de logros alineada a F12 (misma logica / tests de ancla).
-- [ ] No se agrego un quinto tab. _(cubre R2, R12)_
-- [ ] Codigo revisado contra `_global/03-conventions.md`.
+- [x] Todos los criterios R1–R12 de `requirements.md` estan implementados y verificados. _(cubre R1–R12)_
+- [x] Tests unitarios y widget listados abajo pasan en CI/local.
+- [x] `UnlockedAchievement` documentado en `_global/05-data-model.md`; migracion Drift aplicada.
+- [x] Racha de logros alineada a F12 (misma logica / tests de ancla).
+- [x] No se agrego un quinto tab. _(cubre R2, R12)_
+- [x] Codigo revisado contra `_global/03-conventions.md`.
 
 ## Checklist de implementacion
 
 ### Dominio y datos
 
-- [ ] Documentar `UnlockedAchievement` + tabla + nota schema (v9 tras F15 v8) en `_global/05-data-model.md`. _(cubre R6, R11)_
-- [ ] Migracion Drift: crear `unlocked_achievements` (PK `achievement_id`, `unlocked_at`). _(cubre R6, R11)_
-- [ ] Catalogo estatico 12 logros (`achievement_catalog.dart`) con thresholds R1. _(cubre R1)_
-- [ ] `AchievementEvaluator` puro: conteos/minutos solo `completed`; racha via StatsService/shared. _(cubre R4, R5)_
-- [ ] Repositorio: watch unlocks, insertIgnore, getUnlockedIds. _(cubre R6, R10, R11)_
+- [x] Documentar `UnlockedAchievement` + tabla + nota schema (v9 tras F15 v8) en `_global/05-data-model.md`. _(cubre R6, R11)_
+- [x] Migracion Drift: crear `unlocked_achievements` (PK `achievement_id`, `unlocked_at`). _(cubre R6, R11)_
+- [x] Catalogo estatico 12 logros (`achievement_catalog.dart`) con thresholds R1. _(cubre R1)_
+- [x] `AchievementEvaluator` puro: conteos/minutos solo `completed`; racha via StatsService/shared. _(cubre R4, R5)_
+- [x] Repositorio: watch unlocks, insertIgnore, getUnlockedIds. _(cubre R6, R10, R11)_
 
 ### Application (Riverpod)
 
-- [ ] Providers: catalogo, unlocks, progress list, pending celebration. _(cubre R3, R7, R9)_
-- [ ] Hook post-insert sesion `completed` → evaluate → set pending. _(cubre R4, R7)_
-- [ ] No revocar unlocks al borrar logs; refrescar solo progreso. _(cubre R6, R9)_
-- [ ] Manejo error AsyncValue en pantalla de logros. _(cubre R10)_
+- [x] Providers: catalogo, unlocks, progress list, pending celebration. _(cubre R3, R7, R9)_
+- [x] Hook post-insert sesion `completed` → evaluate → set pending. _(cubre R4, R7)_
+- [x] No revocar unlocks al borrar logs; refrescar solo progreso. _(cubre R6, R9)_
+- [x] Manejo error AsyncValue en pantalla de logros. _(cubre R10)_
 
 ### UI
 
-- [ ] `AchievementsEntryTile` en `HistoryScreen` (orden: … F12 → F15 si hay → **F13 entry** → calendario). _(cubre R2, R12)_
-- [ ] `AchievementsScreen`: lista completa locked/unlocked + progreso. _(cubre R3, R9)_
-- [ ] `AchievementsUnlockedSheet` (lista N logros nuevos). _(cubre R7)_
-- [ ] Integracion no destructiva con F16 (chip/seccion o sheet al cerrar Listo). _(cubre R7)_
-- [ ] Iconos Material; estados atenuados locked; touch >= 48 dp. _(cubre R12)_
-- [ ] Verificar 4 tabs en shell. _(cubre R2, R12)_
+- [x] `AchievementsEntryTile` en `HistoryScreen` (orden: … F12 → F15 si hay → **F13 entry** → calendario). _(cubre R2, R12)_
+- [x] `AchievementsScreen`: lista completa locked/unlocked + progreso. _(cubre R3, R9)_
+- [x] `AchievementsUnlockedSheet` (lista N logros nuevos). _(cubre R7)_
+- [x] Integracion no destructiva con F16 (chip/seccion o sheet al cerrar Listo). _(cubre R7)_
+- [x] Iconos Material; estados atenuados locked; touch >= 48 dp. _(cubre R12)_
+- [x] Verificar 4 tabs en shell. _(cubre R2, R12)_
 
 ### Tests (selectivos — fiable sin suite enorme)
 
-- [ ] **Unit — catalogo:** size >= 10 y ids unicos de R1. _(cubre R1)_
-- [ ] **Unit — evaluator conteos:** 0/1/10 completed; aborted no cuentan para sessions_*. _(cubre R4, R5)_
-- [ ] **Unit — evaluator minutos:** umbrales 60/300 con logs de duracion controlada. _(cubre R5)_
-- [ ] **Unit — evaluator racha:** alineado a F12 (hoy/ayer ancla; aborted cuenta dia). _(cubre R5)_
-- [ ] **Unit — inmutabilidad:** unlock persiste aunque se vacien logs en el calculo de progreso. _(cubre R6)_
-- [ ] **Unit — idempotencia:** segunda evaluate no duplica ni cambia `unlockedAt`. _(cubre R11)_
-- [ ] **Unit — multi unlock:** una sesion puede devolver N nuevos en un evaluate. _(cubre R7)_
-- [ ] **Widget — entry Historial + screen:** progreso visible; sin quinto tab. _(cubre R2, R3, R12)_
-- [ ] **Widget — sheet desbloqueo:** muestra lista de recien desbloqueados. _(cubre R7)_
+- [x] **Unit — catalogo:** size >= 10 y ids unicos de R1. _(cubre R1)_
+- [x] **Unit — evaluator conteos:** 0/1/10 completed; aborted no cuentan para sessions_*. _(cubre R4, R5)_
+- [x] **Unit — evaluator minutos:** umbrales 60/300 con logs de duracion controlada. _(cubre R5)_
+- [x] **Unit — evaluator racha:** alineado a F12 (hoy/ayer ancla; aborted cuenta dia). _(cubre R5)_
+- [x] **Unit — inmutabilidad:** unlock persiste aunque se vacien logs en el calculo de progreso. _(cubre R6)_
+- [x] **Unit — idempotencia:** segunda evaluate no duplica ni cambia `unlockedAt`. _(cubre R11)_
+- [x] **Unit — multi unlock:** una sesion puede devolver N nuevos en un evaluate. _(cubre R7)_
+- [x] **Widget — entry Historial + screen:** progreso visible; sin quinto tab. _(cubre R2, R3, R12)_
+- [x] **Widget — sheet desbloqueo:** muestra lista de recien desbloqueados. _(cubre R7)_
 
 **Fuera de esta ronda:** golden de animaciones, stress de 10k logs, logros secretos, push F14, matrix i18n completa.
 
