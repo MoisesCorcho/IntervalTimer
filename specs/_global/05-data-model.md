@@ -350,7 +350,7 @@ SessionLog {
 **Integridad:**
 
 - **Sin FK** a `routines` / `workouts`: el origen puede borrarse y el historial permanece (snapshot).
-- `schemaVersion`: **7** (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32). Confirmado en `lib/data/local/database.dart`.
+- `schemaVersion`: **8** en codigo actual (v5 session_logs F04; v6 `intervals.announce_text` F02; v7 `workouts.rounds` F32; v8 `body_measurements` F15). Confirmado en `lib/data/local/database.dart`. Planificado: **F13 v9** (`unlocked_achievements`) → **F14 v10** (`reminders`).
 
 **Semantica de escritura (resumen F04):**
 
@@ -389,7 +389,110 @@ StatsSummary {
 **Constantes de calculo (F12):** `MET = 8.0`; peso default `70` kg si F15 no aporta peso.  
 `kcal_sesion = MET * peso_kg * (totalDurationSeconds / 3600)`.
 
-Consumidores futuros (misma logica, no UI): F13, F16.
+Consumidores de la misma logica de metricas (no UI de graficas F12): F13, F16.  
+Peso inyectado via `WeightReader` / `weightReaderProvider` (F12); F15 hace override cuando hay registros.
+
+## BodyMeasurement (F15) — peso y medidas
+
+Registro opcional de peso corporal y medidas por dia local. Canonico en metrico (kg, cm). Un registro por `localDate` (upsert).
+
+```dart
+enum BodyWeightUnit { kg, lb }  // solo presentacion; preferencia app
+
+BodyMeasurement {
+  id: String                 // UUID v4
+  localDate: String          // yyyy-MM-dd zona local; UNIQUE en DB
+  weightKg: double           // 20..300; siempre kg en persistencia
+  waistCm: double?           // opcional; si presente 0 exclusivo .. 300
+  armCm: double?
+  legCm: double?
+  createdAt: DateTime        // UTC
+  updatedAt: DateTime        // UTC
+}
+```
+
+### Tabla drift (F15 — migracion aditiva schema **v8**)
+
+| Tabla | Columnas | Notas |
+|---|---|---|
+| `body_measurements` | `id` TEXT PK, `local_date` TEXT NOT NULL UNIQUE, `weight_kg` REAL NOT NULL, `waist_cm` REAL NULL, `arm_cm` REAL NULL, `leg_cm` REAL NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL | Indice/unique en `local_date`; timestamps UTC ms |
+
+**Semantica:**
+
+- Upsert por `local_date`: re-guardar el mismo dia actualiza peso/medidas y `updated_at`.
+- Ultimo peso para F12: fila con `local_date` maximo (yyyy-MM-dd lexicografico = orden cronologico).
+- Sin filas → F12 usa 70 kg estimado (`DefaultWeightReader` / reader F15 delegando default).
+
+### Preferencias F15 (`app_preferences`)
+
+| Clave | Tipo | Default | Uso |
+|---|---|---|---|
+| `body_weight_unit` | `kg` \| `lb` | `kg` | Unidad de visualizacion/edicion de peso en UI |
+
+No requiere tabla nueva para la preferencia (reutiliza `app_preferences`).
+
+## Achievement / UnlockedAchievement (F13) — logros
+
+Catalogo de logros: **estatico en codigo** (no tabla). Solo se persisten desbloqueos.
+
+```dart
+enum AchievementMetricKind { completedSessionCount, currentStreakDays, completedTotalMinutes }
+
+// Catalogo (const, no Drift) — ver F13 requirements R1 (12 ids)
+AchievementDef {
+  id: String
+  title / description: via UiStrings
+  icon: IconData
+  kind: AchievementMetricKind
+  threshold: int
+}
+
+UnlockedAchievement {
+  achievementId: String   // PK; id del catalogo
+  unlockedAt: DateTime    // UTC; inmutable
+}
+```
+
+### Tabla drift (F13 — migracion aditiva schema **v9**, tras F15 v8)
+
+| Tabla | Columnas | Notas |
+|---|---|---|
+| `unlocked_achievements` | `achievement_id` TEXT PK, `unlocked_at` INTEGER NOT NULL | Insert ignore si ya existe; no delete en MVP |
+
+**Semantica:**
+
+- Desbloqueo solo tras sesion `completed` evaluada (F13 R4).
+- Nunca revocar aunque se borren `session_logs`.
+- Conteos/minutos: solo logs `completed`. Racha: misma regla F12 R6.
+- Catalogo MVP: `first_session`, `sessions_10|25|50|100`, `streak_3|7|14|30`, `minutes_60|300|1000`.
+
+## Reminder (F14) — recordatorios locales
+
+Configuracion de avisos semanales para entrenar. Max **3** filas. Notificaciones locales (no push).
+
+```dart
+Reminder {
+  id: String              // UUID v4
+  hour: int               // 0..23 local
+  minute: int             // 0..59
+  weekdays: Set<int>      // ISO 1=lun .. 7=dom; al menos 1
+  enabled: bool
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+```
+
+### Tabla drift (F14 — migracion aditiva schema **v10**, tras F15 v8 y F13 v9)
+
+| Tabla | Columnas | Notas |
+|---|---|---|
+| `reminders` | `id` TEXT PK, `hour` INTEGER NOT NULL, `minute` INTEGER NOT NULL, `weekdays` TEXT NOT NULL, `enabled` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL | `weekdays` JSON array de ints ISO; max 3 filas en dominio |
+
+**Semantica:**
+
+- Supresion del dia: si existe `session_logs` `completed` con `local_date` = hoy → no mostrar reminder de hoy (cancel al completar).
+- Canal notificacion: `workout_reminders` (nombre UI sin voseo). IDs en rango **1400+**; **no** usar `888` ni `session_timer_ongoing_v2` (F20).
+- Copy fijo notificacion (ejemplo): titulo `Recordatorio de entrenamiento`, cuerpo `Hora de entrenar` — **sin voseo**.
 
 ## Session complete / share (F16) — solo presentacion
 

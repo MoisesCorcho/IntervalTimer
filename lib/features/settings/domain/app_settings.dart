@@ -1,6 +1,7 @@
+import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
 import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 
-/// Global app settings (F35+ / F02 voice / F18 vibration / F19 always-on / F20 / F27 / F36).
+/// Global app settings (F35+ / F02 / F18 / F19 / F20 / F27 / F36 SFX / F15 body weight).
 /// Lightweight value object — not Drift. Pure domain (no Flutter imports).
 class AppSettings {
   const AppSettings({
@@ -27,6 +28,7 @@ class AppSettings {
     this.keepScreenOnEnabled = true,
     this.sessionLockScreenEnabled = true,
     this.themeMode = AppThemeMode.system,
+    this.bodyWeightUnit = BodyWeightUnit.kg,
   });
 
   /// Seconds of preparation before the first interval (0–60).
@@ -80,6 +82,9 @@ class AppSettings {
   /// Theme preference: light, dark, or follow system (F27).
   final AppThemeMode themeMode;
 
+  /// Weight display/edit unit for body tracking UI (F15).
+  final BodyWeightUnit bodyWeightUnit;
+
   AppSettings copyWith({
     int? prepSeconds,
     bool? voiceEnabled,
@@ -104,6 +109,7 @@ class AppSettings {
     bool? keepScreenOnEnabled,
     bool? sessionLockScreenEnabled,
     AppThemeMode? themeMode,
+    BodyWeightUnit? bodyWeightUnit,
   }) {
     return AppSettings(
       prepSeconds: prepSeconds ?? this.prepSeconds,
@@ -137,6 +143,7 @@ class AppSettings {
       sessionLockScreenEnabled:
           sessionLockScreenEnabled ?? this.sessionLockScreenEnabled,
       themeMode: themeMode ?? this.themeMode,
+      bodyWeightUnit: bodyWeightUnit ?? this.bodyWeightUnit,
     );
   }
 
@@ -166,7 +173,8 @@ class AppSettings {
             other.soundIdPhaseWarning == soundIdPhaseWarning &&
             other.keepScreenOnEnabled == keepScreenOnEnabled &&
             other.sessionLockScreenEnabled == sessionLockScreenEnabled &&
-            other.themeMode == themeMode);
+            other.themeMode == themeMode &&
+            other.bodyWeightUnit == bodyWeightUnit);
   }
 
   @override
@@ -194,5 +202,6 @@ class AppSettings {
         keepScreenOnEnabled,
         sessionLockScreenEnabled,
         themeMode,
+        bodyWeightUnit,
       ]);
 }

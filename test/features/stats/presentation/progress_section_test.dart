@@ -103,7 +103,11 @@ void main() {
 
     // Weight caption when estimated (R12)
     expect(find.byKey(const Key('progress_weight_caption')), findsOneWidget);
-    expect(find.textContaining('70'), findsOneWidget);
+    // F15 also shows estimated weight in body_weight_caption; assert progress text only.
+    final progressCaption = tester.widget<Text>(
+      find.byKey(const Key('progress_weight_caption')),
+    );
+    expect(progressCaption.data, contains('70'));
 
     // Honest kcal method disclosure (always visible)
     expect(find.byKey(const Key('progress_kcal_method_caption')), findsOneWidget);

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/data/models/session_log.dart';
+import 'package:interval_timer/features/body_tracking/application/body_tracking_providers.dart';
 import 'package:interval_timer/features/calendar_history/application/calendar_history_providers.dart';
 import 'package:interval_timer/features/stats/domain/stats_models.dart';
 import 'package:interval_timer/features/stats/domain/stats_service.dart';
@@ -9,9 +10,9 @@ final statsServiceProvider = Provider<StatsService>((ref) {
   return const StatsService();
 });
 
-/// F15 can override this with a reader that returns the last registered weight.
+/// F15: [BodyMeasurementWeightReader] (real latest kg or F12 default 70 estimated).
 final weightReaderProvider = Provider<WeightReader>((ref) {
-  return const DefaultWeightReader();
+  return ref.watch(bodyMeasurementWeightReaderProvider);
 });
 
 final userWeightKgProvider = Provider<WeightReading>((ref) {

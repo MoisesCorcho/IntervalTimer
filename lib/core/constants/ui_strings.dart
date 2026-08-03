@@ -239,6 +239,7 @@ abstract final class UiStrings {
   static const progressStatsError = 'No se pudieron cargar las estadísticas';
   static const progressWeightEstimated =
       'Peso estimado {kg} kg';
+  static const progressWeightRegistered = 'Peso {kg} kg';
   /// Short always-visible honesty line for kcal method (F12).
   static const progressKcalMethodCaption =
       'kcal estimadas: MET {met} × peso × duración de sesión. No es un gasto medido.';
@@ -254,6 +255,50 @@ abstract final class UiStrings {
   static const progressKcalInfoClose = 'Entendido';
   static const progressTotalLine = 'Total: {totals} · {sessions} sesiones';
   static const progressDaysSuffix = 'días';
+
+  // Body weight / measurements (F15)
+  static const bodyWeightSectionTitle = 'Tu peso';
+  static const bodyWeightRegisterCta = 'Registrar';
+  static const bodyWeightUpdateCta = 'Actualizar';
+  static const bodyWeightRegisterButton = 'Registrar peso';
+  static const bodyWeightEmptyMessage =
+      'Registra tu peso para ver la evolución';
+  static const bodyWeightCaptionEstimated =
+      'Peso estimado {value} {unit} · Registrar';
+  static const bodyWeightCaptionRegistered =
+      '{value} {valueUnit} · Actualizar';
+  static const bodyWeightFormTitle = 'Registrar peso';
+  static const bodyWeightFormEditTitle = 'Editar peso';
+  static const bodyWeightFieldLabel = 'Peso';
+  static const bodyWeightDateLabel = 'Fecha';
+  static const bodyWeightMeasuresOptional = 'Medidas (opcional)';
+  static const bodyWeightWaistLabel = 'Cintura (cm)';
+  static const bodyWeightArmLabel = 'Brazo (cm)';
+  static const bodyWeightLegLabel = 'Pierna (cm)';
+  static const bodyWeightUnitKg = 'kg';
+  static const bodyWeightUnitLb = 'lb';
+  static const bodyWeightUnitsSectionTitle = 'Unidades';
+  static const bodyWeightUnitPreferenceLabel = 'Peso';
+  static const bodyWeightRecentTitle = 'Últimos registros';
+  static const bodyWeightViewRecords = 'Ver registros';
+  static const bodyWeightViewRecordsCount = 'Ver registros ({count})';
+  static const bodyWeightHistorySheetTitle = 'Registros de peso';
+  static const bodyWeightLastLine = 'Último: {value} {unit} · {date}';
+  static const bodyWeightDeleteTitle = '¿Eliminar registro?';
+  static const bodyWeightDeleteMessage =
+      'Se eliminará este registro de peso. Esta acción no se puede deshacer.';
+  static const bodyWeightSaved = 'Peso guardado';
+  static const bodyWeightDeleted = 'Registro eliminado';
+  static const bodyWeightErrorRetry = 'No se pudo cargar el peso';
+  static const bodyWeightValidationRequired = 'Ingresa un peso válido';
+  static const bodyWeightValidationRange =
+      'El peso debe estar entre 20 y 300 kg';
+  static const bodyWeightValidationMeasure =
+      'La medida debe ser mayor que 0 y como máximo 300 cm';
+  static const bodyWeightValidationDateFuture =
+      'No se permiten fechas futuras';
+  static const bodyWeightValidationDateInvalid = 'Fecha inválida';
+  static const bodyWeightChartEmpty = 'Sin datos de peso';
 
   static const monthNames = [
     'Enero',

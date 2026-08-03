@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:interval_timer/data/local/tables/app_preferences_table.dart';
+import 'package:interval_timer/data/local/tables/body_measurements_table.dart';
 import 'package:interval_timer/data/local/tables/intervals_table.dart';
 import 'package:interval_timer/data/local/tables/routine_items_table.dart';
 import 'package:interval_timer/data/local/tables/routines_table.dart';
@@ -23,6 +24,7 @@ part 'database.g.dart';
     WorkoutExercises,
     AppPreferences,
     SessionLogs,
+    BodyMeasurements,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -31,7 +33,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -57,6 +59,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 7) {
             await migrator.addColumn(workouts, workouts.rounds);
+          }
+          if (from < 8) {
+            await migrator.createTable(bodyMeasurements);
           }
         },
       );

@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:interval_timer/features/body_tracking/application/body_tracking_providers.dart';
+import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
@@ -32,6 +34,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final keepScreenOnEnabled = await repo.getKeepScreenOnEnabled();
     final sessionLockScreenEnabled = await repo.getSessionLockScreenEnabled();
     final themeMode = await repo.getThemeMode();
+    final bodyWeightUnit = await repo.getBodyWeightUnit();
     return AppSettings(
       prepSeconds: prep,
       voiceEnabled: voiceEnabled,
@@ -56,6 +59,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
       keepScreenOnEnabled: keepScreenOnEnabled,
       sessionLockScreenEnabled: sessionLockScreenEnabled,
       themeMode: themeMode,
+      bodyWeightUnit: bodyWeightUnit,
     );
   }
 
@@ -247,5 +251,14 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final current =
         state.valueOrNull ?? const AppSettings(prepSeconds: 10);
     state = AsyncData(current.copyWith(themeMode: mode));
+  }
+
+  Future<void> setBodyWeightUnit(BodyWeightUnit unit) async {
+    await ref.read(settingsRepositoryProvider).setBodyWeightUnit(unit);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(bodyWeightUnit: unit));
+    // Keep body-tracking unit provider in sync for form/chart labels.
+    ref.invalidate(bodyWeightUnitProvider);
   }
 }

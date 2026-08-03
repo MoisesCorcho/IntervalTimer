@@ -8,11 +8,13 @@ import 'package:interval_timer/data/repositories/routine_repository.dart';
 import 'package:interval_timer/features/calendar_history/application/calendar_history_providers.dart';
 import 'package:interval_timer/features/calendar_history/presentation/widgets/history_calendar.dart';
 import 'package:interval_timer/features/calendar_history/presentation/widgets/history_month_header.dart';
+import 'package:interval_timer/features/calendar_history/presentation/widgets/history_section_divider.dart';
 import 'package:interval_timer/features/calendar_history/presentation/widgets/session_log_actions_sheet.dart';
 import 'package:interval_timer/features/calendar_history/presentation/widgets/session_log_card.dart';
 import 'package:interval_timer/features/calendar_history/presentation/widgets/session_note_editor.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
+import 'package:interval_timer/features/body_tracking/presentation/body_weight_section.dart';
 import 'package:interval_timer/features/stats/presentation/progress_summary_section.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
@@ -29,15 +31,31 @@ class HistoryScreen extends ConsumerWidget {
     final logsAsync = ref.watch(sessionLogsForSelectedDayProvider);
     final markersAsync = ref.watch(sessionMarkerDatesProvider);
     final markers = markersAsync.valueOrNull ?? const <String>{};
+    final sectionTitleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+        );
 
     return Scaffold(
       key: const Key('history_screen'),
       body: SafeArea(
         child: ListView(
           key: const Key('history_scroll'),
+          // Soft vertical rhythm so blocks read as separate without heavy cards.
+          padding: const EdgeInsets.only(top: AppTheme.spacingSm, bottom: AppTheme.spacingMd),
           children: [
+            // F12: progress block at top of History scroll (R1, R9)
+            const ProgressSummarySection(),
+            const HistorySectionDivider(),
+            // F15: body weight section between progress and calendar (R2, R13)
+            const BodyWeightSection(),
+            const HistorySectionDivider(),
+            // Calendar chrome (month + today) + grid — one visual unit.
             HistoryMonthHeader(
               focusedMonth: history.focusedMonth,
+              showGoToToday: !_isSameCalendarDay(
+                history.selectedDate,
+                DateTime.now(),
+              ),
               onMonthSelected: (month) {
                 ref
                     .read(historyControllerProvider.notifier)
@@ -47,10 +65,8 @@ class HistoryScreen extends ConsumerWidget {
                 ref.read(historyControllerProvider.notifier).goToToday();
               },
             ),
-            // F12: progress block between chrome and calendar (R1, R9)
-            const ProgressSummarySection(),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingMd),
               child: HistoryCalendar(
                 focusedMonth: history.focusedMonth,
                 selectedDate: history.selectedDate,
@@ -67,22 +83,30 @@ class HistoryScreen extends ConsumerWidget {
                 },
               ),
             ),
-            const SizedBox(height: 8),
+            const HistorySectionDivider(),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.fromLTRB(
+                AppTheme.spacingMd,
+                AppTheme.spacingXs,
+                AppTheme.spacingMd,
+                AppTheme.spacingSm,
+              ),
               child: Text(
                 UiStrings.historyWorkoutsSection,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                style: sectionTitleStyle,
               ),
             ),
-            const SizedBox(height: 4),
             ..._sessionChildren(context, ref, logsAsync),
           ],
         ),
       ),
     );
+  }
+
+  static bool _isSameCalendarDay(DateTime a, DateTime b) {
+    final al = a.toLocal();
+    final bl = b.toLocal();
+    return al.year == bl.year && al.month == bl.month && al.day == bl.day;
   }
 
   List<Widget> _sessionChildren(

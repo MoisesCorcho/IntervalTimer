@@ -73,6 +73,10 @@ class PreferencesRepository {
   static const sessionLockScreenEnabledKey = 'session_lock_screen_enabled';
   static const defaultSessionLockScreenEnabled = true;
 
+  // F15 body weight display unit (`kg` | `lb`)
+  static const bodyWeightUnitKey = 'body_weight_unit';
+  static const defaultBodyWeightUnit = 'kg';
+
   Future<String?> getString(String key) async {
     final row = await (_db.select(_db.appPreferences)
           ..where((t) => t.key.equals(key)))
@@ -317,5 +321,20 @@ class PreferencesRepository {
             ? mode
             : defaultThemeMode;
     await setString(themeModeKey, value);
+  }
+
+  /// F15: weight display/edit unit (`kg` | `lb`). Default [defaultBodyWeightUnit].
+  Future<String> getBodyWeightUnit() async {
+    final raw = await getString(bodyWeightUnitKey);
+    return switch (raw) {
+      'lb' => 'lb',
+      'kg' => 'kg',
+      _ => defaultBodyWeightUnit,
+    };
+  }
+
+  Future<void> setBodyWeightUnit(String unit) async {
+    final value = (unit == 'lb' || unit == 'kg') ? unit : defaultBodyWeightUnit;
+    await setString(bodyWeightUnitKey, value);
   }
 }
