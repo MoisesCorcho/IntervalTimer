@@ -4,57 +4,57 @@
 
 ## Definition of Done
 
-- [ ] Todos los criterios R1–R13 de `requirements.md` estan implementados y verificados. _(cubre R1–R13)_
-- [ ] Tests unitarios y widget listados abajo pasan en CI/local.
-- [ ] Entidad y tabla documentadas en `_global/05-data-model.md`; migracion Drift schema **v8**.
-- [ ] `weightReaderProvider` expone peso real o default F12; kcal de F12 se actualizan al mutar peso.
-- [ ] No se agrego un quinto tab en el shell. _(cubre R2, R13)_
-- [ ] Codigo revisado contra `_global/03-conventions.md`.
+- [x] Todos los criterios R1–R13 de `requirements.md` estan implementados y verificados. _(cubre R1–R13)_
+- [x] Tests unitarios y widget listados abajo pasan en CI/local.
+- [x] Entidad y tabla documentadas en `_global/05-data-model.md`; migracion Drift schema **v8**.
+- [x] `weightReaderProvider` expone peso real o default F12; kcal de F12 se actualizan al mutar peso.
+- [x] No se agrego un quinto tab en el shell. _(cubre R2, R13)_
+- [x] Codigo revisado contra `_global/03-conventions.md`.
 
 ## Checklist de implementacion
 
 ### Dominio y datos
 
-- [ ] Documentar `BodyMeasurement` + tabla `body_measurements` + clave `body_weight_unit` en `_global/05-data-model.md`. _(cubre R3, R4, R8)_
-- [ ] Migracion Drift schema **v8**: crear `body_measurements` con UNIQUE(`local_date`). _(cubre R3, R4)_
-- [ ] Modelo de dominio + validacion pura (peso 20–300 kg, medidas, fecha no futura). _(cubre R10, R11)_
-- [ ] `BodyWeightUnit` + funciones de conversion kg ↔ lb. _(cubre R8)_
-- [ ] `BodyMeasurementRepository`: watchAll, upsertByLocalDate, update, delete, latestByDate. _(cubre R3, R4, R6, R7, R12)_
+- [x] Documentar `BodyMeasurement` + tabla `body_measurements` + clave `body_weight_unit` en `_global/05-data-model.md`. _(cubre R3, R4, R8)_
+- [x] Migracion Drift schema **v8**: crear `body_measurements` con UNIQUE(`local_date`). _(cubre R3, R4)_
+- [x] Modelo de dominio + validacion pura (peso 20–300 kg, medidas, fecha no futura). _(cubre R10, R11)_
+- [x] `BodyWeightUnit` + funciones de conversion kg ↔ lb. _(cubre R8)_
+- [x] `BodyMeasurementRepository`: watchAll, upsertByLocalDate, update, delete, latestByDate. _(cubre R3, R4, R6, R7, R12)_
 
 ### Application (Riverpod)
 
-- [ ] Providers de repo, lista, latest weight, unidad de preferencia. _(cubre R5, R7, R8)_
-- [ ] Implementar `BodyMeasurementWeightReader` e **override** de `weightReaderProvider`. _(cubre R1, R7)_
-- [ ] Controller/notifier de form: save (upsert), edit, delete + invalidacion de stats. _(cubre R3, R4, R6, R7)_
-- [ ] Manejo `AsyncValue` loading/error en seccion de peso. _(cubre R12)_
-- [ ] Preferencia `body_weight_unit` via `PreferencesRepository`. _(cubre R8)_
+- [x] Providers de repo, lista, latest weight, unidad de preferencia. _(cubre R5, R7, R8)_
+- [x] Implementar `BodyMeasurementWeightReader` e **override** de `weightReaderProvider`. _(cubre R1, R7)_
+- [x] Controller/notifier de form: save (upsert), edit, delete + invalidacion de stats. _(cubre R3, R4, R6, R7)_
+- [x] Manejo `AsyncValue` loading/error en seccion de peso. _(cubre R12)_
+- [x] Preferencia `body_weight_unit` via `PreferencesRepository`. _(cubre R8)_
 
 ### UI
 
-- [ ] `BodyWeightSection` en `HistoryScreen` (orden: chrome → F12 stats → F15 peso → calendario → lista). _(cubre R2, R5, R13)_
-- [ ] Caption/CTA: "Peso estimado 70 kg · Registrar" vs "X kg · Actualizar" alineado a F12. _(cubre R1, R2, R7)_
-- [ ] Formulario bottom sheet/pantalla: peso, fecha, medidas opcionales. _(cubre R3, R9)_
-- [ ] `BodyWeightLineChart` con `fl_chart` LineChart; empty state amable. _(cubre R5, R12)_
-- [ ] Lista compacta + editar + borrar con confirmacion. _(cubre R6)_
-- [ ] UI de unidad kg/lb en Ajustes (y labels del form/chart). _(cubre R8)_
-- [ ] Validacion visible en form (peso/medidas/fecha). _(cubre R10, R11)_
-- [ ] Verificar shell: 4 tabs, tokens design system, touch ≥ 48 dp. _(cubre R13)_
+- [x] `BodyWeightSection` en `HistoryScreen` (orden: chrome → F12 stats → F15 peso → calendario → lista). _(cubre R2, R5, R13)_
+- [x] Caption/CTA: "Peso estimado 70 kg · Registrar" vs "X kg · Actualizar" alineado a F12. _(cubre R1, R2, R7)_
+- [x] Formulario bottom sheet/pantalla: peso, fecha, medidas opcionales. _(cubre R3, R9)_
+- [x] `BodyWeightLineChart` con `fl_chart` LineChart; empty state amable. _(cubre R5, R12)_
+- [x] Lista compacta + editar + borrar con confirmacion. _(cubre R6)_
+- [x] UI de unidad kg/lb en Ajustes (y labels del form/chart). _(cubre R8)_
+- [x] Validacion visible en form (peso/medidas/fecha). _(cubre R10, R11)_
+- [x] Verificar shell: 4 tabs, tokens design system, touch ≥ 48 dp. _(cubre R13)_
 
 ### Tests
 
 Cobertura **selectiva** (MVP fiable, sin suite enorme). Priorizar dominio/repo + 2–3 widgets criticos.
 
-- [ ] **Unit — validacion:** peso fuera de rango, ≤0, medidas invalidas, fecha futura rechazados. _(cubre R10, R11)_
-- [ ] **Unit — conversion:** kg ↔ lb round-trip con tolerancia (ej. 0.01 kg). _(cubre R8)_
-- [ ] **Unit — upsert:** dos saves mismo `localDate` dejan una sola fila con ultimo peso. _(cubre R4)_
-- [ ] **Unit — WeightReader:** sin filas → 70 estimado; con filas → latest kg no estimado. _(cubre R1, R7)_
-- [ ] **Unit — delete ultimo:** vuelve a estimado. _(cubre R6, R7)_
-- [ ] **Unit — edge fechas:** (1) `localDate` = hoy OK; (2) mover/editar registro a un dia que ya tiene fila → queda **una** fila en destino (upsert), sin duplicar. _(cubre R4, R11)_
-- [ ] **Unit — edge limites:** peso en frontera 20 y 300 kg aceptados; 19.9 y 300.1 rechazados. _(cubre R10)_
-- [ ] **Unit — latest weight:** con varios dias, el reader usa el de `localDate` maximo (no el de mayor `weightKg`). _(cubre R7)_
-- [ ] **Widget — seccion Historial:** CTA registrar / chart o empty; sin quinto tab. _(cubre R2, R5, R12, R13)_
-- [ ] **Widget — form validacion:** no guarda peso invalido; muestra error. _(cubre R10)_
-- [ ] **Widget/integration — preferencia unidad:** cambiar kg/lb actualiza labels mostrados. _(cubre R8)_
+- [x] **Unit — validacion:** peso fuera de rango, ≤0, medidas invalidas, fecha futura rechazados. _(cubre R10, R11)_
+- [x] **Unit — conversion:** kg ↔ lb round-trip con tolerancia (ej. 0.01 kg). _(cubre R8)_
+- [x] **Unit — upsert:** dos saves mismo `localDate` dejan una sola fila con ultimo peso. _(cubre R4)_
+- [x] **Unit — WeightReader:** sin filas → 70 estimado; con filas → latest kg no estimado. _(cubre R1, R7)_
+- [x] **Unit — delete ultimo:** vuelve a estimado. _(cubre R6, R7)_
+- [x] **Unit — edge fechas:** (1) `localDate` = hoy OK; (2) mover/editar registro a un dia que ya tiene fila → queda **una** fila en destino (upsert), sin duplicar. _(cubre R4, R11)_
+- [x] **Unit — edge limites:** peso en frontera 20 y 300 kg aceptados; 19.9 y 300.1 rechazados. _(cubre R10)_
+- [x] **Unit — latest weight:** con varios dias, el reader usa el de `localDate` maximo (no el de mayor `weightKg`). _(cubre R7)_
+- [x] **Widget — seccion Historial:** CTA registrar / chart o empty; sin quinto tab. _(cubre R2, R5, R12, R13)_
+- [x] **Widget — form validacion:** no guarda peso invalido; muestra error. _(cubre R10)_
+- [x] **Widget/integration — preferencia unidad:** cambiar kg/lb actualiza labels mostrados. _(cubre R8)_
 
 **Explicitamente fuera de esta ronda de tests** (no inflar suite): Health APIs, multi-device, isolate/concurrency stress, golden screenshots, matrix completa de timezones. Migracion v7→v8 se valida al implementar (smoke de upgrade o test de migracion **uno** si el proyecto ya testea schema; no una bateria).
 

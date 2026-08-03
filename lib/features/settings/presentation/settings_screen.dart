@@ -7,6 +7,7 @@ import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
 import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 import 'package:interval_timer/features/always_on/presentation/keep_screen_on_settings_section.dart';
+import 'package:interval_timer/features/body_tracking/presentation/body_weight_unit_settings_section.dart';
 import 'package:interval_timer/features/lock_screen/presentation/session_lock_screen_settings_section.dart';
 import 'package:interval_timer/features/vibration/presentation/vibration_settings_section.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
@@ -96,6 +97,8 @@ class _SettingsBody extends ConsumerWidget {
                 .setThemeMode(selected.first);
           },
         ),
+        const SizedBox(height: AppTheme.spacingLg),
+        BodyWeightUnitSettingsSection(settings: settings),
         const SizedBox(height: AppTheme.spacingLg),
         Text(
           UiStrings.prepSecondsLabel,

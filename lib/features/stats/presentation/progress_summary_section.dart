@@ -149,17 +149,20 @@ class ProgressSummarySection extends ConsumerWidget {
                 ),
                 style: captionStyle,
               ),
-              if (summary.isWeightEstimated) ...[
-                const SizedBox(height: 2),
-                Text(
-                  key: const Key('progress_weight_caption'),
-                  UiStrings.progressWeightEstimated.replaceAll(
-                    '{kg}',
-                    _formatWeight(summary.weightKgUsed),
-                  ),
-                  style: captionStyle,
-                ),
-              ],
+              const SizedBox(height: 2),
+              Text(
+                key: const Key('progress_weight_caption'),
+                summary.isWeightEstimated
+                    ? UiStrings.progressWeightEstimated.replaceAll(
+                        '{kg}',
+                        _formatWeight(summary.weightKgUsed),
+                      )
+                    : UiStrings.progressWeightRegistered.replaceAll(
+                        '{kg}',
+                        _formatWeight(summary.weightKgUsed),
+                      ),
+                style: captionStyle,
+              ),
               const SizedBox(height: AppTheme.spacingSm),
               ChartPeriodToggle(
                 value: period,

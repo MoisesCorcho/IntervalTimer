@@ -1,6 +1,6 @@
 # Requirements: Registro de Peso y Medidas
 
-> Estado: No iniciada
+> Estado: Completada (implementacion local; smoke dispositivo pendiente)
 
 **ID:** F15 &nbsp;|&nbsp; **Slug:** `15-body-measurements-tracking` &nbsp;|&nbsp; **Fase:** Fase 3 · Seguimiento y Motivacion
 

@@ -13,6 +13,7 @@ import 'package:interval_timer/features/calendar_history/presentation/widgets/se
 import 'package:interval_timer/features/calendar_history/presentation/widgets/session_note_editor.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
+import 'package:interval_timer/features/body_tracking/presentation/body_weight_section.dart';
 import 'package:interval_timer/features/stats/presentation/progress_summary_section.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
@@ -49,6 +50,8 @@ class HistoryScreen extends ConsumerWidget {
             ),
             // F12: progress block between chrome and calendar (R1, R9)
             const ProgressSummarySection(),
+            // F15: body weight section between progress and calendar (R2, R13)
+            const BodyWeightSection(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: HistoryCalendar(
