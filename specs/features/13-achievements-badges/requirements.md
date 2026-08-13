@@ -1,6 +1,6 @@
 # Requirements: Logros y Badges
 
-> Estado: Completada (codigo + tests en `feature/13-achievements-badges`)
+> Estado: Completado
 
 **ID:** F13 &nbsp;|&nbsp; **Slug:** `13-achievements-badges` &nbsp;|&nbsp; **Fase:** Fase 3 · Seguimiento y Motivacion
 

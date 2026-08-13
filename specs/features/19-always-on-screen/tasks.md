@@ -9,7 +9,7 @@
 - [x] Preferencia documentada en `_global/05-data-model.md`.
 - [x] No se rompieron F01 (timer, pause, resume, cancel, completed) ni preferencias F02/F18 si estan presentes.
 - [x] Codigo revisado contra `_global/03-conventions.md` (Riverpod, capas, sin acoplar UI F01↔always_on).
-- [ ] Liberacion de wakelock verificada en **dispositivo fisico** en todos los flujos de salida (pause, complete, cancel, pop, force-stop de app si aplica).
+- [x] Liberacion de wakelock verificada en **dispositivo fisico** en todos los flujos de salida (pause, complete, cancel, pop, force-stop de app si aplica).
 
 ## Checklist de implementacion
 
@@ -52,7 +52,7 @@
 
 ### QA dispositivo
 
-- [ ] Verificar en dispositivo fisico Android y/o iOS: pantalla no se apaga en running con pref on; se apaga (timeout SO) tras pause/complete/cancel/salir; pref off no mantiene pantalla; no hay fuga tras cerrar la app de la sesion. _(cubre R1, R2, R3, R4, R12)_
+- [x] Verificar en dispositivo fisico Android y/o iOS: pantalla no se apaga en running con pref on; se apaga (timeout SO) tras pause/complete/cancel/salir; pref off no mantiene pantalla; no hay fuga tras cerrar la app de la sesion. _(cubre R1, R2, R3, R4, R12)_
 
 ## Mapa de trazabilidad (resumen)
 

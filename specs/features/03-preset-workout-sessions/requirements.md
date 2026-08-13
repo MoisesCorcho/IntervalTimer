@@ -1,5 +1,7 @@
 # Requirements: Sesiones Preestablecidas con Animacion/Video
 
+> Estado: No iniciada
+
 **ID:** F03 &nbsp;|&nbsp; **Slug:** `03-preset-workout-sessions` &nbsp;|&nbsp; **Fase:** Fase 0 · Fundacion
 
 ## Resumen

@@ -1,5 +1,7 @@
 # Requirements: Modo Sin Video
 
+> Estado: No iniciada
+
 **ID:** F23 &nbsp;|&nbsp; **Slug:** `23-no-video-mode` &nbsp;|&nbsp; **Fase:** Fase 5 · Descubrimiento de Contenido
 
 ## Resumen

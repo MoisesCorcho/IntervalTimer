@@ -1,5 +1,7 @@
 # Requirements: Soporte para Smartwatch (Wear OS / Apple Watch)
 
+> Estado: No iniciada
+
 **ID:** F21 &nbsp;|&nbsp; **Slug:** `21-smartwatch-support` &nbsp;|&nbsp; **Fase:** Fase 4 · Audio y Experiencia (Futuro)
 
 ## Resumen

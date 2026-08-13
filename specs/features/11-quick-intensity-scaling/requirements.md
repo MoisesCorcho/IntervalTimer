@@ -1,5 +1,7 @@
 # Requirements: Ajuste Rapido de Intensidad
 
+> Estado: No iniciada
+
 **ID:** F11 &nbsp;|&nbsp; **Slug:** `11-quick-intensity-scaling` &nbsp;|&nbsp; **Fase:** Fase 2 · Profundidad de Entrenamiento
 
 ## Resumen

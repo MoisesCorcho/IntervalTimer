@@ -1,6 +1,6 @@
 # Requirements: Interval Timer Core
 
-> Estado: Completa
+> Estado: Completado
 
 **ID:** F01 &nbsp;|&nbsp; **Slug:** `01-interval-timer-core` &nbsp;|&nbsp; **Fase:** Fase 0 · Fundacion
 

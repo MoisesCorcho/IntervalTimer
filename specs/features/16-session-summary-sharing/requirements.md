@@ -1,6 +1,6 @@
 # Requirements: Compartir Resumen de Sesion
 
-> Estado: En progreso
+> Estado: Completado
 
 **ID:** F16 &nbsp;|&nbsp; **Slug:** `16-session-summary-sharing` &nbsp;|&nbsp; **Fase:** Fase 3 · Seguimiento y Motivacion
 
