@@ -24,7 +24,7 @@ class ExerciseMediaWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final effectiveCategory = exercise?.category ?? category;
     final primaryPath = exercise?.mediaPath;
-    final categoryPath = 'assets/media/categories/cat_${effectiveCategory.id}.png';
+    final categoryPath = 'assets/media/categories/cat_${effectiveCategory.id.toLowerCase()}.png';
 
     Widget mediaWidget;
 
