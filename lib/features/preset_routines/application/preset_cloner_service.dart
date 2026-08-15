@@ -1,20 +1,19 @@
-import 'package:interval_timer/data/models/routine.dart' as domain;
-import 'package:interval_timer/data/repositories/routine_repository.dart';
+import 'package:interval_timer/data/models/workout.dart' as domain;
+import 'package:interval_timer/data/repositories/workout_repository.dart';
 import 'package:interval_timer/features/preset_routines/data/preset_catalog_repository.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/exercise.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
-import 'package:interval_timer/features/preset_routines/domain/services/preset_routine_flattener.dart';
 
 class PresetClonerService {
-  final RoutineRepository routineRepository;
+  final WorkoutRepository workoutRepository;
   final PresetCatalogRepository? catalogRepository;
 
   PresetClonerService({
-    required this.routineRepository,
+    required this.workoutRepository,
     this.catalogRepository,
   });
 
-  Future<domain.Routine> clonePreset(
+  Future<domain.Workout> clonePreset(
     PresetRoutine preset, {
     Map<String, Exercise>? exerciseMap,
   }) async {
@@ -22,17 +21,28 @@ class PresetClonerService {
         await catalogRepository?.getExerciseMap() ??
         const {};
 
-    final flattenedIntervals = PresetRoutineFlattener.flatten(
-      preset: preset,
-      exerciseMap: map,
-    );
+    final exerciseDrafts = <WorkoutExerciseDraft>[];
+
+    for (final ref in preset.exercises) {
+      final exercise = map[ref.exerciseId];
+      final name = exercise?.name ?? ref.exerciseId;
+      exerciseDrafts.add(
+        WorkoutExerciseDraft(
+          name: name,
+          sets: ref.sets,
+          workSeconds: ref.workSeconds,
+          restSeconds: ref.restSeconds,
+          restAfterExerciseSeconds: preset.restBetweenExercisesSeconds,
+        ),
+      );
+    }
 
     final String name = '${preset.title} (Copia)';
 
-    return routineRepository.clonePresetRoutine(
+    return workoutRepository.createWorkoutWithExercises(
       name: name,
-      intervals: flattenedIntervals,
-      originId: preset.id,
+      exercises: exerciseDrafts,
+      rounds: 1,
     );
   }
 }

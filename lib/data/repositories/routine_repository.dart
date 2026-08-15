@@ -89,58 +89,7 @@ class RoutineRepository {
     );
   }
 
-  Future<domain.Routine> clonePresetRoutine({
-    required String name,
-    required List<domain.Interval> intervals,
-    String? originId,
-  }) async {
-    final routineId = _uuid.v4();
-    final now = DateTime.now().toUtc();
-    final intervalRows = <IntervalRow>[];
-    final itemRows = <RoutineItemRow>[];
-    final routineItems = <RoutineItem>[];
 
-    for (var i = 0; i < intervals.length; i++) {
-      final interval = intervals[i];
-      intervalRows.add(
-        IntervalRow(
-          id: interval.id,
-          name: interval.name,
-          durationSeconds: interval.durationSeconds,
-          colorArgb: interval.colorArgb,
-          type: interval.type.storageValue,
-          announceText: interval.announceText,
-        ),
-      );
-      itemRows.add(
-        RoutineItemRow(
-          id: _uuid.v4(),
-          routineId: routineId,
-          position: i,
-          itemType: 'interval',
-          intervalId: interval.id,
-        ),
-      );
-      routineItems.add(RoutineItem.interval(interval));
-    }
-
-    await _db.insertRoutineData(
-      routine: RoutineRow(
-        id: routineId,
-        name: name,
-        createdAt: now.millisecondsSinceEpoch,
-      ),
-      intervalRows: intervalRows,
-      itemRows: itemRows,
-    );
-
-    return domain.Routine(
-      id: routineId,
-      name: name,
-      createdAt: now,
-      items: routineItems,
-    );
-  }
 
   domain.Routine _emptyActiveRoutine() {
     return domain.Routine(

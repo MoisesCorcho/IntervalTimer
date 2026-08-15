@@ -5,6 +5,22 @@ import 'package:interval_timer/data/models/workout.dart' as domain;
 import 'package:interval_timer/data/models/workout_exercise.dart' as domain;
 import 'package:uuid/uuid.dart';
 
+class WorkoutExerciseDraft {
+  final String name;
+  final int sets;
+  final int workSeconds;
+  final int restSeconds;
+  final int restAfterExerciseSeconds;
+
+  const WorkoutExerciseDraft({
+    required this.name,
+    required this.sets,
+    required this.workSeconds,
+    required this.restSeconds,
+    this.restAfterExerciseSeconds = 0,
+  });
+}
+
 class WorkoutRepository {
   WorkoutRepository(this._db, {Uuid? uuid}) : _uuid = uuid ?? const Uuid();
 
@@ -47,6 +63,45 @@ class WorkoutRepository {
       rounds: 1,
       exercises: const [],
     );
+  }
+
+  Future<domain.Workout> createWorkoutWithExercises({
+    required String name,
+    required List<WorkoutExerciseDraft> exercises,
+    int rounds = 1,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final newId = _uuid.v4();
+
+    await _db.transaction(() async {
+      await _db.into(_db.workouts).insert(
+            WorkoutRow(
+              id: newId,
+              name: name,
+              createdAt: now.millisecondsSinceEpoch,
+              updatedAt: now.millisecondsSinceEpoch,
+              rounds: _clampRounds(rounds),
+            ),
+          );
+
+      for (var i = 0; i < exercises.length; i++) {
+        final ex = exercises[i];
+        await _db.into(_db.workoutExercises).insert(
+              WorkoutExerciseRow(
+                id: _uuid.v4(),
+                workoutId: newId,
+                position: i,
+                name: ex.name,
+                sets: ex.sets,
+                workSeconds: ex.workSeconds,
+                restSeconds: ex.restSeconds,
+                restAfterExerciseSeconds: ex.restAfterExerciseSeconds,
+              ),
+            );
+      }
+    });
+
+    return (await getWorkout(newId))!;
   }
 
   Future<domain.Workout?> getWorkout(String id) async {

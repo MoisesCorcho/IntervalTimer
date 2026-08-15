@@ -5,7 +5,7 @@ import 'package:interval_timer/features/preset_routines/data/preset_catalog_repo
 import 'package:interval_timer/features/preset_routines/domain/models/enums.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/exercise.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
-import 'package:interval_timer/features/timer/application/timer_providers.dart';
+import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 
 final presetCatalogRepositoryProvider = Provider<PresetCatalogRepository>((ref) {
   return AssetPresetCatalogRepository();
@@ -41,10 +41,10 @@ final presetDetailProvider = FutureProvider.family<PresetRoutine?, String>((ref,
 });
 
 final presetClonerServiceProvider = Provider<PresetClonerService>((ref) {
-  final routineRepo = ref.watch(routineRepositoryProvider);
+  final workoutRepo = ref.watch(workoutRepositoryProvider);
   final catalogRepo = ref.watch(presetCatalogRepositoryProvider);
   return PresetClonerService(
-    routineRepository: routineRepo,
+    workoutRepository: workoutRepo,
     catalogRepository: catalogRepo,
   );
 });
