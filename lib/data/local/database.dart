@@ -102,6 +102,23 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
+  Future<void> insertRoutineData({
+    required RoutineRow routine,
+    required List<IntervalRow> intervalRows,
+    required List<RoutineItemRow> itemRows,
+  }) async {
+    await transaction(() async {
+      await into(routines).insert(routine, mode: InsertMode.insertOrReplace);
+      for (final interval in intervalRows) {
+        await into(intervals).insert(interval, mode: InsertMode.insertOrReplace);
+      }
+      for (final item in itemRows) {
+        await into(routineItems).insert(item, mode: InsertMode.insertOrReplace);
+      }
+    });
+  }
+
+
   Future<List<WorkoutRow>> getAllWorkoutRows() {
     return (select(workouts)
           ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]))

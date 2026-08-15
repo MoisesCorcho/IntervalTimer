@@ -10,8 +10,11 @@ import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/timer/presentation/routine_editor_screen.dart';
 import 'package:interval_timer/features/session_summary/presentation/session_complete_screen.dart';
 import 'package:interval_timer/features/timer/presentation/timer_execution_screen.dart';
+import 'package:interval_timer/features/preset_routines/presentation/screens/preset_catalog_screen.dart';
+import 'package:interval_timer/features/preset_routines/presentation/screens/preset_detail_screen.dart';
 import 'package:interval_timer/features/workout_builder/presentation/my_workouts_screen.dart';
 import 'package:interval_timer/features/workout_builder/presentation/workout_editor_screen.dart';
+
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorRoutineKey =
@@ -112,6 +115,19 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
+        path: '/presets',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const PresetCatalogScreen(),
+      ),
+      GoRoute(
+        path: '/presets/:id',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return PresetDetailScreen(presetId: id);
+        },
+      ),
+      GoRoute(
         path: '/execute',
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const TimerExecutionScreen(),
@@ -124,6 +140,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
+
 
 class _RouterRefreshNotifier extends ChangeNotifier {
   _RouterRefreshNotifier(this._ref) {

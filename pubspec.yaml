@@ -54,3 +54,7 @@ flutter:
     - assets/branding/app_logo.png
     - assets/sfx/default/
     - assets/sfx/catalog/
+    - assets/routines/
+    - assets/media/
+    - assets/media/exercises/
+    - assets/media/categories/

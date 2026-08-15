@@ -4,11 +4,11 @@
 
 ## Definition of Done
 
-- [ ] Todos los criterios R1–R11 de `requirements.md` están implementados y verificados. _(cubre R1–R11)_
-- [ ] Tests unitarios, de widget e integración pasan en local y CI.
-- [ ] Catálogo inicial de 6 presets validado y empaquetado en `assets/routines/`.
-- [ ] No se rompieron features previas (verificado con suite de tests de F01).
-- [ ] Código revisado contra `_global/03-conventions.md`.
+- [x] Todos los criterios R1–R11 de `requirements.md` están implementados y verificados. _(cubre R1–R11)_
+- [x] Tests unitarios, de widget e integración pasan en local y CI.
+- [x] Catálogo inicial de 6 presets validado y empaquetado en `assets/routines/`.
+- [x] No se rompieron features previas (verificado con suite de tests de F01).
+- [x] Código revisado contra `_global/03-conventions.md`.
 
 ---
 
@@ -16,60 +16,61 @@
 
 ### Capa de Dominio (Domain)
 
-- [ ] Definir enums `PresetCategory` y `DifficultyLevel` con mappers `fromId(...)` y valores fallback. _(cubre R10, R11)_
-- [ ] Definir modelos inmutables `Exercise`, `PresetRoutine` y `PresetExerciseRef`. _(cubre R1, R7)_
-- [ ] Implementar servicio de dominio `PresetRoutineFlattener` para aplanar `PresetRoutine` a `List<Interval>`. _(cubre R5)_
+- [x] Definir enums `PresetCategory` y `DifficultyLevel` con mappers `fromId(...)` y valores fallback. _(cubre R10, R11)_
+- [x] Definir modelos inmutables `Exercise`, `PresetRoutine` y `PresetExerciseRef`. _(cubre R1, R7)_
+- [x] Implementar servicio de dominio `PresetRoutineFlattener` para aplanar `PresetRoutine` a `List<Interval>`. _(cubre R5)_
 
 ### Capa de Datos y Assets (Data & Assets)
 
-- [ ] Producir y estructurar `assets/routines/exercises.json` (catálogo maestro de ejercicios). _(cubre R1, R4)_
-- [ ] Producir y estructurar `assets/routines/presets.json` con el catálogo maestro inicial de 6 presets. _(cubre R1, R8)_
-- [ ] Configurar carpeta `assets/media/` con la jerarquía de imágenes/animaciones y placeholders por categoría. _(cubre R9)_
-- [ ] Registrar rutas de assets en `pubspec.yaml`. _(cubre R1, R9)_
-- [ ] Implementar `PresetRepository` e `PresetRepositoryImpl` para la lectura y deserialización de los JSONs. _(cubre R1, R10)_
-- [ ] Implementar manejo de excepciones en `PresetRepositoryImpl` ante archivos corruptos o faltantes. _(cubre R10)_
+- [x] Producir y estructurar `assets/routines/exercises.json` (catálogo maestro de ejercicios). _(cubre R1, R4)_
+- [x] Producir y estructurar `assets/routines/presets.json` con el catálogo maestro inicial de 6 presets. _(cubre R1, R8)_
+- [x] Configurar carpeta `assets/media/` con la jerarquía de imágenes/animaciones y placeholders por categoría. _(cubre R9)_
+- [x] Registrar rutas de assets en `pubspec.yaml`. _(cubre R1, R9)_
+- [x] Implementar `PresetRepository` e `PresetRepositoryImpl` para la lectura y deserialización de los JSONs. _(cubre R1, R10)_
+- [x] Implementar manejo de excepciones en `PresetRepositoryImpl` ante archivos corruptos o faltantes. _(cubre R10)_
 
 ### Capa de Aplicación (Application / Riverpod)
 
-- [ ] Implementar `presetRepositoryProvider` y `exerciseMapProvider`. _(cubre R1)_
-- [ ] Implementar `presetCatalogProvider` y `selectedCategoryFilterProvider`. _(cubre R2)_
-- [ ] Implementar `filteredPresetsProvider` para el filtrado dinámico por categoría. _(cubre R2)_
-- [ ] Implementar provider o notifier para la acción "Duplicar a Mis Rutinas" integrando `RoutineRepository` (Drift). _(cubre R6)_
+- [x] Implementar `presetRepositoryProvider` y `exerciseMapProvider`. _(cubre R1)_
+- [x] Implementar `presetCatalogProvider` y `selectedCategoryFilterProvider`. _(cubre R2)_
+- [x] Implementar `filteredPresetsProvider` para el filtrado dinámico por categoría. _(cubre R2)_
+- [x] Implementar provider o notifier para la acción "Duplicar a Mis Rutinas" integrando `RoutineRepository` (Drift). _(cubre R6)_
 
 ### Capa de Presentación (Presentation)
 
-- [ ] **Nivel 1 — Pantalla de Catálogo (`PresetCatalogScreen`):**
-  - [ ] Construir carrusel superior con rutinas destacadas (`isFeatured`). _(cubre R2)_
-  - [ ] Construir grid interactivo de categorías (`PresetCategory`) con selección y resaltado. _(cubre R2)_
-  - [ ] Construir tarjetas de rutinas con badges de dificultad, duración total calculada y cantidad de ejercicios. _(cubre R2, R3)_
-  - [ ] Construir vista de error amigable con botón "Reintentar" ante fallos de carga. _(cubre R10)_
-- [ ] **Nivel 2 — Pantalla de Detalle (`PresetDetailScreen`):**
-  - [ ] Construir resumen ejecutivo (título, descripción, categoría, dificultad, duración, ejercicios). _(cubre R3)_
-  - [ ] Construir lista ordenada de ejercicios con sus series, trabajo, descanso e imágenes miniaturas. _(cubre R3)_
-  - [ ] Implementar widget de renderizado de imagen con resiliencia y fallback en 3 niveles. _(cubre R9)_
-  - [ ] Construir Botón Flotante (FAB) prominente "Iniciar Entrenamiento". _(cubre R3, R5)_
-  - [ ] Agregar opción de menú / acción secundaria "Duplicar a Mis Rutinas". _(cubre R6)_
-- [ ] **Nivel 3 — Modal de Técnica (`ExerciseTechniqueBottomSheet`):**
-  - [ ] Construir modal desplegable de técnica con animación/imagen principal. _(cubre R4)_
-  - [ ] Mostrar instrucciones paso a paso (1, 2, 3...) y consejos de postura (tips). _(cubre R4)_
+- [x] **Nivel 1 — Pantalla de Catálogo (`PresetCatalogScreen`):**
+  - [x] Construir carrusel superior con rutinas destacadas (`isFeatured`). _(cubre R2)_
+  - [x] Construir grid interactivo de categorías (`PresetCategory`) con selección y resaltado. _(cubre R2)_
+  - [x] Construir tarjetas de rutinas con badges de dificultad, duración total calculada y cantidad de ejercicios. _(cubre R2, R3)_
+  - [x] Construir vista de error amigable con botón "Reintentar" ante fallos de carga. _(cubre R10)_
+- [x] **Nivel 2 — Pantalla de Detalle (`PresetDetailScreen`):**
+  - [x] Construir resumen ejecutivo (título, descripción, categoría, dificultad, duración, ejercicios). _(cubre R3)_
+  - [x] Construir lista ordenada de ejercicios con sus series, trabajo, descanso e imágenes miniaturas. _(cubre R3)_
+  - [x] Implementar widget de renderizado de imagen con resiliencia y fallback en 3 niveles. _(cubre R9)_
+  - [x] Construir Botón Flotante (FAB) prominente "Iniciar Entrenamiento". _(cubre R3, R5)_
+  - [x] Agregar opción de menú / acción secundaria "Duplicar a Mis Rutinas". _(cubre R6)_
+- [x] **Nivel 3 — Modal de Técnica (`ExerciseTechniqueBottomSheet`):**
+  - [x] Construir modal desplegable de técnica con animación/imagen principal. _(cubre R4)_
+  - [x] Mostrar instrucciones paso a paso (1, 2, 3...) y consejos de postura (tips). _(cubre R4)_
 
 ### Capa de Integración
 
-- [ ] Conectar el Botón Flotante de `PresetDetailScreen` con `PresetRoutineFlattener` y pasar los intervalos efímeros a `TimerController` (F01). _(cubre R5)_
-- [ ] Conectar la acción "Duplicar a Mis Rutinas" con `RoutineRepository` de Drift creando una fila con `source = presetDerived` y `originId = preset.id`. _(cubre R6)_
+- [x] Conectar el Botón Flotante de `PresetDetailScreen` con `PresetRoutineFlattener` y pasar los intervalos efímeros a `TimerController` (F01). _(cubre R5)_
+- [x] Conectar la acción "Duplicar a Mis Rutinas" con `RoutineRepository` de Drift creando una fila con `source = presetDerived` y `originId = preset.id`. _(cubre R6)_
 
 ### Tests
 
-- [ ] **Unit — Deserialización y Mappers:** Carga de `exercises.json` y `presets.json`, verificación de tipos e IDs. _(cubre R1, R8, R10)_
-- [ ] **Unit — Enums & Fallbacks:** Verificación de `fromId(...)` en `PresetCategory` y `DifficultyLevel` ante cadenas desconocidas. _(cubre R11)_
-- [ ] **Unit — Flattener:** Transformación de `PresetRoutine` a `List<Interval>` verificando secuencia exacta de trabajo y descansos. _(cubre R5)_
-- [ ] **Unit — Cálculo de Duración:** Validación de `calculateTotalDurationSeconds()` contra los 6 presets del catálogo. _(cubre R3, R8)_
-- [ ] **Widget — Nivel 1 Catálogo:** Renderizado de carrusel, grid de categorías y filtrado de lista. _(cubre R2)_
-- [ ] **Widget — Nivel 2 Detalle:** Renderizado de resumen, lista de ejercicios y presencia del FAB. _(cubre R3)_
-- [ ] **Widget — Nivel 3 Modal:** Despliegue de `ExerciseTechniqueBottomSheet` y visualización de pasos y tips. _(cubre R4)_
-- [ ] **Widget — Fallback de Media:** Verificación de que ante un path inválido se muestra el placeholder de categoría o el icono del sistema sin crash. _(cubre R9)_
-- [ ] **Integration — Iniciar Entrenamiento:** Flujo completo desde presionar FAB en Nivel 2 hasta la transición a estado `running` en `TimerController`. _(cubre R5)_
-- [ ] **Integration — Duplicar Preset:** Flujo de clonación a Drift y verificación de fila insertada en `routines` con `source = presetDerived`. _(cubre R6)_
+- [x] **Unit — Deserialización y Mappers:** Carga de `exercises.json` y `presets.json`, verificación de tipos e IDs. _(cubre R1, R8, R10)_
+- [x] **Unit — Enums & Fallbacks:** Verificación de `fromId(...)` en `PresetCategory` y `DifficultyLevel` ante cadenas desconocidas. _(cubre R11)_
+- [x] **Unit — Flattener:** Transformación de `PresetRoutine` a `List<Interval>` verificando secuencia exacta de trabajo y descansos. _(cubre R5)_
+- [x] **Unit — Cálculo de Duración:** Validación de `calculateTotalDurationSeconds()` contra los 6 presets del catálogo. _(cubre R3, R8)_
+- [x] **Widget — Nivel 1 Catálogo:** Renderizado de carrusel, grid de categorías y filtrado de lista. _(cubre R2)_
+- [x] **Widget — Nivel 2 Detalle:** Renderizado de resumen, lista de ejercicios y presencia del FAB. _(cubre R3)_
+- [x] **Widget — Nivel 3 Modal:** Despliegue de `ExerciseTechniqueBottomSheet` y visualización de pasos y tips. _(cubre R4)_
+- [x] **Widget — Fallback de Media:** Verificación de que ante un path inválido se muestra el placeholder de categoría o el icono del sistema sin crash. _(cubre R9)_
+- [x] **Integration — Iniciar Entrenamiento:** Flujo completo desde presionar FAB en Nivel 2 hasta la transición a estado `running` en `TimerController`. _(cubre R5)_
+- [x] **Integration — Duplicar Preset:** Flujo de clonación a Drift y verificación de fila insertada en `routines` con `source = presetDerived`. _(cubre R6)_
+
 
 ---
 

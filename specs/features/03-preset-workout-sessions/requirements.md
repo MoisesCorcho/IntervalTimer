@@ -1,6 +1,6 @@
 # Requirements: Sesiones Preestablecidas con Animacion/Video
 
-> Estado: Pendiente de Implementación (Specs corregidas - Gold Standard)
+> Estado: Implementada (Specs corregidas - Gold Standard)
 
 **ID:** F03 &nbsp;|&nbsp; **Slug:** `03-preset-workout-sessions` &nbsp;|&nbsp; **Fase:** Fase 0 · Fundación
 
