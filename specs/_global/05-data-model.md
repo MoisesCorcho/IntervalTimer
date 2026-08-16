@@ -26,7 +26,7 @@ que introduce o modifica una entidad debe reflejarlo aqui **antes** de implement
 | `Achievement` / `UnlockedAchievement` | F13 | Catalogo de logros y su estado de desbloqueo. |
 | `Reminder` | F14 | Configuracion de notificaciones recurrentes. |
 | `BodyMeasurement` | F15 | Registro de peso/medidas en el tiempo. |
-| `FavoriteRoutine` | F24 | Marca de rutina favorita (referencia por id + tipo preset/user). |
+| `FavoriteRoutine` | F24 | Marca de favorito para Preset (F03) o Workout (F32). |
 | `Workout` | F32 | Entrenamiento del usuario: nombre + lista ordenada de ejercicios (y circuitos F08). |
 | `WorkoutExercise` | F32 / F34 / F08 | Ejercicio dentro de un entrenamiento: nombre, sets, trabajo, descansos; opcional `circuitId` (F08). |
 | `WorkoutCircuit` | F08 | Circuito: `rounds` (1–99) + ejercicios miembros del mismo workout (1 nivel). |
@@ -526,11 +526,38 @@ ShareCardData {
 Persistencia de nota: `SessionLogRepository.updateNote(id, note)` (max 500, F04).  
 Share: PNG local + `share_plus` (ver `features/16-session-summary-sharing/design.md`).
 
+## FavoriteRoutine (F24) — favoritos
+
+Marca de favoritos para rutinas preestablecidas (`PresetRoutine` F03) y entrenamientos personalizados (`Workout` F32).
+
+```dart
+enum FavoriteTargetType { preset, workout }
+
+FavoriteRoutine {
+  id: String                 // UUID v4
+  targetId: String           // preset.id (String) o workout.id (UUID v4)
+  targetType: FavoriteTargetType
+  createdAt: DateTime        // UTC al momento del toggle
+}
+```
+
+### Tabla drift (F24 — migracion aditiva)
+
+| Tabla | Columnas | Notas |
+|---|---|---|
+| `favorite_routines` | `id` TEXT PK, `target_id` TEXT NOT NULL, `target_type` TEXT NOT NULL, `created_at` INTEGER NOT NULL | Unique index en `(target_id, target_type)`; timestamps UTC ms |
+
+**Semantica:**
+- `target_type`: almacena `'preset'` o `'workout'`.
+- Orden natural de consultas: `created_at DESC` (los más recientes primero).
+- Borrado en cascada de aplicación: al eliminar un `Workout`, se eliminan sus filas en `favorite_routines`.
+- Presets no se borran de base de datos ya que provienen de assets inmutables.
+
 ## Motor de persistencia
 
 | Capa | Tecnologia | Que vive ahi |
 |---|---|---|
-| **Local principal** | drift (SQLite) | Rutinas usuario, entrenamientos (F32), intervalos, session logs, mediciones, logros, etc. |
+| **Local principal** | drift (SQLite) | Rutinas usuario, entrenamientos (F32), intervalos, session logs, mediciones, logros, favoritos, etc. |
 | **Assets read-only** | JSON en bundle | Presets F03, catalogo de ejercicios |
 | **Preferencias** | shared_preferences | Flags de UI, tema, ajustes ligeros |
 | **Remoto (F25/F26)** | Firestore o Supabase | Rutinas publicadas, retos grupales — opt-in |
@@ -540,7 +567,7 @@ Share: PNG local + `share_plus` (ver `features/16-session-summary-sharing/design
 - `Routine` 1-N `RoutineItem` (F01: `Interval`; sin `Block` en MVP de F08).
 - `PresetRoutine` N-N `Exercise` (en assets; no FK en drift).
 - `SessionLog` referencia debil a rutina/workout por `sourceId` + snapshot (`displayName`, duracion, `itemCount`); **sin FK** (F04).
-- `FavoriteRoutine` referencia `routineId` + `routineSource` enum (`user` | `preset`) — resolver join en repositorio (F24).
+- `FavoriteRoutine` referencia `targetId` + `targetType` enum (`preset` | `workout`) — resolver join/hidratación en repositorio/provider (F24).
 - `Workout` 1-N `WorkoutExercise` (orden por `position`; F32/F34).
 - `Workout` 1-N `WorkoutCircuit` (F08); `WorkoutExercise` 0..1 `WorkoutCircuit` via `circuitId`.
 

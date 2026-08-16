@@ -27,7 +27,7 @@
 | F21 | [Soporte para Smartwatch (Wear OS / Apple Watch)](../features/21-smartwatch-support/requirements.md) | Fase 4 · Audio y Experiencia (Futuro) | No iniciada | F01, F19 |
 | F22 | [Filtros de Rutinas](../features/22-routine-filters/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada | F03 |
 | F23 | [Modo Sin Video](../features/23-no-video-mode/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada | F03 |
-| F24 | [Favoritos](../features/24-favorites/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada | F03, F05 |
+| F24 | [Favoritos](../features/24-favorites/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada (specs SDD corregidas) | F03, F32 |
 | F25 | [Compartir Rutinas con Otros Usuarios](../features/25-routine-sharing/requirements.md) | Fase 6 · Social (Futuro) | No iniciada | F05, F06 |
 | F26 | [Retos Grupales](../features/26-group-challenges/requirements.md) | Fase 6 · Social (Futuro) | No iniciada | F25, F12 |
 | F27 | [Modo Oscuro](../features/27-dark-mode/requirements.md) | Fase 7 · Calidad y Pulido | Completado | F01 |
