@@ -27,8 +27,8 @@ class AudioPlayersSfxPlayer implements SfxPlayer {
       try {
         await player.setPlayerMode(PlayerMode.lowLatency);
         await player.setAudioContext(
-          const AudioContext(
-            android: AudioContextAndroid(
+          AudioContext(
+            android: const AudioContextAndroid(
               isSpeakerphoneOn: false,
               stayAwake: false,
               contentType: AndroidContentType.sonification,
@@ -37,9 +37,9 @@ class AudioPlayersSfxPlayer implements SfxPlayer {
             ),
             iOS: AudioContextIOS(
               category: AVAudioSessionCategory.ambient,
-              options: [
+              options: const {
                 AVAudioSessionOptions.mixWithOthers,
-              ],
+              },
             ),
           ),
         );
