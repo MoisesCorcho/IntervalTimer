@@ -3,11 +3,38 @@ import 'package:interval_timer/features/sound_effects/domain/sfx_player.dart';
 
 /// [SfxPlayer] backed by `audioplayers` with a small pool for overlap.
 class AudioPlayersSfxPlayer implements SfxPlayer {
-  AudioPlayersSfxPlayer({this.poolSize = 3});
+  AudioPlayersSfxPlayer({this.poolSize = 3}) {
+    _initGlobalContext();
+  }
 
   final int poolSize;
   final List<AudioPlayer> _pool = <AudioPlayer>[];
   int _next = 0;
+  static bool _globalContextSet = false;
+
+  static void _initGlobalContext() {
+    if (_globalContextSet) return;
+    _globalContextSet = true;
+    try {
+      AudioPlayer.global.setAudioContext(
+        AudioContext(
+          android: const AudioContextAndroid(
+            isSpeakerphoneOn: false,
+            stayAwake: false,
+            contentType: AndroidContentType.sonification,
+            usageType: AndroidUsageType.assistanceSonification,
+            audioFocus: AndroidAudioFocus.none,
+          ),
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.ambient,
+            options: const {
+              AVAudioSessionOptions.mixWithOthers,
+            },
+          ),
+        ),
+      );
+    } catch (_) {}
+  }
 
   @override
   Future<void> playAsset(String assetSourcePath) async {

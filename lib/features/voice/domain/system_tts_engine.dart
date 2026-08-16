@@ -18,6 +18,20 @@ class SystemTtsEngine implements TtsEngine {
     if (_configured) return;
     try {
       await _tts.setVolume(1.0);
+      await _tts.awaitSpeakCompletion(true);
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+        await _tts.setAudioAttributesForNavigation();
+      } else if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+        await _tts.setSharedInstance(true);
+        await _tts.setIosAudioCategory(
+          IosTextToSpeechAudioCategory.playback,
+          [
+            IosTextToSpeechAudioCategoryOptions.mixWithOthers,
+            IosTextToSpeechAudioCategoryOptions.duckOthers,
+          ],
+          IosTextToSpeechAudioMode.voicePrompt,
+        );
+      }
       final locale = PlatformDispatcher.instance.locale;
       final languageTag = locale.toLanguageTag();
       final available = await _tts.isLanguageAvailable(languageTag);
