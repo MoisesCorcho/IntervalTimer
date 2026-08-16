@@ -1,6 +1,6 @@
 # Requirements: Modo Oscuro
 
-> Estado: Completa
+> Estado: Completado
 
 **ID:** F27 &nbsp;|&nbsp; **Slug:** `27-dark-mode` &nbsp;|&nbsp; **Fase:** Fase 7 · Calidad y Pulido
 

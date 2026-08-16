@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/models/workout.dart';
+import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
+import 'package:interval_timer/features/preset_routines/presentation/widgets/preset_hero_carousel.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
@@ -192,6 +194,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
   @override
   Widget build(BuildContext context) {
     final workoutsAsync = ref.watch(workoutsListProvider);
+    final catalogAsync = ref.watch(presetCatalogProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text(UiStrings.workoutsTitle)),
@@ -216,77 +219,133 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
           ),
         ),
         data: (workouts) {
-          if (workouts.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.spacingLg),
-                child: Text(
-                  UiStrings.emptyWorkoutsHint,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
-
-          return Column(
-            children: [
-              if (_actionError != null)
-                Padding(
-                  padding: const EdgeInsets.all(AppTheme.spacingMd),
-                  child: Text(
-                    _actionError!,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_actionError != null)
+                  Padding(
+                    padding: const EdgeInsets.all(AppTheme.spacingMd),
+                    child: Text(
+                      _actionError!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     ),
                   ),
-                ),
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppTheme.spacingMd,
-                    AppTheme.spacingMd,
-                    AppTheme.spacingMd,
-                    88,
-                  ),
-                  itemCount: workouts.length,
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(height: AppTheme.spacingSm),
-                  itemBuilder: (context, index) {
-                    final workout = workouts[index];
-                    final countLabel = UiStrings.exerciseCountLabel
-                        .replaceAll('{count}', '${workout.exercises.length}');
-                    final showRounds = workout.rounds > 1;
 
-                    return Card(
-                      child: ListTile(
-                        title: Text(workout.name),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(countLabel),
-                            if (showRounds) ...[
-                              const SizedBox(height: 6),
-                              WorkoutRoundsListChip(
-                                workoutId: workout.id,
-                                rounds: workout.rounds,
+                // Section 1: Featured Presets Hero Carousel
+                catalogAsync.when(
+                  data: (allPresets) {
+                    final featuredPresets =
+                        allPresets.where((p) => p.isFeatured).toList();
+                    if (featuredPresets.isEmpty) return const SizedBox.shrink();
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Rutinas Destacadas',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              TextButton(
+                                key: const Key('see_all_presets_button'),
+                                onPressed: () => context.push('/presets'),
+                                child: const Text('Ver todo'),
                               ),
                             ],
-                          ],
+                          ),
                         ),
-                        isThreeLine: showRounds,
-                        trailing: IconButton(
-                          key: Key('workout_overflow_${workout.id}'),
-                          tooltip: 'Más opciones',
-                          onPressed: () => _onWorkoutOverflow(workout),
-                          icon: const Icon(Icons.more_vert),
-                        ),
-                      ),
+                        PresetHeroCarousel(presets: featuredPresets),
+                        const SizedBox(height: 16),
+                      ],
                     );
                   },
+                  loading: () => const SizedBox.shrink(),
+                  error: (_, __) => const SizedBox.shrink(),
                 ),
-              ),
-            ],
+
+                // Section 2: User Custom Workouts
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Text(
+                    'Mis Rutinas',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ),
+                if (workouts.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(AppTheme.spacingLg),
+                    child: Center(
+                      child: Text(
+                        UiStrings.emptyWorkoutsHint,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+                else
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppTheme.spacingMd,
+                      AppTheme.spacingSm,
+                      AppTheme.spacingMd,
+                      88,
+                    ),
+                    itemCount: workouts.length,
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: AppTheme.spacingSm),
+                    itemBuilder: (context, index) {
+                      final workout = workouts[index];
+                      final countLabel = UiStrings.exerciseCountLabel.replaceAll(
+                        '{count}',
+                        '${workout.exercises.length}',
+                      );
+                      final showRounds = workout.rounds > 1;
+
+                      return Card(
+                        child: ListTile(
+                          title: Text(workout.name),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(countLabel),
+                              if (showRounds) ...[
+                                const SizedBox(height: 6),
+                                WorkoutRoundsListChip(
+                                  workoutId: workout.id,
+                                  rounds: workout.rounds,
+                                ),
+                              ],
+                            ],
+                          ),
+                          isThreeLine: showRounds,
+                          trailing: IconButton(
+                            key: Key('workout_overflow_${workout.id}'),
+                            tooltip: 'Más opciones',
+                            onPressed: () => _onWorkoutOverflow(workout),
+                            icon: const Icon(Icons.more_vert),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+              ],
+            ),
           );
         },
       ),

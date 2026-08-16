@@ -12,6 +12,12 @@ import 'package:interval_timer/features/always_on/domain/no_op_wakelock_driver.d
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/timer/presentation/timer_execution_screen.dart';
+import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
+import 'package:interval_timer/features/preset_routines/data/preset_catalog_repository.dart';
+import 'package:interval_timer/features/preset_routines/domain/models/enums.dart';
+import 'package:interval_timer/features/preset_routines/domain/models/exercise.dart';
+import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
+import 'package:interval_timer/features/preset_routines/presentation/widgets/preset_hero_carousel.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workouts_list_controller.dart';
 import 'package:interval_timer/features/workout_builder/presentation/my_workouts_screen.dart';
@@ -203,4 +209,110 @@ void main() {
     controller.pause();
     await tester.pump();
   });
+
+  testWidgets('my workouts renders featured presets hero carousel and mis rutinas header', (tester) async {
+    const featuredPreset = PresetRoutine(
+      id: 'preset_hiit_15m',
+      title: 'HIIT Quema Calórica 15m',
+      description: 'Sesión de alta intensidad',
+      category: PresetCategory.hiit,
+      difficulty: DifficultyLevel.intermediate,
+      isFeatured: true,
+      restBetweenExercisesSeconds: 15,
+      exercises: [],
+    );
+
+    final mockRepo = _MockPresetCatalogRepository(presets: [featuredPreset]);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          presetCatalogRepositoryProvider.overrideWithValue(mockRepo),
+          workoutsListProvider.overrideWith(() => _StaticWorkoutsList([])),
+        ],
+        child: const MaterialApp(
+          home: MyWorkoutsScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('Rutinas Destacadas'), findsOneWidget);
+    expect(find.text('Ver todo'), findsOneWidget);
+    expect(find.byType(PresetHeroCarousel), findsOneWidget);
+    expect(find.text('HIIT Quema Calórica 15m'), findsOneWidget);
+    expect(find.text('Mis Rutinas'), findsOneWidget);
+    expect(find.text(UiStrings.emptyWorkoutsHint), findsOneWidget);
+  });
+
+  testWidgets('tapping ver todo navigates to /presets', (tester) async {
+    const featuredPreset = PresetRoutine(
+      id: 'preset_hiit_15m',
+      title: 'HIIT Quema Calórica 15m',
+      description: 'Sesión de alta intensidad',
+      category: PresetCategory.hiit,
+      difficulty: DifficultyLevel.intermediate,
+      isFeatured: true,
+      restBetweenExercisesSeconds: 15,
+      exercises: [],
+    );
+
+    final mockRepo = _MockPresetCatalogRepository(presets: [featuredPreset]);
+
+    final router = GoRouter(
+      initialLocation: '/workouts',
+      routes: [
+        GoRoute(
+          path: '/workouts',
+          builder: (context, state) => const MyWorkoutsScreen(),
+        ),
+        GoRoute(
+          path: '/presets',
+          builder: (context, state) => const Scaffold(body: Text('Presets Catalog Destination')),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          presetCatalogRepositoryProvider.overrideWithValue(mockRepo),
+          workoutsListProvider.overrideWith(() => _StaticWorkoutsList([])),
+        ],
+        child: MaterialApp.router(routerConfig: router),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('see_all_presets_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Presets Catalog Destination'), findsOneWidget);
+  });
 }
+
+class _MockPresetCatalogRepository implements PresetCatalogRepository {
+  final List<PresetRoutine> presets;
+
+  _MockPresetCatalogRepository({this.presets = const []});
+
+  @override
+  Future<List<Exercise>> getExercises() async => [];
+
+  @override
+  Future<Map<String, Exercise>> getExerciseMap() async => {};
+
+  @override
+  Future<List<PresetRoutine>> getPresets() async => presets;
+
+  @override
+  Future<PresetRoutine?> getPresetById(String id) async {
+    try {
+      return presets.firstWhere((p) => p.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+}

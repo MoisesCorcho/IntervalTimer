@@ -69,6 +69,20 @@ class TimerController extends Notifier<TimerState> {
     state = state.copyWith(routine: routine);
   }
 
+  /// Loads an ephemeral session into memory.
+  void loadSession({
+    required String sessionId,
+    required String sessionName,
+    required List<Interval> intervals,
+  }) {
+    loadFlattenedWorkout(
+      workoutId: sessionId,
+      workoutName: sessionName,
+      flattened: intervals,
+    );
+  }
+
+
   /// Starts a session. [prepSeconds] is snapshotted once (R20); default 0
   /// preserves F01 unit-test behavior (prep comes from Settings in the UI).
   bool start({int prepSeconds = 0}) {

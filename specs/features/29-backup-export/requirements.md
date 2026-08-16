@@ -1,5 +1,7 @@
 # Requirements: Backup y Exportacion de Datos
 
+> Estado: No iniciada
+
 **ID:** F29 &nbsp;|&nbsp; **Slug:** `29-backup-export` &nbsp;|&nbsp; **Fase:** Fase 7 · Calidad y Pulido
 
 ## Resumen

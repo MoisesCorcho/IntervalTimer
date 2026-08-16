@@ -11,7 +11,7 @@
 - [x] No se rompieron F01 (pause/resume/skip/complete/cancel) ni F19 (wakelock).
 - [x] Canales/IDs de notificacion no colisionan con F14 si esta presente.
 - [x] Codigo revisado contra `_global/03-conventions.md` (Riverpod, capas, sin acoplar plugins a F01).
-- [ ] QA en **dispositivo fisico** Android (fase A) e iOS (fase B o degradacion).
+- [x] QA en **dispositivo fisico** Android (fase A) e iOS (fase B o degradacion).
 
 ## Checklist de implementacion
 
@@ -65,9 +65,9 @@
 
 ### QA dispositivo
 
-- [ ] **Android fisico:** notificacion visible en lock screen/shade con sesion running; pause/resume/skip; update de tiempo; cleanup al complete/cancel; FGS no muere al background breve; permiso denegado no crashea. _(cubre R1–R8, R11, R14, R15)_
-- [ ] **iOS fisico (fase B):** Live Activity / Dynamic Island o degradacion documentada; acciones; end al complete. _(cubre R12, R4, R5, R7)_
-- [ ] **Kill app:** al reabrir, idle y sin notificacion huerfana indefinida (politica vision). _(cubre R16)_
+- [x] **Android fisico:** notificacion visible en lock screen/shade con sesion running; pause/resume/skip; update de tiempo; cleanup al complete/cancel; FGS no muere al background breve; permiso denegado no crashea. _(cubre R1–R8, R11, R14, R15)_
+- [x] **iOS fisico (fase B):** Live Activity / Dynamic Island o degradacion documentada; acciones; end al complete. _(cubre R12, R4, R5, R7)_
+- [x] **Kill app:** al reabrir, idle y sin notificacion huerfana indefinida (politica vision). _(cubre R16)_
 
 ## Mapa de trazabilidad (resumen)
 

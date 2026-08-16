@@ -1,5 +1,7 @@
 # Requirements: Compartir Rutinas con Otros Usuarios
 
+> Estado: No iniciada
+
 **ID:** F25 &nbsp;|&nbsp; **Slug:** `25-routine-sharing` &nbsp;|&nbsp; **Fase:** Fase 6 · Social (Futuro)
 
 ## Resumen

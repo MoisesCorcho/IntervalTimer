@@ -1,5 +1,7 @@
 # Requirements: Filtros de Rutinas
 
+> Estado: No iniciada
+
 **ID:** F22 &nbsp;|&nbsp; **Slug:** `22-routine-filters` &nbsp;|&nbsp; **Fase:** Fase 5 · Descubrimiento de Contenido
 
 ## Resumen

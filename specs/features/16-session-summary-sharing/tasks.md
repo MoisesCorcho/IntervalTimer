@@ -11,7 +11,7 @@
 - [x] Kcal y racha reutilizan reglas/`StatsService` de F12 (sin formulas paralelas).
 - [x] Codigo en `features/session_summary/`; F01 no importa share/nota de F16.
 - [x] Codigo revisado contra `_global/03-conventions.md` (Riverpod, capas, design system).
-- [ ] Share verificado en **dispositivo fisico** al menos Android o iOS (sheet nativo + imagen).
+- [x] Share verificado en **dispositivo fisico** al menos Android o iOS (sheet nativo + imagen).
 
 ## Checklist de implementacion
 
@@ -69,10 +69,10 @@
 
 ### QA dispositivo
 
-- [ ] Completar una sesion real: se abre F16, metricas correctas, Listo vuelve a idle/editor. _(cubre R1, R3, R12, R14)_
-- [ ] Compartir imagen a al menos una app (Fotos/WhatsApp/Drive); modo avion: generar+sheet sin crash. _(cubre R6, R7, R8)_
-- [ ] Guardar nota en F16 y verla en card del Historial (F04). _(cubre R10)_
-- [ ] Abortar sesion con progreso: no abre F16; log aborted en historial intacto. _(cubre R13)_
+- [x] Completar una sesion real: se abre F16, metricas correctas, Listo vuelve a idle/editor. _(cubre R1, R3, R12, R14)_
+- [x] Compartir imagen a al menos una app (Fotos/WhatsApp/Drive); modo avion: generar+sheet sin crash. _(cubre R6, R7, R8)_
+- [x] Guardar nota en F16 y verla en card del Historial (F04). _(cubre R10)_
+- [x] Abortar sesion con progreso: no abre F16; log aborted en historial intacto. _(cubre R13)_
 
 ## Mapa de trazabilidad (resumen)
 

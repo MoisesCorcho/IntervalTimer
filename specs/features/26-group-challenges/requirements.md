@@ -1,5 +1,7 @@
 # Requirements: Retos Grupales
 
+> Estado: No iniciada
+
 **ID:** F26 &nbsp;|&nbsp; **Slug:** `26-group-challenges` &nbsp;|&nbsp; **Fase:** Fase 6 · Social (Futuro)
 
 ## Resumen

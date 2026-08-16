@@ -2,6 +2,8 @@
 
 **ID:** F08 &nbsp;|&nbsp; **Slug:** `08-circuit-repetition-rounds`
 
+> **Nota:** Las tareas de esta especificación fueron absorbidas y resueltas completamente por F32 (`Workout.rounds`, `WorkoutFlattener`, `WorkoutRoundsCard`).
+
 ## Definition of Done
 
 - [ ] Criterios **R1–R22** de `requirements.md` implementados y verificados.

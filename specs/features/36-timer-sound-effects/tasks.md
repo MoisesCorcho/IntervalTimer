@@ -10,7 +10,7 @@
 - [x] Assets SFX declarados en `pubspec.yaml` y reproducibles offline.
 - [x] No se rompieron F01/F35 (timer, prep, pause, cancel, completed) ni mutes de F02/F18.
 - [x] Codigo revisado contra `_global/03-conventions.md` (Riverpod, capas, sin acoplar UI F01↔SFX).
-- [ ] QA manual: defaults en dispositivo real; picker + preview; master off; solape opcional con voz.
+- [x] QA manual: defaults en dispositivo real; picker + preview; master off; solape opcional con voz.
 
 ## Checklist de implementacion
 
@@ -53,13 +53,13 @@
 - [x] **Unit — independencia:** voice/vibration off + sound on sigue reproduciendo (mock player). _(cubre R20)_
 - [x] **Unit — error/edge:** player lanza / id invalido → fallback o no-op, timer no afectado; intervalo corto N grande solo S alcanzables; idle sin SFX; cancel sin complete SFX; pause no nuevos ticks; idempotencia mismo S. _(cubre R12, R14–R19)_
 - [x] **Unit — prefs:** countdown fuera 0–10 se rechaza/clamp; soundIds se restauran. _(cubre R11, R13)_
-- [ ] **Widget — settings:** toggles, stepper, picker y preview actualizan estado visible. _(cubre R6–R10, R13)_
+- [x] **Widget — settings:** toggles, stepper, picker y preview actualizan estado visible. _(cubre R6–R10, R13)_
 
 ### QA dispositivo
 
-- [ ] Verificar defaults en dispositivo real (work/rest/complete/prep/warning). _(cubre R1–R5, R21)_
-- [ ] Verificar picker + preview y persistencia tras kill de app. _(cubre R9–R11)_
-- [ ] Verificar master off y solape opcional con TTS si F02 activo (sin crash). _(cubre R7, R20)_
+- [x] Verificar defaults en dispositivo real (work/rest/complete/prep/warning). _(cubre R1–R5, R21)_
+- [x] Verificar picker + preview y persistencia tras kill de app. _(cubre R9–R11)_
+- [x] Verificar master off y solape opcional con TTS si F02 activo (sin crash). _(cubre R7, R20)_
 
 ## Mapa de trazabilidad (resumen)
 

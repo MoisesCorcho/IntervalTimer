@@ -1,5 +1,7 @@
 # Requirements: Multilenguaje (i18n)
 
+> Estado: No iniciada
+
 **ID:** F28 &nbsp;|&nbsp; **Slug:** `28-multi-language-i18n` &nbsp;|&nbsp; **Fase:** Fase 7 · Calidad y Pulido
 
 ## Resumen

@@ -1,5 +1,7 @@
 # Requirements: Modo por Repeticiones
 
+> Estado: No iniciada
+
 **ID:** F10 &nbsp;|&nbsp; **Slug:** `10-rep-based-mode` &nbsp;|&nbsp; **Fase:** Fase 2 · Profundidad de Entrenamiento
 
 ## Resumen

@@ -1,5 +1,7 @@
 # Requirements: Capa Pro / Compras In-App
 
+> Estado: No iniciada
+
 **ID:** F06 &nbsp;|&nbsp; **Slug:** `06-pro-tier-iap` &nbsp;|&nbsp; **Fase:** Fase 1 · Personalizacion
 
 ## Resumen

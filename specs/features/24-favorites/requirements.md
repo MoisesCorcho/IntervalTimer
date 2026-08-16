@@ -1,5 +1,7 @@
 # Requirements: Favoritos
 
+> Estado: No iniciada
+
 **ID:** F24 &nbsp;|&nbsp; **Slug:** `24-favorites` &nbsp;|&nbsp; **Fase:** Fase 5 · Descubrimiento de Contenido
 
 ## Resumen

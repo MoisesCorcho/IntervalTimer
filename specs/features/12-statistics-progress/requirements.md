@@ -1,6 +1,6 @@
 # Requirements: Estadisticas y Progreso
 
-> Estado: Completada
+> Estado: Completado
 
 **ID:** F12 &nbsp;|&nbsp; **Slug:** `12-statistics-progress` &nbsp;|&nbsp; **Fase:** Fase 3 · Seguimiento y Motivacion
 

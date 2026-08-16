@@ -1,0 +1,4 @@
+enum RoutineSource {
+  custom,
+  presetDerived,
+}

@@ -1,5 +1,7 @@
 # Requirements: Seleccion de Voces (Sistema y Premium)
 
+> Estado: No iniciada
+
 **ID:** F07 &nbsp;|&nbsp; **Slug:** `07-multiple-tts-voices` &nbsp;|&nbsp; **Fase:** Fase 1 · Personalizacion
 
 ## Resumen

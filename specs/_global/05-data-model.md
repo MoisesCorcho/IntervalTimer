@@ -214,12 +214,12 @@ class IntervalRoutineItem extends RoutineItem { final Interval interval; }
 
 En drift, `routine_items.item_type` discrimina la variante; F01 solo persiste `interval`.
 
-## PresetRoutine (F03) — excepcion de persistencia
+## PresetRoutine & Exercise (F03) — excepcion de persistencia
 
-- **No** se almacena en drift en el MVP.
-- Catalogo empaquetado como JSON en `assets/routines/` + media en `assets/media/`.
-- Al seleccionar un preset, el sistema **mapea** su estructura a una `Routine` temporal o copia en drift (F05 define duplicacion persistente).
-- `PresetRoutine` puede modelar intervalos como `List<Interval>` en JSON; al cargar en el timer, convertir a `List<RoutineItem>` con `IntervalRoutineItem`.
+- **No** se almacenan en drift en el MVP; son entidades inmutables (Read-Only).
+- Catalogo empaquetado en `assets/routines/` mediante 2 JSONs independientes: `exercises.json` (catálogo maestro de ejercicios) y `presets.json` (rutinas preestablecidas). Media gráfica en `assets/media/`.
+- Al iniciar un entrenamiento preestablecido, el sistema aplanar la estructura a una lista de `Interval`s efímeros en memoria via `PresetRoutineFlattener` y la pasa directamente a `TimerController` (F01) sin escribir en Drift.
+- Al seleccionar "Duplicar a Mis Rutinas", el sistema clona la rutina persistiendo filas en `routines` y `routine_items` de Drift con `source = RoutineSource.presetDerived` y `originId = preset.id` (definido en F05).
 
 ## Workout / WorkoutExercise (F32 / F34) — entrenamientos estructurados
 

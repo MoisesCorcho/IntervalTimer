@@ -147,5 +147,36 @@ void main() {
       expect(copy.rounds, 5);
       expect(copy.exercises.length, 1);
     });
+
+    test('createWorkoutWithExercises inserts workout and exercises atomically', () async {
+      final created = await repo.createWorkoutWithExercises(
+        name: 'Atomic Workout',
+        exercises: const [
+          WorkoutExerciseDraft(
+            name: 'Pushups',
+            sets: 3,
+            workSeconds: 30,
+            restSeconds: 15,
+            restAfterExerciseSeconds: 30,
+          ),
+          WorkoutExerciseDraft(
+            name: 'Pullups',
+            sets: 4,
+            workSeconds: 25,
+            restSeconds: 20,
+            restAfterExerciseSeconds: 45,
+          ),
+        ],
+        rounds: 2,
+      );
+
+      expect(created.name, 'Atomic Workout');
+      expect(created.rounds, 2);
+      expect(created.exercises.length, 2);
+      expect(created.exercises[0].name, 'Pushups');
+      expect(created.exercises[0].position, 0);
+      expect(created.exercises[1].name, 'Pullups');
+      expect(created.exercises[1].position, 1);
+    });
   });
 }

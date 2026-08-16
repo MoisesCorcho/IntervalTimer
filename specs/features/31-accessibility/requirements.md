@@ -1,5 +1,7 @@
 # Requirements: Accesibilidad
 
+> Estado: No iniciada
+
 **ID:** F31 &nbsp;|&nbsp; **Slug:** `31-accessibility` &nbsp;|&nbsp; **Fase:** Fase 7 · Calidad y Pulido
 
 ## Resumen

@@ -1,8 +1,10 @@
 # Requirements: Repeticion de Circuitos (Rounds)
 
-> Estado: No iniciada
+> Estado: Absorbida por F32 (Workout.rounds)
 
 **ID:** F08 &nbsp;|&nbsp; **Slug:** `08-circuit-repetition-rounds` &nbsp;|&nbsp; **Fase:** Fase 2 · Profundidad de Entrenamiento
+
+> **Nota:** La repetición de rondas a nivel de entrenamiento fue completamente implementada en F32 (`Workout.rounds`, `WorkoutFlattener`, `WorkoutRoundsCard`), haciendo innecesaria una especificación separada.
 
 ## Resumen
 

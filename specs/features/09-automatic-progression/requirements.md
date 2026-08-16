@@ -1,5 +1,7 @@
 # Requirements: Progresion Automatica
 
+> Estado: No iniciada
+
 **ID:** F09 &nbsp;|&nbsp; **Slug:** `09-automatic-progression` &nbsp;|&nbsp; **Fase:** Fase 2 · Profundidad de Entrenamiento
 
 ## Resumen

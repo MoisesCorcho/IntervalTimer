@@ -1,5 +1,7 @@
 # Requirements: Onboarding
 
+> Estado: No iniciada
+
 **ID:** F30 &nbsp;|&nbsp; **Slug:** `30-onboarding` &nbsp;|&nbsp; **Fase:** Fase 7 · Calidad y Pulido
 
 ## Resumen
