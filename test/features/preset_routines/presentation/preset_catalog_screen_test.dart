@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/data/asset_preset_catalog_repository.dart';
 import 'package:interval_timer/features/preset_routines/data/preset_catalog_repository.dart';
-
 import 'package:interval_timer/features/preset_routines/domain/models/enums.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/exercise.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/preset_exercise_ref.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
 import 'package:interval_timer/features/preset_routines/presentation/screens/preset_catalog_screen.dart';
+
+import '../../../helpers/fake_favorite_repository.dart';
 
 class MockPresetCatalogRepository implements PresetCatalogRepository {
   final List<PresetRoutine> presets;
@@ -46,6 +48,16 @@ class MockPresetCatalogRepository implements PresetCatalogRepository {
 }
 
 void main() {
+  late FakeFavoriteRepository favoriteRepo;
+
+  setUp(() {
+    favoriteRepo = FakeFavoriteRepository();
+  });
+
+  tearDown(() {
+    favoriteRepo.dispose();
+  });
+
   const testPreset1 = PresetRoutine(
     id: 'preset_hiit_15m',
     title: 'HIIT Quema Calórica 15m',
@@ -81,6 +93,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          favoriteRepositoryProvider.overrideWithValue(favoriteRepo),
           presetCatalogRepositoryProvider.overrideWithValue(mockRepo),
         ],
         child: const MaterialApp(
@@ -110,7 +123,6 @@ void main() {
     // Should show 1 filtered routine
     expect(find.text('Abdomen & Core (1)'), findsOneWidget);
     expect(find.text('Abs de Acero 10m'), findsOneWidget);
-
   });
 
   testWidgets('PresetCatalogScreen renders error widget and retry button on catalog error', (tester) async {
@@ -119,6 +131,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          favoriteRepositoryProvider.overrideWithValue(favoriteRepo),
           presetCatalogRepositoryProvider.overrideWithValue(mockRepo),
         ],
         child: const MaterialApp(
@@ -132,4 +145,30 @@ void main() {
     expect(find.byKey(const Key('catalog_error_widget')), findsOneWidget);
     expect(find.byKey(const Key('catalog_retry_button')), findsOneWidget);
   });
+
+  testWidgets('PresetCatalogScreen favorites filter displays empty state when no favorites', (tester) async {
+    final mockRepo = MockPresetCatalogRepository(presets: [testPreset1, testPreset2]);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          favoriteRepositoryProvider.overrideWithValue(favoriteRepo),
+          presetCatalogRepositoryProvider.overrideWithValue(mockRepo),
+        ],
+        child: const MaterialApp(
+          home: PresetCatalogScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Tap on Favoritos filter chip
+    await tester.tap(find.byKey(const Key('filter_chip_favorites')));
+    await tester.pumpAndSettle();
+
+    // Should show empty state message for favorites
+    expect(find.text('No tienes rutinas preestablecidas favoritas.'), findsOneWidget);
+  });
 }
+

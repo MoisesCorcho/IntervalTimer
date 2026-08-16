@@ -10,6 +10,13 @@ Este proyecto usa Spec Driven Development (SDD). Antes de implementar cualquier 
 4. No implementes una feature cuyos prerequisitos no esten completos.
 5. Al completar tasks, marca los checkboxes en el `tasks.md` correspondiente.
 
+## Regla mandatoria: Soluciones robustas vs. Cero parches
+
+Queda **estrictamente prohibido** que el agente aplique parches temporales, atajos sintomáticos o soluciones rápidas ("band-aids") tanto en especificaciones como en código de producción:
+- **Causa raíz:** Resolver siempre el problema en el origen (capa de datos, modelo de dominio, máquina de estados o repositorio). No ocultar fallos con condiciones ad-hoc o hacks en la UI.
+- **Arquitectura limpia y tipado fuerte:** Respetar estrictamente la separación de capas, inmutabilidad y convenciones de `_global/02-architecture-and-structure.md` y `_global/03-conventions.md`.
+- **Escalabilidad y mantenibilidad:** Preferir refactorizaciones sólidas y desacopladas sobre la acumulación de deuda técnica por inmediatez.
+
 ## Auditoria y correccion SDD de features
 
 Para revisar o corregir specs de una feature sin repetir el prompt completo en el chat:

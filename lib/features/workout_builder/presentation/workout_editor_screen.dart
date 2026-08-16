@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
+import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/data/models/workout_exercise.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
@@ -16,6 +17,7 @@ import 'package:interval_timer/features/workout_builder/presentation/widgets/exe
 import 'package:interval_timer/features/workout_builder/presentation/widgets/workout_rounds_card.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
+import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
 
 class WorkoutEditorScreen extends ConsumerStatefulWidget {
   const WorkoutEditorScreen({super.key, required this.workoutId});
@@ -82,27 +84,25 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
       ),
     );
 
-    if (saved != true) return;
-
-    final ok = await _editor.renameWorkout(controller.text);
-    if (!ok && mounted) {
-      _showPersistenceError(() => _editor.renameWorkout(controller.text));
+    if (saved == true && mounted) {
+      final ok = await _editor.renameWorkout(controller.text);
+      if (!ok && mounted) {
+        _showPersistenceError(() => _editor.renameWorkout(controller.text));
+      }
     }
   }
 
   Future<void> _showExerciseSheet({WorkoutExercise? existing}) async {
     if (!_editor.canEdit) return;
-
+    setState(() => _actionError = null);
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       builder: (context) {
         return Padding(
           padding: EdgeInsets.only(
-            left: AppTheme.spacingMd,
-            right: AppTheme.spacingMd,
-            top: AppTheme.spacingMd,
-            bottom: MediaQuery.viewInsetsOf(context).bottom + AppTheme.spacingMd,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: ExerciseForm(
             initial: existing,
@@ -227,6 +227,10 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
           error: (_, __) => const Text(UiStrings.editWorkout),
         ),
         actions: [
+          FavoriteToggleButton(
+            targetId: widget.workoutId,
+            targetType: FavoriteTargetType.workout,
+          ),
           IconButton(
             icon: const Icon(Icons.drive_file_rename_outline),
             tooltip: UiStrings.workoutName,

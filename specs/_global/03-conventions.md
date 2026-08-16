@@ -72,8 +72,19 @@ antes de copiar o inventar codigo nuevo.
   - Features **no** importan widgets de otra feature; comunicacion por providers/streams (ver arquitectura).
 - **Const y performance basica:** usar `const` en widgets estaticos cuando sea posible; no reconstruir listas grandes sin `ListView.builder` / keys estables si hay scroll.
 
+### Principio anti-parches y soluciones robustas (CERO PARCHES)
+
+Queda **estrictamente prohibido** aplicar parches temporales, hacks sintomáticos o soluciones rápidas ("band-aids") para salir del paso. Toda implementación o corrección debe ser **robusta, escalable y mantenible**:
+
+1. **Atacar la causa raíz:** Si ocurre un bug o una inconsistencia de estado, resolver el problema en el origen (capa de datos, modelo de dominio, máquina de estados o repositorio), nunca taparlo con condiciones defensivas ad-hoc (`if (x != null && ...)` o flags temporales en la UI) que oculten el fallo real.
+2. **Respeto estricto de la arquitectura:** Prohibido bypassear capas (ej. acceder a persistencia desde widgets, mutar estado sin pasar por Notifiers/Controllers de Riverpod, o duplicar lógica de negocio en la vista).
+3. **Escalabilidad y tipado fuerte:** Utilizar modelos inmutables, enums exhaustivos, sealed classes y validaciones centralizadas. No recurrir a `dynamic`, `Map<String, dynamic>` en capas de presentación ni estructuras débiles para evitar modelar el dominio adecuadamente.
+4. **Mantenibilidad sobre inmediatez:** Preferir refactorizar y extraer abstracciones limpias antes que acumular deuda técnica o duplicar lógica por rapidez.
+5. **Testeabilidad garantizada:** Toda solución debe ser verificable mediante tests unitarios o de widget que prueben el comportamiento de fondo y los casos borde, no solo el caso feliz.
+
 ### Checklist rapido antes de abrir PR / marcar task
 
+- [ ] La solución resuelve la causa raíz sin introducir parches, hacks de UI ni atajos temporales.
 - [ ] No hay widget nuevo que duplique uno de `shared/widgets/` o del design system.
 - [ ] No hay modelo/helper copiado que ya exista en `data/` o `core/`.
 - [ ] No hay logica de negocio no trivial solo dentro de un `State`/`build`.

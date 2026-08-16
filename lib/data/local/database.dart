@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:interval_timer/data/local/tables/app_preferences_table.dart';
 import 'package:interval_timer/data/local/tables/body_measurements_table.dart';
+import 'package:interval_timer/data/local/tables/favorite_routines_table.dart';
 import 'package:interval_timer/data/local/tables/intervals_table.dart';
 import 'package:interval_timer/data/local/tables/routine_items_table.dart';
 import 'package:interval_timer/data/local/tables/routines_table.dart';
@@ -27,6 +28,7 @@ part 'database.g.dart';
     SessionLogs,
     BodyMeasurements,
     UnlockedAchievements,
+    FavoriteRoutines,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -35,7 +37,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -67,6 +69,9 @@ class AppDatabase extends _$AppDatabase {
           }
           if (from < 9) {
             await migrator.createTable(unlockedAchievements);
+          }
+          if (from < 10) {
+            await migrator.createTable(favoriteRoutines);
           }
         },
       );

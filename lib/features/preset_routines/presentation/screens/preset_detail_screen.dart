@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
 import 'package:interval_timer/features/preset_routines/domain/services/preset_routine_flattener.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_media_widget.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_technique_bottom_sheet.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
+import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
 
 class PresetDetailScreen extends ConsumerWidget {
   final String presetId;
@@ -25,6 +27,10 @@ class PresetDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Detalle de Rutina'),
         actions: [
+          FavoriteToggleButton(
+            targetId: presetId,
+            targetType: FavoriteTargetType.preset,
+          ),
           IconButton(
             key: const Key('duplicate_routine_appbar_button'),
             icon: const Icon(Icons.copy),

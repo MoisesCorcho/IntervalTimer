@@ -411,4 +411,11 @@ abstract final class UiStrings {
   static const workoutRoundProgress = 'Ronda {current} de {total}';
   static const workoutRoundsInvalid =
       'Las rondas deben estar entre 1 y 99';
+
+  // Favorites (F24)
+  static const favoritesTitle = 'Favoritos';
+  static const favoritesFilterChip = 'Favoritos';
+  static const markAsFavorite = 'Marcar como favorito';
+  static const removeFromFavorites = 'Quitar de favoritos';
+  static const emptyFavoritesHint = 'Aún no tienes rutinas favoritas';
 }

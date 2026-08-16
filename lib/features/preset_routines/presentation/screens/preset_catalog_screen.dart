@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/enums.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_media_widget.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/preset_hero_carousel.dart';
+import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
 
 class PresetCatalogScreen extends ConsumerWidget {
   const PresetCatalogScreen({super.key});
@@ -15,6 +17,7 @@ class PresetCatalogScreen extends ConsumerWidget {
     final catalogAsync = ref.watch(presetCatalogProvider);
     final filteredAsync = ref.watch(filteredPresetsProvider);
     final selectedCategory = ref.watch(selectedPresetCategoryProvider);
+    final favoritesOnly = ref.watch(presetFavoritesOnlyFilterProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -51,8 +54,12 @@ class PresetCatalogScreen extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: _PresetCategoryFilterChips(
                     selectedCategory: selectedCategory,
+                    favoritesOnly: favoritesOnly,
                     onSelected: (cat) {
                       ref.read(selectedPresetCategoryProvider.notifier).state = cat;
+                    },
+                    onFavoritesToggled: (val) {
+                      ref.read(presetFavoritesOnlyFilterProvider.notifier).state = val;
                     },
                   ),
                 ),
@@ -63,9 +70,13 @@ class PresetCatalogScreen extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Text(
-                    selectedCategory == null
-                        ? 'Todas las Rutinas (${allPresets.length})'
-                        : '${selectedCategory.label} (${filteredAsync.value?.length ?? 0})',
+                    favoritesOnly
+                        ? (selectedCategory == null
+                            ? 'Favoritos (${filteredAsync.value?.length ?? 0})'
+                            : '${selectedCategory.label} - Favoritos (${filteredAsync.value?.length ?? 0})')
+                        : (selectedCategory == null
+                            ? 'Todas las Rutinas (${allPresets.length})'
+                            : '${selectedCategory.label} (${filteredAsync.value?.length ?? 0})'),
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -78,11 +89,16 @@ class PresetCatalogScreen extends ConsumerWidget {
               filteredAsync.when(
                 data: (presets) {
                   if (presets.isEmpty) {
-                    return const SliverToBoxAdapter(
+                    final emptyMsg = favoritesOnly
+                        ? (selectedCategory == null
+                            ? 'No tienes rutinas preestablecidas favoritas.'
+                            : 'No tienes rutinas favoritas en esta categoría.')
+                        : 'No hay rutinas disponibles para esta categoría.';
+                    return SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.all(32),
+                        padding: const EdgeInsets.all(32),
                         child: Center(
-                          child: Text('No hay rutinas disponibles para esta categoría.'),
+                          child: Text(emptyMsg),
                         ),
                       ),
                     );
@@ -149,11 +165,15 @@ class PresetCatalogScreen extends ConsumerWidget {
 
 class _PresetCategoryFilterChips extends StatelessWidget {
   final PresetCategory? selectedCategory;
+  final bool favoritesOnly;
   final ValueChanged<PresetCategory?> onSelected;
+  final ValueChanged<bool> onFavoritesToggled;
 
   const _PresetCategoryFilterChips({
     required this.selectedCategory,
+    required this.favoritesOnly,
     required this.onSelected,
+    required this.onFavoritesToggled,
   });
 
   @override
@@ -163,6 +183,18 @@ class _PresetCategoryFilterChips extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
+          FilterChip(
+            key: const Key('filter_chip_favorites'),
+            avatar: Icon(
+              Icons.star,
+              size: 16,
+              color: favoritesOnly ? Colors.amber : Colors.grey,
+            ),
+            label: const Text('Favoritos'),
+            selected: favoritesOnly,
+            onSelected: onFavoritesToggled,
+          ),
+          const SizedBox(width: 8),
           ChoiceChip(
             key: const Key('category_chip_all'),
             label: const Text('Todos'),
@@ -267,6 +299,10 @@ class _PresetCard extends StatelessWidget {
                 ),
               ),
 
+              FavoriteToggleButton(
+                targetId: preset.id,
+                targetType: FavoriteTargetType.preset,
+              ),
               const Icon(Icons.chevron_right),
             ],
           ),

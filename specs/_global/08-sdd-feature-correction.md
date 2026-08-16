@@ -90,6 +90,7 @@ Antes de dar por cerrada la correccion, verificar:
 - [ ] Toda tarea tiene `_(cubre Rx)_` o justificacion explicita en mapa
 - [ ] Ningun criterio usa lenguaje vago sin metrica
 - [ ] `design.md` no contradice `02-architecture` ni `03-conventions`
+- [ ] La solución y diseño abordan la causa raíz con robustez y escalabilidad, sin parches ni atajos temporales
 - [ ] Tests nombran escenarios, no solo "tests unitarios"
 - [ ] Huecos de auditoria resueltos o documentados en Decisiones de producto
 

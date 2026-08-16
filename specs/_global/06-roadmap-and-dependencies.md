@@ -20,19 +20,19 @@
 | F14 | [Recordatorios y Notificaciones](../features/14-reminders-notifications/requirements.md) | Fase 3 · Seguimiento y Motivacion | No iniciada (specs SDD corregidas) | F04 |
 | F15 | [Registro de Peso y Medidas](../features/15-body-measurements-tracking/requirements.md) | Fase 3 · Seguimiento y Motivacion | Completada (codigo + tests; smoke dispositivo opcional) | F04 (+ F12 contrato WeightReader en codigo) |
 | F16 | [Compartir Resumen de Sesion](../features/16-session-summary-sharing/requirements.md) | Fase 3 · Seguimiento y Motivacion | En progreso | F04, F12 |
-| F17 | [Integracion de Musica / Audio Ducking](../features/17-background-music-ducking/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01 |
+| F17 | [Integracion de Musica / Audio Ducking](../features/17-background-music-ducking/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada (specs SDD corregidas) | F01, F02, F35 |
 | F18 | [Vibracion como Feedback](../features/18-vibration-feedback/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01 |
 | F19 | [Pantalla Siempre Encendida](../features/19-always-on-screen/requirements.md) | Fase 4 · Audio y Experiencia | Completado | F01 |
 | F20 | [Widget de Pantalla de Bloqueo / Notificacion Persistente](../features/20-lock-screen-widget/requirements.md) | Fase 4 · Audio y Experiencia | No iniciada | F01, F19 |
 | F21 | [Soporte para Smartwatch (Wear OS / Apple Watch)](../features/21-smartwatch-support/requirements.md) | Fase 4 · Audio y Experiencia (Futuro) | No iniciada | F01, F19 |
 | F22 | [Filtros de Rutinas](../features/22-routine-filters/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada | F03 |
 | F23 | [Modo Sin Video](../features/23-no-video-mode/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada | F03 |
-| F24 | [Favoritos](../features/24-favorites/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada | F03, F05 |
+| F24 | [Favoritos](../features/24-favorites/requirements.md) | Fase 5 · Descubrimiento de Contenido | No iniciada (specs SDD corregidas) | F03, F32 |
 | F25 | [Compartir Rutinas con Otros Usuarios](../features/25-routine-sharing/requirements.md) | Fase 6 · Social (Futuro) | No iniciada | F05, F06 |
 | F26 | [Retos Grupales](../features/26-group-challenges/requirements.md) | Fase 6 · Social (Futuro) | No iniciada | F25, F12 |
 | F27 | [Modo Oscuro](../features/27-dark-mode/requirements.md) | Fase 7 · Calidad y Pulido | Completado | F01 |
-| F28 | [Multilenguaje (i18n)](../features/28-multi-language-i18n/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
-| F29 | [Backup y Exportacion de Datos](../features/29-backup-export/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F04, F12 |
+| F28 | [Multilenguaje (i18n)](../features/28-multi-language-i18n/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada (specs SDD corregidas) | F01, F02, F03, F35 |
+| F29 | [Backup y Exportacion de Datos](../features/29-backup-export/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada (specs SDD corregidas) | F01, F04, F32, F35 |
 | F30 | [Onboarding](../features/30-onboarding/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
 | F31 | [Accesibilidad](../features/31-accessibility/requirements.md) | Fase 7 · Calidad y Pulido | No iniciada | F01 |
 | F32 | [Constructor de Entrenamientos por Ejercicios](../features/32-workout-exercise-builder/requirements.md) | Fase 1 · Personalizacion | Completado | F01 |

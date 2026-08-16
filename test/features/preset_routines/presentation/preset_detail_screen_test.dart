@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/routine_repository.dart';
+import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/data/preset_catalog_repository.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/enums.dart';
@@ -12,6 +13,8 @@ import 'package:interval_timer/features/preset_routines/domain/models/preset_exe
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
 import 'package:interval_timer/features/preset_routines/presentation/screens/preset_detail_screen.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
+
+import '../../../helpers/fake_favorite_repository.dart';
 
 class MockPresetCatalogRepository implements PresetCatalogRepository {
   final PresetRoutine preset;
@@ -40,12 +43,15 @@ class MockPresetCatalogRepository implements PresetCatalogRepository {
 
 void main() {
   late AppDatabase db;
+  late FakeFavoriteRepository favoriteRepo;
 
   setUp(() {
     db = AppDatabase.forTesting(NativeDatabase.memory());
+    favoriteRepo = FakeFavoriteRepository();
   });
 
   tearDown(() async {
+    favoriteRepo.dispose();
     await db.close();
   });
 
@@ -89,6 +95,7 @@ void main() {
           presetCatalogRepositoryProvider.overrideWithValue(mockRepo),
           databaseProvider.overrideWithValue(db),
           routineRepositoryProvider.overrideWithValue(RoutineRepository(db)),
+          favoriteRepositoryProvider.overrideWithValue(favoriteRepo),
         ],
         child: const MaterialApp(
           home: PresetDetailScreen(presetId: 'preset_hiit_15m'),

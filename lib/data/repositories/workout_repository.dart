@@ -283,7 +283,12 @@ class WorkoutRepository {
   }
 
   Future<void> deleteWorkout(String id) async {
-    await (_db.delete(_db.workouts)..where((t) => t.id.equals(id))).go();
+    await _db.transaction(() async {
+      await (_db.delete(_db.favoriteRoutines)
+            ..where((t) => t.targetId.equals(id)))
+          .go();
+      await (_db.delete(_db.workouts)..where((t) => t.id.equals(id))).go();
+    });
   }
 
   Future<String> _resolveDuplicateName(String originalName) async {
