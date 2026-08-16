@@ -80,6 +80,9 @@ abstract final class UiStrings {
       'Si está vacío se usa el nombre del intervalo.';
   static const announceTextTooLong =
       'El texto de anuncio no puede superar 80 caracteres';
+  static const musicDuckingLabel = 'Atenuar música de fondo';
+  static const musicDuckingHint =
+      'Baja el volumen de la música externa durante las locuciones de voz.';
 
   // Vibration (F18)
   static const vibrationSectionTitle = 'Vibración';

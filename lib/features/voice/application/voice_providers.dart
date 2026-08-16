@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:interval_timer/features/music_ducking/application/music_ducking_providers.dart';
+import 'package:interval_timer/features/music_ducking/domain/ducking_tts_engine.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
@@ -9,8 +11,18 @@ import 'package:interval_timer/features/voice/domain/tts_engine.dart';
 import 'package:interval_timer/features/voice/domain/voice_announcer.dart';
 import 'package:interval_timer/features/voice/domain/voice_settings.dart';
 
-final ttsEngineProvider = Provider<TtsEngine>((ref) {
+final rawTtsEngineProvider = Provider<TtsEngine>((ref) {
   return SystemTtsEngine();
+});
+
+final ttsEngineProvider = Provider<TtsEngine>((ref) {
+  final rawEngine = ref.watch(rawTtsEngineProvider);
+  final sessionManager = ref.watch(audioSessionManagerProvider);
+  return DuckingTtsEngine(
+    inner: rawEngine,
+    audioSessionManager: sessionManager,
+    isDuckingEnabled: () => ref.read(musicDuckingEnabledProvider),
+  );
 });
 
 /// Creates and wires [VoiceAnnouncer] to F01 timer + settings.

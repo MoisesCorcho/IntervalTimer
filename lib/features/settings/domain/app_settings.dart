@@ -9,6 +9,7 @@ class AppSettings {
     this.voiceEnabled = true,
     this.countdownSeconds = 3,
     this.announceIntervalName = true,
+    this.musicDuckingEnabled = true,
     this.vibrationEnabled = true,
     this.vibrationOnIntervalStart = true,
     this.vibrationOnCountdown = true,
@@ -42,6 +43,9 @@ class AppSettings {
 
   /// Whether to speak interval name / announceText on interval start.
   final bool announceIntervalName;
+
+  /// Whether to duck background music during TTS voice announcements (F17).
+  final bool musicDuckingEnabled;
 
   /// Master mute for haptics (F18). Independent of [voiceEnabled].
   final bool vibrationEnabled;
@@ -90,6 +94,7 @@ class AppSettings {
     bool? voiceEnabled,
     int? countdownSeconds,
     bool? announceIntervalName,
+    bool? musicDuckingEnabled,
     bool? vibrationEnabled,
     bool? vibrationOnIntervalStart,
     bool? vibrationOnCountdown,
@@ -117,6 +122,8 @@ class AppSettings {
       countdownSeconds: countdownSeconds ?? this.countdownSeconds,
       announceIntervalName:
           announceIntervalName ?? this.announceIntervalName,
+      musicDuckingEnabled:
+          musicDuckingEnabled ?? this.musicDuckingEnabled,
       vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
       vibrationOnIntervalStart:
           vibrationOnIntervalStart ?? this.vibrationOnIntervalStart,
@@ -155,6 +162,7 @@ class AppSettings {
             other.voiceEnabled == voiceEnabled &&
             other.countdownSeconds == countdownSeconds &&
             other.announceIntervalName == announceIntervalName &&
+            other.musicDuckingEnabled == musicDuckingEnabled &&
             other.vibrationEnabled == vibrationEnabled &&
             other.vibrationOnIntervalStart == vibrationOnIntervalStart &&
             other.vibrationOnCountdown == vibrationOnCountdown &&
@@ -183,6 +191,7 @@ class AppSettings {
         voiceEnabled,
         countdownSeconds,
         announceIntervalName,
+        musicDuckingEnabled,
         vibrationEnabled,
         vibrationOnIntervalStart,
         vibrationOnCountdown,

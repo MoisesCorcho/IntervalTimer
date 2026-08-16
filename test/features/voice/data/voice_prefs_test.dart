@@ -22,6 +22,7 @@ void main() {
       expect(await repo.getVoiceEnabled(), true);
       expect(await repo.getCountdownSeconds(), 3);
       expect(await repo.getAnnounceIntervalName(), true);
+      expect(await repo.getMusicDuckingEnabled(), true);
     });
 
     test('countdown out of range clamps', () async {
@@ -36,11 +37,13 @@ void main() {
       await repo.setVoiceEnabled(false);
       await repo.setCountdownSeconds(7);
       await repo.setAnnounceIntervalName(false);
+      await repo.setMusicDuckingEnabled(false);
 
       final again = SettingsRepository(PreferencesRepository(db));
       expect(await again.getVoiceEnabled(), false);
       expect(await again.getCountdownSeconds(), 7);
       expect(await again.getAnnounceIntervalName(), false);
+      expect(await again.getMusicDuckingEnabled(), false);
     });
   });
 }

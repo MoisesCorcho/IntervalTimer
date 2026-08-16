@@ -19,11 +19,13 @@ class PreferencesRepository {
   static const voiceEnabledKey = 'voice_enabled';
   static const countdownSecondsKey = 'countdown_seconds';
   static const announceIntervalNameKey = 'announce_interval_name';
+  static const musicDuckingEnabledKey = 'music_ducking_enabled';
   static const defaultVoiceEnabled = true;
   static const defaultCountdownSeconds = 3;
   static const minCountdownSeconds = 0;
   static const maxCountdownSeconds = 10;
   static const defaultAnnounceIntervalName = true;
+  static const defaultMusicDuckingEnabled = true;
 
   // F18 vibration prefs (independent of F02 voice keys)
   static const vibrationEnabledKey = 'vibration_enabled';
@@ -160,6 +162,14 @@ class PreferencesRepository {
 
   Future<void> setAnnounceIntervalName(bool value) =>
       setBool(announceIntervalNameKey, value);
+
+  Future<bool> getMusicDuckingEnabled() => getBool(
+        musicDuckingEnabledKey,
+        defaultValue: defaultMusicDuckingEnabled,
+      );
+
+  Future<void> setMusicDuckingEnabled(bool value) =>
+      setBool(musicDuckingEnabledKey, value);
 
   Future<bool> getVibrationEnabled() => getBool(
         vibrationEnabledKey,
