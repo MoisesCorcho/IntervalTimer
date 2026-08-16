@@ -126,6 +126,16 @@ No requiere tabla drift nueva para prefs. La columna `intervals.announce_text` s
 
 No requiere tabla drift nueva en F35 (reutiliza `app_preferences`). Otras preferencias de F27/F28/F31 pueden convivir en el mismo store con claves propias.
 
+### Preferencias F17 (audio ducking / musica de fondo — globales)
+
+Misma semantica de store que F02/F35 (`PreferencesRepository` / `app_preferences`). Claves estables; no por rutina.
+
+| Clave | Tipo | Default | Rango | Uso |
+|---|---|---|---|---|
+| `music_ducking_enabled` | `bool` | `true` | — | Master on/off de atenuación automática de música externa durante locuciones de voz TTS (F17 R2, R5, R6). `false` reproduce voz en mezcla directa (`mixWithOthers`). |
+
+No requiere tabla drift nueva en F17 (solo key-value en `app_preferences`).
+
 ### Preferencias F18 (vibracion — globales)
 
 Misma semantica de store que F02/F35 (`PreferencesRepository` / `app_preferences`). Claves estables; no por rutina. **Independientes** de las claves de voz F02 (`voice_enabled`, `countdown_seconds`).
