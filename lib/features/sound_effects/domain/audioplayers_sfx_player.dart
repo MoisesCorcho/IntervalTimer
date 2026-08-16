@@ -26,6 +26,23 @@ class AudioPlayersSfxPlayer implements SfxPlayer {
       final player = AudioPlayer();
       try {
         await player.setPlayerMode(PlayerMode.lowLatency);
+        await player.setAudioContext(
+          const AudioContext(
+            android: AudioContextAndroid(
+              isSpeakerphoneOn: false,
+              stayAwake: false,
+              contentType: AndroidContentType.sonification,
+              usageType: AndroidUsageType.assistanceSonification,
+              audioFocus: AndroidAudioFocus.none,
+            ),
+            iOS: AudioContextIOS(
+              category: AVAudioSessionCategory.ambient,
+              options: [
+                AVAudioSessionOptions.mixWithOthers,
+              ],
+            ),
+          ),
+        );
       } catch (_) {
         // Fallback: default media player mode.
       }
