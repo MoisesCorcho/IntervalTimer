@@ -3485,6 +3485,323 @@ class UnlockedAchievementsCompanion
   }
 }
 
+class $FavoriteRoutinesTable extends FavoriteRoutines
+    with TableInfo<$FavoriteRoutinesTable, FavoriteRoutineRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FavoriteRoutinesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetIdMeta = const VerificationMeta(
+    'targetId',
+  );
+  @override
+  late final GeneratedColumn<String> targetId = GeneratedColumn<String>(
+    'target_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetTypeMeta = const VerificationMeta(
+    'targetType',
+  );
+  @override
+  late final GeneratedColumn<String> targetType = GeneratedColumn<String>(
+    'target_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, targetId, targetType, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'favorite_routines';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FavoriteRoutineRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('target_id')) {
+      context.handle(
+        _targetIdMeta,
+        targetId.isAcceptableOrUnknown(data['target_id']!, _targetIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetIdMeta);
+    }
+    if (data.containsKey('target_type')) {
+      context.handle(
+        _targetTypeMeta,
+        targetType.isAcceptableOrUnknown(data['target_type']!, _targetTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetTypeMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {targetId, targetType},
+  ];
+  @override
+  FavoriteRoutineRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FavoriteRoutineRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      targetId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_id'],
+      )!,
+      targetType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_type'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $FavoriteRoutinesTable createAlias(String alias) {
+    return $FavoriteRoutinesTable(attachedDatabase, alias);
+  }
+}
+
+class FavoriteRoutineRow extends DataClass
+    implements Insertable<FavoriteRoutineRow> {
+  final String id;
+  final String targetId;
+  final String targetType;
+  final int createdAt;
+  const FavoriteRoutineRow({
+    required this.id,
+    required this.targetId,
+    required this.targetType,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['target_id'] = Variable<String>(targetId);
+    map['target_type'] = Variable<String>(targetType);
+    map['created_at'] = Variable<int>(createdAt);
+    return map;
+  }
+
+  FavoriteRoutinesCompanion toCompanion(bool nullToAbsent) {
+    return FavoriteRoutinesCompanion(
+      id: Value(id),
+      targetId: Value(targetId),
+      targetType: Value(targetType),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory FavoriteRoutineRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FavoriteRoutineRow(
+      id: serializer.fromJson<String>(json['id']),
+      targetId: serializer.fromJson<String>(json['targetId']),
+      targetType: serializer.fromJson<String>(json['targetType']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'targetId': serializer.toJson<String>(targetId),
+      'targetType': serializer.toJson<String>(targetType),
+      'createdAt': serializer.toJson<int>(createdAt),
+    };
+  }
+
+  FavoriteRoutineRow copyWith({
+    String? id,
+    String? targetId,
+    String? targetType,
+    int? createdAt,
+  }) => FavoriteRoutineRow(
+    id: id ?? this.id,
+    targetId: targetId ?? this.targetId,
+    targetType: targetType ?? this.targetType,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  FavoriteRoutineRow copyWithCompanion(FavoriteRoutinesCompanion data) {
+    return FavoriteRoutineRow(
+      id: data.id.present ? data.id.value : this.id,
+      targetId: data.targetId.present ? data.targetId.value : this.targetId,
+      targetType: data.targetType.present
+          ? data.targetType.value
+          : this.targetType,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FavoriteRoutineRow(')
+          ..write('id: $id, ')
+          ..write('targetId: $targetId, ')
+          ..write('targetType: $targetType, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, targetId, targetType, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FavoriteRoutineRow &&
+          other.id == this.id &&
+          other.targetId == this.targetId &&
+          other.targetType == this.targetType &&
+          other.createdAt == this.createdAt);
+}
+
+class FavoriteRoutinesCompanion extends UpdateCompanion<FavoriteRoutineRow> {
+  final Value<String> id;
+  final Value<String> targetId;
+  final Value<String> targetType;
+  final Value<int> createdAt;
+  final Value<int> rowid;
+  const FavoriteRoutinesCompanion({
+    this.id = const Value.absent(),
+    this.targetId = const Value.absent(),
+    this.targetType = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FavoriteRoutinesCompanion.insert({
+    required String id,
+    required String targetId,
+    required String targetType,
+    required int createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       targetId = Value(targetId),
+       targetType = Value(targetType),
+       createdAt = Value(createdAt);
+  static Insertable<FavoriteRoutineRow> custom({
+    Expression<String>? id,
+    Expression<String>? targetId,
+    Expression<String>? targetType,
+    Expression<int>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (targetId != null) 'target_id': targetId,
+      if (targetType != null) 'target_type': targetType,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FavoriteRoutinesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? targetId,
+    Value<String>? targetType,
+    Value<int>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return FavoriteRoutinesCompanion(
+      id: id ?? this.id,
+      targetId: targetId ?? this.targetId,
+      targetType: targetType ?? this.targetType,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (targetId.present) {
+      map['target_id'] = Variable<String>(targetId.value);
+    }
+    if (targetType.present) {
+      map['target_type'] = Variable<String>(targetType.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FavoriteRoutinesCompanion(')
+          ..write('id: $id, ')
+          ..write('targetId: $targetId, ')
+          ..write('targetType: $targetType, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3502,6 +3819,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $UnlockedAchievementsTable unlockedAchievements =
       $UnlockedAchievementsTable(this);
+  late final $FavoriteRoutinesTable favoriteRoutines = $FavoriteRoutinesTable(
+    this,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3516,6 +3836,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     sessionLogs,
     bodyMeasurements,
     unlockedAchievements,
+    favoriteRoutines,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -6078,6 +6399,199 @@ typedef $$UnlockedAchievementsTableProcessedTableManager =
       UnlockedAchievementRow,
       PrefetchHooks Function()
     >;
+typedef $$FavoriteRoutinesTableCreateCompanionBuilder =
+    FavoriteRoutinesCompanion Function({
+      required String id,
+      required String targetId,
+      required String targetType,
+      required int createdAt,
+      Value<int> rowid,
+    });
+typedef $$FavoriteRoutinesTableUpdateCompanionBuilder =
+    FavoriteRoutinesCompanion Function({
+      Value<String> id,
+      Value<String> targetId,
+      Value<String> targetType,
+      Value<int> createdAt,
+      Value<int> rowid,
+    });
+
+class $$FavoriteRoutinesTableFilterComposer
+    extends Composer<_$AppDatabase, $FavoriteRoutinesTable> {
+  $$FavoriteRoutinesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetId => $composableBuilder(
+    column: $table.targetId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetType => $composableBuilder(
+    column: $table.targetType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FavoriteRoutinesTableOrderingComposer
+    extends Composer<_$AppDatabase, $FavoriteRoutinesTable> {
+  $$FavoriteRoutinesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetId => $composableBuilder(
+    column: $table.targetId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetType => $composableBuilder(
+    column: $table.targetType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FavoriteRoutinesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FavoriteRoutinesTable> {
+  $$FavoriteRoutinesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get targetId =>
+      $composableBuilder(column: $table.targetId, builder: (column) => column);
+
+  GeneratedColumn<String> get targetType => $composableBuilder(
+    column: $table.targetType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$FavoriteRoutinesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FavoriteRoutinesTable,
+          FavoriteRoutineRow,
+          $$FavoriteRoutinesTableFilterComposer,
+          $$FavoriteRoutinesTableOrderingComposer,
+          $$FavoriteRoutinesTableAnnotationComposer,
+          $$FavoriteRoutinesTableCreateCompanionBuilder,
+          $$FavoriteRoutinesTableUpdateCompanionBuilder,
+          (
+            FavoriteRoutineRow,
+            BaseReferences<
+              _$AppDatabase,
+              $FavoriteRoutinesTable,
+              FavoriteRoutineRow
+            >,
+          ),
+          FavoriteRoutineRow,
+          PrefetchHooks Function()
+        > {
+  $$FavoriteRoutinesTableTableManager(
+    _$AppDatabase db,
+    $FavoriteRoutinesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FavoriteRoutinesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FavoriteRoutinesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FavoriteRoutinesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> targetId = const Value.absent(),
+                Value<String> targetType = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FavoriteRoutinesCompanion(
+                id: id,
+                targetId: targetId,
+                targetType: targetType,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String targetId,
+                required String targetType,
+                required int createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => FavoriteRoutinesCompanion.insert(
+                id: id,
+                targetId: targetId,
+                targetType: targetType,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FavoriteRoutinesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FavoriteRoutinesTable,
+      FavoriteRoutineRow,
+      $$FavoriteRoutinesTableFilterComposer,
+      $$FavoriteRoutinesTableOrderingComposer,
+      $$FavoriteRoutinesTableAnnotationComposer,
+      $$FavoriteRoutinesTableCreateCompanionBuilder,
+      $$FavoriteRoutinesTableUpdateCompanionBuilder,
+      (
+        FavoriteRoutineRow,
+        BaseReferences<
+          _$AppDatabase,
+          $FavoriteRoutinesTable,
+          FavoriteRoutineRow
+        >,
+      ),
+      FavoriteRoutineRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6100,4 +6614,6 @@ class $AppDatabaseManager {
       $$BodyMeasurementsTableTableManager(_db, _db.bodyMeasurements);
   $$UnlockedAchievementsTableTableManager get unlockedAchievements =>
       $$UnlockedAchievementsTableTableManager(_db, _db.unlockedAchievements);
+  $$FavoriteRoutinesTableTableManager get favoriteRoutines =>
+      $$FavoriteRoutinesTableTableManager(_db, _db.favoriteRoutines);
 }

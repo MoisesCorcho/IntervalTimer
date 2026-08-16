@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_cloner_service.dart';
 import 'package:interval_timer/features/preset_routines/data/asset_preset_catalog_repository.dart';
 import 'package:interval_timer/features/preset_routines/data/preset_catalog_repository.dart';
@@ -25,9 +26,23 @@ final selectedPresetCategoryProvider = StateProvider<PresetCategory?>((ref) => n
 
 final selectedCategoryFilterProvider = selectedPresetCategoryProvider;
 
+final presetFavoritesOnlyFilterProvider = StateProvider<bool>((ref) => false);
+
 final filteredPresetsProvider = Provider<AsyncValue<List<PresetRoutine>>>((ref) {
   final catalogAsync = ref.watch(presetCatalogProvider);
   final filter = ref.watch(selectedPresetCategoryProvider);
+  final favoritesOnly = ref.watch(presetFavoritesOnlyFilterProvider);
+
+  if (favoritesOnly) {
+    final favoriteIds = ref.watch(favoriteIdsStreamProvider).valueOrNull ?? {};
+    return catalogAsync.whenData((presets) {
+      var result = presets;
+      if (filter != null) {
+        result = result.where((p) => p.category == filter).toList();
+      }
+      return result.where((p) => favoriteIds.contains(p.id)).toList();
+    });
+  }
 
   return catalogAsync.whenData((presets) {
     if (filter == null) return presets;

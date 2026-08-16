@@ -5,9 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/data/local/database.dart';
+import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/data/models/workout.dart';
 import 'package:interval_timer/data/models/workout_exercise.dart';
+import 'package:interval_timer/data/repositories/favorite_repository.dart';
 import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
+import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
+import '../../../helpers/fake_favorite_repository.dart';
 import 'package:interval_timer/features/always_on/domain/no_op_wakelock_driver.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
@@ -290,6 +294,56 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Presets Catalog Destination'), findsOneWidget);
+  });
+
+  testWidgets('my workouts filters workouts when Favoritos FilterChip is active', (tester) async {
+    final w1 = Workout(
+      id: 'w-fav',
+      name: 'Favorited Workout',
+      createdAt: DateTime.utc(2026, 1, 1),
+      updatedAt: DateTime.utc(2026, 1, 1),
+      exercises: const [],
+    );
+    final w2 = Workout(
+      id: 'w-regular',
+      name: 'Regular Workout',
+      createdAt: DateTime.utc(2026, 1, 1),
+      updatedAt: DateTime.utc(2026, 1, 1),
+      exercises: const [],
+    );
+
+    final favoriteRepo = FakeFavoriteRepository();
+    addTearDown(favoriteRepo.dispose);
+    await favoriteRepo.toggleFavorite(
+      targetId: 'w-fav',
+      targetType: FavoriteTargetType.workout,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          favoriteRepositoryProvider.overrideWithValue(favoriteRepo),
+          workoutsListProvider.overrideWith(() => _StaticWorkoutsList([w1, w2])),
+        ],
+        child: const MaterialApp(
+          home: MyWorkoutsScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Both visible initially
+    expect(find.text('Favorited Workout'), findsWidgets);
+    expect(find.text('Regular Workout'), findsOneWidget);
+
+    // Tap on Favoritos filter chip
+    await tester.tap(find.byKey(const Key('workouts_favorite_filter_chip')));
+    await tester.pumpAndSettle();
+
+    // Only favorited workout is shown in custom workouts list
+    expect(find.text('Favorited Workout'), findsWidgets);
+    expect(find.text('Regular Workout'), findsNothing);
   });
 }
 

@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/data/models/workout.dart';
+import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
+import 'package:interval_timer/features/favorites/presentation/widgets/home_favorites_section.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/preset_hero_carousel.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
@@ -18,6 +21,7 @@ import 'package:interval_timer/features/workout_builder/presentation/widgets/wor
 import 'package:interval_timer/features/workout_builder/presentation/widgets/workout_rounds_list_chip.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
+import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
 
 class MyWorkoutsScreen extends ConsumerStatefulWidget {
   const MyWorkoutsScreen({super.key});
@@ -28,6 +32,7 @@ class MyWorkoutsScreen extends ConsumerStatefulWidget {
 
 class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
   String? _actionError;
+  bool _favoritesOnly = false;
 
   Future<void> _showCreateDialog() async {
     final controller = TextEditingController();
@@ -98,6 +103,36 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
       return;
     }
 
+    final timerStatus = ref.read(timerControllerProvider).status;
+    if (timerStatus == TimerStatus.running ||
+        timerStatus == TimerStatus.paused ||
+        timerStatus == TimerStatus.preparing) {
+      final leave = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text(UiStrings.exitConfirmTitle),
+          content: const Text(UiStrings.exitConfirmMessage),
+          actions: [
+            DialogActionsRow(
+              children: [
+                AppSecondaryButton(
+                  compact: true,
+                  onPressed: () => Navigator.pop(context, false),
+                  label: UiStrings.exitConfirmContinue,
+                ),
+                AppPrimaryButton(
+                  compact: true,
+                  onPressed: () => Navigator.pop(context, true),
+                  label: UiStrings.exitConfirmLeave,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+      if (leave != true) return;
+    }
+
     setState(() => _actionError = null);
 
     final flattened = flattenWorkout(
@@ -129,37 +164,6 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
     }
   }
 
-  Future<void> _duplicateWorkout(Workout workout) async {
-    final copy =
-        await ref.read(workoutsListProvider.notifier).duplicateWorkout(
-              workout.id,
-            );
-    if (copy != null && mounted) {
-      context.push('/workouts/${copy.id}/edit');
-    } else if (mounted) {
-      _showPersistenceError(() => _duplicateWorkout(workout));
-    }
-  }
-
-  Future<void> _deleteWorkout(Workout workout) async {
-    final timerStatus = ref.read(timerControllerProvider).status;
-    if (timerStatus == TimerStatus.running ||
-        timerStatus == TimerStatus.paused ||
-        timerStatus == TimerStatus.preparing) {
-      setState(() => _actionError = UiStrings.deleteBlockedDuringSession);
-      return;
-    }
-
-    final confirmed = await showDeleteWorkoutDialog(context);
-    if (confirmed != true) return;
-
-    final deleted =
-        await ref.read(workoutsListProvider.notifier).deleteWorkout(workout.id);
-    if (!deleted && mounted) {
-      _showPersistenceError(() => _deleteWorkout(workout));
-    }
-  }
-
   Future<void> _onWorkoutOverflow(Workout workout) async {
     final action = await showWorkoutActionsSheet(
       context: context,
@@ -173,19 +177,48 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
       case WorkoutAction.edit:
         context.push('/workouts/${workout.id}/edit');
       case WorkoutAction.duplicate:
-        await _duplicateWorkout(workout);
+        final dup = await ref
+            .read(workoutsListProvider.notifier)
+            .duplicateWorkout(workout.id);
+        if (dup == null && mounted) {
+          _showPersistenceError(
+            () => ref
+                .read(workoutsListProvider.notifier)
+                .duplicateWorkout(workout.id),
+          );
+        }
       case WorkoutAction.delete:
-        await _deleteWorkout(workout);
+        final timerStatus = ref.read(timerControllerProvider).status;
+        if (timerStatus == TimerStatus.running ||
+            timerStatus == TimerStatus.paused ||
+            timerStatus == TimerStatus.preparing) {
+          setState(() => _actionError = UiStrings.deleteBlockedDuringSession);
+          return;
+        }
+
+        final confirmed = await showDeleteWorkoutDialog(context);
+        if (confirmed != true) return;
+
+        final deleted = await ref
+            .read(workoutsListProvider.notifier)
+            .deleteWorkout(workout.id);
+        if (!deleted && mounted) {
+          _showPersistenceError(
+            () => ref
+                .read(workoutsListProvider.notifier)
+                .deleteWorkout(workout.id),
+          );
+        }
     }
   }
 
-  void _showPersistenceError(VoidCallback onRetry) {
+  void _showPersistenceError(Future<void> Function() onRetry) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text(UiStrings.persistenceError),
         action: SnackBarAction(
           label: UiStrings.retry,
-          onPressed: onRetry,
+          onPressed: () => onRetry(),
         ),
       ),
     );
@@ -195,6 +228,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
   Widget build(BuildContext context) {
     final workoutsAsync = ref.watch(workoutsListProvider);
     final catalogAsync = ref.watch(presetCatalogProvider);
+    final favoriteIds = ref.watch(favoriteIdsStreamProvider).valueOrNull ?? {};
 
     return Scaffold(
       appBar: AppBar(title: const Text(UiStrings.workoutsTitle)),
@@ -219,6 +253,10 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
           ),
         ),
         data: (workouts) {
+          final displayedWorkouts = _favoritesOnly
+              ? workouts.where((w) => favoriteIds.contains(w.id)).toList()
+              : workouts;
+
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,6 +271,9 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                       ),
                     ),
                   ),
+
+                // Section 0: Home Favorites Section (auto-hides when count == 0)
+                const HomeFavoritesSection(),
 
                 // Section 1: Featured Presets Hero Carousel
                 catalogAsync.when(
@@ -278,19 +319,40 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                 // Section 2: User Custom Workouts
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  child: Text(
-                    'Mis Rutinas',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Mis Rutinas',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                      FilterChip(
+                        key: const Key('workouts_favorite_filter_chip'),
+                        avatar: Icon(
+                          Icons.star,
+                          size: 16,
+                          color: _favoritesOnly ? Colors.amber : Colors.grey,
                         ),
+                        label: const Text(UiStrings.favoritesFilterChip),
+                        selected: _favoritesOnly,
+                        onSelected: (val) {
+                          setState(() => _favoritesOnly = val);
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                if (workouts.isEmpty)
+                if (displayedWorkouts.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(AppTheme.spacingLg),
                     child: Center(
                       child: Text(
-                        UiStrings.emptyWorkoutsHint,
+                        _favoritesOnly
+                            ? 'No tienes entrenamientos favoritos'
+                            : UiStrings.emptyWorkoutsHint,
                         style: Theme.of(context).textTheme.titleMedium,
                         textAlign: TextAlign.center,
                       ),
@@ -306,12 +368,13 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                       AppTheme.spacingMd,
                       88,
                     ),
-                    itemCount: workouts.length,
+                    itemCount: displayedWorkouts.length,
                     separatorBuilder: (_, __) =>
                         const SizedBox(height: AppTheme.spacingSm),
                     itemBuilder: (context, index) {
-                      final workout = workouts[index];
-                      final countLabel = UiStrings.exerciseCountLabel.replaceAll(
+                      final workout = displayedWorkouts[index];
+                      final countLabel =
+                          UiStrings.exerciseCountLabel.replaceAll(
                         '{count}',
                         '${workout.exercises.length}',
                       );
@@ -334,11 +397,20 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                             ],
                           ),
                           isThreeLine: showRounds,
-                          trailing: IconButton(
-                            key: Key('workout_overflow_${workout.id}'),
-                            tooltip: 'Más opciones',
-                            onPressed: () => _onWorkoutOverflow(workout),
-                            icon: const Icon(Icons.more_vert),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              FavoriteToggleButton(
+                                targetId: workout.id,
+                                targetType: FavoriteTargetType.workout,
+                              ),
+                              IconButton(
+                                key: Key('workout_overflow_${workout.id}'),
+                                tooltip: 'Más opciones',
+                                onPressed: () => _onWorkoutOverflow(workout),
+                                icon: const Icon(Icons.more_vert),
+                              ),
+                            ],
                           ),
                         ),
                       );
