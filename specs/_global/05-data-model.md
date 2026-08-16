@@ -200,6 +200,16 @@ Misma semantica de store que F02/F18/F19/F20/F35 (`PreferencesRepository` / `app
 
 No requiere tabla drift nueva en F27 (solo key-value en `app_preferences`).
 
+### Preferencias F28 (idioma / i18n — globales)
+
+Misma semantica de store que F02/F18/F19/F20/F27/F35 (`PreferencesRepository` / `app_preferences`). Claves estables; no por rutina.
+
+| Clave | Tipo | Default | Valores | Uso |
+|---|---|---|---|---|
+| `app_language` | `string` | `system` | `system` \| `es` \| `en` | Preferencia de idioma de la app (F28). `system` = seguir idioma del SO. Persistido como string en Drift; el dominio usa el enum `AppLanguage` y mapea dinámicamente a `Locale` para UI, TTS y catálogos de presets. |
+
+No requiere tabla drift nueva en F28 (solo key-value en `app_preferences`).
+
 ### Schema F05 (drift) — migracion v2
 
 Columnas aditivas en `routines`:
