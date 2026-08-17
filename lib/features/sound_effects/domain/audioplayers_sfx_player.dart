@@ -52,7 +52,6 @@ class AudioPlayersSfxPlayer implements SfxPlayer {
     if (_pool.length < poolSize) {
       final player = AudioPlayer();
       try {
-        await player.setPlayerMode(PlayerMode.lowLatency);
         await player.setAudioContext(
           AudioContext(
             android: const AudioContextAndroid(
@@ -70,6 +69,7 @@ class AudioPlayersSfxPlayer implements SfxPlayer {
             ),
           ),
         );
+        await player.setPlayerMode(PlayerMode.lowLatency);
       } catch (_) {
         // Fallback: default media player mode.
       }

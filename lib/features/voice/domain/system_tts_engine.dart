@@ -9,6 +9,7 @@ class SystemTtsEngine implements TtsEngine {
     _tts.setErrorHandler((msg) {
       debugPrint('SystemTtsEngine error: $msg');
     });
+    _ensureConfigured();
   }
 
   final FlutterTts _tts;
