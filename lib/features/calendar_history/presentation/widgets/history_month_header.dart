@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 
 /// Month selector + optional "today" control for the History calendar chrome.
@@ -23,9 +25,37 @@ class HistoryMonthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final monthLabel = UiStrings.monthNames[focusedMonth.month - 1];
+    final rawLocale = Localizations.maybeLocaleOf(context)?.languageCode;
+    
+    bool isLocaleAvailable(String? loc) {
+      if (loc == null) return false;
+      try {
+        return DateFormat.localeExists(loc);
+      } catch (_) {
+        return false;
+      }
+    }
+
+    final locale = isLocaleAvailable(rawLocale) ? rawLocale : null;
+
+    String formatMonth(DateTime date) {
+      if (locale != null) {
+        try {
+          final formatted = DateFormat.MMMM(locale).format(date);
+          return formatted.isNotEmpty
+              ? '${formatted[0].toUpperCase()}${formatted.substring(1)}'
+              : formatted;
+        } catch (_) {}
+      }
+      return UiStrings.monthNames[date.month - 1];
+    }
+
+    final monthLabel = formatMonth(focusedMonth);
     final year = focusedMonth.year;
     final today = DateTime.now().day;
+    final l10n = context.l10n;
+    final selectMonthTooltip = l10n.historySelectMonth;
+    final goToTodayTooltip = l10n.historyGoToToday;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -36,23 +66,24 @@ class HistoryMonthHeader extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: PopupMenuButton<DateTime>(
                 key: const Key('history_month_selector'),
-                tooltip: UiStrings.historySelectMonth,
+                tooltip: selectMonthTooltip,
                 onSelected: onMonthSelected,
                 itemBuilder: (context) {
                   final year = focusedMonth.year;
                   return List.generate(12, (i) {
                     final month = DateTime(year, i + 1);
+                    final mName = formatMonth(month);
                     return PopupMenuItem(
                       value: month,
                       child: Text(
-                        '${UiStrings.monthNames[i]} $year',
+                        '$mName $year',
                       ),
                     );
                   });
                 },
                 child: Semantics(
                   button: true,
-                  label: UiStrings.historySelectMonth,
+                  label: selectMonthTooltip,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -73,10 +104,10 @@ class HistoryMonthHeader extends StatelessWidget {
           if (showGoToToday)
             Semantics(
               button: true,
-              label: UiStrings.historyGoToToday,
+              label: goToTodayTooltip,
               child: IconButton(
                 key: const Key('history_today_button'),
-                tooltip: UiStrings.historyGoToToday,
+                tooltip: goToTodayTooltip,
                 onPressed: onGoToToday,
                 constraints: const BoxConstraints(
                   minWidth: AppTheme.buttonMinHeight,

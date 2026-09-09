@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/stats/application/stats_providers.dart';
 import 'package:interval_timer/features/stats/domain/stats_models.dart';
@@ -51,7 +51,7 @@ class ProgressSummarySection extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      UiStrings.progressSectionTitle,
+                      context.l10n.progressSectionTitle,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -59,11 +59,11 @@ class ProgressSummarySection extends ConsumerWidget {
                   ),
                   IconButton(
                     key: const Key('progress_kcal_info'),
-                    tooltip: UiStrings.progressKcalInfoTooltip,
+                    tooltip: context.l10n.progressKcalInfoTooltip,
                     icon: const Icon(Icons.info_outline, size: 20),
                     visualDensity: VisualDensity.compact,
                     constraints: const BoxConstraints(
-                      minWidth: AppTheme.buttonMinHeight,
+                       minWidth: AppTheme.buttonMinHeight,
                       minHeight: AppTheme.buttonMinHeight,
                     ),
                     onPressed: () => _showKcalInfoDialog(context, metLabel),
@@ -81,7 +81,7 @@ class ProgressSummarySection extends ConsumerWidget {
                         child: StatMetricCard(
                           key: const Key('stat_metric_streak'),
                           value: '${summary.currentStreakDays}',
-                          label: UiStrings.progressStreakLabel,
+                          label: context.l10n.progressStreakLabel,
                           icon: Icons.local_fire_department_rounded,
                           accent: AppTheme.warmupColor,
                         ),
@@ -91,7 +91,7 @@ class ProgressSummarySection extends ConsumerWidget {
                         child: StatMetricCard(
                           key: const Key('stat_metric_week_minutes'),
                           value: '${summary.weekMinutes}',
-                          label: UiStrings.progressWeekMinutesLabel,
+                          label: context.l10n.progressWeekMinutesLabel,
                           icon: Icons.timer_rounded,
                           accent: AppTheme.restColor,
                         ),
@@ -105,7 +105,7 @@ class ProgressSummarySection extends ConsumerWidget {
                         child: StatMetricCard(
                           key: const Key('stat_metric_month_sessions'),
                           value: '${summary.monthSessionCount}',
-                          label: UiStrings.progressMonthSessionsLabel,
+                          label: context.l10n.progressMonthSessionsLabel,
                           icon: Icons.fitness_center_rounded,
                           accent: AppTheme.workColor,
                         ),
@@ -115,7 +115,7 @@ class ProgressSummarySection extends ConsumerWidget {
                         child: StatMetricCard(
                           key: const Key('stat_metric_kcal'),
                           value: '${summary.totalEstimatedKcal}',
-                          label: UiStrings.progressKcalLabel,
+                          label: context.l10n.progressKcalLabel,
                           icon: Icons.bolt_rounded,
                           accent: AppTheme.stretchColor,
                         ),
@@ -128,37 +128,27 @@ class ProgressSummarySection extends ConsumerWidget {
                 const SizedBox(height: AppTheme.spacingSm),
                 Text(
                   key: const Key('progress_totals_line'),
-                  UiStrings.progressTotalLine
-                      .replaceAll(
-                        '{totals}',
-                        _formatTotalDuration(summary.totalMinutes),
-                      )
-                      .replaceAll(
-                        '{sessions}',
-                        '${summary.totalSessionCount}',
-                      ),
+                  context.l10n.progressTotalLine(
+                    _formatTotalDuration(summary.totalMinutes),
+                    summary.totalSessionCount,
+                  ),
                   style: captionStyle,
                 ),
               ],
               const SizedBox(height: AppTheme.spacingXs),
               Text(
                 key: const Key('progress_kcal_method_caption'),
-                UiStrings.progressKcalMethodCaption.replaceAll(
-                  '{met}',
-                  metLabel,
-                ),
+                context.l10n.progressKcalMethodCaption(metLabel),
                 style: captionStyle,
               ),
               const SizedBox(height: 2),
               Text(
                 key: const Key('progress_weight_caption'),
                 summary.isWeightEstimated
-                    ? UiStrings.progressWeightEstimated.replaceAll(
-                        '{kg}',
+                    ? context.l10n.progressWeightEstimated(
                         _formatWeight(summary.weightKgUsed),
                       )
-                    : UiStrings.progressWeightRegistered.replaceAll(
-                        '{kg}',
+                    : context.l10n.progressWeightRegistered(
                         _formatWeight(summary.weightKgUsed),
                       ),
                 style: captionStyle,
@@ -200,17 +190,17 @@ class ProgressSummarySection extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         key: const Key('progress_kcal_info_dialog'),
-        title: const Text(UiStrings.progressKcalInfoTitle),
+        title: Text(context.l10n.progressKcalInfoTitle),
         content: SingleChildScrollView(
           child: Text(
-            UiStrings.progressKcalInfoBody.replaceAll('{met}', metLabel),
+            context.l10n.progressKcalInfoBody(metLabel),
           ),
         ),
         actions: [
           TextButton(
             key: const Key('progress_kcal_info_close'),
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text(UiStrings.progressKcalInfoClose),
+            child: Text(context.l10n.progressKcalInfoClose),
           ),
         ],
       ),
@@ -379,7 +369,7 @@ class _StatsError extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              UiStrings.progressStatsError,
+              context.l10n.progressStatsError,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: scheme.onSurface,
@@ -389,7 +379,7 @@ class _StatsError extends StatelessWidget {
             TextButton(
               key: const Key('progress_stats_retry'),
               onPressed: onRetry,
-              child: const Text(UiStrings.retry),
+              child: Text(context.l10n.retry),
             ),
           ],
         ),

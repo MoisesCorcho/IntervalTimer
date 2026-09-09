@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/session_summary/domain/gallery_saver.dart';
 import 'package:interval_timer/features/session_summary/domain/session_complete_models.dart';
@@ -86,7 +86,7 @@ class _SessionShareStudioScreenState extends State<SessionShareStudioScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_camera_outlined),
-                title: Text(UiStrings.sessionSummaryShareTakePhoto),
+                title: Text(context.l10n.sessionSummaryShareTakePhoto),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickPhoto(ImageSource.camera);
@@ -94,7 +94,7 @@ class _SessionShareStudioScreenState extends State<SessionShareStudioScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
-                title: Text(UiStrings.sessionSummarySharePickGallery),
+                title: Text(context.l10n.sessionSummarySharePickGallery),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickPhoto(ImageSource.gallery);
@@ -122,7 +122,7 @@ class _SessionShareStudioScreenState extends State<SessionShareStudioScreen> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(UiStrings.sessionSummarySharePhotoFailed)),
+        SnackBar(content: Text(context.l10n.sessionSummarySharePhotoFailed)),
       );
     }
   }
@@ -162,13 +162,13 @@ class _SessionShareStudioScreenState extends State<SessionShareStudioScreen> {
       if (outcome == ShareOutcome.failed ||
           outcome == ShareOutcome.unavailable) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(UiStrings.sessionSummaryShareFailed)),
+          SnackBar(content: Text(context.l10n.sessionSummaryShareFailed)),
         );
       }
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(UiStrings.sessionSummaryShareFailed)),
+        SnackBar(content: Text(context.l10n.sessionSummaryShareFailed)),
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -187,15 +187,15 @@ class _SessionShareStudioScreenState extends State<SessionShareStudioScreen> {
         SnackBar(
           content: Text(
             ok
-                ? UiStrings.sessionSummaryShareSavedGallery
-                : UiStrings.sessionSummaryShareSaveGalleryFailed,
+                ? context.l10n.sessionSummaryShareSavedGallery
+                : context.l10n.sessionSummaryShareSaveGalleryFailed,
           ),
         ),
       );
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(UiStrings.sessionSummaryShareSaveGalleryFailed)),
+        SnackBar(content: Text(context.l10n.sessionSummaryShareSaveGalleryFailed)),
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -212,7 +212,7 @@ class _SessionShareStudioScreenState extends State<SessionShareStudioScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF121212),
         foregroundColor: Colors.white,
-        title: Text(UiStrings.sessionSummaryShareTitle),
+        title: Text(context.l10n.sessionSummaryShareTitle),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).maybePop(),
@@ -307,7 +307,7 @@ class _SessionShareStudioScreenState extends State<SessionShareStudioScreen> {
                     key: _shareButtonKey,
                     expand: true,
                     onPressed: _busy ? null : _onShare,
-                    label: UiStrings.sessionSummaryShare,
+                    label: context.l10n.sessionSummaryShare,
                     icon: Icons.ios_share_rounded,
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black87,
@@ -329,7 +329,7 @@ class _SessionShareStudioScreenState extends State<SessionShareStudioScreen> {
                         ),
                       ),
                       icon: const Icon(Icons.download_outlined),
-                      label: Text(UiStrings.sessionSummaryShareSaveGallery),
+                      label: Text(context.l10n.sessionSummaryShareSaveGallery),
                     ),
                   ),
                 ],
@@ -337,7 +337,7 @@ class _SessionShareStudioScreenState extends State<SessionShareStudioScreen> {
             ),
             const SizedBox(height: AppTheme.spacingMd),
             Text(
-              UiStrings.sessionSummaryShareOfflineHint,
+              context.l10n.sessionSummaryShareOfflineHint,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: Colors.white54,
               ),

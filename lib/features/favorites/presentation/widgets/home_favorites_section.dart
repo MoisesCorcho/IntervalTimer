@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_media_widget.dart';
 import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
@@ -27,7 +27,7 @@ class HomeFavoritesSection extends ConsumerWidget {
                   const Icon(Icons.star, size: 20, color: Colors.amber),
                   const SizedBox(width: 8),
                   Text(
-                    UiStrings.favoritesTitle,
+                    context.l10n.favoritesTitle,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -167,7 +167,9 @@ class _FavoriteCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      isPreset ? 'Preestablecida' : 'Personalizada',
+                      isPreset
+                          ? context.l10n.presetRoutineBadge
+                          : context.l10n.customRoutineBadge,
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/achievements/application/achievements_providers.dart';
 import 'package:interval_timer/features/achievements/presentation/achievement_tile.dart';
@@ -12,12 +12,13 @@ class AchievementsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final progressAsync = ref.watch(achievementProgressProvider);
 
     return Scaffold(
       key: const Key('achievements_screen'),
       appBar: AppBar(
-        title: const Text(UiStrings.achievementsTitle),
+        title: Text(l10n.achievementsTitle),
       ),
       body: progressAsync.when(
         loading: () => const Center(
@@ -35,7 +36,7 @@ class AchievementsScreen extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  UiStrings.achievementsError,
+                  l10n.achievementsError,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
@@ -46,7 +47,7 @@ class AchievementsScreen extends ConsumerWidget {
                     ref.invalidate(sessionLogsForStatsProvider);
                     ref.invalidate(unlockedAchievementsProvider);
                   },
-                  child: const Text(UiStrings.retry),
+                  child: Text(l10n.retry),
                 ),
               ],
             ),
@@ -54,11 +55,11 @@ class AchievementsScreen extends ConsumerWidget {
         ),
         data: (items) {
           if (items.isEmpty) {
-            return const Center(
+            return Center(
               child: Padding(
-                padding: EdgeInsets.all(AppTheme.spacingLg),
+                padding: const EdgeInsets.all(AppTheme.spacingLg),
                 child: Text(
-                  UiStrings.achievementsEmptyHint,
+                  l10n.achievementsEmptyHint,
                   textAlign: TextAlign.center,
                 ),
               ),

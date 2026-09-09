@@ -1,7 +1,8 @@
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
+import 'package:interval_timer/features/settings/domain/app_language.dart';
 import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 
-/// Global app settings (F35+ / F02 / F18 / F19 / F20 / F27 / F36 SFX / F15 body weight).
+/// Global app settings (F35+ / F02 / F18 / F19 / F20 / F27 / F36 SFX / F15 body weight / F28 language).
 /// Lightweight value object — not Drift. Pure domain (no Flutter imports).
 class AppSettings {
   const AppSettings({
@@ -30,6 +31,7 @@ class AppSettings {
     this.sessionLockScreenEnabled = true,
     this.themeMode = AppThemeMode.system,
     this.bodyWeightUnit = BodyWeightUnit.kg,
+    this.appLanguage = AppLanguage.system,
   });
 
   /// Seconds of preparation before the first interval (0–60).
@@ -89,6 +91,9 @@ class AppSettings {
   /// Weight display/edit unit for body tracking UI (F15).
   final BodyWeightUnit bodyWeightUnit;
 
+  /// Application language preference: system, es, or en (F28).
+  final AppLanguage appLanguage;
+
   AppSettings copyWith({
     int? prepSeconds,
     bool? voiceEnabled,
@@ -115,6 +120,7 @@ class AppSettings {
     bool? sessionLockScreenEnabled,
     AppThemeMode? themeMode,
     BodyWeightUnit? bodyWeightUnit,
+    AppLanguage? appLanguage,
   }) {
     return AppSettings(
       prepSeconds: prepSeconds ?? this.prepSeconds,
@@ -151,6 +157,7 @@ class AppSettings {
           sessionLockScreenEnabled ?? this.sessionLockScreenEnabled,
       themeMode: themeMode ?? this.themeMode,
       bodyWeightUnit: bodyWeightUnit ?? this.bodyWeightUnit,
+      appLanguage: appLanguage ?? this.appLanguage,
     );
   }
 
@@ -182,7 +189,8 @@ class AppSettings {
             other.keepScreenOnEnabled == keepScreenOnEnabled &&
             other.sessionLockScreenEnabled == sessionLockScreenEnabled &&
             other.themeMode == themeMode &&
-            other.bodyWeightUnit == bodyWeightUnit);
+            other.bodyWeightUnit == bodyWeightUnit &&
+            other.appLanguage == appLanguage);
   }
 
   @override
@@ -212,5 +220,6 @@ class AppSettings {
         sessionLockScreenEnabled,
         themeMode,
         bodyWeightUnit,
+        appLanguage,
       ]);
 }

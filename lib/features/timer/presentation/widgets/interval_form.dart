@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/data/models/interval.dart';
@@ -76,17 +76,18 @@ class IntervalFormState extends State<IntervalForm> {
   bool validate() {
     final name = _nameController.text.trim();
     final announce = _announceController.text;
+    final l10n = context.l10n;
     String? nameError;
     String? announceError;
 
     if (name.isEmpty) {
-      nameError = UiStrings.nameRequired;
+      nameError = l10n.nameRequired;
     } else if (name.length > 50) {
-      nameError = UiStrings.nameTooLong;
+      nameError = l10n.nameTooLong;
     }
 
     if (announce.length > _maxAnnounceLength) {
-      announceError = UiStrings.announceTextTooLong;
+      announceError = l10n.announceTextTooLong;
     }
 
     setState(() {
@@ -114,6 +115,8 @@ class IntervalFormState extends State<IntervalForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -123,7 +126,7 @@ class IntervalFormState extends State<IntervalForm> {
             controller: _nameController,
             textCapitalization: TextCapitalization.characters,
             decoration: InputDecoration(
-              labelText: UiStrings.intervalName,
+              labelText: l10n.intervalName,
               errorText: _nameError,
             ),
             maxLength: 51,
@@ -136,8 +139,8 @@ class IntervalFormState extends State<IntervalForm> {
             key: const Key('interval_announce_text_field'),
             controller: _announceController,
             decoration: InputDecoration(
-              labelText: UiStrings.announceTextLabel,
-              hintText: UiStrings.announceTextHint,
+              labelText: l10n.announceTextLabel,
+              hintText: l10n.announceTextHint,
               errorText: _announceError,
             ),
             maxLength: _maxAnnounceLength + 1,
@@ -152,12 +155,12 @@ class IntervalFormState extends State<IntervalForm> {
             totalSeconds: _durationSeconds,
             minSeconds: _minDurationSeconds,
             maxSeconds: _maxDurationSeconds,
-            label: UiStrings.duration,
+            label: l10n.duration,
             onChanged: (value) => setState(() => _durationSeconds = value),
           ),
           const SizedBox(height: AppTheme.spacingLg),
           Text(
-            UiStrings.color,
+            l10n.color,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -176,7 +179,7 @@ class IntervalFormState extends State<IntervalForm> {
           AppPrimaryButton(
             key: const Key('interval_save_button'),
             onPressed: submit,
-            label: UiStrings.save,
+            label: l10n.save,
             expand: true,
           ),
         ],

@@ -1,11 +1,19 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:interval_timer/app/app.dart';
 import 'package:interval_timer/features/lock_screen/application/session_background_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize intl date formatting for multi-language support (F28)
+  try {
+    await initializeDateFormatting();
+  } catch (e, st) {
+    debugPrint('initializeDateFormatting failed: $e\n$st');
+  }
 
   // F17 & F36: Set global audio context so SFX and timer sounds mix without taking exclusive focus
   try {

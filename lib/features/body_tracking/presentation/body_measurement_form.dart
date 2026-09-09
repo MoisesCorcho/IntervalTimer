@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/local_date_format.dart';
 import 'package:interval_timer/features/body_tracking/application/body_tracking_providers.dart';
@@ -101,12 +101,12 @@ class _BodyMeasurementFormSheetState
   String? _messageForCode(String? code) {
     return switch (code) {
       'weight_required' || 'weight_invalid' =>
-        UiStrings.bodyWeightValidationRequired,
-      'weight_range' => UiStrings.bodyWeightValidationRange,
+        context.l10n.bodyWeightValidationRequired,
+      'weight_range' => context.l10n.bodyWeightValidationRange,
       'measure_invalid' || 'measure_range' =>
-        UiStrings.bodyWeightValidationMeasure,
-      'date_future' => UiStrings.bodyWeightValidationDateFuture,
-      'date_invalid' => UiStrings.bodyWeightValidationDateInvalid,
+        context.l10n.bodyWeightValidationMeasure,
+      'date_future' => context.l10n.bodyWeightValidationDateFuture,
+      'date_invalid' => context.l10n.bodyWeightValidationDateInvalid,
       _ => null,
     };
   }
@@ -179,7 +179,7 @@ class _BodyMeasurementFormSheetState
       if (!mounted) return;
       setState(() => _saving = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(UiStrings.persistenceError)),
+        SnackBar(content: Text(context.l10n.persistenceError)),
       );
     }
   }
@@ -189,8 +189,8 @@ class _BodyMeasurementFormSheetState
     final unit = ref.watch(bodyWeightUnitProvider).valueOrNull ??
         BodyWeightUnit.kg;
     final unitLabel = unit == BodyWeightUnit.kg
-        ? UiStrings.bodyWeightUnitKg
-        : UiStrings.bodyWeightUnitLb;
+        ? context.l10n.bodyWeightUnitKg
+        : context.l10n.bodyWeightUnitLb;
     final theme = Theme.of(context);
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
 
@@ -205,15 +205,15 @@ class _BodyMeasurementFormSheetState
           children: [
             Text(
               widget.existing == null
-                  ? UiStrings.bodyWeightFormTitle
-                  : UiStrings.bodyWeightFormEditTitle,
+                  ? context.l10n.bodyWeightFormTitle
+                  : context.l10n.bodyWeightFormEditTitle,
               style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: AppTheme.spacingMd),
             ListTile(
               key: const Key('body_weight_date_field'),
               contentPadding: EdgeInsets.zero,
-              title: const Text(UiStrings.bodyWeightDateLabel),
+              title: Text(context.l10n.bodyWeightDateLabel),
               subtitle: Text(LocalDateFormat.fromDateTime(_selectedDate)),
               trailing: const Icon(Icons.calendar_today_outlined),
               onTap: _pickDate,
@@ -237,7 +237,7 @@ class _BodyMeasurementFormSheetState
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
               ],
               decoration: InputDecoration(
-                labelText: '${UiStrings.bodyWeightFieldLabel} ($unitLabel)',
+                labelText: '${context.l10n.bodyWeightFieldLabel} ($unitLabel)',
                 errorText: _weightError,
               ),
               onChanged: (_) {
@@ -250,7 +250,7 @@ class _BodyMeasurementFormSheetState
             ExpansionTile(
               key: const Key('body_weight_measures_tile'),
               initiallyExpanded: _measuresExpanded,
-              title: const Text(UiStrings.bodyWeightMeasuresOptional),
+              title: Text(context.l10n.bodyWeightMeasuresOptional),
               onExpansionChanged: (v) => setState(() => _measuresExpanded = v),
               children: [
                 TextField(
@@ -263,7 +263,7 @@ class _BodyMeasurementFormSheetState
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                   ],
                   decoration: InputDecoration(
-                    labelText: UiStrings.bodyWeightWaistLabel,
+                    labelText: context.l10n.bodyWeightWaistLabel,
                     errorText: _waistError,
                   ),
                 ),
@@ -278,7 +278,7 @@ class _BodyMeasurementFormSheetState
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                   ],
                   decoration: InputDecoration(
-                    labelText: UiStrings.bodyWeightArmLabel,
+                    labelText: context.l10n.bodyWeightArmLabel,
                     errorText: _armError,
                   ),
                 ),
@@ -293,7 +293,7 @@ class _BodyMeasurementFormSheetState
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                   ],
                   decoration: InputDecoration(
-                    labelText: UiStrings.bodyWeightLegLabel,
+                    labelText: context.l10n.bodyWeightLegLabel,
                     errorText: _legError,
                   ),
                 ),
@@ -307,12 +307,12 @@ class _BodyMeasurementFormSheetState
                   onPressed: _saving
                       ? null
                       : () => Navigator.of(context).pop(false),
-                  label: UiStrings.cancel,
+                  label: context.l10n.cancel,
                 ),
                 AppPrimaryButton(
                   key: const Key('body_weight_save_button'),
                   onPressed: _saving ? null : _save,
-                  label: UiStrings.save,
+                  label: context.l10n.save,
                 ),
               ],
             ),

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:interval_timer/core/branding/app_branding.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/features/session_summary/domain/session_complete_models.dart';
@@ -134,7 +134,7 @@ class _TransparentTemplate extends StatelessWidget {
                             ),
                             const SizedBox(width: AppTheme.spacingSm),
                             Text(
-                              UiStrings.sessionSummaryShareAddPhoto,
+                              context.l10n.sessionSummaryShareAddPhoto,
                               style: Theme.of(context)
                                   .textTheme
                                   .labelLarge
@@ -228,7 +228,7 @@ class _StatsOverlay extends StatelessWidget {
         ),
         const SizedBox(height: AppTheme.spacingSm),
         _ColorChip(
-          label: UiStrings.sessionSummaryShareWorkoutBadge,
+          label: context.l10n.sessionSummaryShareWorkoutBadge,
           color: AppTheme.workColor,
         ),
         const SizedBox(height: AppTheme.spacingMd),
@@ -237,21 +237,21 @@ class _StatsOverlay extends StatelessWidget {
             Expanded(
               child: _StatColumn(
                 value: '${data.setsCount}',
-                label: UiStrings.sessionSummaryShareSets,
+                label: context.l10n.sessionSummaryShareSets,
                 chipColor: const Color(0xFF5C5C5C),
               ),
             ),
             Expanded(
               child: _StatColumn(
                 value: work,
-                label: UiStrings.sessionSummaryShareWork,
+                label: context.l10n.sessionSummaryShareWork,
                 chipColor: AppTheme.workColor,
               ),
             ),
             Expanded(
               child: _StatColumn(
                 value: rest,
-                label: UiStrings.sessionSummaryShareRest,
+                label: context.l10n.sessionSummaryShareRest,
                 chipColor: AppTheme.restColor,
               ),
             ),

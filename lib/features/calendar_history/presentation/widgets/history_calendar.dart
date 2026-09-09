@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -29,9 +30,22 @@ class HistoryCalendar extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final focused = DateTime(focusedMonth.year, focusedMonth.month, 1);
+    final rawLocale = Localizations.maybeLocaleOf(context)?.languageCode;
+
+    bool isLocaleAvailable(String? loc) {
+      if (loc == null) return false;
+      try {
+        return DateFormat.localeExists(loc);
+      } catch (_) {
+        return false;
+      }
+    }
+
+    final calendarLocale = isLocaleAvailable(rawLocale) ? rawLocale : null;
 
     return TableCalendar(
       key: const Key('history_table_calendar'),
+      locale: calendarLocale,
       firstDay: DateTime.utc(2020, 1, 1),
       lastDay: DateTime.utc(2100, 12, 31),
       focusedDay: focused,
@@ -61,9 +75,20 @@ class HistoryCalendar extends StatelessWidget {
         ),
       ),
       calendarBuilders: CalendarBuilders(
-        // Monday-first labels in Spanish (LUN…DOM) — not locale-dependent.
         dowBuilder: (context, day) {
-          final label = UiStrings.weekdayShort[day.weekday - 1];
+          String label;
+          if (isLocaleAvailable(rawLocale)) {
+            try {
+              label = DateFormat.E(rawLocale!)
+                  .format(day)
+                  .toUpperCase()
+                  .replaceAll('.', '');
+            } catch (_) {
+              label = UiStrings.weekdayShort[day.weekday - 1];
+            }
+          } else {
+            label = UiStrings.weekdayShort[day.weekday - 1];
+          }
           return Center(
             child: Text(
               label,

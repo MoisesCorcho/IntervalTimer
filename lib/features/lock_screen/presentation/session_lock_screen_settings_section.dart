@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
@@ -65,6 +65,7 @@ class _SessionLockScreenSettingsSectionState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final muted = theme.textTheme.bodyMedium?.copyWith(
       color: theme.colorScheme.onSurfaceVariant,
@@ -77,15 +78,15 @@ class _SessionLockScreenSettingsSectionState
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          UiStrings.sessionLockScreenSectionTitle,
+          l10n.sessionLockScreenSectionTitle,
           style: theme.textTheme.titleLarge,
         ),
         const SizedBox(height: AppTheme.spacingMd),
         SwitchListTile(
           key: const Key('session_lock_screen_enabled_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.sessionLockScreenEnabledLabel),
-          subtitle: Text(UiStrings.sessionLockScreenEnabledHint, style: muted),
+          title: Text(l10n.sessionLockScreenEnabledLabel),
+          subtitle: Text(l10n.sessionLockScreenEnabledHint, style: muted),
           value: settings.sessionLockScreenEnabled,
           onChanged: (value) {
             ref
@@ -97,7 +98,7 @@ class _SessionLockScreenSettingsSectionState
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             key: const Key('session_lock_screen_permission_hint'),
-            UiStrings.sessionLockScreenPermissionDenied,
+            l10n.sessionLockScreenPermissionDenied,
             style: muted,
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -109,13 +110,13 @@ class _SessionLockScreenSettingsSectionState
                 key: const Key('session_lock_screen_retry_permission'),
                 compact: true,
                 onPressed: _retryPermission,
-                label: UiStrings.sessionLockScreenRetryPermission,
+                label: l10n.sessionLockScreenRetryPermission,
               ),
               AppSecondaryButton(
                 key: const Key('session_lock_screen_open_settings'),
                 compact: true,
                 onPressed: _openSettings,
-                label: UiStrings.sessionLockScreenOpenSystemSettings,
+                label: l10n.sessionLockScreenOpenSystemSettings,
               ),
             ],
           ),

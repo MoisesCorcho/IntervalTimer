@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/features/music_ducking/application/music_ducking_providers.dart';
 import 'package:interval_timer/features/music_ducking/domain/ducking_tts_engine.dart';
+import 'package:interval_timer/features/settings/application/language_providers.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
@@ -12,7 +13,8 @@ import 'package:interval_timer/features/voice/domain/voice_announcer.dart';
 import 'package:interval_timer/features/voice/domain/voice_settings.dart';
 
 final rawTtsEngineProvider = Provider<TtsEngine>((ref) {
-  return SystemTtsEngine();
+  final locale = ref.watch(effectiveLocaleProvider);
+  return SystemTtsEngine(initialLocale: locale);
 });
 
 final ttsEngineProvider = Provider<TtsEngine>((ref) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
@@ -15,6 +15,7 @@ class VibrationSettingsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final muted = theme.textTheme.bodyMedium?.copyWith(
       color: theme.colorScheme.onSurfaceVariant,
@@ -26,15 +27,15 @@ class VibrationSettingsSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          UiStrings.vibrationSectionTitle,
+          l10n.vibrationSectionTitle,
           style: theme.textTheme.titleLarge,
         ),
         const SizedBox(height: AppTheme.spacingMd),
         SwitchListTile(
           key: const Key('vibration_enabled_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.vibrationEnabledLabel),
-          subtitle: Text(UiStrings.vibrationEnabledHint, style: muted),
+          title: Text(l10n.vibrationEnabledLabel),
+          subtitle: Text(l10n.vibrationEnabledHint, style: muted),
           value: settings.vibrationEnabled,
           onChanged: controller.setVibrationEnabled,
         ),
@@ -42,9 +43,9 @@ class VibrationSettingsSection extends ConsumerWidget {
         SwitchListTile(
           key: const Key('vibration_on_interval_start_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.vibrationOnIntervalStartLabel),
+          title: Text(l10n.vibrationOnIntervalStartLabel),
           subtitle:
-              Text(UiStrings.vibrationOnIntervalStartHint, style: muted),
+              Text(l10n.vibrationOnIntervalStartHint, style: muted),
           value: settings.vibrationOnIntervalStart,
           onChanged: masterOn ? controller.setVibrationOnIntervalStart : null,
         ),
@@ -52,18 +53,18 @@ class VibrationSettingsSection extends ConsumerWidget {
         SwitchListTile(
           key: const Key('vibration_on_countdown_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.vibrationOnCountdownLabel),
-          subtitle: Text(UiStrings.vibrationOnCountdownHint, style: muted),
+          title: Text(l10n.vibrationOnCountdownLabel),
+          subtitle: Text(l10n.vibrationOnCountdownHint, style: muted),
           value: settings.vibrationOnCountdown,
           onChanged: masterOn ? controller.setVibrationOnCountdown : null,
         ),
         const SizedBox(height: AppTheme.spacingMd),
         Text(
-          UiStrings.vibrationCountdownSecondsLabel,
+          l10n.vibrationCountdownSecondsLabel,
           style: theme.textTheme.titleMedium,
         ),
         const SizedBox(height: AppTheme.spacingSm),
-        Text(UiStrings.vibrationCountdownSecondsHint, style: muted),
+        Text(l10n.vibrationCountdownSecondsHint, style: muted),
         const SizedBox(height: AppTheme.spacingMd),
         Opacity(
           opacity: masterOn ? 1 : 0.5,
@@ -75,7 +76,7 @@ class VibrationSettingsSection extends ConsumerWidget {
               min: SettingsRepository.minVibrationCountdownSeconds,
               max: SettingsRepository.maxVibrationCountdownSeconds,
               step: 1,
-              label: UiStrings.vibrationCountdownSecondsLabel,
+              label: l10n.vibrationCountdownSecondsLabel,
               keyPrefix: 'vibration_countdown_',
               onChanged: controller.setVibrationCountdownSeconds,
             ),

@@ -1,0 +1,210 @@
+[
+  {
+    "id": "ex_jumping_jacks",
+    "name": "Jumping Jacks",
+    "category": "hiit",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_jumping_jacks.png",
+    "steps": [
+      "Parate erguido con los pies juntos y los brazos a los lados.",
+      "Salta abriendo las piernas a la anchura de los hombros mientras elevas los brazos sobre la cabeza.",
+      "Regresa de un salto a la posición inicial y repite el movimiento de forma fluida."
+    ],
+    "tips": [
+      "Aterriza suavemente sobre las puntas de los pies para proteger las articulaciones.",
+      "Mantén el abdomen contraído durante toda la ejecución."
+    ]
+  },
+  {
+    "id": "ex_burpees",
+    "name": "Burpees",
+    "category": "hiit",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_burpees.png",
+    "steps": [
+      "Desde posición erguida, baja a sentadilla y apoya las manos en el suelo.",
+      "Lanza los pies hacia atrás para quedar en posición de plancha alta.",
+      "Realiza una flexión (opcional), regresa los pies a la sentadilla y salta verticalmente con los brazos arriba."
+    ],
+    "tips": [
+      "Mantén el core firme para evitar que la cadera caiga durante la plancha.",
+      "Mantén un ritmo constante sin detenerte bruscamente."
+    ]
+  },
+  {
+    "id": "ex_mountain_climbers",
+    "name": "Escaladores (Mountain Climbers)",
+    "category": "hiit",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_mountain_climbers.png",
+    "steps": [
+      "Colócate en posición de plancha alta con los brazos extendidos bajo los hombros.",
+      "Lleva una rodilla hacia el pecho manteniendo la espalda recta.",
+      "Alterna las piernas rápidamente como si estuvieras corriendo en el lugar."
+    ],
+    "tips": [
+      "No eleves demasiado la cadera.",
+      "Distribuye el peso uniformemente entre las manos y los pies."
+    ]
+  },
+  {
+    "id": "ex_high_knees",
+    "name": "Elevación de Rodillas (High Knees)",
+    "category": "cardio",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_high_knees.png",
+    "steps": [
+      "Parate derecho con los pies a la anchura de la cadera.",
+      "Corre en el lugar elevando alternadamente las rodillas hasta la altura de la cadera.",
+      "Acompaña el movimiento moviendo los brazos vigorosamente."
+    ],
+    "tips": [
+      "Mantén la espalda erguida sin inclinarte hacia atrás.",
+      "Impacta suavemente con el metatarso."
+    ]
+  },
+  {
+    "id": "ex_crunches",
+    "name": "Crunches Abdominales",
+    "category": "core",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_crunches.png",
+    "steps": [
+      "Acuéstate boca arriba con las rodillas dobladas y las plantas de los pies apoyadas en el suelo.",
+      "Coloca las manos detrás de la cabeza o cruzadas sobre el pecho.",
+      "Flexiona el torso elevando los hombros del suelo concentrando el esfuerzo en el abdomen."
+    ],
+    "tips": [
+      "No tires del cuello con las manos.",
+      "Exhala al subir y exprime los abdominales en la cima del movimiento."
+    ]
+  },
+  {
+    "id": "ex_plank",
+    "name": "Plancha Abdominal",
+    "category": "core",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_plank.png",
+    "steps": [
+      "Apoya los antebrazos en el suelo alineados con los hombros.",
+      "Extiende las piernas hacia atrás apoyando las puntas de los pies.",
+      "Mantén el cuerpo en línea recta desde la cabeza hasta los talones."
+    ],
+    "tips": [
+      "Aprieta glúteos y abdomen para mantener la columna neutra.",
+      "Respira de manera continua durante el sostenimiento."
+    ]
+  },
+  {
+    "id": "ex_bicycle_crunches",
+    "name": "Crunches Bicicleta",
+    "category": "core",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_bicycle_crunches.png",
+    "steps": [
+      "Acuéstate boca arriba con las manos en la nuca y las piernas elevadas a 90 grados.",
+      "Lleva el codo derecho hacia la rodilla izquierda mientras extiendes la pierna derecha.",
+      "Alterna lados con movimiento fluido como pedalear."
+    ],
+    "tips": [
+      "Rotá desde la caja torácica, no solo moviendo los codos.",
+      "Mantén la zona lumbar pegada al suelo."
+    ]
+  },
+  {
+    "id": "ex_squats",
+    "name": "Sentadillas Libres",
+    "category": "lowerBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_squats.png",
+    "steps": [
+      "Parate con los pies a la anchura de los hombros y las puntas ligeramente hacia afuera.",
+      "Empuja la cadera hacia atrás y dobla las rodillas como si te sentaras en una silla.",
+      "Baja hasta que los muslos estén paralelos al suelo y sube empujando desde los talones."
+    ],
+    "tips": [
+      "Mantén el pecho levantado y la mirada al frente.",
+      "Asegúrate de que las rodillas sigan la dirección de las puntas de los pies."
+    ]
+  },
+  {
+    "id": "ex_lunges",
+    "name": "Zancadas (Lunges)",
+    "category": "lowerBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_lunges.png",
+    "steps": [
+      "Dar un paso largo hacia adelante con una pierna.",
+      "Baja el cuerpo hasta que ambas rodillas formen ángulos de 90 grados.",
+      "Empuja con el pie delantero para volver a la posición inicial y cambia de pierna."
+    ],
+    "tips": [
+      "La rodilla delantera no debe sobrepasar excesivamente la punta del pie.",
+      "Mantén el torso erguido en todo momento."
+    ]
+  },
+  {
+    "id": "ex_glute_bridges",
+    "name": "Puente de Glúteos",
+    "category": "lowerBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_glute_bridges.png",
+    "steps": [
+      "Acuéstate boca arriba con las rodillas flexionadas y los pies cerca de los glúteos.",
+      "Empuja a través de los talones para elevar la cadera hacia el techo.",
+      "Aprieta los glúteos arriba un segundo y baja lentamente."
+    ],
+    "tips": [
+      "No hiperextiendas la espalda baja arriba.",
+      "Mantén los hombros bien apoyados en el suelo."
+    ]
+  },
+  {
+    "id": "ex_pushups",
+    "name": "Flexiones de Pecho (Pushups)",
+    "category": "upperBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_pushups.png",
+    "steps": [
+      "Apoya las manos en el suelo a una anchura ligeramente mayor que la de los hombros.",
+      "Baja el cuerpo manteniendo los codos a 45 grados hasta casi tocar el suelo con el pecho.",
+      "Empuja el suelo con fuerza para regresar a la posición inicial."
+    ],
+    "tips": [
+      "Mantén una línea recta desde los hombros hasta los tobillos.",
+      "Si resulta muy exigente, apoya las rodillas en el suelo."
+    ]
+  },
+  {
+    "id": "ex_pike_pushups",
+    "name": "Flexiones Pike",
+    "category": "upperBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_pike_pushups.png",
+    "steps": [
+      "Adopta posición de V invertida elevando las caderas con brazos y piernas extendidos.",
+      "Dobla los codos llevando la coronilla de la cabeza hacia el suelo por delante de las manos.",
+      "Empuja hacia atrás y arriba para volver a la V invertida."
+    ],
+    "tips": [
+      "Enfoca la fuerza en los hombros (deltoides).",
+      "Mantén la mirada hacia los pies."
+    ]
+  },
+  {
+    "id": "ex_tricep_dips",
+    "name": "Fondos de Tríceps (Dips)",
+    "category": "upperBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_tricep_dips.png",
+    "steps": [
+      "Apoya las manos en el borde de una silla, banco o en el suelo detrás de la cadera.",
+      "Extiende las piernas al frente y flexiona los codos a 90 grados bajando la cadera.",
+      "Extiende los brazos para volver arriba apretando los tríceps."
+    ],
+    "tips": [
+      "Mantén la espalda pegada a la superficie de apoyo.",
+      "No fuerces la articulación del hombro bajando más allá de los 90 grados."
+    ]
+  }
+]

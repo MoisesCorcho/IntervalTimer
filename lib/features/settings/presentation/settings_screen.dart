@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
@@ -9,6 +9,7 @@ import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 import 'package:interval_timer/features/always_on/presentation/keep_screen_on_settings_section.dart';
 import 'package:interval_timer/features/body_tracking/presentation/body_weight_unit_settings_section.dart';
 import 'package:interval_timer/features/lock_screen/presentation/session_lock_screen_settings_section.dart';
+import 'package:interval_timer/features/settings/presentation/widgets/language_selector_tile.dart';
 import 'package:interval_timer/features/sound_effects/presentation/sound_effects_settings_section.dart';
 import 'package:interval_timer/features/vibration/presentation/vibration_settings_section.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
@@ -20,10 +21,11 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsAsync = ref.watch(settingsControllerProvider);
+    final l10n = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(UiStrings.settingsTitle),
+        title: Text(l10n.settingsTitle),
       ),
       body: settingsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -34,13 +36,13 @@ class SettingsScreen extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  UiStrings.persistenceError,
+                  l10n.persistenceError,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppTheme.spacingMd),
                 AppPrimaryButton(
                   onPressed: () => ref.invalidate(settingsControllerProvider),
-                  label: UiStrings.retry,
+                  label: l10n.retry,
                 ),
               ],
             ),
@@ -59,6 +61,7 @@ class _SettingsBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final muted = theme.textTheme.bodyMedium?.copyWith(
       color: theme.colorScheme.onSurfaceVariant,
@@ -68,27 +71,27 @@ class _SettingsBody extends ConsumerWidget {
       padding: const EdgeInsets.all(AppTheme.spacingMd),
       children: [
         Text(
-          UiStrings.themeLabel,
+          l10n.themeLabel,
           style: theme.textTheme.titleMedium,
         ),
         const SizedBox(height: AppTheme.spacingSm),
         SegmentedButton<AppThemeMode>(
           key: const Key('theme_segmented_button'),
-          segments: const [
+          segments: [
             ButtonSegment<AppThemeMode>(
               value: AppThemeMode.light,
-              label: Text(UiStrings.themeLight),
-              icon: Icon(Icons.light_mode),
+              label: Text(l10n.themeLight),
+              icon: const Icon(Icons.light_mode),
             ),
             ButtonSegment<AppThemeMode>(
               value: AppThemeMode.dark,
-              label: Text(UiStrings.themeDark),
-              icon: Icon(Icons.dark_mode),
+              label: Text(l10n.themeDark),
+              icon: const Icon(Icons.dark_mode),
             ),
             ButtonSegment<AppThemeMode>(
               value: AppThemeMode.system,
-              label: Text(UiStrings.themeSystem),
-              icon: Icon(Icons.settings_brightness),
+              label: Text(l10n.themeSystem),
+              icon: const Icon(Icons.settings_brightness),
             ),
           ],
           selected: {settings.themeMode},
@@ -99,14 +102,16 @@ class _SettingsBody extends ConsumerWidget {
           },
         ),
         const SizedBox(height: AppTheme.spacingLg),
+        LanguageSelectorSection(settings: settings),
+        const SizedBox(height: AppTheme.spacingLg),
         BodyWeightUnitSettingsSection(settings: settings),
         const SizedBox(height: AppTheme.spacingLg),
         Text(
-          UiStrings.prepSecondsLabel,
+          l10n.prepSecondsLabel,
           style: theme.textTheme.titleMedium,
         ),
         const SizedBox(height: AppTheme.spacingSm),
-        Text(UiStrings.prepSecondsHint, style: muted),
+        Text(l10n.prepSecondsHint, style: muted),
         const SizedBox(height: AppTheme.spacingMd),
         NumberStepper(
           key: const Key('prep_seconds_stepper'),
@@ -114,7 +119,7 @@ class _SettingsBody extends ConsumerWidget {
           min: SettingsRepository.minPrepSeconds,
           max: SettingsRepository.maxPrepSeconds,
           step: 1,
-          label: UiStrings.prepSecondsLabel,
+          label: l10n.prepSecondsLabel,
           keyPrefix: 'prep_',
           onChanged: (value) {
             ref.read(settingsControllerProvider.notifier).setPrepSeconds(value);
@@ -122,15 +127,15 @@ class _SettingsBody extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.spacingLg),
         Text(
-          UiStrings.voiceSectionTitle,
+          l10n.voiceSectionTitle,
           style: theme.textTheme.titleLarge,
         ),
         const SizedBox(height: AppTheme.spacingMd),
         SwitchListTile(
           key: const Key('voice_enabled_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.voiceEnabledLabel),
-          subtitle: Text(UiStrings.voiceEnabledHint, style: muted),
+          title: Text(l10n.voiceEnabledLabel),
+          subtitle: Text(l10n.voiceEnabledHint, style: muted),
           value: settings.voiceEnabled,
           onChanged: (value) {
             ref
@@ -142,8 +147,8 @@ class _SettingsBody extends ConsumerWidget {
         SwitchListTile(
           key: const Key('announce_interval_name_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.announceIntervalNameLabel),
-          subtitle: Text(UiStrings.announceIntervalNameHint, style: muted),
+          title: Text(l10n.announceIntervalNameLabel),
+          subtitle: Text(l10n.announceIntervalNameHint, style: muted),
           value: settings.announceIntervalName,
           onChanged: settings.voiceEnabled
               ? (value) {
@@ -157,8 +162,8 @@ class _SettingsBody extends ConsumerWidget {
         SwitchListTile(
           key: const Key('music_ducking_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.musicDuckingLabel),
-          subtitle: Text(UiStrings.musicDuckingHint, style: muted),
+          title: Text(l10n.musicDuckingLabel),
+          subtitle: Text(l10n.musicDuckingHint, style: muted),
           value: settings.musicDuckingEnabled,
           onChanged: settings.voiceEnabled
               ? (value) {
@@ -170,11 +175,11 @@ class _SettingsBody extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.spacingMd),
         Text(
-          UiStrings.countdownSecondsLabel,
+          l10n.countdownSecondsLabel,
           style: theme.textTheme.titleMedium,
         ),
         const SizedBox(height: AppTheme.spacingSm),
-        Text(UiStrings.countdownSecondsHint, style: muted),
+        Text(l10n.countdownSecondsHint, style: muted),
         const SizedBox(height: AppTheme.spacingMd),
         NumberStepper(
           key: const Key('countdown_seconds_stepper'),
@@ -182,7 +187,7 @@ class _SettingsBody extends ConsumerWidget {
           min: SettingsRepository.minCountdownSeconds,
           max: SettingsRepository.maxCountdownSeconds,
           step: 1,
-          label: UiStrings.countdownSecondsLabel,
+          label: l10n.countdownSecondsLabel,
           keyPrefix: 'countdown_',
           onChanged: (value) {
             ref

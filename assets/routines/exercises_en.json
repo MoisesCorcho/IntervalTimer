@@ -1,0 +1,210 @@
+[
+  {
+    "id": "ex_jumping_jacks",
+    "name": "Jumping Jacks",
+    "category": "hiit",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_jumping_jacks.png",
+    "steps": [
+      "Stand upright with feet together and arms at your sides.",
+      "Jump while opening legs to shoulder width and bringing arms overhead.",
+      "Jump back to starting position and repeat the movement fluidly."
+    ],
+    "tips": [
+      "Land softly on the balls of your feet to protect your joints.",
+      "Keep core engaged throughout the exercise."
+    ]
+  },
+  {
+    "id": "ex_burpees",
+    "name": "Burpees",
+    "category": "hiit",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_burpees.png",
+    "steps": [
+      "From an upright position, squat down and place hands on the floor.",
+      "Kick feet back into a high plank position.",
+      "Perform a pushup (optional), jump feet back into squat, and explode upward with arms raised."
+    ],
+    "tips": [
+      "Keep core tight to prevent hips from sagging in plank.",
+      "Maintain a steady rhythm without stopping abruptly."
+    ]
+  },
+  {
+    "id": "ex_mountain_climbers",
+    "name": "Mountain Climbers",
+    "category": "hiit",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_mountain_climbers.png",
+    "steps": [
+      "Set up in high plank with hands directly beneath shoulders.",
+      "Drive one knee toward your chest while keeping back flat.",
+      "Alternate legs quickly as if running in place."
+    ],
+    "tips": [
+      "Do not raise hips too high.",
+      "Distribute weight evenly between hands and toes."
+    ]
+  },
+  {
+    "id": "ex_high_knees",
+    "name": "High Knees",
+    "category": "cardio",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_high_knees.png",
+    "steps": [
+      "Stand upright with feet hip-width apart.",
+      "Run in place driving knees up alternately to hip height.",
+      "Pump your arms vigorously in rhythm with legs."
+    ],
+    "tips": [
+      "Keep torso tall without leaning backward.",
+      "Land softly on the balls of your feet."
+    ]
+  },
+  {
+    "id": "ex_crunches",
+    "name": "Abdominal Crunches",
+    "category": "core",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_crunches.png",
+    "steps": [
+      "Lie on your back with knees bent and feet flat on the floor.",
+      "Place hands behind head or crossed over chest.",
+      "Curl torso upward lifting shoulder blades off the floor, focusing on contracting abs."
+    ],
+    "tips": [
+      "Do not pull on your neck with your hands.",
+      "Exhale as you lift and squeeze abs at the top."
+    ]
+  },
+  {
+    "id": "ex_plank",
+    "name": "Plank",
+    "category": "core",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_plank.png",
+    "steps": [
+      "Place forearms on floor aligned under shoulders.",
+      "Extend legs back resting on toes.",
+      "Maintain a straight line from head to heels."
+    ],
+    "tips": [
+      "Squeeze glutes and abdominals to keep spine neutral.",
+      "Breathe steadily throughout the hold."
+    ]
+  },
+  {
+    "id": "ex_bicycle_crunches",
+    "name": "Bicycle Crunches",
+    "category": "core",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_bicycle_crunches.png",
+    "steps": [
+      "Lie on your back with hands behind head and legs elevated at 90 degrees.",
+      "Bring right elbow toward left knee while extending right leg.",
+      "Alternate sides in a fluid pedaling motion."
+    ],
+    "tips": [
+      "Rotate from the ribcage, not just moving elbows.",
+      "Keep lower back pressed against the floor."
+    ]
+  },
+  {
+    "id": "ex_squats",
+    "name": "Bodyweight Squats",
+    "category": "lowerBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_squats.png",
+    "steps": [
+      "Stand with feet shoulder-width apart, toes pointing slightly outward.",
+      "Push hips back and bend knees as if sitting back into a chair.",
+      "Lower until thighs are parallel to floor, then drive through heels to return."
+    ],
+    "tips": [
+      "Keep chest lifted and gaze forward.",
+      "Ensure knees track in line with toes."
+    ]
+  },
+  {
+    "id": "ex_lunges",
+    "name": "Lunges",
+    "category": "lowerBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_lunges.png",
+    "steps": [
+      "Take a large step forward with one leg.",
+      "Lower body until both knees form 90-degree angles.",
+      "Push through front foot to return to start and switch legs."
+    ],
+    "tips": [
+      "Front knee should not excessively travel past toes.",
+      "Keep torso upright throughout the movement."
+    ]
+  },
+  {
+    "id": "ex_glute_bridges",
+    "name": "Glute Bridges",
+    "category": "lowerBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_glute_bridges.png",
+    "steps": [
+      "Lie on your back with knees bent and feet flat near glutes.",
+      "Drive through heels to lift hips toward ceiling.",
+      "Squeeze glutes at top for a second, then lower slowly."
+    ],
+    "tips": [
+      "Do not hyperextend lower back at the top.",
+      "Keep shoulders grounded on the floor."
+    ]
+  },
+  {
+    "id": "ex_pushups",
+    "name": "Pushups",
+    "category": "upperBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_pushups.png",
+    "steps": [
+      "Place hands on floor slightly wider than shoulder-width.",
+      "Lower body keeping elbows at 45 degrees until chest nearly touches floor.",
+      "Push forcefully into floor to return to start."
+    ],
+    "tips": [
+      "Maintain a straight line from shoulders to ankles.",
+      "Modify on knees if standard pushups are too strenuous."
+    ]
+  },
+  {
+    "id": "ex_pike_pushups",
+    "name": "Pike Pushups",
+    "category": "upperBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_pike_pushups.png",
+    "steps": [
+      "Assume an inverted V position with hips raised, legs and arms straight.",
+      "Bend elbows lowering crown of head toward floor ahead of hands.",
+      "Push back and up to return to the inverted V."
+    ],
+    "tips": [
+      "Focus power on shoulders (deltoids).",
+      "Keep eyes focused toward your feet."
+    ]
+  },
+  {
+    "id": "ex_tricep_dips",
+    "name": "Tricep Dips",
+    "category": "upperBody",
+    "mediaType": "image",
+    "mediaPath": "assets/media/exercises/ex_tricep_dips.png",
+    "steps": [
+      "Place hands on edge of a bench, chair, or floor behind hips.",
+      "Extend legs forward and bend elbows to 90 degrees lowering hips.",
+      "Push arms straight to return to top, contracting triceps."
+    ],
+    "tips": [
+      "Keep back close to the support surface.",
+      "Do not strain shoulder joint by dipping past 90 degrees."
+    ]
+  }
+]

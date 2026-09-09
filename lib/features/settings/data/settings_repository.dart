@@ -1,5 +1,6 @@
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
+import 'package:interval_timer/features/settings/domain/app_language.dart';
 import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 
 /// Feature-facing settings store (F35 / F02 / F27).
@@ -192,4 +193,13 @@ class SettingsRepository {
 
   Future<void> setBodyWeightUnit(BodyWeightUnit unit) =>
       _prefs.setBodyWeightUnit(unit.storageValue);
+
+  /// F28: maps storage string ↔ domain [AppLanguage].
+  Future<AppLanguage> getAppLanguage() async {
+    final raw = await _prefs.getAppLanguage();
+    return AppLanguage.fromString(raw);
+  }
+
+  Future<void> setAppLanguage(AppLanguage lang) =>
+      _prefs.setAppLanguage(lang.code);
 }

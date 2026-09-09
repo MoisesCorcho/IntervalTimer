@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/utils/session_duration_format.dart';
 import 'package:interval_timer/data/models/session_log.dart';
 
@@ -23,10 +23,10 @@ class SessionLogActionsSheet extends StatelessWidget {
 
   final SessionLog log;
 
-  String get _title {
+  String _title(BuildContext context) {
     if (log.displayName.trim().isNotEmpty) return log.displayName;
     final time = SessionDurationFormat.formatTimeOfDay(log.endedAt);
-    return UiStrings.historyFallbackTitle.replaceAll('{time}', time);
+    return context.l10n.historyFallbackTitle(time);
   }
 
   @override
@@ -52,7 +52,7 @@ class SessionLogActionsSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_title, style: theme.textTheme.titleMedium),
+                  Text(_title(context), style: theme.textTheme.titleMedium),
                   const SizedBox(height: 4),
                   Text(
                     duration,
@@ -66,7 +66,7 @@ class SessionLogActionsSheet extends StatelessWidget {
             ListTile(
               key: const Key('history_sheet_start'),
               leading: const Icon(Icons.play_arrow),
-              title: const Text(UiStrings.historyStart),
+              title: Text(context.l10n.historyStart),
               onTap: () => Navigator.pop(context, SessionLogAction.start),
             ),
             ListTile(
@@ -76,7 +76,7 @@ class SessionLogActionsSheet extends StatelessWidget {
                 color: theme.colorScheme.error,
               ),
               title: Text(
-                UiStrings.historyDelete,
+                context.l10n.historyDelete,
                 style: TextStyle(color: theme.colorScheme.error),
               ),
               onTap: () => Navigator.pop(context, SessionLogAction.delete),

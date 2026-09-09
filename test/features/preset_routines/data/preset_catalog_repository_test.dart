@@ -130,5 +130,56 @@ void main() {
       expect(exercise.id, equals('unknown_id'));
       expect(exercise.name, equals('Ejercicio Desconocido'));
     });
+
+    test('loads localized presets and exercises according to localeCode (R7)', () async {
+      final bundle = FakeAssetBundle({
+        'assets/routines/presets_es.json': validPresetsJson,
+        'assets/routines/presets_en.json': '''[
+          {
+            "id": "preset_upper_15m",
+            "title": "Upper Body Pump 15m (EN)",
+            "description": "Chest focus.",
+            "category": "upperBody",
+            "difficulty": "advanced",
+            "isFeatured": false,
+            "restBetweenExercisesSeconds": 20,
+            "exercises": [
+              { "exerciseId": "ex_pushups", "sets": 4, "workSeconds": 40, "restSeconds": 15 }
+            ]
+          }
+        ]''',
+      });
+
+      final repoEs = AssetPresetCatalogRepository(bundle: bundle, localeCode: 'es');
+      final presetsEs = await repoEs.getPresets();
+      expect(presetsEs.first.title, equals('Upper Body Pump 15m'));
+
+      final repoEn = AssetPresetCatalogRepository(bundle: bundle, localeCode: 'en');
+      final presetsEn = await repoEn.getPresets();
+      expect(presetsEn.first.title, equals('Upper Body Pump 15m (EN)'));
+    });
+
+    test('falls back to English presets and exercises if requested locale is missing (R13)', () async {
+      final bundle = FakeAssetBundle({
+        'assets/routines/presets_en.json': '''[
+          {
+            "id": "preset_upper_15m",
+            "title": "Upper Body Pump 15m (Fallback EN)",
+            "description": "Chest focus.",
+            "category": "upperBody",
+            "difficulty": "advanced",
+            "isFeatured": false,
+            "restBetweenExercisesSeconds": 20,
+            "exercises": [
+              { "exerciseId": "ex_pushups", "sets": 4, "workSeconds": 40, "restSeconds": 15 }
+            ]
+          }
+        ]''',
+      });
+
+      final repoFr = AssetPresetCatalogRepository(bundle: bundle, localeCode: 'fr');
+      final presets = await repoFr.getPresets();
+      expect(presets.first.title, equals('Upper Body Pump 15m (Fallback EN)'));
+    });
   });
 }

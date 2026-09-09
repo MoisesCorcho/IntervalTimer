@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/body_tracking/application/body_tracking_providers.dart';
 import 'package:interval_timer/features/body_tracking/domain/body_measurement.dart';
@@ -19,6 +19,7 @@ class BodyWeightSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final measurementsAsync = ref.watch(bodyMeasurementsProvider);
     final unit = ref.watch(bodyWeightUnitProvider).valueOrNull ??
         BodyWeightUnit.kg;
@@ -38,7 +39,7 @@ class BodyWeightSection extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  UiStrings.bodyWeightSectionTitle,
+                  l10n.bodyWeightSectionTitle,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -49,15 +50,15 @@ class BodyWeightSection extends ConsumerWidget {
                 onPressed: () => _openForm(context, ref),
                 child: Text(
                   weightReading.isEstimated
-                      ? UiStrings.bodyWeightRegisterCta
-                      : UiStrings.bodyWeightUpdateCta,
+                      ? l10n.bodyWeightRegisterCta
+                      : l10n.bodyWeightUpdateCta,
                 ),
               ),
             ],
           ),
           Text(
             key: const Key('body_weight_caption'),
-            _captionText(weightReading.weightKg, weightReading.isEstimated, unit),
+            _captionText(context, weightReading.weightKg, weightReading.isEstimated, unit),
             style: captionStyle,
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -100,7 +101,7 @@ class BodyWeightSection extends ConsumerWidget {
                         vertical: AppTheme.spacingSm,
                       ),
                       child: Text(
-                        _lastLineText(latest, unit),
+                        _lastLineText(context, latest, unit),
                         style: captionStyle,
                       ),
                     ),
@@ -112,10 +113,7 @@ class BodyWeightSection extends ConsumerWidget {
                       onPressed: () =>
                           showBodyWeightHistorySheet(context: context),
                       child: Text(
-                        UiStrings.bodyWeightViewRecordsCount.replaceAll(
-                          '{count}',
-                          '${list.length}',
-                        ),
+                        l10n.bodyWeightViewRecordsCount(list.length),
                       ),
                     ),
                   ),
@@ -130,33 +128,29 @@ class BodyWeightSection extends ConsumerWidget {
   }
 
   static String _captionText(
+    BuildContext context,
     double weightKg,
     bool estimated,
     BodyWeightUnit unit,
   ) {
+    final l10n = context.l10n;
     final value = BodyWeightUnit.formatDisplay(weightKg, unit);
     final unitLabel = unit == BodyWeightUnit.kg
-        ? UiStrings.bodyWeightUnitKg
-        : UiStrings.bodyWeightUnitLb;
+        ? l10n.bodyWeightUnitKg
+        : l10n.bodyWeightUnitLb;
     if (estimated) {
-      return UiStrings.bodyWeightCaptionEstimated
-          .replaceAll('{value}', value)
-          .replaceAll('{unit}', unitLabel);
+      return l10n.bodyWeightCaptionEstimated(value, unitLabel);
     }
-    return UiStrings.bodyWeightCaptionRegistered
-        .replaceAll('{value}', value)
-        .replaceAll('{valueUnit}', unitLabel);
+    return l10n.bodyWeightCaptionRegistered(value, unitLabel);
   }
 
-  static String _lastLineText(BodyMeasurement m, BodyWeightUnit unit) {
+  static String _lastLineText(BuildContext context, BodyMeasurement m, BodyWeightUnit unit) {
+    final l10n = context.l10n;
     final value = BodyWeightUnit.formatDisplay(m.weightKg, unit);
     final unitLabel = unit == BodyWeightUnit.kg
-        ? UiStrings.bodyWeightUnitKg
-        : UiStrings.bodyWeightUnitLb;
-    return UiStrings.bodyWeightLastLine
-        .replaceAll('{value}', value)
-        .replaceAll('{unit}', unitLabel)
-        .replaceAll('{date}', m.localDate);
+        ? l10n.bodyWeightUnitKg
+        : l10n.bodyWeightUnitLb;
+    return l10n.bodyWeightLastLine(value, unitLabel, m.localDate);
   }
 
   static Future<void> _openForm(
@@ -170,7 +164,7 @@ class BodyWeightSection extends ConsumerWidget {
     );
     if (saved == true && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(UiStrings.bodyWeightSaved)),
+        SnackBar(content: Text(context.l10n.bodyWeightSaved)),
       );
     }
   }
@@ -184,6 +178,7 @@ class _EmptyBodyWeight extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     return Card(
       key: const Key('body_weight_empty'),
       child: Padding(
@@ -191,7 +186,7 @@ class _EmptyBodyWeight extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              UiStrings.bodyWeightEmptyMessage,
+              l10n.bodyWeightEmptyMessage,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -201,7 +196,7 @@ class _EmptyBodyWeight extends StatelessWidget {
             AppPrimaryButton(
               key: const Key('body_weight_empty_cta'),
               onPressed: onRegister,
-              label: UiStrings.bodyWeightRegisterButton,
+              label: l10n.bodyWeightRegisterButton,
             ),
           ],
         ),
@@ -217,17 +212,18 @@ class _BodyWeightError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Card(
       key: const Key('body_weight_error'),
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacingMd),
         child: Column(
           children: [
-            const Text(UiStrings.bodyWeightErrorRetry),
+            Text(l10n.bodyWeightErrorRetry),
             const SizedBox(height: AppTheme.spacingSm),
             AppPrimaryButton(
               onPressed: onRetry,
-              label: UiStrings.retry,
+              label: l10n.retry,
             ),
           ],
         ),

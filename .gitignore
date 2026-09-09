@@ -49,3 +49,4 @@ app.*.map.json
 /terminals
 # Local AI runtime state
 .atl/
+untranslated_messages.json

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 import 'package:interval_timer/shared/widgets/number_stepper.dart';
@@ -22,6 +22,7 @@ class WorkoutRoundsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final accent = scheme.primary;
@@ -39,7 +40,7 @@ class WorkoutRoundsCard extends StatelessWidget {
 
     final clamped = WorkoutValidators.clampRounds(rounds);
     final semanticsValue =
-        '${UiStrings.workoutRoundsTitle}, $clamped';
+        '${l10n.workoutRoundsTitle}, $clamped';
 
     return Semantics(
       label: semanticsValue,
@@ -94,7 +95,7 @@ class WorkoutRoundsCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          UiStrings.workoutRoundsTitle,
+                          l10n.workoutRoundsTitle,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: scheme.onSurface,
@@ -102,7 +103,7 @@ class WorkoutRoundsCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          UiStrings.workoutRoundsHelper,
+                          l10n.workoutRoundsHelper,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: scheme.onSurfaceVariant,
                             height: 1.3,
@@ -124,8 +125,7 @@ class WorkoutRoundsCard extends StatelessWidget {
                       color: scheme.onSecondaryContainer,
                     ),
                     label: Text(
-                      UiStrings.workoutRoundsBlockChip
-                          .replaceAll('{count}', '$clamped'),
+                      l10n.workoutRoundsBlockChip(clamped),
                     ),
                     visualDensity: VisualDensity.compact,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -149,8 +149,8 @@ class WorkoutRoundsCard extends StatelessWidget {
                     value: clamped,
                     min: WorkoutValidators.minRounds,
                     max: WorkoutValidators.maxRounds,
-                    label: UiStrings.workoutRoundsShort,
-                    semanticsLabel: UiStrings.workoutRoundsShort,
+                    label: l10n.workoutRoundsShort,
+                    semanticsLabel: l10n.workoutRoundsShort,
                     onChanged: onChanged,
                   ),
                 ),

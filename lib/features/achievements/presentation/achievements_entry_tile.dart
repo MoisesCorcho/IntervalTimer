@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/achievements/application/achievements_providers.dart';
 
@@ -12,6 +12,7 @@ class AchievementsEntryTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final unlocksAsync = ref.watch(unlockedAchievementsProvider);
     final unlockedCount = unlocksAsync.valueOrNull?.length ?? 0;
     final total = ref.watch(achievementCatalogProvider).length;
@@ -45,15 +46,15 @@ class AchievementsEntryTile extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          UiStrings.achievementsEntryTitle,
+                          l10n.achievementsEntryTitle,
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         Text(
                           unlocksAsync.hasError
-                              ? UiStrings.achievementsEntrySubtitle
-                              : '$unlockedCount / $total · ${UiStrings.achievementsEntrySubtitle}',
+                              ? l10n.achievementsEntrySubtitle
+                              : '$unlockedCount / $total · ${l10n.achievementsEntrySubtitle}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),

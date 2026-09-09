@@ -3,6 +3,7 @@ import 'package:interval_timer/features/body_tracking/application/body_tracking_
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
+import 'package:interval_timer/features/settings/domain/app_language.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
 import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 
@@ -36,6 +37,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final sessionLockScreenEnabled = await repo.getSessionLockScreenEnabled();
     final themeMode = await repo.getThemeMode();
     final bodyWeightUnit = await repo.getBodyWeightUnit();
+    final appLanguage = await repo.getAppLanguage();
     return AppSettings(
       prepSeconds: prep,
       voiceEnabled: voiceEnabled,
@@ -62,6 +64,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
       sessionLockScreenEnabled: sessionLockScreenEnabled,
       themeMode: themeMode,
       bodyWeightUnit: bodyWeightUnit,
+      appLanguage: appLanguage,
     );
   }
 
@@ -271,5 +274,12 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     state = AsyncData(current.copyWith(bodyWeightUnit: unit));
     // Keep body-tracking unit provider in sync for form/chart labels.
     ref.invalidate(bodyWeightUnitProvider);
+  }
+
+  Future<void> setAppLanguage(AppLanguage language) async {
+    await ref.read(settingsRepositoryProvider).setAppLanguage(language);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(appLanguage: language));
   }
 }

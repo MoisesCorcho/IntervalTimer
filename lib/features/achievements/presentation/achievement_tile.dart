@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/local_date_format.dart';
 import 'package:interval_timer/features/achievements/domain/achievement_def.dart';
@@ -17,6 +17,7 @@ class AchievementTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final def = progress.def;
     final unlocked = progress.isUnlocked;
     final muted = theme.colorScheme.onSurfaceVariant;
@@ -28,8 +29,8 @@ class AchievementTile extends StatelessWidget {
         : muted.withValues(alpha: 0.55);
 
     return Semantics(
-      label: '${UiStrings.achievementTitle(def.id)}. '
-          '${unlocked ? UiStrings.achievementsUnlockedBadge : UiStrings.achievementsLockedBadge}',
+      label: '${l10n.achievementTitle(def.id)}. '
+          '${unlocked ? l10n.achievementsUnlockedBadge : l10n.achievementsLockedBadge}',
       child: Padding(
         key: Key('achievement_tile_${def.id}'),
         padding: const EdgeInsets.symmetric(
@@ -62,7 +63,7 @@ class AchievementTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    UiStrings.achievementTitle(def.id),
+                    l10n.achievementTitle(def.id),
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: titleColor,
@@ -70,7 +71,7 @@ class AchievementTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    UiStrings.achievementDescription(def.id),
+                    l10n.achievementDescription(def.id),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: muted,
                     ),
@@ -78,8 +79,7 @@ class AchievementTile extends StatelessWidget {
                   const SizedBox(height: AppTheme.spacingSm),
                   if (unlocked && progress.unlockedAt != null)
                     Text(
-                      UiStrings.achievementsUnlockedOn.replaceAll(
-                        '{date}',
+                      l10n.achievementsUnlockedOn(
                         _formatDate(progress.unlockedAt!),
                       ),
                       style: theme.textTheme.labelSmall?.copyWith(
@@ -99,7 +99,7 @@ class AchievementTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      _progressLabel(def, progress.current, progress.target),
+                      _progressLabel(l10n, def, progress.current, progress.target),
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: muted,
                       ),
@@ -126,18 +126,20 @@ class AchievementTile extends StatelessWidget {
     );
   }
 
-  static String _progressLabel(AchievementDef def, int current, int target) {
-    final template = switch (def.kind) {
+  static String _progressLabel(
+    AppLocalizations l10n,
+    AchievementDef def,
+    int current,
+    int target,
+  ) {
+    return switch (def.kind) {
       AchievementMetricKind.completedSessionCount =>
-        UiStrings.achievementsProgressSessions,
+        l10n.achievementsProgressSessions(current, target),
       AchievementMetricKind.currentStreakDays =>
-        UiStrings.achievementsProgressDays,
+        l10n.achievementsProgressDays(current, target),
       AchievementMetricKind.completedTotalMinutes =>
-        UiStrings.achievementsProgressMinutes,
+        l10n.achievementsProgressMinutes(current, target),
     };
-    return template
-        .replaceAll('{current}', '$current')
-        .replaceAll('{target}', '$target');
   }
 
   static String _formatDate(DateTime utc) {

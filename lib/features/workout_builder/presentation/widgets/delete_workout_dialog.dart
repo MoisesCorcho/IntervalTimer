@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
@@ -8,9 +8,10 @@ Future<bool?> showDeleteWorkoutDialog(BuildContext context) {
     context: context,
     builder: (context) {
       final colorScheme = Theme.of(context).colorScheme;
+      final l10n = context.l10n;
       return AlertDialog(
-        title: const Text(UiStrings.deleteWorkoutTitle),
-        content: const Text(UiStrings.deleteWorkoutMessage),
+        title: Text(l10n.deleteWorkoutTitle),
+        content: Text(l10n.deleteWorkoutMessage),
         actions: [
           DialogActionsRow(
             children: [
@@ -18,7 +19,7 @@ Future<bool?> showDeleteWorkoutDialog(BuildContext context) {
                 key: const Key('delete_workout_cancel'),
                 compact: true,
                 onPressed: () => Navigator.pop(context, false),
-                label: UiStrings.cancel,
+                label: l10n.cancel,
               ),
               AppPrimaryButton(
                 key: const Key('delete_workout_confirm'),
@@ -26,7 +27,7 @@ Future<bool?> showDeleteWorkoutDialog(BuildContext context) {
                 backgroundColor: colorScheme.error,
                 foregroundColor: colorScheme.onError,
                 onPressed: () => Navigator.pop(context, true),
-                label: UiStrings.delete,
+                label: l10n.delete,
               ),
             ],
           ),

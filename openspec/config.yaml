@@ -1,0 +1,71 @@
+﻿schema: spec-driven
+
+context: |
+  Tech stack: Flutter 3.x, Dart ^3.12.2, Riverpod 2.6, Drift 2.25, GoRouter 14.8
+  Architecture: Clean Architecture (Core, Data, Domain, Presentation), Riverpod StateNotifier
+  Testing: flutter_test, fake_async, integration_test
+  Style: flutter_lints, effective Dart conventions, robust solutions
+
+strict_tdd: false
+
+projects:
+  - path: .
+    stack: Flutter application
+    test_command: flutter test
+    framework: flutter_test
+    coverage_command: flutter test --coverage
+    lint_command: flutter analyze
+    typecheck_command: flutter analyze
+    format_command: dart format --set-exit-if-changed .
+  - path: packages/session_compact_notification
+    stack: Flutter plugin (Android)
+    test_command: null
+    framework: null
+    coverage_command: null
+    lint_command: flutter analyze
+    typecheck_command: flutter analyze
+    format_command: dart format --set-exit-if-changed .
+
+testing:
+  strict_tdd: false
+  projects:
+    - path: .
+      test_command: flutter test
+      framework: flutter_test
+      layers:
+        unit: true
+        integration: true
+        e2e: true
+      coverage_command: flutter test --coverage
+    - path: packages/session_compact_notification
+      test_command: null
+      framework: null
+      layers:
+        unit: false
+        integration: false
+        e2e: false
+      coverage_command: null
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    guidelines:
+      - Follow existing code patterns and conventions in specs/_global/03-conventions.md
+    tdd: false
+    test_command: flutter test
+  verify:
+    test_command: flutter test
+    build_command: flutter build apk --debug
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas

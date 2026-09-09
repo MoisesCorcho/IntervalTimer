@@ -1,6 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/stats/domain/stats_models.dart';
 
@@ -98,7 +100,7 @@ class ActivityBarChart extends StatelessWidget {
                           return Padding(
                             padding: const EdgeInsets.only(top: 4),
                             child: Text(
-                              _bottomLabel(i),
+                              _bottomLabel(i, context),
                               style: TextStyle(
                                 color: scheme.onSurfaceVariant,
                                 fontSize: period == ChartPeriod.month ? 9 : 11,
@@ -142,7 +144,7 @@ class ActivityBarChart extends StatelessWidget {
             ),
             const SizedBox(height: AppTheme.spacingXs),
             Text(
-              UiStrings.progressChartCaption,
+              context.l10n.progressChartCaption,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: scheme.onSurfaceVariant,
@@ -154,11 +156,32 @@ class ActivityBarChart extends StatelessWidget {
     );
   }
 
-  String _bottomLabel(int index) {
+  String _bottomLabel(int index, BuildContext context) {
     if (period == ChartPeriod.week) {
-      // series is Mon–Sun; UiStrings.weekdayShort is LUN…DOM
-      if (index >= 0 && index < UiStrings.weekdayShort.length) {
-        return UiStrings.weekdayShort[index];
+      if (index >= 0 && index < 7) {
+        final rawLocale = Localizations.maybeLocaleOf(context)?.languageCode;
+        bool isLocaleAvailable(String? loc) {
+          if (loc == null) return false;
+          try {
+            return DateFormat.localeExists(loc);
+          } catch (_) {
+            return false;
+          }
+        }
+
+        if (isLocaleAvailable(rawLocale)) {
+          try {
+            // Monday is 2026-03-02
+            final day = DateTime(2026, 3, 2 + index);
+            return DateFormat.E(rawLocale!)
+                .format(day)
+                .toUpperCase()
+                .replaceAll('.', '');
+          } catch (_) {}
+        }
+        if (index < UiStrings.weekdayShort.length) {
+          return UiStrings.weekdayShort[index];
+        }
       }
       return '';
     }

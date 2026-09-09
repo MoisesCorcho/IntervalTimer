@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/stats/domain/stats_models.dart';
 
@@ -27,7 +27,7 @@ class ChartPeriodToggle extends StatelessWidget {
         ButtonSegment(
           value: ChartPeriod.week,
           label: Text(
-            UiStrings.progressChartWeek,
+            context.l10n.progressChartWeek,
             textAlign: TextAlign.center,
             style: textTheme.labelLarge?.copyWith(
               height: 1.0,
@@ -39,7 +39,7 @@ class ChartPeriodToggle extends StatelessWidget {
         ButtonSegment(
           value: ChartPeriod.month,
           label: Text(
-            UiStrings.progressChartMonth,
+            context.l10n.progressChartMonth,
             textAlign: TextAlign.center,
             style: textTheme.labelLarge?.copyWith(
               height: 1.0,

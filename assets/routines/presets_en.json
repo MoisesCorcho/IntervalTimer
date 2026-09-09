@@ -1,0 +1,86 @@
+[
+  {
+    "id": "preset_hiit_15m",
+    "title": "HIIT Calorie Burn 15m",
+    "description": "High-intensity interval session to maximize calorie burn and boost metabolism.",
+    "category": "hiit",
+    "difficulty": "intermediate",
+    "isFeatured": true,
+    "restBetweenExercisesSeconds": 15,
+    "exercises": [
+      { "exerciseId": "ex_jumping_jacks", "sets": 3, "workSeconds": 30, "restSeconds": 10 },
+      { "exerciseId": "ex_burpees", "sets": 3, "workSeconds": 30, "restSeconds": 15 },
+      { "exerciseId": "ex_mountain_climbers", "sets": 3, "workSeconds": 30, "restSeconds": 10 },
+      { "exerciseId": "ex_high_knees", "sets": 3, "workSeconds": 30, "restSeconds": 10 }
+    ]
+  },
+  {
+    "id": "preset_abs_10m",
+    "title": "Steel Abs 10m",
+    "description": "Routine focused on strengthening upper, lower, and oblique abdominals.",
+    "category": "core",
+    "difficulty": "beginner",
+    "isFeatured": true,
+    "restBetweenExercisesSeconds": 10,
+    "exercises": [
+      { "exerciseId": "ex_crunches", "sets": 3, "workSeconds": 40, "restSeconds": 15 },
+      { "exerciseId": "ex_plank", "sets": 3, "workSeconds": 45, "restSeconds": 15 },
+      { "exerciseId": "ex_bicycle_crunches", "sets": 3, "workSeconds": 30, "restSeconds": 10 }
+    ]
+  },
+  {
+    "id": "preset_legs_15m",
+    "title": "Legs & Glutes 15m",
+    "description": "Metabolic and strength workout for lower body muscles.",
+    "category": "lowerBody",
+    "difficulty": "intermediate",
+    "isFeatured": false,
+    "restBetweenExercisesSeconds": 20,
+    "exercises": [
+      { "exerciseId": "ex_squats", "sets": 4, "workSeconds": 40, "restSeconds": 15 },
+      { "exerciseId": "ex_lunges", "sets": 3, "workSeconds": 35, "restSeconds": 15 },
+      { "exerciseId": "ex_glute_bridges", "sets": 3, "workSeconds": 45, "restSeconds": 15 }
+    ]
+  },
+  {
+    "id": "preset_fullbody_12m",
+    "title": "Full Body Express 12m",
+    "description": "Total body workout in minimal time, ideal for busy days.",
+    "category": "fullBody",
+    "difficulty": "beginner",
+    "isFeatured": true,
+    "restBetweenExercisesSeconds": 15,
+    "exercises": [
+      { "exerciseId": "ex_jumping_jacks", "sets": 2, "workSeconds": 30, "restSeconds": 10 },
+      { "exerciseId": "ex_pushups", "sets": 3, "workSeconds": 30, "restSeconds": 15 },
+      { "exerciseId": "ex_squats", "sets": 3, "workSeconds": 40, "restSeconds": 15 }
+    ]
+  },
+  {
+    "id": "preset_upper_15m",
+    "title": "Upper Body Pump 15m",
+    "description": "Target chest, back, shoulders, and arms using bodyweight.",
+    "category": "upperBody",
+    "difficulty": "advanced",
+    "isFeatured": false,
+    "restBetweenExercisesSeconds": 20,
+    "exercises": [
+      { "exerciseId": "ex_pushups", "sets": 4, "workSeconds": 40, "restSeconds": 15 },
+      { "exerciseId": "ex_pike_pushups", "sets": 3, "workSeconds": 30, "restSeconds": 15 },
+      { "exerciseId": "ex_tricep_dips", "sets": 3, "workSeconds": 35, "restSeconds": 15 }
+    ]
+  },
+  {
+    "id": "preset_cardio_8m",
+    "title": "Cardio Tabata 8m",
+    "description": "Classic Tabata protocol of 20s work and 10s rest at maximum intensity.",
+    "category": "cardio",
+    "difficulty": "advanced",
+    "isFeatured": false,
+    "restBetweenExercisesSeconds": 10,
+    "exercises": [
+      { "exerciseId": "ex_burpees", "sets": 4, "workSeconds": 20, "restSeconds": 10 },
+      { "exerciseId": "ex_mountain_climbers", "sets": 4, "workSeconds": 20, "restSeconds": 10 }
+    ]
+  }
+]

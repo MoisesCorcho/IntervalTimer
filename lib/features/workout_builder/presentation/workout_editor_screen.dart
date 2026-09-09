@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/data/models/favorite_routine.dart';
@@ -41,15 +41,16 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
 
     final saved = await showDialog<bool>(
       context: context,
-      builder: (context) => StatefulBuilder(
+      builder: (dialogCtx) => StatefulBuilder(
         builder: (context, setDialogState) {
+          final l10n = context.l10n;
           return AlertDialog(
-            title: const Text(UiStrings.workoutName),
+            title: Text(l10n.workoutName),
             content: TextField(
               controller: controller,
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
-                labelText: UiStrings.workoutName,
+                labelText: l10n.workoutName,
                 errorText: nameError,
               ),
               maxLength: WorkoutValidators.maxWorkoutNameLength + 1,
@@ -60,7 +61,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                   AppSecondaryButton(
                     compact: true,
                     onPressed: () => Navigator.pop(context, false),
-                    label: UiStrings.cancel,
+                    label: l10n.cancel,
                   ),
                   AppPrimaryButton(
                     compact: true,
@@ -74,7 +75,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                       }
                       Navigator.pop(context, true);
                     },
-                    label: UiStrings.save,
+                    label: l10n.save,
                   ),
                 ],
               ),
@@ -165,7 +166,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
     final workout =
         ref.read(workoutEditorControllerProvider(widget.workoutId)).valueOrNull;
     if (workout == null || workout.exercises.isEmpty) {
-      setState(() => _actionError = UiStrings.emptyWorkoutStart);
+      setState(() => _actionError = context.l10n.emptyWorkoutStart);
       return;
     }
 
@@ -196,16 +197,16 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
     if (started) {
       context.go('/execute');
     } else {
-      setState(() => _actionError = UiStrings.emptyWorkoutStart);
+      setState(() => _actionError = context.l10n.emptyWorkoutStart);
     }
   }
 
   void _showPersistenceError(Future<void> Function() onRetry) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text(UiStrings.persistenceError),
+        content: Text(context.l10n.persistenceError),
         action: SnackBarAction(
-          label: UiStrings.retry,
+          label: context.l10n.retry,
           onPressed: () => onRetry(),
         ),
       ),
@@ -214,6 +215,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final workoutAsync =
         ref.watch(workoutEditorControllerProvider(widget.workoutId));
     final canEdit = _editor.canEdit;
@@ -223,8 +225,8 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
         title: workoutAsync.when(
           skipLoadingOnReload: true,
           data: (workout) => Text(workout.name),
-          loading: () => const Text(UiStrings.editWorkout),
-          error: (_, __) => const Text(UiStrings.editWorkout),
+          loading: () => Text(l10n.editWorkout),
+          error: (_, __) => Text(l10n.editWorkout),
         ),
         actions: [
           FavoriteToggleButton(
@@ -233,7 +235,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.drive_file_rename_outline),
-            tooltip: UiStrings.workoutName,
+            tooltip: l10n.workoutName,
             onPressed: workoutAsync.hasValue
                 ? () => _showRenameDialog(workoutAsync.requireValue.name)
                 : null,
@@ -248,13 +250,13 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(UiStrings.persistenceError),
+              Text(l10n.persistenceError),
               const SizedBox(height: AppTheme.spacingMd),
               AppPrimaryButton(
                 onPressed: () => ref.invalidate(
                   workoutEditorControllerProvider(widget.workoutId),
                 ),
-                label: UiStrings.retry,
+                label: l10n.retry,
               ),
             ],
           ),
@@ -295,7 +297,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(AppTheme.spacingLg),
                             child: Text(
-                              UiStrings.emptyWorkoutStart,
+                              l10n.emptyWorkoutStart,
                               textAlign: TextAlign.center,
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
@@ -328,6 +330,9 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                           },
                           itemBuilder: (context, index) {
                             final exercise = workout.exercises[index];
+                            final restFinalPart = exercise.restAfterExerciseSeconds > 0
+                                ? ' · ${l10n.exerciseRestFinal(formatDurationMmSs(exercise.restAfterExerciseSeconds))}'
+                                : '';
                             return Card(
                               key: ValueKey(exercise.id),
                               child: ListTile(
@@ -338,10 +343,10 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                                     : null,
                                 title: Text(exercise.name),
                                 subtitle: Text(
-                                  '${exercise.sets} sets · '
+                                  '${l10n.exerciseSetsChip(exercise.sets)} · '
                                   '${formatDurationMmSs(exercise.workSeconds)} · '
-                                  'entre ${formatDurationMmSs(exercise.restSeconds)}'
-                                  '${exercise.restAfterExerciseSeconds > 0 ? ' · final ${formatDurationMmSs(exercise.restAfterExerciseSeconds)}' : ''}',
+                                  '${l10n.exerciseRestBetween(formatDurationMmSs(exercise.restSeconds))}'
+                                  '$restFinalPart',
                                 ),
                                 trailing: canEdit
                                     ? Row(
@@ -399,7 +404,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                         onPressed:
                             canEdit ? () => _showExerciseSheet() : null,
                         icon: Icons.add,
-                        label: UiStrings.addExercise,
+                        label: l10n.addExercise,
                         expand: true,
                       ),
                     ),
@@ -407,7 +412,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                     Expanded(
                       child: AppPrimaryButton(
                         onPressed: _trainWorkout,
-                        label: UiStrings.train,
+                        label: l10n.train,
                         expand: true,
                       ),
                     ),

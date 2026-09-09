@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
@@ -15,31 +15,32 @@ class BodyWeightUnitSettingsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return Column(
       key: const Key('body_weight_unit_settings'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          UiStrings.bodyWeightUnitsSectionTitle,
+          l10n.bodyWeightUnitsSectionTitle,
           style: theme.textTheme.titleLarge,
         ),
         const SizedBox(height: AppTheme.spacingSm),
         Text(
-          UiStrings.bodyWeightUnitPreferenceLabel,
+          l10n.bodyWeightUnitPreferenceLabel,
           style: theme.textTheme.titleMedium,
         ),
         const SizedBox(height: AppTheme.spacingSm),
         SegmentedButton<BodyWeightUnit>(
           key: const Key('body_weight_unit_segmented'),
-          segments: const [
+          segments: [
             ButtonSegment<BodyWeightUnit>(
               value: BodyWeightUnit.kg,
-              label: Text(UiStrings.bodyWeightUnitKg),
+              label: Text(l10n.bodyWeightUnitKg),
             ),
             ButtonSegment<BodyWeightUnit>(
               value: BodyWeightUnit.lb,
-              label: Text(UiStrings.bodyWeightUnitLb),
+              label: Text(l10n.bodyWeightUnitLb),
             ),
           ],
           selected: {settings.bodyWeightUnit},

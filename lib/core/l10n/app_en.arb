@@ -1,0 +1,511 @@
+{
+  "@@locale": "en",
+  "appTitle": "Interval Timer",
+  "appTagline": "Your workout assistant",
+
+  "languageLabel": "Language",
+  "languageHint": "Select interface and timer voice language.",
+  "languageAuto": "Automatic (System)",
+  "languageEs": "Spanish",
+  "languageEn": "English",
+
+  "timerPhasePreparation": "Get Ready",
+  "timerPhaseWork": "Work",
+  "timerPhaseRest": "Rest",
+  "timerPhaseCompleted": "Session Complete",
+
+  "routineTitle": "My Routine",
+  "addInterval": "Add interval",
+  "editInterval": "Edit interval",
+  "intervalName": "Interval name",
+  "duration": "Duration",
+  "minutesLabel": "MINUTES",
+  "secondsLabel": "SECONDS",
+  "totalLabel": "total",
+  "increaseMinutes": "Increase minutes",
+  "decreaseMinutes": "Decrease minutes",
+  "increaseSeconds": "Increase seconds",
+  "decreaseSeconds": "Decrease seconds",
+  "color": "Color",
+  "save": "Save",
+  "cancel": "Cancel",
+  "startSession": "Start",
+  "emptyRoutineMessage": "Add at least one interval to start",
+  "emptyRoutineHint": "No intervals in routine",
+
+  "nameRequired": "Name is required",
+  "nameTooLong": "Name cannot exceed 50 characters",
+  "durationInvalid": "Invalid duration. Must be between 00:01 and 99:59",
+  "emptyRoutineStart": "At least one interval is required to start",
+
+  "pause": "Pause",
+  "resume": "Resume",
+  "skip": "Skip",
+  "previous": "Previous",
+  "cancelSession": "Cancel session",
+  "exitSession": "Exit",
+  "nextInterval": "Next",
+  "lastInterval": "Last interval",
+  "intervalProgress": "Interval {current} of {total}",
+  "@intervalProgress": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "remainingLabel": "REMAINING",
+  "preparation": "GET READY",
+  "exitConfirmTitle": "Exit workout?",
+  "exitConfirmMessage": "Session progress will be lost.",
+  "exitConfirmContinue": "Continue",
+  "exitConfirmLeave": "Exit",
+
+  "settingsTitle": "Settings",
+  "prepSecondsLabel": "Preparation seconds",
+  "prepSecondsHint": "Countdown before the first interval (0 = disabled).",
+  "themeLabel": "Theme",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeSystem": "Follow system",
+
+  "voiceSectionTitle": "Voice",
+  "voiceEnabledLabel": "Voice enabled",
+  "voiceEnabledHint": "Announcements and spoken countdown. Does not stop timer.",
+  "countdownSecondsLabel": "Countdown seconds",
+  "countdownSecondsHint": "Speaks the last N seconds of each interval (0 = start announcement only).",
+  "announceIntervalNameLabel": "Announce interval name",
+  "announceIntervalNameHint": "Speaks interval name (or custom prompt) at start.",
+  "announceTextLabel": "Announcement text (optional)",
+  "announceTextHint": "If empty, interval name will be used.",
+  "announceTextTooLong": "Announcement text cannot exceed 80 characters",
+  "musicDuckingLabel": "Ducking background music",
+  "musicDuckingHint": "Lowers external music volume during voice announcements.",
+
+  "vibrationSectionTitle": "Vibration",
+  "vibrationEnabledLabel": "Vibration enabled",
+  "vibrationEnabledHint": "Haptic feedback on interval change and countdown. Independent of voice.",
+  "vibrationOnIntervalStartLabel": "On interval change",
+  "vibrationOnIntervalStartHint": "Pulse when starting each interval.",
+  "vibrationOnCountdownLabel": "On countdown",
+  "vibrationOnCountdownHint": "Pulses during the last seconds of each interval.",
+  "vibrationCountdownSecondsLabel": "Countdown seconds (vibration)",
+  "vibrationCountdownSecondsHint": "Vibrates during last N seconds (0 = interval change only).",
+
+  "soundSectionTitle": "Sound effects",
+  "soundEnabledLabel": "Sound effects enabled",
+  "soundEnabledHint": "Timer beeps and chimes. Independent of voice and vibration.",
+  "soundOnWorkStartLabel": "Work start",
+  "soundOnWorkStartHint": "Sound when starting work intervals (or non-rest).",
+  "soundOnRestStartLabel": "Rest start",
+  "soundOnRestStartHint": "Sound when starting rest intervals.",
+  "soundOnSessionCompleteLabel": "Session complete",
+  "soundOnSessionCompleteHint": "Sound upon workout completion.",
+  "soundOnPrepTickLabel": "Preparation ticks",
+  "soundOnPrepTickHint": "One tick per second during preparation countdown.",
+  "soundOnPhaseWarningLabel": "Final countdown",
+  "soundOnPhaseWarningHint": "Ticks during the last N seconds of each interval.",
+  "soundCountdownSecondsLabel": "Countdown seconds (sound)",
+  "soundCountdownSecondsHint": "Plays alert in the last N seconds (0 = disabled).",
+  "soundClipLabel": "Sound",
+  "soundChangeClip": "Change",
+  "soundPreviewClip": "Test",
+  "soundPickClipTitle": "Select sound",
+  "soundSlotWorkStart": "Work start",
+  "soundSlotRestStart": "Rest start",
+  "soundSlotSessionComplete": "Session complete",
+  "soundSlotPrepTick": "Preparation tick",
+  "soundSlotPhaseWarning": "Countdown alert",
+
+  "keepScreenOnSectionTitle": "Screen",
+  "keepScreenOnEnabledLabel": "Keep screen on",
+  "keepScreenOnEnabledHint": "Prevents screen from sleeping during workout. May consume more battery.",
+
+  "sessionLockScreenSectionTitle": "Session controls",
+  "sessionLockScreenEnabledLabel": "Session notification / lock screen",
+  "sessionLockScreenEnabledHint": "Shows interval and remaining time with pause/skip controls while training.",
+  "sessionLockScreenPermissionDenied": "Notification permission is required for background session. Timer keeps working in app.",
+  "sessionLockScreenRetryPermission": "Retry permission",
+  "sessionLockScreenOpenSystemSettings": "Open system settings",
+  "sessionSurfaceFallbackTitle": "Interval",
+  "sessionSurfaceStatusRunning": "Running",
+  "sessionSurfaceStatusPaused": "Paused",
+
+  "sessionCompleted": "Session completed!",
+  "sessionCompletedMessage": "You have completed all intervals in the routine.",
+  "backToRoutine": "Back",
+  "sessionSummaryGreatJob": "Great job!",
+  "sessionSummaryTraining": "Workout",
+  "sessionSummaryRest": "Total rest",
+  "sessionSummarySharePrompt": "Share your results with style!",
+  "sessionSummarySharePromptDetail": "Choose a template, add a photo, and share or save to gallery.",
+  "sessionSummaryShare": "Share",
+  "sessionSummarySharing": "Sharing…",
+  "sessionSummaryShareFailed": "Could not generate or share image. Try again.",
+  "sessionSummaryNotePrompt": "How was your workout?",
+  "sessionSummaryNoteUnavailable": "Note will be available in a moment. You can also add it in History.",
+  "sessionSummaryNoteSaveFailed": "Could not save note. Retry or exit without saving.",
+  "sessionSummaryDoneAnyway": "Exit without note",
+  "sessionSummaryDone": "Done",
+  "sessionSummaryFallbackName": "Workout",
+  "sessionSummaryShareDuration": "Duration",
+  "sessionSummaryShareKcal": "kcal (est.)",
+  "sessionSummaryShareStreak": "Streak (days)",
+  "sessionSummaryShareTitle": "Share",
+  "sessionSummaryShareAddPhoto": "Add photo",
+  "sessionSummaryShareTakePhoto": "Take photo",
+  "sessionSummarySharePickGallery": "Select image",
+  "sessionSummarySharePhotoFailed": "Could not retrieve photo. Check permissions and try again.",
+  "sessionSummaryShareSaveGallery": "Save to gallery",
+  "sessionSummaryShareSavedGallery": "Image saved to gallery",
+  "sessionSummaryShareSaveGalleryFailed": "Could not save to gallery. Check permissions.",
+  "sessionSummaryShareOfflineHint": "Templates and photos work offline",
+  "sessionSummaryShareWorkoutBadge": "Workout",
+  "sessionSummaryShareSets": "Sets",
+  "sessionSummaryShareWork": "Work",
+  "sessionSummaryShareRest": "Rest",
+  "sessionSummarySheetHint": "Swipe up for more details",
+  "sessionSummaryNewAchievementsOne": "1 new achievement!",
+  "sessionSummaryNewAchievementsMany": "{count} new achievements!",
+  "@sessionSummaryNewAchievementsMany": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "sessionSummaryViewAchievements": "View achievements",
+
+  "achievementsTitle": "Achievements",
+  "achievementsEntryTitle": "Achievements",
+  "achievementsEntrySubtitle": "View unlocked badges and progress",
+  "achievementsUnlockedBadge": "Unlocked",
+  "achievementsLockedBadge": "Pending",
+  "achievementsError": "Could not load achievements",
+  "achievementsEmptyHint": "Complete sessions to unlock achievements",
+  "achievementsSheetTitle": "Achievements unlocked!",
+  "achievementsSheetClose": "Awesome",
+  "achievementsUnlockedOn": "Unlocked on {date}",
+  "@achievementsUnlockedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "achievementsProgressSessions": "{current}/{target} sessions",
+  "@achievementsProgressSessions": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "achievementsProgressDays": "{current}/{target} days",
+  "@achievementsProgressDays": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+  "achievementsProgressMinutes": "{current}/{target} min",
+  "@achievementsProgressMinutes": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "target": { "type": "int" }
+    }
+  },
+
+  "achievementFirstSessionTitle": "First session",
+  "achievementFirstSessionDesc": "Complete your first workout session.",
+  "achievementSessions10Title": "10 sessions",
+  "achievementSessions10Desc": "Complete 10 total sessions.",
+  "achievementSessions25Title": "25 sessions",
+  "achievementSessions25Desc": "Complete 25 total sessions.",
+  "achievementSessions50Title": "50 sessions",
+  "achievementSessions50Desc": "Complete 50 total sessions.",
+  "achievementSessions100Title": "100 sessions",
+  "achievementSessions100Desc": "Complete 100 total sessions.",
+  "achievementStreak3Title": "3-day streak",
+  "achievementStreak3Desc": "Work out at least one day for 3 days in a row.",
+  "achievementStreak7Title": "7-day streak",
+  "achievementStreak7Desc": "Work out at least one day for 7 days in a row.",
+  "achievementStreak14Title": "14-day streak",
+  "achievementStreak14Desc": "Work out at least one day for 14 days in a row.",
+  "achievementStreak30Title": "30-day streak",
+  "achievementStreak30Desc": "Work out at least one day for 30 days in a row.",
+  "achievementMinutes60Title": "60 minutes",
+  "achievementMinutes60Desc": "Accumulate 60 minutes of completed sessions.",
+  "achievementMinutes300Title": "300 minutes",
+  "achievementMinutes300Desc": "Accumulate 300 minutes of completed sessions.",
+  "achievementMinutes1000Title": "1000 minutes",
+  "achievementMinutes1000Desc": "Accumulate 1000 minutes of completed sessions.",
+
+  "persistenceError": "Could not save. Try again.",
+  "retry": "Retry",
+
+  "workoutsTitle": "My Workouts",
+  "navRoutine": "Routine",
+  "navWorkouts": "Workouts",
+  "navHistory": "History",
+  "navSettings": "Settings",
+
+  "historyTitle": "History",
+  "historyWorkoutsSection": "Workouts",
+  "historyEmptyDay": "No workouts this day",
+  "historyAddNote": "Add a note…",
+  "historyEditNoteTitle": "Workout note",
+  "historyNoteTooLong": "Note cannot exceed 500 characters",
+  "historyStart": "Start",
+  "historyDelete": "Delete from history",
+  "historyDeleteTitle": "Delete from history?",
+  "historyDeleteMessage": "This action cannot be undone. The record of this session will be deleted.",
+  "historySourceMissing": "Original routine or workout was not found.",
+  "historyGoToToday": "Go to today",
+  "historySelectMonth": "Select month",
+  "historyExerciseCount": "Exercises: {count}",
+  "@historyExerciseCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "historyFallbackTitle": "Workout at {time}",
+  "@historyFallbackTitle": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+
+  "progressSectionTitle": "Your progress",
+  "progressStreakLabel": "Streak",
+  "progressWeekMinutesLabel": "Minutes this week",
+  "progressMonthSessionsLabel": "Sessions this month",
+  "progressKcalLabel": "Estimated calories",
+  "progressChartWeek": "Week",
+  "progressChartMonth": "Month",
+  "progressChartCaption": "Minutes per day",
+  "progressStatsError": "Could not load statistics",
+  "progressWeightEstimated": "Estimated weight {kg} kg",
+  "@progressWeightEstimated": {
+    "placeholders": {
+      "kg": { "type": "String" }
+    }
+  },
+  "progressWeightRegistered": "Weight {kg} kg",
+  "@progressWeightRegistered": {
+    "placeholders": {
+      "kg": { "type": "String" }
+    }
+  },
+  "progressKcalMethodCaption": "Estimated kcal: MET {met} × weight × duration. Not a direct measurement.",
+  "@progressKcalMethodCaption": {
+    "placeholders": {
+      "met": { "type": "String" }
+    }
+  },
+  "progressKcalInfoTooltip": "How calories are estimated",
+  "progressKcalInfoTitle": "Estimated calories",
+  "progressKcalInfoBody": "We estimate energy using the standard formula MET × weight (kg) × session hours (practical definition from Compendium of Physical Activities).\n\nWe use MET {met} as reference for vigorous interval activity. This is a generic population estimate, not a metabolic measurement.\n\nIt serves as a guideline and trend indicator, not clinical data.",
+  "@progressKcalInfoBody": {
+    "placeholders": {
+      "met": { "type": "String" }
+    }
+  },
+  "progressKcalInfoClose": "Understood",
+  "progressTotalLine": "Total: {totals} · {sessions} sessions",
+  "@progressTotalLine": {
+    "placeholders": {
+      "totals": { "type": "String" },
+      "sessions": { "type": "int" }
+    }
+  },
+  "progressDaysSuffix": "days",
+
+  "bodyWeightSectionTitle": "Your weight",
+  "bodyWeightRegisterCta": "Log",
+  "bodyWeightUpdateCta": "Update",
+  "bodyWeightRegisterButton": "Log weight",
+  "bodyWeightEmptyMessage": "Log your weight to track progress",
+  "bodyWeightCaptionEstimated": "Estimated weight {value} {unit} · Log",
+  "@bodyWeightCaptionEstimated": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "bodyWeightCaptionRegistered": "{value} {valueUnit} · Update",
+  "@bodyWeightCaptionRegistered": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "valueUnit": { "type": "String" }
+    }
+  },
+  "bodyWeightFormTitle": "Log weight",
+  "bodyWeightFormEditTitle": "Edit weight",
+  "bodyWeightFieldLabel": "Weight",
+  "bodyWeightDateLabel": "Date",
+  "bodyWeightMeasuresOptional": "Body measurements (optional)",
+  "bodyWeightWaistLabel": "Waist (cm)",
+  "bodyWeightArmLabel": "Arm (cm)",
+  "bodyWeightLegLabel": "Leg (cm)",
+  "bodyWeightUnitKg": "kg",
+  "bodyWeightUnitLb": "lb",
+  "bodyWeightUnitsSectionTitle": "Units",
+  "bodyWeightUnitPreferenceLabel": "Weight",
+  "bodyWeightRecentTitle": "Recent entries",
+  "bodyWeightViewRecords": "View records",
+  "bodyWeightViewRecordsCount": "View records ({count})",
+  "@bodyWeightViewRecordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "bodyWeightHistorySheetTitle": "Weight history",
+  "bodyWeightLastLine": "Last: {value} {unit} · {date}",
+  "@bodyWeightLastLine": {
+    "placeholders": {
+      "value": { "type": "String" },
+      "unit": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "bodyWeightDeleteTitle": "Delete entry?",
+  "bodyWeightDeleteMessage": "This weight entry will be deleted. This action cannot be undone.",
+  "bodyWeightSaved": "Weight saved",
+  "bodyWeightDeleted": "Entry deleted",
+  "bodyWeightErrorRetry": "Could not load weight",
+  "bodyWeightValidationRequired": "Enter a valid weight",
+  "bodyWeightValidationRange": "Weight must be between 20 and 300 kg",
+  "bodyWeightValidationMeasure": "Measurement must be greater than 0 and at most 300 cm",
+  "bodyWeightValidationDateFuture": "Future dates are not allowed",
+  "bodyWeightValidationDateInvalid": "Invalid date",
+  "bodyWeightChartEmpty": "No weight data",
+
+  "createWorkout": "Create workout",
+  "workoutName": "Workout name",
+  "workoutNameTooLong": "Name cannot exceed 80 characters",
+  "emptyWorkoutsHint": "No saved workouts",
+  "editWorkout": "Edit workout",
+  "addExercise": "Add exercise",
+  "editExercise": "Edit exercise",
+  "exerciseName": "Exercise name",
+  "sets": "Sets",
+  "workDuration": "Work duration",
+  "restDuration": "Rest duration",
+  "restBetweenSetsDuration": "Rest between sets",
+  "restAfterExerciseDuration": "Final rest",
+  "setsInvalid": "Sets must be between 1 and 99",
+  "restDurationInvalid": "Invalid duration. Must be between 00:00 and 99:59",
+  "restAfterExerciseInvalid": "Invalid duration. Must be between 00:00 and 99:59",
+  "train": "Train",
+  "edit": "Edit",
+  "duplicate": "Duplicate",
+  "delete": "Delete",
+  "deleteWorkoutTitle": "Delete workout",
+  "deleteWorkoutMessage": "This action cannot be undone. Delete this workout?",
+  "emptyWorkoutStart": "At least one exercise is required to start",
+  "deleteBlockedDuringSession": "Finish or cancel session before deleting a workout",
+  "exerciseCountLabel": "{count} exercises",
+  "@exerciseCountLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "workoutRoundsTitle": "Workout rounds",
+  "workoutRoundsShort": "Rounds",
+  "workoutRoundsHelper": "The entire exercise block repeats N times",
+  "workoutRoundsBlockChip": "Entire block × {count}",
+  "@workoutRoundsBlockChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutRoundsListLabel": "{count} rounds",
+  "@workoutRoundsListLabel": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutRoundProgress": "Round {current} of {total}",
+  "@workoutRoundProgress": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "workoutRoundsInvalid": "Rounds must be between 1 and 99",
+
+  "favoritesTitle": "Favorites",
+  "favoritesFilterChip": "Favorites",
+  "markAsFavorite": "Add to favorites",
+  "removeFromFavorites": "Remove from favorites",
+  "emptyFavoritesHint": "No favorite routines yet",
+
+  "featuredRoutines": "Featured Routines",
+  "seeAll": "See all",
+  "myRoutines": "My Routines",
+  "noFavoriteWorkouts": "No favorite workouts",
+  "moreOptions": "More options",
+  "presetRoutinesTitle": "Preset Routines",
+  "featuredToday": "Featured Today",
+  "allRoutines": "All Routines",
+  "noFavoritePresets": "No favorite preset routines.",
+  "noCategoryPresets": "No routines available for this category.",
+  "presetDetailTitle": "Routine Details",
+  "duplicateToMyRoutines": "Duplicate to My Routines",
+  "routineNotFound": "Routine not found.",
+  "startWorkout": "START WORKOUT",
+  "stepByStepTechnique": "Step-by-Step Technique",
+  "postureTips": "Posture Advice & Tips",
+  "followTimerRhythm": "Follow the timer rhythm.",
+  "exerciseSetsChip": "{count} sets",
+  "@exerciseSetsChip": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "exerciseRestBetween": "rest {time}",
+  "@exerciseRestBetween": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "exerciseRestFinal": "final {time}",
+  "@exerciseRestFinal": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "presetRoutineBadge": "Preset",
+  "customRoutineBadge": "Custom",
+  "noCategoryFavoritePresets": "You don't have favorite routines in this category.",
+  "errorLoadingPresetCatalog": "Error loading routine catalog.",
+  "filterAll": "All",
+  "exerciseCountShort": "{count} ex.",
+  "@exerciseCountShort": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "retry": "Retry",
+  "routineSavedToMyRoutines": "Routine saved to My Routines: \"{name}\"",
+  "@routineSavedToMyRoutines": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "goToRoutines": "GO TO ROUTINES",
+  "errorCloningRoutine": "Error cloning routine: {error}",
+  "@errorCloningRoutine": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "routineDuplicated": "Routine duplicated: \"{name}\"",
+  "@routineDuplicated": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "metricDuration": "Duration",
+  "metricEstCalories": "Est. Calories",
+  "metricExercises": "Exercises",
+  "sessionExercisesTitle": "Session Exercises",
+  "workShort": "work",
+  "restShort": "rest"
+}
