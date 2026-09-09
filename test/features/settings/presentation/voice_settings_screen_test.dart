@@ -49,7 +49,15 @@ void main() {
       find.byKey(const Key('announce_interval_name_switch')),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const Key('music_ducking_switch')),
+      findsOneWidget,
+    );
     expect(find.byKey(const Key('countdown_seconds_stepper')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('music_ducking_switch')));
+    await tester.pumpAndSettle();
+    expect(await settingsRepo.getMusicDuckingEnabled(), false);
 
     await tester.tap(
       find.byKey(const Key('countdown_number_stepper_increment')),
@@ -66,5 +74,10 @@ void main() {
     await tester.pumpAndSettle();
     // Disabled when voice is off — should remain true
     expect(await settingsRepo.getAnnounceIntervalName(), true);
+
+    await tester.tap(find.byKey(const Key('music_ducking_switch')));
+    await tester.pumpAndSettle();
+    // Disabled when voice is off — should remain false
+    expect(await settingsRepo.getMusicDuckingEnabled(), false);
   });
 }

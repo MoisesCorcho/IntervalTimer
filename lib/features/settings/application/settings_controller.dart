@@ -14,6 +14,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final voiceEnabled = await repo.getVoiceEnabled();
     final countdownSeconds = await repo.getCountdownSeconds();
     final announceIntervalName = await repo.getAnnounceIntervalName();
+    final musicDuckingEnabled = await repo.getMusicDuckingEnabled();
     final vibrationEnabled = await repo.getVibrationEnabled();
     final vibrationOnIntervalStart = await repo.getVibrationOnIntervalStart();
     final vibrationOnCountdown = await repo.getVibrationOnCountdown();
@@ -40,6 +41,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
       voiceEnabled: voiceEnabled,
       countdownSeconds: countdownSeconds,
       announceIntervalName: announceIntervalName,
+      musicDuckingEnabled: musicDuckingEnabled,
       vibrationEnabled: vibrationEnabled,
       vibrationOnIntervalStart: vibrationOnIntervalStart,
       vibrationOnCountdown: vibrationOnCountdown,
@@ -98,6 +100,15 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final current =
         state.valueOrNull ?? const AppSettings(prepSeconds: 10);
     state = AsyncData(current.copyWith(announceIntervalName: value));
+  }
+
+  Future<void> setMusicDuckingEnabled(bool value) async {
+    await ref
+        .read(settingsRepositoryProvider)
+        .setMusicDuckingEnabled(value);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(musicDuckingEnabled: value));
   }
 
   Future<void> setVibrationEnabled(bool value) async {

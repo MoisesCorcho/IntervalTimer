@@ -24,6 +24,8 @@ class SettingsRepository {
       PreferencesRepository.maxCountdownSeconds;
   static const defaultAnnounceIntervalName =
       PreferencesRepository.defaultAnnounceIntervalName;
+  static const defaultMusicDuckingEnabled =
+      PreferencesRepository.defaultMusicDuckingEnabled;
 
   // F18 vibration
   static const defaultVibrationEnabled =
@@ -73,6 +75,11 @@ class SettingsRepository {
 
   Future<void> setAnnounceIntervalName(bool value) =>
       _prefs.setAnnounceIntervalName(value);
+
+  Future<bool> getMusicDuckingEnabled() => _prefs.getMusicDuckingEnabled();
+
+  Future<void> setMusicDuckingEnabled(bool value) =>
+      _prefs.setMusicDuckingEnabled(value);
 
   Future<bool> getVibrationEnabled() => _prefs.getVibrationEnabled();
 

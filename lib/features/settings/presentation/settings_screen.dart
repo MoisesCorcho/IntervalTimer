@@ -153,6 +153,21 @@ class _SettingsBody extends ConsumerWidget {
                 }
               : null,
         ),
+        const SizedBox(height: AppTheme.spacingSm),
+        SwitchListTile(
+          key: const Key('music_ducking_switch'),
+          contentPadding: EdgeInsets.zero,
+          title: const Text(UiStrings.musicDuckingLabel),
+          subtitle: Text(UiStrings.musicDuckingHint, style: muted),
+          value: settings.musicDuckingEnabled,
+          onChanged: settings.voiceEnabled
+              ? (value) {
+                  ref
+                      .read(settingsControllerProvider.notifier)
+                      .setMusicDuckingEnabled(value);
+                }
+              : null,
+        ),
         const SizedBox(height: AppTheme.spacingMd),
         Text(
           UiStrings.countdownSecondsLabel,

@@ -1,6 +1,6 @@
 # Requirements: Integracion de Musica / Audio Ducking
 
-> Estado: No iniciada
+> Estado: Completada
 
 **ID:** F17 &nbsp;|&nbsp; **Slug:** `17-background-music-ducking` &nbsp;|&nbsp; **Fase:** Fase 4 · Audio y Experiencia
 
