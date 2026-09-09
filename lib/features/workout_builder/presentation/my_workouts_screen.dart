@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/data/models/workout.dart';
@@ -40,16 +40,17 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
 
     final created = await showDialog<bool>(
       context: context,
-      builder: (context) => StatefulBuilder(
+      builder: (dialogCtx) => StatefulBuilder(
         builder: (context, setDialogState) {
+          final l10n = context.l10n;
           return AlertDialog(
-            title: const Text(UiStrings.createWorkout),
+            title: Text(l10n.createWorkout),
             content: TextField(
               key: const Key('workout_name_field'),
               controller: controller,
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
-                labelText: UiStrings.workoutName,
+                labelText: l10n.workoutName,
                 errorText: nameError,
               ),
               maxLength: WorkoutValidators.maxWorkoutNameLength + 1,
@@ -61,7 +62,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                   AppSecondaryButton(
                     compact: true,
                     onPressed: () => Navigator.pop(context, false),
-                    label: UiStrings.cancel,
+                    label: l10n.cancel,
                   ),
                   AppPrimaryButton(
                     key: const Key('create_workout_confirm'),
@@ -76,7 +77,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                       }
                       Navigator.pop(context, true);
                     },
-                    label: UiStrings.save,
+                    label: l10n.save,
                   ),
                 ],
               ),
@@ -99,7 +100,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
 
   Future<void> _trainWorkout(Workout workout) async {
     if (workout.exercises.isEmpty) {
-      setState(() => _actionError = UiStrings.emptyWorkoutStart);
+      setState(() => _actionError = context.l10n.emptyWorkoutStart);
       return;
     }
 
@@ -109,26 +110,29 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
         timerStatus == TimerStatus.preparing) {
       final leave = await showDialog<bool>(
         context: context,
-        builder: (context) => AlertDialog(
-          title: const Text(UiStrings.exitConfirmTitle),
-          content: const Text(UiStrings.exitConfirmMessage),
-          actions: [
-            DialogActionsRow(
-              children: [
-                AppSecondaryButton(
-                  compact: true,
-                  onPressed: () => Navigator.pop(context, false),
-                  label: UiStrings.exitConfirmContinue,
-                ),
-                AppPrimaryButton(
-                  compact: true,
-                  onPressed: () => Navigator.pop(context, true),
-                  label: UiStrings.exitConfirmLeave,
-                ),
-              ],
-            ),
-          ],
-        ),
+        builder: (dialogContext) {
+          final l10n = dialogContext.l10n;
+          return AlertDialog(
+            title: Text(l10n.exitConfirmTitle),
+            content: Text(l10n.exitConfirmMessage),
+            actions: [
+              DialogActionsRow(
+                children: [
+                  AppSecondaryButton(
+                    compact: true,
+                    onPressed: () => Navigator.pop(dialogContext, false),
+                    label: l10n.exitConfirmContinue,
+                  ),
+                  AppPrimaryButton(
+                    compact: true,
+                    onPressed: () => Navigator.pop(dialogContext, true),
+                    label: l10n.exitConfirmLeave,
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
       );
       if (leave != true) return;
     }
@@ -160,7 +164,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
     if (started) {
       context.go('/execute');
     } else {
-      setState(() => _actionError = UiStrings.emptyWorkoutStart);
+      setState(() => _actionError = context.l10n.emptyWorkoutStart);
     }
   }
 
@@ -192,7 +196,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
         if (timerStatus == TimerStatus.running ||
             timerStatus == TimerStatus.paused ||
             timerStatus == TimerStatus.preparing) {
-          setState(() => _actionError = UiStrings.deleteBlockedDuringSession);
+          setState(() => _actionError = context.l10n.deleteBlockedDuringSession);
           return;
         }
 
@@ -215,9 +219,9 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
   void _showPersistenceError(Future<void> Function() onRetry) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text(UiStrings.persistenceError),
+        content: Text(context.l10n.persistenceError),
         action: SnackBarAction(
-          label: UiStrings.retry,
+          label: context.l10n.retry,
           onPressed: () => onRetry(),
         ),
       ),
@@ -226,16 +230,17 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final workoutsAsync = ref.watch(workoutsListProvider);
     final catalogAsync = ref.watch(presetCatalogProvider);
     final favoriteIds = ref.watch(favoriteIdsStreamProvider).valueOrNull ?? {};
 
     return Scaffold(
-      appBar: AppBar(title: const Text(UiStrings.workoutsTitle)),
+      appBar: AppBar(title: Text(l10n.workoutsTitle)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showCreateDialog,
         icon: const Icon(Icons.add),
-        label: const Text(UiStrings.createWorkout),
+        label: Text(l10n.createWorkout),
       ),
       body: workoutsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -243,11 +248,11 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(UiStrings.persistenceError),
+              Text(l10n.persistenceError),
               const SizedBox(height: AppTheme.spacingMd),
               AppPrimaryButton(
                 onPressed: () => ref.invalidate(workoutsListProvider),
-                label: UiStrings.retry,
+                label: l10n.retry,
               ),
             ],
           ),
@@ -291,7 +296,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Rutinas Destacadas',
+                                l10n.featuredRoutines,
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium
@@ -302,7 +307,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                               TextButton(
                                 key: const Key('see_all_presets_button'),
                                 onPressed: () => context.push('/presets'),
-                                child: const Text('Ver todo'),
+                                child: Text(l10n.seeAll),
                               ),
                             ],
                           ),
@@ -323,7 +328,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Mis Rutinas',
+                        l10n.myRoutines,
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
@@ -336,7 +341,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                           size: 16,
                           color: _favoritesOnly ? Colors.amber : Colors.grey,
                         ),
-                        label: const Text(UiStrings.favoritesFilterChip),
+                        label: Text(l10n.favoritesFilterChip),
                         selected: _favoritesOnly,
                         onSelected: (val) {
                           setState(() => _favoritesOnly = val);
@@ -351,8 +356,8 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                     child: Center(
                       child: Text(
                         _favoritesOnly
-                            ? 'No tienes entrenamientos favoritos'
-                            : UiStrings.emptyWorkoutsHint,
+                            ? l10n.noFavoriteWorkouts
+                            : l10n.emptyWorkoutsHint,
                         style: Theme.of(context).textTheme.titleMedium,
                         textAlign: TextAlign.center,
                       ),
@@ -363,9 +368,9 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.fromLTRB(
-                      AppTheme.spacingMd,
-                      AppTheme.spacingSm,
-                      AppTheme.spacingMd,
+                       AppTheme.spacingMd,
+                       AppTheme.spacingSm,
+                       AppTheme.spacingMd,
                       88,
                     ),
                     itemCount: displayedWorkouts.length,
@@ -374,10 +379,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                     itemBuilder: (context, index) {
                       final workout = displayedWorkouts[index];
                       final countLabel =
-                          UiStrings.exerciseCountLabel.replaceAll(
-                        '{count}',
-                        '${workout.exercises.length}',
-                      );
+                          l10n.exerciseCountLabel(workout.exercises.length);
                       final showRounds = workout.rounds > 1;
 
                       return Card(
@@ -406,7 +408,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                               ),
                               IconButton(
                                 key: Key('workout_overflow_${workout.id}'),
-                                tooltip: 'Más opciones',
+                                tooltip: l10n.moreOptions,
                                 onPressed: () => _onWorkoutOverflow(workout),
                                 icon: const Icon(Icons.more_vert),
                               ),

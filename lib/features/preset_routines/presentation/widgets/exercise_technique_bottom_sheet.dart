@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/exercise.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_media_widget.dart';
 
@@ -97,7 +98,7 @@ class ExerciseTechniqueBottomSheet extends StatelessWidget {
 
                     // Execution Steps (1, 2, 3...)
                     Text(
-                      'Técnica Paso a Paso',
+                      context.l10n.stepByStepTechnique,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -105,7 +106,7 @@ class ExerciseTechniqueBottomSheet extends StatelessWidget {
                     const SizedBox(height: 12),
                     if (exercise.steps.isEmpty)
                       Text(
-                        'Sigue el ritmo del temporizador.',
+                        context.l10n.followTimerRhythm,
                         style: theme.textTheme.bodyMedium,
                       )
                     else
@@ -145,7 +146,7 @@ class ExerciseTechniqueBottomSheet extends StatelessWidget {
                     // Posture Tips / Common Errors
                     if (exercise.tips.isNotEmpty) ...[
                       Text(
-                        'Consejos de Postura & Tips',
+                        context.l10n.postureTips,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),

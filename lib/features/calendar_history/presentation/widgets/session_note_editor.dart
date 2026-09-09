@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/data/repositories/session_log_repository.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
@@ -47,7 +47,7 @@ class _SessionNoteEditorSheetState extends State<_SessionNoteEditorSheet> {
   void _save() {
     final text = _controller.text;
     if (text.length > SessionLogRepository.maxNoteLength) {
-      setState(() => _error = UiStrings.historyNoteTooLong);
+      setState(() => _error = context.l10n.historyNoteTooLong);
       return;
     }
     Navigator.pop(context, text);
@@ -63,7 +63,7 @@ class _SessionNoteEditorSheetState extends State<_SessionNoteEditorSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            UiStrings.historyEditNoteTitle,
+            context.l10n.historyEditNoteTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 12),
@@ -73,7 +73,7 @@ class _SessionNoteEditorSheetState extends State<_SessionNoteEditorSheet> {
             maxLines: 5,
             maxLength: SessionLogRepository.maxNoteLength,
             decoration: InputDecoration(
-              hintText: UiStrings.historyAddNote,
+              hintText: context.l10n.historyAddNote,
               errorText: _error,
               border: const OutlineInputBorder(),
             ),
@@ -84,13 +84,13 @@ class _SessionNoteEditorSheetState extends State<_SessionNoteEditorSheet> {
               AppSecondaryButton(
                 compact: true,
                 onPressed: () => Navigator.pop(context),
-                label: UiStrings.cancel,
+                label: context.l10n.cancel,
               ),
               AppPrimaryButton(
                 key: const Key('history_note_save'),
                 compact: true,
                 onPressed: _save,
-                label: UiStrings.save,
+                label: context.l10n.save,
               ),
             ],
           ),

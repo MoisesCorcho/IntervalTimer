@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/app/router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
 import 'package:interval_timer/features/calendar_history/application/session_history_listener.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
+import 'package:interval_timer/features/settings/application/language_providers.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 import 'package:interval_timer/features/sound_effects/application/sound_effects_providers.dart';
@@ -35,12 +36,17 @@ class App extends ConsumerWidget {
       settingsAsync.valueOrNull?.themeMode ?? AppThemeMode.system,
     );
 
+    final effectiveLocale = ref.watch(effectiveLocaleProvider);
+
     return MaterialApp.router(
-      title: UiStrings.appTitle,
+      onGenerateTitle: (context) => context.l10n.appTitle,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: themeMode,
       routerConfig: router,
+      locale: effectiveLocale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

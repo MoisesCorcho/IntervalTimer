@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/utils/session_duration_format.dart';
 import 'package:interval_timer/data/models/session_log.dart';
 
@@ -15,18 +15,17 @@ class SessionLogCard extends StatelessWidget {
   final VoidCallback onOverflow;
   final VoidCallback onNoteTap;
 
-  String get _title {
+  String _title(BuildContext context) {
     if (log.displayName.trim().isNotEmpty) return log.displayName;
     final time = SessionDurationFormat.formatTimeOfDay(log.endedAt);
-    return UiStrings.historyFallbackTitle.replaceAll('{time}', time);
+    return context.l10n.historyFallbackTitle(time);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final duration = SessionDurationFormat.format(log.totalDurationSeconds);
-    final exercises = UiStrings.historyExerciseCount
-        .replaceAll('{count}', '${log.itemCount}');
+    final exercises = context.l10n.historyExerciseCount(log.itemCount);
     final hasNote = log.note != null && log.note!.trim().isNotEmpty;
 
     return Card(
@@ -42,7 +41,7 @@ class SessionLogCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    _title,
+                    _title(context),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -50,7 +49,7 @@ class SessionLogCard extends StatelessWidget {
                 ),
                 IconButton(
                   key: Key('session_log_overflow_${log.id}'),
-                  tooltip: 'Más opciones',
+                  tooltip: context.l10n.moreOptions,
                   onPressed: onOverflow,
                   icon: const Icon(Icons.more_vert),
                 ),
@@ -91,7 +90,7 @@ class SessionLogCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        hasNote ? log.note! : UiStrings.historyAddNote,
+                        hasNote ? log.note! : context.l10n.historyAddNote,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodyMedium?.copyWith(

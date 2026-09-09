@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
@@ -25,7 +26,7 @@ class PresetDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalle de Rutina'),
+        title: Text(context.l10n.presetDetailTitle),
         actions: [
           FavoriteToggleButton(
             targetId: presetId,
@@ -34,7 +35,7 @@ class PresetDetailScreen extends ConsumerWidget {
           IconButton(
             key: const Key('duplicate_routine_appbar_button'),
             icon: const Icon(Icons.copy),
-            tooltip: 'Duplicar a Mis Rutinas',
+            tooltip: context.l10n.duplicateToMyRoutines,
             onPressed: () => _handleDuplicate(context, ref),
           ),
         ],
@@ -42,8 +43,8 @@ class PresetDetailScreen extends ConsumerWidget {
       body: presetAsync.when(
         data: (preset) {
           if (preset == null) {
-            return const Center(
-              child: Text('Rutina no encontrada.'),
+            return Center(
+              child: Text(context.l10n.routineNotFound),
             );
           }
           final exerciseMap = exerciseMapAsync.value ?? {};
@@ -60,7 +61,7 @@ class PresetDetailScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => ref.refresh(presetDetailProvider(presetId)),
-                child: const Text('Reintentar'),
+                child: Text(context.l10n.retry),
               ),
             ],
           ),
@@ -73,9 +74,9 @@ class PresetDetailScreen extends ConsumerWidget {
                 key: const Key('start_workout_fab'),
                 onPressed: () => _handleStartWorkout(context, ref, preset),
                 icon: const Icon(Icons.play_arrow),
-                label: const Text(
-                  'INICIAR ENTRENAMIENTO',
-                  style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1),
+                label: Text(
+                  context.l10n.startWorkout,
+                  style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1),
                 ),
               )
             : null,
@@ -125,9 +126,9 @@ class PresetDetailScreen extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Rutina guardada en Mis Rutinas: "${clonedRoutine.name}"'),
+            content: Text(context.l10n.routineSavedToMyRoutines(clonedRoutine.name)),
             action: SnackBarAction(
-              label: 'IR A RUTINAS',
+              label: context.l10n.goToRoutines,
               onPressed: () => context.go('/workouts'),
             ),
           ),
@@ -136,7 +137,7 @@ class PresetDetailScreen extends ConsumerWidget {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al clonar rutina: $e')),
+          SnackBar(content: Text(context.l10n.errorCloningRoutine(e.toString()))),
         );
       }
     }
@@ -222,17 +223,17 @@ class _PresetDetailBody extends StatelessWidget {
                   children: [
                     _MetricBadge(
                       icon: Icons.timer,
-                      label: 'Duración',
+                      label: context.l10n.metricDuration,
                       value: formattedTime,
                     ),
                     _MetricBadge(
                       icon: Icons.local_fire_department,
-                      label: 'Est. Calorías',
+                      label: context.l10n.metricEstCalories,
                       value: '~$estimatedKcal kcal',
                     ),
                     _MetricBadge(
                       icon: Icons.fitness_center,
-                      label: 'Ejercicios',
+                      label: context.l10n.metricExercises,
                       value: '${preset.exercises.length}',
                     ),
                   ],
@@ -256,9 +257,9 @@ class _PresetDetailBody extends StatelessWidget {
                 clonerService.clonePreset(preset, exerciseMap: exerciseMapTyped).then((cloned) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Rutina duplicada: "${cloned.name}"'),
+                      content: Text(context.l10n.routineDuplicated(cloned.name)),
                       action: SnackBarAction(
-                        label: 'IR A RUTINAS',
+                        label: context.l10n.goToRoutines,
                         onPressed: () => context.go('/workouts'),
                       ),
                     ),
@@ -266,7 +267,7 @@ class _PresetDetailBody extends StatelessWidget {
                 });
               },
               icon: const Icon(Icons.bookmark_add_outlined),
-              label: const Text('Duplicar a Mis Rutinas'),
+              label: Text(context.l10n.duplicateToMyRoutines),
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),
                 shape: RoundedRectangleBorder(
@@ -281,7 +282,7 @@ class _PresetDetailBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              'Ejercicios de la Sesión',
+              context.l10n.sessionExercisesTitle,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -317,8 +318,8 @@ class _PresetDetailBody extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    '${ref.sets} sets × ${ref.workSeconds}s trabajo'
-                    '${ref.restSeconds > 0 ? " / ${ref.restSeconds}s descanso" : ""}',
+                    '${ref.sets} sets × ${ref.workSeconds}s ${context.l10n.workShort}'
+                    '${ref.restSeconds > 0 ? " / ${ref.restSeconds}s ${context.l10n.restShort}" : ""}',
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {

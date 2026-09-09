@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/data/models/workout.dart';
 
 Future<WorkoutAction?> showWorkoutActionsSheet({
@@ -25,10 +25,8 @@ class WorkoutActionsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final countLabel = UiStrings.exerciseCountLabel.replaceAll(
-      '{count}',
-      '${workout.exercises.length}',
-    );
+    final l10n = context.l10n;
+    final countLabel = l10n.exerciseCountLabel(workout.exercises.length);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -63,19 +61,19 @@ class WorkoutActionsSheet extends StatelessWidget {
               ListTile(
                 key: const Key('workout_sheet_train'),
                 leading: const Icon(Icons.play_arrow),
-                title: const Text(UiStrings.train),
+                title: Text(l10n.train),
                 onTap: () => Navigator.pop(context, WorkoutAction.train),
               ),
               ListTile(
                 key: const Key('workout_sheet_edit'),
                 leading: const Icon(Icons.edit_outlined),
-                title: const Text(UiStrings.edit),
+                title: Text(l10n.edit),
                 onTap: () => Navigator.pop(context, WorkoutAction.edit),
               ),
               ListTile(
                 key: const Key('workout_sheet_duplicate'),
                 leading: const Icon(Icons.copy_outlined),
-                title: const Text(UiStrings.duplicate),
+                title: Text(l10n.duplicate),
                 onTap: () => Navigator.pop(context, WorkoutAction.duplicate),
               ),
               ListTile(
@@ -85,7 +83,7 @@ class WorkoutActionsSheet extends StatelessWidget {
                   color: theme.colorScheme.error,
                 ),
                 title: Text(
-                  UiStrings.delete,
+                  l10n.delete,
                   style: TextStyle(color: theme.colorScheme.error),
                 ),
                 onTap: () => Navigator.pop(context, WorkoutAction.delete),

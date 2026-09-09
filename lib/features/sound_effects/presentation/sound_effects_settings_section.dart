@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
@@ -18,6 +18,7 @@ class SoundEffectsSettingsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final muted = theme.textTheme.bodyMedium?.copyWith(
       color: theme.colorScheme.onSurfaceVariant,
@@ -30,15 +31,15 @@ class SoundEffectsSettingsSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          UiStrings.soundSectionTitle,
+          l10n.soundSectionTitle,
           style: theme.textTheme.titleLarge,
         ),
         const SizedBox(height: AppTheme.spacingMd),
         SwitchListTile(
           key: const Key('sound_enabled_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.soundEnabledLabel),
-          subtitle: Text(UiStrings.soundEnabledHint, style: muted),
+          title: Text(l10n.soundEnabledLabel),
+          subtitle: Text(l10n.soundEnabledHint, style: muted),
           value: settings.soundEnabled,
           onChanged: controller.setSoundEnabled,
         ),
@@ -46,50 +47,50 @@ class SoundEffectsSettingsSection extends ConsumerWidget {
         SwitchListTile(
           key: const Key('sound_on_work_start_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.soundOnWorkStartLabel),
-          subtitle: Text(UiStrings.soundOnWorkStartHint, style: muted),
+          title: Text(l10n.soundOnWorkStartLabel),
+          subtitle: Text(l10n.soundOnWorkStartHint, style: muted),
           value: settings.soundOnWorkStart,
           onChanged: masterOn ? controller.setSoundOnWorkStart : null,
         ),
         SwitchListTile(
           key: const Key('sound_on_rest_start_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.soundOnRestStartLabel),
-          subtitle: Text(UiStrings.soundOnRestStartHint, style: muted),
+          title: Text(l10n.soundOnRestStartLabel),
+          subtitle: Text(l10n.soundOnRestStartHint, style: muted),
           value: settings.soundOnRestStart,
           onChanged: masterOn ? controller.setSoundOnRestStart : null,
         ),
         SwitchListTile(
           key: const Key('sound_on_session_complete_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.soundOnSessionCompleteLabel),
-          subtitle: Text(UiStrings.soundOnSessionCompleteHint, style: muted),
+          title: Text(l10n.soundOnSessionCompleteLabel),
+          subtitle: Text(l10n.soundOnSessionCompleteHint, style: muted),
           value: settings.soundOnSessionComplete,
           onChanged: masterOn ? controller.setSoundOnSessionComplete : null,
         ),
         SwitchListTile(
           key: const Key('sound_on_prep_tick_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.soundOnPrepTickLabel),
-          subtitle: Text(UiStrings.soundOnPrepTickHint, style: muted),
+          title: Text(l10n.soundOnPrepTickLabel),
+          subtitle: Text(l10n.soundOnPrepTickHint, style: muted),
           value: settings.soundOnPrepTick,
           onChanged: masterOn ? controller.setSoundOnPrepTick : null,
         ),
         SwitchListTile(
           key: const Key('sound_on_phase_warning_switch'),
           contentPadding: EdgeInsets.zero,
-          title: const Text(UiStrings.soundOnPhaseWarningLabel),
-          subtitle: Text(UiStrings.soundOnPhaseWarningHint, style: muted),
+          title: Text(l10n.soundOnPhaseWarningLabel),
+          subtitle: Text(l10n.soundOnPhaseWarningHint, style: muted),
           value: settings.soundOnPhaseWarning,
           onChanged: masterOn ? controller.setSoundOnPhaseWarning : null,
         ),
         const SizedBox(height: AppTheme.spacingMd),
         Text(
-          UiStrings.soundCountdownSecondsLabel,
+          l10n.soundCountdownSecondsLabel,
           style: theme.textTheme.titleMedium,
         ),
         const SizedBox(height: AppTheme.spacingSm),
-        Text(UiStrings.soundCountdownSecondsHint, style: muted),
+        Text(l10n.soundCountdownSecondsHint, style: muted),
         const SizedBox(height: AppTheme.spacingMd),
         Opacity(
           opacity: masterOn && settings.soundOnPhaseWarning ? 1 : 0.5,
@@ -101,7 +102,7 @@ class SoundEffectsSettingsSection extends ConsumerWidget {
               min: SettingsRepository.minSoundCountdownSeconds,
               max: SettingsRepository.maxSoundCountdownSeconds,
               step: 1,
-              label: UiStrings.soundCountdownSecondsLabel,
+              label: l10n.soundCountdownSecondsLabel,
               keyPrefix: 'sound_countdown_',
               onChanged: controller.setSoundCountdownSeconds,
             ),
@@ -109,41 +110,41 @@ class SoundEffectsSettingsSection extends ConsumerWidget {
         ),
         const SizedBox(height: AppTheme.spacingLg),
         Text(
-          UiStrings.soundClipLabel,
+          l10n.soundClipLabel,
           style: theme.textTheme.titleMedium,
         ),
         const SizedBox(height: AppTheme.spacingSm),
         _SoundSlotRow(
           slot: SfxSlot.workStart,
-          label: UiStrings.soundSlotWorkStart,
+          label: l10n.soundSlotWorkStart,
           soundId: settings.soundIdWorkStart,
           catalog: catalog,
           onSelected: controller.setSoundIdWorkStart,
         ),
         _SoundSlotRow(
           slot: SfxSlot.restStart,
-          label: UiStrings.soundSlotRestStart,
+          label: l10n.soundSlotRestStart,
           soundId: settings.soundIdRestStart,
           catalog: catalog,
           onSelected: controller.setSoundIdRestStart,
         ),
         _SoundSlotRow(
           slot: SfxSlot.sessionComplete,
-          label: UiStrings.soundSlotSessionComplete,
+          label: l10n.soundSlotSessionComplete,
           soundId: settings.soundIdSessionComplete,
           catalog: catalog,
           onSelected: controller.setSoundIdSessionComplete,
         ),
         _SoundSlotRow(
           slot: SfxSlot.prepTick,
-          label: UiStrings.soundSlotPrepTick,
+          label: l10n.soundSlotPrepTick,
           soundId: settings.soundIdPrepTick,
           catalog: catalog,
           onSelected: controller.setSoundIdPrepTick,
         ),
         _SoundSlotRow(
           slot: SfxSlot.phaseWarning,
-          label: UiStrings.soundSlotPhaseWarning,
+          label: l10n.soundSlotPhaseWarning,
           soundId: settings.soundIdPhaseWarning,
           catalog: catalog,
           onSelected: controller.setSoundIdPhaseWarning,
@@ -170,6 +171,7 @@ class _SoundSlotRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final resolved = catalog.resolveOrDefault(soundId, slot);
 
@@ -188,7 +190,7 @@ class _SoundSlotRow extends ConsumerWidget {
         children: [
           IconButton(
             key: Key('sound_preview_${slot.name}'),
-            tooltip: UiStrings.soundPreviewClip,
+            tooltip: l10n.soundPreviewClip,
             icon: const Icon(Icons.play_arrow),
             onPressed: () {
               ref
@@ -199,7 +201,7 @@ class _SoundSlotRow extends ConsumerWidget {
           TextButton(
             key: Key('sound_change_${slot.name}'),
             onPressed: () => _openPicker(context, ref),
-            child: const Text(UiStrings.soundChangeClip),
+            child: Text(l10n.soundChangeClip),
           ),
         ],
       ),
@@ -207,6 +209,7 @@ class _SoundSlotRow extends ConsumerWidget {
   }
 
   Future<void> _openPicker(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
     final selected = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
@@ -223,7 +226,7 @@ class _SoundSlotRow extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.all(AppTheme.spacingMd),
                   child: Text(
-                    UiStrings.soundPickClipTitle,
+                    l10n.soundPickClipTitle,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),

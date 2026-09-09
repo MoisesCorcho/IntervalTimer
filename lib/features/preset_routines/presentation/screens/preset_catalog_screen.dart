@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/enums.dart';
@@ -21,7 +22,7 @@ class PresetCatalogScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rutinas Preestablecidas'),
+        title: Text(context.l10n.presetRoutinesTitle),
       ),
       body: catalogAsync.when(
         data: (allPresets) {
@@ -31,12 +32,12 @@ class PresetCatalogScreen extends ConsumerWidget {
             slivers: [
               // Hero Carousel section for featured presets
               if (featuredPresets.isNotEmpty) ...[
-                const SliverToBoxAdapter(
+                SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                     child: Text(
-                      'Destacadas del Día',
-                      style: TextStyle(
+                      context.l10n.featuredToday,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -72,10 +73,10 @@ class PresetCatalogScreen extends ConsumerWidget {
                   child: Text(
                     favoritesOnly
                         ? (selectedCategory == null
-                            ? 'Favoritos (${filteredAsync.value?.length ?? 0})'
-                            : '${selectedCategory.label} - Favoritos (${filteredAsync.value?.length ?? 0})')
+                            ? '${context.l10n.favoritesTitle} (${filteredAsync.value?.length ?? 0})'
+                            : '${selectedCategory.label} - ${context.l10n.favoritesTitle} (${filteredAsync.value?.length ?? 0})')
                         : (selectedCategory == null
-                            ? 'Todas las Rutinas (${allPresets.length})'
+                            ? '${context.l10n.allRoutines} (${allPresets.length})'
                             : '${selectedCategory.label} (${filteredAsync.value?.length ?? 0})'),
                     style: const TextStyle(
                       fontSize: 16,
@@ -91,9 +92,9 @@ class PresetCatalogScreen extends ConsumerWidget {
                   if (presets.isEmpty) {
                     final emptyMsg = favoritesOnly
                         ? (selectedCategory == null
-                            ? 'No tienes rutinas preestablecidas favoritas.'
-                            : 'No tienes rutinas favoritas en esta categoría.')
-                        : 'No hay rutinas disponibles para esta categoría.';
+                            ? context.l10n.noFavoritePresets
+                            : context.l10n.noCategoryFavoritePresets)
+                        : context.l10n.noCategoryPresets;
                     return SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.all(32),
@@ -136,9 +137,9 @@ class PresetCatalogScreen extends ConsumerWidget {
               children: [
                 const Icon(Icons.error_outline, size: 56, color: Colors.redAccent),
                 const SizedBox(height: 16),
-                const Text(
-                  'Error al cargar el catálogo de rutinas.',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                Text(
+                  context.l10n.errorLoadingPresetCatalog,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
@@ -152,7 +153,7 @@ class PresetCatalogScreen extends ConsumerWidget {
                   key: const Key('catalog_retry_button'),
                   onPressed: () => ref.refresh(presetCatalogProvider),
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Reintentar'),
+                  label: Text(context.l10n.retry),
                 ),
               ],
             ),
@@ -190,14 +191,14 @@ class _PresetCategoryFilterChips extends StatelessWidget {
               size: 16,
               color: favoritesOnly ? Colors.amber : Colors.grey,
             ),
-            label: const Text('Favoritos'),
+            label: Text(context.l10n.favoritesTitle),
             selected: favoritesOnly,
             onSelected: onFavoritesToggled,
           ),
           const SizedBox(width: 8),
           ChoiceChip(
             key: const Key('category_chip_all'),
-            label: const Text('Todos'),
+            label: Text(context.l10n.filterAll),
             selected: selectedCategory == null,
             onSelected: (selected) {
               if (selected) onSelected(null);
@@ -287,7 +288,7 @@ class _PresetCard extends StatelessWidget {
                         ),
                         _BadgeChip(
                           icon: Icons.fitness_center_outlined,
-                          label: '${preset.exercises.length} ejer.',
+                          label: context.l10n.exerciseCountShort(preset.exercises.length),
                         ),
                         _BadgeChip(
                           icon: Icons.speed,

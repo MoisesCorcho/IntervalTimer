@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/data/models/workout_exercise.dart';
@@ -109,6 +109,8 @@ class ExerciseFormState extends State<ExerciseForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -118,7 +120,7 @@ class ExerciseFormState extends State<ExerciseForm> {
             controller: _nameController,
             textCapitalization: TextCapitalization.characters,
             decoration: InputDecoration(
-              labelText: UiStrings.exerciseName,
+              labelText: l10n.exerciseName,
               errorText: _nameError,
             ),
             maxLength: WorkoutValidators.maxExerciseNameLength + 1,
@@ -133,8 +135,8 @@ class ExerciseFormState extends State<ExerciseForm> {
             value: _sets,
             min: WorkoutValidators.minSets,
             max: WorkoutValidators.maxSets,
-            label: UiStrings.sets,
-            semanticsLabel: UiStrings.sets,
+            label: l10n.sets,
+            semanticsLabel: l10n.sets,
             onChanged: (value) => setState(() {
               _sets = value;
               if (_setsError != null) validate();
@@ -157,7 +159,7 @@ class ExerciseFormState extends State<ExerciseForm> {
             totalSeconds: _workSeconds,
             minSeconds: WorkoutValidators.minWorkSeconds,
             maxSeconds: WorkoutValidators.maxWorkSeconds,
-            label: UiStrings.workDuration,
+            label: l10n.workDuration,
             onChanged: (value) => setState(() {
               _workSeconds = value;
               if (_workError != null) validate();
@@ -180,7 +182,7 @@ class ExerciseFormState extends State<ExerciseForm> {
             totalSeconds: _restSeconds,
             minSeconds: 0,
             maxSeconds: WorkoutValidators.maxRestSeconds,
-            label: UiStrings.restBetweenSetsDuration,
+            label: l10n.restBetweenSetsDuration,
             onChanged: (value) => setState(() {
               _restSeconds = value;
               if (_restError != null) validate();
@@ -203,7 +205,7 @@ class ExerciseFormState extends State<ExerciseForm> {
             totalSeconds: _restAfterExerciseSeconds,
             minSeconds: 0,
             maxSeconds: WorkoutValidators.maxRestSeconds,
-            label: UiStrings.restAfterExerciseDuration,
+            label: l10n.restAfterExerciseDuration,
             onChanged: (value) => setState(() {
               _restAfterExerciseSeconds = value;
               if (_restAfterError != null) validate();
@@ -223,7 +225,7 @@ class ExerciseFormState extends State<ExerciseForm> {
           AppPrimaryButton(
             key: const Key('exercise_save_button'),
             onPressed: submit,
-            label: UiStrings.save,
+            label: l10n.save,
             expand: true,
           ),
         ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
 
@@ -67,10 +67,11 @@ class _FavoriteToggleButtonState extends ConsumerState<FavoriteToggleButton>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isFavorite = ref.watch(isFavoriteProvider(widget.targetId));
     final tooltip = isFavorite
-        ? UiStrings.removeFromFavorites
-        : UiStrings.markAsFavorite;
+        ? l10n.removeFromFavorites
+        : l10n.markAsFavorite;
 
     final inactive = widget.inactiveColor ??
         Theme.of(context).iconTheme.color?.withValues(alpha: 0.6) ??

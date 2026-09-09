@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/models/session_log.dart';
 import 'package:interval_timer/data/repositories/routine_repository.dart';
@@ -96,7 +96,7 @@ class HistoryScreen extends ConsumerWidget {
                 AppTheme.spacingSm,
               ),
               child: Text(
-                UiStrings.historyWorkoutsSection,
+                context.l10n.historyWorkoutsSection,
                 style: sectionTitleStyle,
               ),
             ),
@@ -132,18 +132,18 @@ class HistoryScreen extends ConsumerWidget {
       error: (_, _) => [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-          child: Center(child: Text(UiStrings.persistenceError)),
+          child: Center(child: Text(context.l10n.persistenceError)),
         ),
       ],
       data: (logs) {
         if (logs.isEmpty) {
           return [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
               child: Center(
                 child: Text(
-                  key: Key('history_empty_day'),
-                  UiStrings.historyEmptyDay,
+                  key: const Key('history_empty_day'),
+                  context.l10n.historyEmptyDay,
                 ),
               ),
             ),
@@ -186,9 +186,9 @@ class HistoryScreen extends ConsumerWidget {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text(UiStrings.persistenceError),
+          content: Text(context.l10n.persistenceError),
           action: SnackBarAction(
-            label: UiStrings.retry,
+            label: context.l10n.retry,
             onPressed: () => _onNote(context, ref, log),
           ),
         ),
@@ -242,7 +242,7 @@ class HistoryScreen extends ConsumerWidget {
           log.sourceId != RoutineRepository.activeRoutineId) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text(UiStrings.historySourceMissing)),
+            SnackBar(content: Text(context.l10n.historySourceMissing)),
           );
         }
         return;
@@ -250,7 +250,7 @@ class HistoryScreen extends ConsumerWidget {
       if (routine.items.isEmpty) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text(UiStrings.historySourceMissing)),
+            SnackBar(content: Text(context.l10n.historySourceMissing)),
           );
         }
         return;
@@ -259,7 +259,7 @@ class HistoryScreen extends ConsumerWidget {
     } else {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(UiStrings.historySourceMissing)),
+          SnackBar(content: Text(context.l10n.historySourceMissing)),
         );
       }
       return;
@@ -276,7 +276,7 @@ class HistoryScreen extends ConsumerWidget {
       context.go('/execute');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(UiStrings.historySourceMissing)),
+        SnackBar(content: Text(context.l10n.historySourceMissing)),
       );
     }
   }
@@ -288,27 +288,30 @@ class HistoryScreen extends ConsumerWidget {
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(UiStrings.historyDeleteTitle),
-        content: const Text(UiStrings.historyDeleteMessage),
-        actions: [
-          DialogActionsRow(
-            children: [
-              AppSecondaryButton(
-                compact: true,
-                onPressed: () => Navigator.pop(context, false),
-                label: UiStrings.cancel,
-              ),
-              AppPrimaryButton(
-                key: const Key('history_delete_confirm'),
-                compact: true,
-                onPressed: () => Navigator.pop(context, true),
-                label: UiStrings.delete,
-              ),
-            ],
-          ),
-        ],
-      ),
+      builder: (dialogCtx) {
+        final l10n = dialogCtx.l10n;
+        return AlertDialog(
+          title: Text(l10n.historyDeleteTitle),
+          content: Text(l10n.historyDeleteMessage),
+          actions: [
+            DialogActionsRow(
+              children: [
+                AppSecondaryButton(
+                  compact: true,
+                  onPressed: () => Navigator.pop(dialogCtx, false),
+                  label: l10n.cancel,
+                ),
+                AppPrimaryButton(
+                  key: const Key('history_delete_confirm'),
+                  compact: true,
+                  onPressed: () => Navigator.pop(dialogCtx, true),
+                  label: l10n.delete,
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
 
     if (confirmed != true || !context.mounted) return;
@@ -318,7 +321,7 @@ class HistoryScreen extends ConsumerWidget {
     } catch (_) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(UiStrings.persistenceError)),
+        SnackBar(content: Text(context.l10n.persistenceError)),
       );
     }
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 
 /// Compact rounds badge for the workouts list (F32).
 ///
@@ -20,8 +20,7 @@ class WorkoutRoundsListChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final label = UiStrings.workoutRoundsListLabel
-        .replaceAll('{count}', '$rounds');
+    final label = context.l10n.workoutRoundsListLabel(rounds);
 
     // Explicit scheme colors + no surface tint: avoids sticky M3 chip surfaces
     // when ThemeMode flips while this ListView item stays mounted.

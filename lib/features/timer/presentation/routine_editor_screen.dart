@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/data/models/interval.dart';
@@ -82,7 +82,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
     final routineAsync = ref.read(routineEditorProvider);
     final routine = routineAsync.valueOrNull;
     if (routine == null || routine.items.isEmpty) {
-      setState(() => _startError = UiStrings.emptyRoutineStart);
+      setState(() => _startError = context.l10n.emptyRoutineStart);
       return;
     }
 
@@ -98,7 +98,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
     if (started) {
       context.go('/execute');
     } else {
-      setState(() => _startError = UiStrings.emptyRoutineStart);
+      setState(() => _startError = context.l10n.emptyRoutineStart);
     }
   }
 
@@ -121,11 +121,13 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
       ref.read(timerControllerProvider.notifier).bindRoutine(routine);
     });
 
+    final l10n = context.l10n;
+
     return Scaffold(
-      appBar: AppBar(title: const Text(UiStrings.routineTitle)),
+      appBar: AppBar(title: Text(l10n.routineTitle)),
       body: routineAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(UiStrings.persistenceError)),
+        error: (e, _) => Center(child: Text(l10n.persistenceError)),
         data: (routine) {
           if (routine.items.isEmpty) {
             return Center(
@@ -135,7 +137,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      UiStrings.emptyRoutineHint,
+                      l10n.emptyRoutineHint,
                       style: Theme.of(context).textTheme.titleMedium,
                       textAlign: TextAlign.center,
                     ),
@@ -144,7 +146,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                       onPressed:
                           canEdit ? () => _showIntervalSheet() : null,
                       icon: Icons.add,
-                      label: UiStrings.addInterval,
+                      label: l10n.addInterval,
                     ),
                     if (_startError != null) ...[
                       const SizedBox(height: AppTheme.spacingMd),
@@ -223,7 +225,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                         onPressed:
                             canEdit ? () => _showIntervalSheet() : null,
                         icon: Icons.add,
-                        label: UiStrings.addInterval,
+                        label: l10n.addInterval,
                         expand: true,
                       ),
                     ),
@@ -232,7 +234,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                       child: AppPrimaryButton(
                         key: const Key('start_session_button'),
                         onPressed: _startSession,
-                        label: UiStrings.startSession,
+                        label: l10n.startSession,
                         expand: true,
                       ),
                     ),

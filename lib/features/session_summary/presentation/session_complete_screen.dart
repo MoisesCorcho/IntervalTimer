@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/achievements/application/achievements_providers.dart';
 import 'package:interval_timer/features/achievements/domain/achievement_def.dart';
@@ -110,9 +110,9 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
       if (failed) {
         messenger.showSnackBar(
           SnackBar(
-            content: Text(UiStrings.sessionSummaryNoteSaveFailed),
+            content: Text(context.l10n.sessionSummaryNoteSaveFailed),
             action: SnackBarAction(
-              label: UiStrings.sessionSummaryDoneAnyway,
+              label: context.l10n.sessionSummaryDoneAnyway,
               onPressed: () async {
                 final left = await ref
                     .read(sessionSummaryControllerProvider.notifier)
@@ -222,7 +222,7 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                     ),
                                     children: [
                                       Text(
-                                        UiStrings.sessionSummaryGreatJob,
+                                        context.l10n.sessionSummaryGreatJob,
                                         key: const Key(
                                           'session_completed_title',
                                         ),
@@ -244,13 +244,11 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                             return const SizedBox.shrink();
                                           }
                                           final label = pending.length == 1
-                                              ? UiStrings
+                                              ? context.l10n
                                                   .sessionSummaryNewAchievementsOne
-                                              : UiStrings
-                                                  .sessionSummaryNewAchievementsMany
-                                                  .replaceAll(
-                                                    '{count}',
-                                                    '${pending.length}',
+                                              : context.l10n
+                                                  .sessionSummaryNewAchievementsMany(
+                                                    pending.length,
                                                   );
                                           return Padding(
                                             padding: const EdgeInsets.only(
@@ -292,7 +290,7 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                                 'session_metric_training',
                                               ),
                                               seconds: view.trainingSeconds,
-                                              label: UiStrings
+                                              label: context.l10n
                                                   .sessionSummaryTraining,
                                               accent: AppTheme.workColor,
                                             ),
@@ -306,8 +304,8 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                                 'session_metric_rest',
                                               ),
                                               seconds: view.restSeconds,
-                                              label:
-                                                  UiStrings.sessionSummaryRest,
+                                              label: context.l10n
+                                                  .sessionSummaryRest,
                                               accent: AppTheme.restColor,
                                             ),
                                           ),
@@ -317,7 +315,7 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                         height: AppTheme.spacingMd,
                                       ),
                                       Text(
-                                        UiStrings.sessionSummaryNotePrompt,
+                                        context.l10n.sessionSummaryNotePrompt,
                                         style: theme.textTheme.titleSmall
                                             ?.copyWith(
                                           fontWeight: FontWeight.w600,
@@ -344,11 +342,11 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                             .updateNoteDraft(v),
                                         decoration: InputDecoration(
                                           hintText: view.noteEnabled
-                                              ? UiStrings.historyAddNote
-                                              : UiStrings
+                                              ? context.l10n.historyAddNote
+                                              : context.l10n
                                                   .sessionSummaryNoteUnavailable,
                                           errorText: state.noteError
-                                              ? UiStrings
+                                              ? context.l10n
                                                   .sessionSummaryNoteSaveFailed
                                               : null,
                                         ),
@@ -356,7 +354,7 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                       if (state.logResolveTimedOut &&
                                           !view.noteEnabled)
                                         Text(
-                                          UiStrings
+                                          context.l10n
                                               .sessionSummaryNoteUnavailable,
                                           style: theme.textTheme.bodySmall
                                               ?.copyWith(
@@ -368,7 +366,7 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                         height: AppTheme.spacingMd,
                                       ),
                                       Text(
-                                        UiStrings.sessionSummarySheetHint,
+                                        context.l10n.sessionSummarySheetHint,
                                         textAlign: TextAlign.center,
                                         style: theme.textTheme.bodySmall
                                             ?.copyWith(
@@ -396,7 +394,7 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                         expand: true,
                                         onPressed: () =>
                                             _openShareStudio(view),
-                                        label: UiStrings.sessionSummaryShare,
+                                        label: context.l10n.sessionSummaryShare,
                                         icon: Icons.ios_share_rounded,
                                       ),
                                       const SizedBox(
@@ -410,7 +408,7 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                         onPressed: state.isFinishing
                                             ? null
                                             : _onDone,
-                                        label: UiStrings.sessionSummaryDone,
+                                        label: context.l10n.sessionSummaryDone,
                                         icon: Icons.check_rounded,
                                       ),
                                     ],

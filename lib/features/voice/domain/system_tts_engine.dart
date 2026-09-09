@@ -1,11 +1,13 @@
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:interval_timer/features/voice/domain/tts_engine.dart';
 
 /// System TTS via [flutter_tts] (native Android/iOS engines).
 class SystemTtsEngine implements TtsEngine {
-  SystemTtsEngine({FlutterTts? flutterTts})
-      : _tts = flutterTts ?? FlutterTts() {
+  SystemTtsEngine({FlutterTts? flutterTts, Locale? initialLocale})
+      : _tts = flutterTts ?? FlutterTts(),
+        _currentLocale = initialLocale {
     _tts.setErrorHandler((msg) {
       debugPrint('SystemTtsEngine error: $msg');
     });
@@ -13,6 +15,7 @@ class SystemTtsEngine implements TtsEngine {
   }
 
   final FlutterTts _tts;
+  Locale? _currentLocale;
   bool _configured = false;
 
   Future<void> _ensureConfigured() async {
@@ -33,22 +36,43 @@ class SystemTtsEngine implements TtsEngine {
           IosTextToSpeechAudioMode.voicePrompt,
         );
       }
-      final locale = PlatformDispatcher.instance.locale;
-      final languageTag = locale.toLanguageTag();
-      final available = await _tts.isLanguageAvailable(languageTag);
-      if (available == true) {
-        await _tts.setLanguage(languageTag);
-      } else {
-        final fallback = '${locale.languageCode}-${locale.countryCode ?? locale.languageCode.toUpperCase()}';
-        final ok = await _tts.isLanguageAvailable(fallback);
-        if (ok == true) {
-          await _tts.setLanguage(fallback);
-        }
-      }
+      final locale = _currentLocale ?? PlatformDispatcher.instance.locale;
+      await _applyLocale(locale);
     } catch (e, st) {
       debugPrint('SystemTtsEngine configure failed: $e\n$st');
     }
     _configured = true;
+  }
+
+  Future<void> _applyLocale(Locale locale) async {
+    final languageTag = locale.toLanguageTag();
+    final available = await _tts.isLanguageAvailable(languageTag);
+    if (available == true) {
+      await _tts.setLanguage(languageTag);
+      return;
+    }
+    final fallback =
+        '${locale.languageCode}-${locale.countryCode ?? locale.languageCode.toUpperCase()}';
+    final ok = await _tts.isLanguageAvailable(fallback);
+    if (ok == true) {
+      await _tts.setLanguage(fallback);
+      return;
+    }
+    final baseOk = await _tts.isLanguageAvailable(locale.languageCode);
+    if (baseOk == true) {
+      await _tts.setLanguage(locale.languageCode);
+    }
+  }
+
+  /// Dynamically updates the TTS engine locale (F28 R5, R11).
+  Future<void> setLocale(Locale locale) async {
+    _currentLocale = locale;
+    try {
+      await _ensureConfigured();
+      await _applyLocale(locale);
+    } catch (e, st) {
+      debugPrint('SystemTtsEngine.setLocale failed: $e\n$st');
+    }
   }
 
   @override

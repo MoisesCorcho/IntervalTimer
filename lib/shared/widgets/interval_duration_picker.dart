@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/core/utils/stepper_math.dart';
@@ -56,12 +56,13 @@ class IntervalDurationPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final formatted = formatDurationMmSs(totalSeconds);
     final minutes = totalSeconds ~/ 60;
     final seconds = totalSeconds % 60;
-    final valueLabel = label ?? UiStrings.duration;
+    final valueLabel = label ?? l10n.duration;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -97,15 +98,15 @@ class IntervalDurationPicker extends StatelessWidget {
                     Expanded(
                       child: _VerticalUnitPicker(
                         value: minutes,
-                        unitLabel: UiStrings.minutesLabel,
+                        unitLabel: l10n.minutesLabel,
                         decreaseKey: Key(
                           '${keyPrefix}duration_stepper_min_decrement',
                         ),
                         increaseKey: Key(
                           '${keyPrefix}duration_stepper_min_increment',
                         ),
-                        decreaseTooltip: UiStrings.decreaseMinutes,
-                        increaseTooltip: UiStrings.increaseMinutes,
+                        decreaseTooltip: l10n.decreaseMinutes,
+                        increaseTooltip: l10n.increaseMinutes,
                         canDecrease: _can(-_minuteDelta),
                         canIncrease: _can(_minuteDelta),
                         onDecrease: () => _apply(-_minuteDelta),
@@ -116,15 +117,15 @@ class IntervalDurationPicker extends StatelessWidget {
                     Expanded(
                       child: _VerticalUnitPicker(
                         value: seconds,
-                        unitLabel: UiStrings.secondsLabel,
+                        unitLabel: l10n.secondsLabel,
                         decreaseKey: Key(
                           '${keyPrefix}duration_stepper_sec_decrement',
                         ),
                         increaseKey: Key(
                           '${keyPrefix}duration_stepper_sec_increment',
                         ),
-                        decreaseTooltip: UiStrings.decreaseSeconds,
-                        increaseTooltip: UiStrings.increaseSeconds,
+                        decreaseTooltip: l10n.decreaseSeconds,
+                        increaseTooltip: l10n.increaseSeconds,
                         canDecrease: _can(-secondStep),
                         canIncrease: _can(secondStep),
                         onDecrease: () => _apply(-secondStep),
@@ -264,7 +265,7 @@ class TotalDurationDisplay extends StatelessWidget {
           ),
           const SizedBox(height: AppTheme.spacingXs),
           Text(
-            UiStrings.totalLabel,
+            context.l10n.totalLabel,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),

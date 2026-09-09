@@ -18,26 +18,46 @@ class PresetCatalogException implements Exception {
 
 class AssetPresetCatalogRepository implements PresetCatalogRepository {
   final AssetBundle _bundle;
+  final String? localeCode;
   final String exercisesPath;
   final String presetsPath;
 
   AssetPresetCatalogRepository({
     AssetBundle? bundle,
+    this.localeCode,
     this.exercisesPath = 'assets/routines/exercises.json',
     this.presetsPath = 'assets/routines/presets.json',
   }) : _bundle = bundle ?? rootBundle;
 
+  Future<String> _loadStringWithFallback(List<String> paths) async {
+    for (final path in paths) {
+      try {
+        return await _bundle.loadString(path);
+      } catch (_) {
+        // try next fallback
+      }
+    }
+    throw Exception('None of the paths could be loaded: ${paths.join(", ")}');
+  }
+
   @override
   Future<List<Exercise>> getExercises() async {
+    final candidatePaths = <String>[];
+    if (localeCode != null && localeCode!.isNotEmpty) {
+      candidatePaths.add('assets/routines/exercises_$localeCode.json');
+    }
+    candidatePaths.add('assets/routines/exercises_en.json');
+    candidatePaths.add(exercisesPath);
+
     try {
-      final String jsonString = await _bundle.loadString(exercisesPath);
+      final String jsonString = await _loadStringWithFallback(candidatePaths);
       final List<dynamic> jsonList = jsonDecode(jsonString) as List<dynamic>;
       return jsonList
           .map((e) => Exercise.fromJson(e as Map<String, dynamic>))
           .toList();
     } catch (e) {
       throw PresetCatalogException(
-        'Error al cargar ejercicios desde $exercisesPath',
+        'Error al cargar ejercicios desde ${candidatePaths.join(", ")}',
         e,
       );
     }
@@ -51,15 +71,22 @@ class AssetPresetCatalogRepository implements PresetCatalogRepository {
 
   @override
   Future<List<PresetRoutine>> getPresets() async {
+    final candidatePaths = <String>[];
+    if (localeCode != null && localeCode!.isNotEmpty) {
+      candidatePaths.add('assets/routines/presets_$localeCode.json');
+    }
+    candidatePaths.add('assets/routines/presets_en.json');
+    candidatePaths.add(presetsPath);
+
     try {
-      final String jsonString = await _bundle.loadString(presetsPath);
+      final String jsonString = await _loadStringWithFallback(candidatePaths);
       final List<dynamic> jsonList = jsonDecode(jsonString) as List<dynamic>;
       return jsonList
           .map((e) => PresetRoutine.fromJson(e as Map<String, dynamic>))
           .toList();
     } catch (e) {
       throw PresetCatalogException(
-        'Error al cargar presets desde $presetsPath',
+        'Error al cargar presets desde ${candidatePaths.join(", ")}',
         e,
       );
     }

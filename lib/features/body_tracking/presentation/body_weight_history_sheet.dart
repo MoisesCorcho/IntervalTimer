@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/body_tracking/application/body_tracking_providers.dart';
 import 'package:interval_timer/features/body_tracking/domain/body_measurement.dart';
@@ -50,7 +50,7 @@ class BodyWeightHistorySheet extends ConsumerWidget {
               children: [
                 Expanded(
                   child: Text(
-                    UiStrings.bodyWeightHistorySheetTitle,
+                    context.l10n.bodyWeightHistorySheetTitle,
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -60,7 +60,7 @@ class BodyWeightHistorySheet extends ConsumerWidget {
                   key: const Key('body_weight_sheet_add'),
                   onPressed: () => _openForm(context, ref),
                   icon: const Icon(Icons.add, size: 20),
-                  label: const Text(UiStrings.bodyWeightRegisterButton),
+                  label: Text(context.l10n.bodyWeightRegisterButton),
                 ),
               ],
             ),
@@ -77,12 +77,12 @@ class BodyWeightHistorySheet extends ConsumerWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(UiStrings.bodyWeightErrorRetry),
+                      Text(context.l10n.bodyWeightErrorRetry),
                       const SizedBox(height: AppTheme.spacingSm),
                       AppPrimaryButton(
                         onPressed: () =>
                             ref.invalidate(bodyMeasurementsProvider),
-                        label: UiStrings.retry,
+                        label: context.l10n.retry,
                       ),
                     ],
                   ),
@@ -94,7 +94,7 @@ class BodyWeightHistorySheet extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(AppTheme.spacingMd),
                       child: Text(
-                        UiStrings.bodyWeightEmptyMessage,
+                        context.l10n.bodyWeightEmptyMessage,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
@@ -142,7 +142,7 @@ class BodyWeightHistorySheet extends ConsumerWidget {
     );
     if (saved == true && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(UiStrings.bodyWeightSaved)),
+        SnackBar(content: Text(context.l10n.bodyWeightSaved)),
       );
     }
   }
@@ -156,21 +156,21 @@ class BodyWeightHistorySheet extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         key: const Key('body_weight_delete_dialog'),
-        title: const Text(UiStrings.bodyWeightDeleteTitle),
-        content: const Text(UiStrings.bodyWeightDeleteMessage),
+        title: Text(context.l10n.bodyWeightDeleteTitle),
+        content: Text(context.l10n.bodyWeightDeleteMessage),
         actions: [
           DialogActionsRow(
             children: [
               AppSecondaryButton(
                 compact: true,
                 onPressed: () => Navigator.pop(context, false),
-                label: UiStrings.cancel,
+                label: context.l10n.cancel,
               ),
               AppPrimaryButton(
                 key: const Key('body_weight_delete_confirm'),
                 compact: true,
                 onPressed: () => Navigator.pop(context, true),
-                label: UiStrings.delete,
+                label: context.l10n.delete,
               ),
             ],
           ),
@@ -182,7 +182,7 @@ class BodyWeightHistorySheet extends ConsumerWidget {
       await ref.read(bodyMeasurementControllerProvider).delete(measurement.id);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(UiStrings.bodyWeightDeleted)),
+        SnackBar(content: Text(context.l10n.bodyWeightDeleted)),
       );
       final remaining =
           await ref.read(bodyMeasurementRepositoryProvider).getAll();
@@ -192,7 +192,7 @@ class BodyWeightHistorySheet extends ConsumerWidget {
     } catch (_) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(UiStrings.persistenceError)),
+        SnackBar(content: Text(context.l10n.persistenceError)),
       );
     }
   }
@@ -215,8 +215,8 @@ class _MeasurementTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final value = BodyWeightUnit.formatDisplay(measurement.weightKg, unit);
     final unitLabel = unit == BodyWeightUnit.kg
-        ? UiStrings.bodyWeightUnitKg
-        : UiStrings.bodyWeightUnitLb;
+        ? context.l10n.bodyWeightUnitKg
+        : context.l10n.bodyWeightUnitLb;
 
     return ListTile(
       key: Key('body_weight_tile_${measurement.id}'),
@@ -228,7 +228,7 @@ class _MeasurementTile extends StatelessWidget {
         children: [
           IconButton(
             key: Key('body_weight_edit_${measurement.id}'),
-            tooltip: UiStrings.edit,
+            tooltip: context.l10n.edit,
             icon: const Icon(Icons.edit_outlined),
             constraints: const BoxConstraints(
               minWidth: AppTheme.buttonMinHeight,
@@ -238,7 +238,7 @@ class _MeasurementTile extends StatelessWidget {
           ),
           IconButton(
             key: Key('body_weight_delete_${measurement.id}'),
-            tooltip: UiStrings.delete,
+            tooltip: context.l10n.delete,
             icon: const Icon(Icons.delete_outline),
             constraints: const BoxConstraints(
               minWidth: AppTheme.buttonMinHeight,

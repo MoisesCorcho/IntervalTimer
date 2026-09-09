@@ -79,6 +79,10 @@ class PreferencesRepository {
   static const bodyWeightUnitKey = 'body_weight_unit';
   static const defaultBodyWeightUnit = 'kg';
 
+  // F28 multi-language i18n (`system` | `es` | `en`)
+  static const appLanguageKey = 'app_language';
+  static const defaultAppLanguage = 'system';
+
   Future<String?> getString(String key) async {
     final row = await (_db.select(_db.appPreferences)
           ..where((t) => t.key.equals(key)))
@@ -99,6 +103,12 @@ class PreferencesRepository {
             value: Value(value),
           ),
         );
+  }
+
+  Stream<String?> watchString(String key) {
+    return (_db.select(_db.appPreferences)..where((t) => t.key.equals(key)))
+        .watchSingleOrNull()
+        .map((row) => row?.value);
   }
 
   Future<int?> getInt(String key) async {
@@ -346,5 +356,35 @@ class PreferencesRepository {
   Future<void> setBodyWeightUnit(String unit) async {
     final value = (unit == 'lb' || unit == 'kg') ? unit : defaultBodyWeightUnit;
     await setString(bodyWeightUnitKey, value);
+  }
+
+  /// F28: app language preference as storage string (default: `system`).
+  ///
+  /// Valid values: `system`, `es`, `en`. Unknown/null → [defaultAppLanguage].
+  Future<String> getAppLanguage() async {
+    final raw = await getString(appLanguageKey);
+    return switch (raw) {
+      'system' => 'system',
+      'es' => 'es',
+      'en' => 'en',
+      _ => defaultAppLanguage,
+    };
+  }
+
+  Future<void> setAppLanguage(String lang) async {
+    final value =
+        (lang == 'system' || lang == 'es' || lang == 'en')
+            ? lang
+            : defaultAppLanguage;
+    await setString(appLanguageKey, value);
+  }
+
+  Stream<String> watchAppLanguage() {
+    return watchString(appLanguageKey).map((raw) => switch (raw) {
+          'system' => 'system',
+          'es' => 'es',
+          'en' => 'en',
+          _ => defaultAppLanguage,
+        });
   }
 }

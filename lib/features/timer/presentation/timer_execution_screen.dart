@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/duration_parser.dart';
 import 'package:interval_timer/core/utils/execution_chrome.dart';
@@ -71,25 +71,26 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
     final controller = ref.read(timerControllerProvider.notifier);
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) {
+      builder: (dialogCtx) {
+        final l10n = dialogCtx.l10n;
         return AlertDialog(
           key: const Key('exit_confirm_dialog'),
-          title: const Text(UiStrings.exitConfirmTitle),
-          content: const Text(UiStrings.exitConfirmMessage),
+          title: Text(l10n.exitConfirmTitle),
+          content: Text(l10n.exitConfirmMessage),
           actions: [
             DialogActionsRow(
               children: [
                 AppSecondaryButton(
                   key: const Key('exit_continue_button'),
                   compact: true,
-                  onPressed: () => Navigator.of(context).pop(false),
-                  label: UiStrings.exitConfirmContinue,
+                  onPressed: () => Navigator.of(dialogCtx).pop(false),
+                  label: l10n.exitConfirmContinue,
                 ),
                 AppPrimaryButton(
                   key: const Key('exit_leave_button'),
                   compact: true,
-                  onPressed: () => Navigator.of(context).pop(true),
-                  label: UiStrings.exitConfirmLeave,
+                  onPressed: () => Navigator.of(dialogCtx).pop(true),
+                  label: l10n.exitConfirmLeave,
                 ),
               ],
             ),
@@ -145,8 +146,9 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
     );
     final segmentTimeText = formatRemainingMs(timerState.remainingMs);
     final totalTimeText = formatTotalRemainingMs(timerState.totalRemainingMs);
+    final l10n = context.l10n;
     final phaseName = isPrep
-        ? UiStrings.preparation
+        ? l10n.preparation
         : formatDisplayName(current?.name ?? '');
     final isPaused = timerState.status == TimerStatus.paused;
 
@@ -175,12 +177,10 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
               if (!isPrep) ...[
                 const SizedBox(height: AppTheme.spacingSm),
                 Text(
-                  UiStrings.intervalProgress
-                      .replaceAll(
-                        '{current}',
-                        '${timerState.currentIndex + 1}',
-                      )
-                      .replaceAll('{total}', '${timerState.intervalCount}'),
+                  l10n.intervalProgress(
+                    timerState.currentIndex + 1,
+                    timerState.intervalCount,
+                  ),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: textColor.withValues(alpha: 0.85),
                       ),
@@ -190,9 +190,10 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
                     current.roundIndex != null) ...[
                   const SizedBox(height: AppTheme.spacingXs),
                   Text(
-                    UiStrings.workoutRoundProgress
-                        .replaceAll('{current}', '${current.roundIndex}')
-                        .replaceAll('{total}', '${current.roundCount}'),
+                    l10n.workoutRoundProgress(
+                      current.roundIndex!,
+                      current.roundCount!,
+                    ),
                     key: const Key('workout_round_progress'),
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: textColor.withValues(alpha: 0.9),
@@ -260,6 +261,7 @@ class _ExecutionTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Row(
       children: [
         SizedBox(
@@ -267,7 +269,7 @@ class _ExecutionTopBar extends StatelessWidget {
           child: _RectControlButton(
             key: const Key('exit_button'),
             icon: Icons.close,
-            label: UiStrings.exitSession,
+            label: l10n.exitSession,
             color: textColor,
             filled: false,
             iconOnly: true,
@@ -278,7 +280,7 @@ class _ExecutionTopBar extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                UiStrings.remainingLabel,
+                l10n.remainingLabel,
                 key: const Key('total_remaining_label'),
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       color: textColor.withValues(alpha: 0.85),
@@ -318,6 +320,7 @@ class _NextSegmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Material(
       key: const Key('next_segment_card'),
       color: textColor.withValues(alpha: 0.12),
@@ -336,7 +339,7 @@ class _NextSegmentCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          UiStrings.nextInterval,
+                          l10n.nextInterval,
                           style:
                               Theme.of(context).textTheme.labelMedium?.copyWith(
                                     color: textColor.withValues(alpha: 0.75),
@@ -366,7 +369,7 @@ class _NextSegmentCard extends StatelessWidget {
               )
             : Center(
                 child: Text(
-                  UiStrings.lastInterval,
+                  l10n.lastInterval,
                   key: const Key('last_interval_label'),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: textColor,
@@ -397,13 +400,14 @@ class _ExecutionControlBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Row(
       children: [
         Expanded(
           child: _RectControlButton(
             key: const Key('previous_button'),
             icon: Icons.skip_previous,
-            label: UiStrings.previous,
+            label: l10n.previous,
             color: textColor,
             filled: false,
             iconOnly: true,
@@ -416,7 +420,7 @@ class _ExecutionControlBar extends StatelessWidget {
           child: _RectControlButton(
             key: const Key('pause_resume_button'),
             icon: isPaused ? Icons.play_arrow : Icons.pause,
-            label: isPaused ? UiStrings.resume : UiStrings.pause,
+            label: isPaused ? l10n.resume : l10n.pause,
             color: textColor,
             filled: true,
             iconOnly: false,
@@ -428,7 +432,7 @@ class _ExecutionControlBar extends StatelessWidget {
           child: _RectControlButton(
             key: const Key('skip_button'),
             icon: Icons.skip_next,
-            label: UiStrings.nextInterval,
+            label: l10n.nextInterval,
             color: textColor,
             filled: false,
             iconOnly: true,
