@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/core/l10n/app_localizations.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/routine.dart';
@@ -159,5 +160,34 @@ void main() {
     // Button should now have Icons.volume_off
     final audioBtn = find.byKey(const Key('timer_audio_controls_button'));
     expect(find.descendant(of: audioBtn, matching: find.byIcon(Icons.volume_off)), findsOneWidget);
+  });
+
+  testWidgets('buttons in execution screen use buttonOuterShadow even in dark mode', (tester) async {
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          theme: ThemeData.dark(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const TimerExecutionScreen(),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    final controller = container.read(timerControllerProvider.notifier);
+    controller.bindRoutine(_testRoutine());
+    controller.start(prepSeconds: 0);
+    controller.pause();
+    await tester.pump();
+
+    final audioBtnFinder = find.byKey(const Key('timer_audio_controls_button'));
+    final containerWidget = tester.widget<Container>(
+      find.descendant(of: audioBtnFinder, matching: find.byType(Container)).first,
+    );
+    final decoration = containerWidget.decoration as BoxDecoration;
+    expect(decoration.boxShadow, AppTheme.buttonOuterShadow);
+    expect(decoration.boxShadow, isNot(AppTheme.buttonOuterShadowDark));
   });
 }
