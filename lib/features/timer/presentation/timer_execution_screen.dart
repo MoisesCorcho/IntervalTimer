@@ -430,7 +430,7 @@ class _ExecutionControlBar extends StatelessWidget {
         Expanded(
           child: _RectControlButton(
             key: const Key('previous_button'),
-            icon: Icons.skip_previous,
+            icon: Icons.keyboard_double_arrow_left_rounded,
             label: l10n.previous,
             color: textColor,
             filled: false,
@@ -455,7 +455,7 @@ class _ExecutionControlBar extends StatelessWidget {
         Expanded(
           child: _RectControlButton(
             key: const Key('skip_button'),
-            icon: Icons.skip_next,
+            icon: Icons.keyboard_double_arrow_right_rounded,
             label: l10n.nextInterval,
             color: textColor,
             filled: false,
