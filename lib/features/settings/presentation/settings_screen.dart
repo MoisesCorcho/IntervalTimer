@@ -11,6 +11,7 @@ import 'package:interval_timer/features/body_tracking/presentation/body_weight_u
 import 'package:interval_timer/features/lock_screen/presentation/session_lock_screen_settings_section.dart';
 import 'package:interval_timer/features/settings/presentation/phase_color_picker_screen.dart';
 import 'package:interval_timer/features/settings/presentation/widgets/language_selector_tile.dart';
+import 'package:interval_timer/features/settings/presentation/widgets/settings_section_card.dart';
 import 'package:interval_timer/features/sound_effects/presentation/sound_effects_settings_section.dart';
 import 'package:interval_timer/features/vibration/presentation/vibration_settings_section.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
@@ -69,143 +70,213 @@ class _SettingsBody extends ConsumerWidget {
     );
 
     return ListView(
-      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingMd,
+        vertical: AppTheme.spacingMd,
+      ),
       children: [
-        Text(
-          l10n.themeLabel,
-          style: theme.textTheme.titleMedium,
-        ),
-        const SizedBox(height: AppTheme.spacingSm),
-        SegmentedButton<AppThemeMode>(
-          key: const Key('theme_segmented_button'),
-          segments: [
-            ButtonSegment<AppThemeMode>(
-              value: AppThemeMode.light,
-              label: Text(l10n.themeLight),
-              icon: const Icon(Icons.light_mode),
-            ),
-            ButtonSegment<AppThemeMode>(
-              value: AppThemeMode.dark,
-              label: Text(l10n.themeDark),
-              icon: const Icon(Icons.dark_mode),
-            ),
-            ButtonSegment<AppThemeMode>(
-              value: AppThemeMode.system,
-              label: Text(l10n.themeSystem),
-              icon: const Icon(Icons.settings_brightness),
-            ),
-          ],
-          selected: {settings.themeMode},
-          onSelectionChanged: (selected) {
-            ref
-                .read(settingsControllerProvider.notifier)
-                .setThemeMode(selected.first);
-          },
-        ),
-        const SizedBox(height: AppTheme.spacingLg),
-        LanguageSelectorSection(settings: settings),
-        const SizedBox(height: AppTheme.spacingLg),
-        BodyWeightUnitSettingsSection(settings: settings),
-        const SizedBox(height: AppTheme.spacingLg),
-        Text(
-          l10n.prepSecondsLabel,
-          style: theme.textTheme.titleMedium,
-        ),
-        const SizedBox(height: AppTheme.spacingSm),
-        Text(l10n.prepSecondsHint, style: muted),
-        const SizedBox(height: AppTheme.spacingMd),
-        NumberStepper(
-          key: const Key('prep_seconds_stepper'),
-          value: settings.prepSeconds,
-          min: SettingsRepository.minPrepSeconds,
-          max: SettingsRepository.maxPrepSeconds,
-          step: 1,
-          label: l10n.prepSecondsLabel,
-          keyPrefix: 'prep_',
-          onChanged: (value) {
-            ref.read(settingsControllerProvider.notifier).setPrepSeconds(value);
-          },
-        ),
-        const SizedBox(height: AppTheme.spacingLg),
-        _TimerPhaseColorsSection(settings: settings),
-        const SizedBox(height: AppTheme.spacingLg),
-        Text(
-          l10n.voiceSectionTitle,
-          style: theme.textTheme.titleLarge,
-        ),
-        const SizedBox(height: AppTheme.spacingMd),
-        SwitchListTile(
-          key: const Key('voice_enabled_switch'),
-          contentPadding: EdgeInsets.zero,
-          title: Text(l10n.voiceEnabledLabel),
-          subtitle: Text(l10n.voiceEnabledHint, style: muted),
-          value: settings.voiceEnabled,
-          onChanged: (value) {
-            ref
-                .read(settingsControllerProvider.notifier)
-                .setVoiceEnabled(value);
-          },
-        ),
-        const SizedBox(height: AppTheme.spacingSm),
-        SwitchListTile(
-          key: const Key('announce_interval_name_switch'),
-          contentPadding: EdgeInsets.zero,
-          title: Text(l10n.announceIntervalNameLabel),
-          subtitle: Text(l10n.announceIntervalNameHint, style: muted),
-          value: settings.announceIntervalName,
-          onChanged: settings.voiceEnabled
-              ? (value) {
+        // 1. General & Appearance
+        SettingsSectionCard(
+          key: const Key('settings_card_appearance'),
+          icon: Icons.palette_outlined,
+          title: l10n.themeLabel,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SegmentedButton<AppThemeMode>(
+                key: const Key('theme_segmented_button'),
+                segments: [
+                  ButtonSegment<AppThemeMode>(
+                    value: AppThemeMode.light,
+                    label: Text(l10n.themeLight),
+                    icon: const Icon(Icons.light_mode),
+                  ),
+                  ButtonSegment<AppThemeMode>(
+                    value: AppThemeMode.dark,
+                    label: Text(l10n.themeDark),
+                    icon: const Icon(Icons.dark_mode),
+                  ),
+                  ButtonSegment<AppThemeMode>(
+                    value: AppThemeMode.system,
+                    label: Text(l10n.themeSystem),
+                    icon: const Icon(Icons.settings_brightness),
+                  ),
+                ],
+                selected: {settings.themeMode},
+                onSelectionChanged: (selected) {
                   ref
                       .read(settingsControllerProvider.notifier)
-                      .setAnnounceIntervalName(value);
-                }
-              : null,
+                      .setThemeMode(selected.first);
+                },
+              ),
+              const SizedBox(height: AppTheme.spacingMd),
+              Divider(
+                height: 1,
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: AppTheme.spacingMd),
+              LanguageSelectorSection(settings: settings),
+              const SizedBox(height: AppTheme.spacingMd),
+              Divider(
+                height: 1,
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: AppTheme.spacingMd),
+              BodyWeightUnitSettingsSection(settings: settings),
+            ],
+          ),
         ),
-        const SizedBox(height: AppTheme.spacingSm),
-        SwitchListTile(
-          key: const Key('music_ducking_switch'),
-          contentPadding: EdgeInsets.zero,
-          title: Text(l10n.musicDuckingLabel),
-          subtitle: Text(l10n.musicDuckingHint, style: muted),
-          value: settings.musicDuckingEnabled,
-          onChanged: settings.voiceEnabled
-              ? (value) {
+        const SizedBox(height: AppTheme.spacingMd),
+
+        // 2. Timer & Phase Configuration
+        SettingsSectionCard(
+          key: const Key('settings_card_timer'),
+          icon: Icons.timer_outlined,
+          title: l10n.prepSecondsLabel,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(l10n.prepSecondsHint, style: muted),
+              const SizedBox(height: AppTheme.spacingSm),
+              NumberStepper(
+                key: const Key('prep_seconds_stepper'),
+                value: settings.prepSeconds,
+                min: SettingsRepository.minPrepSeconds,
+                max: SettingsRepository.maxPrepSeconds,
+                step: 1,
+                label: l10n.prepSecondsLabel,
+                keyPrefix: 'prep_',
+                onChanged: (value) {
                   ref
                       .read(settingsControllerProvider.notifier)
-                      .setMusicDuckingEnabled(value);
-                }
-              : null,
+                      .setPrepSeconds(value);
+                },
+              ),
+              const SizedBox(height: AppTheme.spacingMd),
+              Divider(
+                height: 1,
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: AppTheme.spacingMd),
+              _TimerPhaseColorsSection(settings: settings),
+            ],
+          ),
         ),
         const SizedBox(height: AppTheme.spacingMd),
-        Text(
-          l10n.countdownSecondsLabel,
-          style: theme.textTheme.titleMedium,
+
+        // 3. Voice Assistant
+        SettingsSectionCard(
+          key: const Key('settings_card_voice'),
+          icon: Icons.record_voice_over_outlined,
+          title: l10n.voiceSectionTitle,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SwitchListTile(
+                key: const Key('voice_enabled_switch'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.voiceEnabledLabel),
+                subtitle: Text(l10n.voiceEnabledHint, style: muted),
+                value: settings.voiceEnabled,
+                onChanged: (value) {
+                  ref
+                      .read(settingsControllerProvider.notifier)
+                      .setVoiceEnabled(value);
+                },
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              SwitchListTile(
+                key: const Key('announce_interval_name_switch'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.announceIntervalNameLabel),
+                subtitle: Text(l10n.announceIntervalNameHint, style: muted),
+                value: settings.announceIntervalName,
+                onChanged: settings.voiceEnabled
+                    ? (value) {
+                        ref
+                            .read(settingsControllerProvider.notifier)
+                            .setAnnounceIntervalName(value);
+                      }
+                    : null,
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              SwitchListTile(
+                key: const Key('music_ducking_switch'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.musicDuckingLabel),
+                subtitle: Text(l10n.musicDuckingHint, style: muted),
+                value: settings.musicDuckingEnabled,
+                onChanged: settings.voiceEnabled
+                    ? (value) {
+                        ref
+                            .read(settingsControllerProvider.notifier)
+                            .setMusicDuckingEnabled(value);
+                      }
+                    : null,
+              ),
+              const SizedBox(height: AppTheme.spacingMd),
+              Divider(
+                height: 1,
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: AppTheme.spacingMd),
+              Text(
+                l10n.countdownSecondsLabel,
+                style: theme.textTheme.titleMedium,
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(l10n.countdownSecondsHint, style: muted),
+              const SizedBox(height: AppTheme.spacingMd),
+              NumberStepper(
+                key: const Key('countdown_seconds_stepper'),
+                value: settings.countdownSeconds,
+                min: SettingsRepository.minCountdownSeconds,
+                max: SettingsRepository.maxCountdownSeconds,
+                step: 1,
+                label: l10n.countdownSecondsLabel,
+                keyPrefix: 'countdown_',
+                onChanged: (value) {
+                  ref
+                      .read(settingsControllerProvider.notifier)
+                      .setCountdownSeconds(value);
+                },
+              ),
+            ],
+          ),
         ),
-        const SizedBox(height: AppTheme.spacingSm),
-        Text(l10n.countdownSecondsHint, style: muted),
         const SizedBox(height: AppTheme.spacingMd),
-        NumberStepper(
-          key: const Key('countdown_seconds_stepper'),
-          value: settings.countdownSeconds,
-          min: SettingsRepository.minCountdownSeconds,
-          max: SettingsRepository.maxCountdownSeconds,
-          step: 1,
-          label: l10n.countdownSecondsLabel,
-          keyPrefix: 'countdown_',
-          onChanged: (value) {
-            ref
-                .read(settingsControllerProvider.notifier)
-                .setCountdownSeconds(value);
-          },
+
+        // 4. Sound Effects
+        SettingsSectionCard(
+          key: const Key('settings_card_sound_effects'),
+          child: SoundEffectsSettingsSection(settings: settings),
         ),
-        const SizedBox(height: AppTheme.spacingLg),
-        VibrationSettingsSection(settings: settings),
-        const SizedBox(height: AppTheme.spacingLg),
-        SoundEffectsSettingsSection(settings: settings),
-        const SizedBox(height: AppTheme.spacingLg),
-        KeepScreenOnSettingsSection(settings: settings),
-        const SizedBox(height: AppTheme.spacingLg),
-        SessionLockScreenSettingsSection(settings: settings),
+        const SizedBox(height: AppTheme.spacingMd),
+
+        // 5. Vibration & Haptics
+        SettingsSectionCard(
+          key: const Key('settings_card_vibration'),
+          child: VibrationSettingsSection(settings: settings),
+        ),
+        const SizedBox(height: AppTheme.spacingMd),
+
+        // 6. Screen & Session Lock Controls
+        SettingsSectionCard(
+          key: const Key('settings_card_screen_session'),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              KeepScreenOnSettingsSection(settings: settings),
+              const SizedBox(height: AppTheme.spacingMd),
+              Divider(
+                height: 1,
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: AppTheme.spacingMd),
+              SessionLockScreenSettingsSection(settings: settings),
+            ],
+          ),
+        ),
       ],
     );
   }

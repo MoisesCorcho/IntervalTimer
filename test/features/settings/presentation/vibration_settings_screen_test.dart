@@ -33,7 +33,7 @@ void main() {
     );
     addTearDown(container.dispose);
 
-    await tester.binding.setSurfaceSize(const Size(800, 2000));
+    await tester.binding.setSurfaceSize(const Size(800, 4000));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(

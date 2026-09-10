@@ -45,6 +45,9 @@ void main() {
 
     testWidgets('shows stepper and changing value updates repo',
         (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
@@ -147,6 +150,41 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.byKey(const Key('preview_phone_frame')), findsOneWidget);
+    });
+
+    testWidgets('renders all settings grouped into distinct section cards',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 3000));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('settings_card_appearance')), findsOneWidget);
+      expect(find.byKey(const Key('settings_card_timer')), findsOneWidget);
+      expect(find.byKey(const Key('settings_card_voice')), findsOneWidget);
+
+      final sfxFinder = find.byKey(const Key('settings_card_sound_effects'));
+      await tester.scrollUntilVisible(sfxFinder, 300, scrollable: find.byType(Scrollable).first);
+      expect(sfxFinder, findsOneWidget);
+
+      final vibFinder = find.byKey(const Key('settings_card_vibration'));
+      await tester.scrollUntilVisible(vibFinder, 300, scrollable: find.byType(Scrollable).first);
+      expect(vibFinder, findsOneWidget);
+
+      final screenFinder = find.byKey(const Key('settings_card_screen_session'));
+      await tester.scrollUntilVisible(screenFinder, 300, scrollable: find.byType(Scrollable).first);
+      expect(screenFinder, findsOneWidget);
     });
   });
 }
