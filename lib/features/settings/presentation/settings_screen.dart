@@ -9,8 +9,8 @@ import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
 import 'package:interval_timer/features/always_on/presentation/keep_screen_on_settings_section.dart';
 import 'package:interval_timer/features/body_tracking/presentation/body_weight_unit_settings_section.dart';
 import 'package:interval_timer/features/lock_screen/presentation/session_lock_screen_settings_section.dart';
+import 'package:interval_timer/features/settings/presentation/phase_color_picker_screen.dart';
 import 'package:interval_timer/features/settings/presentation/widgets/language_selector_tile.dart';
-import 'package:interval_timer/features/settings/presentation/widgets/phase_color_picker_sheet.dart';
 import 'package:interval_timer/features/sound_effects/presentation/sound_effects_settings_section.dart';
 import 'package:interval_timer/features/vibration/presentation/vibration_settings_section.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
@@ -254,12 +254,15 @@ class _TimerPhaseColorsSection extends ConsumerWidget {
             ),
           ),
           onTap: () {
-            showPhaseColorPickerSheet(
-              context: context,
-              title: l10n.workColorTitle,
-              initialColor: Color(settings.workColorArgb),
-              defaultColor: AppTheme.workColor,
-              onColorSelected: (c) => controller.setWorkColor(c.toARGB32()),
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => PhaseColorPickerScreen(
+                  title: l10n.workColorTitle,
+                  initialColor: Color(settings.workColorArgb),
+                  defaultColor: AppTheme.workColor,
+                  onColorSelected: (c) => controller.setWorkColor(c.toARGB32()),
+                ),
+              ),
             );
           },
         ),
@@ -287,12 +290,15 @@ class _TimerPhaseColorsSection extends ConsumerWidget {
             ),
           ),
           onTap: () {
-            showPhaseColorPickerSheet(
-              context: context,
-              title: l10n.restColorTitle,
-              initialColor: Color(settings.restColorArgb),
-              defaultColor: AppTheme.restColor,
-              onColorSelected: (c) => controller.setRestColor(c.toARGB32()),
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => PhaseColorPickerScreen(
+                  title: l10n.restColorTitle,
+                  initialColor: Color(settings.restColorArgb),
+                  defaultColor: AppTheme.restColor,
+                  onColorSelected: (c) => controller.setRestColor(c.toARGB32()),
+                ),
+              ),
             );
           },
         ),

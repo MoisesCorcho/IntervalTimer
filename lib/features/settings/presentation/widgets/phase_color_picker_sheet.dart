@@ -5,6 +5,8 @@ import 'package:interval_timer/core/utils/contrast_text_color.dart';
 import 'package:interval_timer/shared/widgets/app_modal_bottom_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 
+import 'package:interval_timer/shared/widgets/countdown_ring.dart';
+
 /// Opens the [PhaseColorPickerSheet] in the canonical design system modal bottom sheet.
 Future<void> showPhaseColorPickerSheet({
   required BuildContext context,
@@ -27,7 +29,7 @@ Future<void> showPhaseColorPickerSheet({
 /// Interactive sheet for picking an athletic phase color from [AppTheme.phaseColorPresets].
 ///
 /// Features:
-/// - Real-time live preview canvas reflecting the selected background and WCAG [contrastTextColor].
+/// - Real-time animated miniature mockup of the TimerExecutionScreen reflecting the selected background and WCAG [contrastTextColor].
 /// - 5x2 tactile swatch grid of 10 curated athletic colors.
 /// - One-tap reset to default.
 class PhaseColorPickerSheet extends StatefulWidget {
@@ -48,19 +50,31 @@ class PhaseColorPickerSheet extends StatefulWidget {
   State<PhaseColorPickerSheet> createState() => _PhaseColorPickerSheetState();
 }
 
-class _PhaseColorPickerSheetState extends State<PhaseColorPickerSheet> {
+class _PhaseColorPickerSheetState extends State<PhaseColorPickerSheet>
+    with SingleTickerProviderStateMixin {
   late Color _selectedColor;
+  late final AnimationController _animController;
 
   @override
   void initState() {
     super.initState();
     _selectedColor = widget.initialColor;
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final textColor = contrastTextColor(_selectedColor);
+    const textColor = Colors.white;
 
     return SingleChildScrollView(
       child: Padding(
@@ -77,70 +91,211 @@ class _PhaseColorPickerSheetState extends State<PhaseColorPickerSheet> {
             ),
             const SizedBox(height: AppTheme.spacingMd),
 
-            // Live interactive preview card
-            Container(
-              key: const Key('phase_color_preview_card'),
-              padding: const EdgeInsets.all(AppTheme.spacingMd),
-              decoration: BoxDecoration(
-                color: _selectedColor,
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                boxShadow: AppTheme.buttonShadowFor(context),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'FASE 1 / 8',
-                    style: TextStyle(
-                      color: textColor.withValues(alpha: 0.8),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.2,
+            // Exact miniature animated mockup of TimerExecutionScreen
+            IgnorePointer(
+              key: const Key('preview_mockup_ignore_pointer'),
+              child: AnimatedBuilder(
+                animation: _animController,
+                builder: (context, _) {
+                  final remainingSeconds =
+                      ((1.0 - _animController.value) * 8).ceil().clamp(1, 8);
+                  final timeText = '00:0$remainingSeconds';
+                  final ringFraction =
+                      (1.0 - _animController.value).clamp(0.0, 1.0);
+
+                  return Container(
+                    key: const Key('phase_color_preview_card'),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.spacingMd,
+                      vertical: AppTheme.spacingSm + 4,
                     ),
-                  ),
-                  const SizedBox(height: AppTheme.spacingXs),
-                  Text(
-                    '00:45',
-                    style: TextStyle(
-                      color: textColor,
-                      fontFamily: 'RobotoMono',
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
+                    decoration: BoxDecoration(
+                      color: _selectedColor,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                      boxShadow: AppTheme.buttonShadowFor(context),
                     ),
-                  ),
-                  Text(
-                    widget.title.toUpperCase(),
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.5,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Miniature Top Bar
+                        Row(
+                          key: const Key('preview_mockup_top_bar'),
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(
+                              Icons.close,
+                              color: textColor.withValues(alpha: 0.8),
+                              size: 18,
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  l10n.remainingLabel.toUpperCase(),
+                                  style: TextStyle(
+                                    color: textColor.withValues(alpha: 0.8),
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1.1,
+                                  ),
+                                ),
+                                Text(
+                                  '04:30',
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontFamily: 'RobotoMono',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.tune,
+                              color: textColor.withValues(alpha: 0.8),
+                              size: 18,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppTheme.spacingSm),
+
+                        // Phase title & Progress
+                        Text(
+                          widget.title,
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          l10n.intervalProgress(1, 8),
+                          style: TextStyle(
+                            color: textColor.withValues(alpha: 0.8),
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.spacingMd),
+
+                        // Animated Countdown Ring
+                        CountdownRing(
+                          size: 120,
+                          strokeWidth: 8,
+                          remainingFraction: ringFraction,
+                          color: textColor,
+                          child: Center(
+                            child: Text(
+                              timeText,
+                              key: const Key('preview_mockup_countdown'),
+                              style: TextStyle(
+                                color: textColor,
+                                fontFamily: 'RobotoMono',
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.spacingMd),
+
+                        // Next segment banner
+                        Container(
+                          key: const Key('preview_mockup_next_segment'),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.spacingMd,
+                            vertical: AppTheme.spacingXs + 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: textColor.withValues(alpha: 0.12),
+                            borderRadius:
+                                BorderRadius.circular(AppTheme.radiusSm),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    l10n.nextInterval,
+                                    style: TextStyle(
+                                      color: textColor.withValues(alpha: 0.75),
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  Text(
+                                    widget.title
+                                                .toLowerCase()
+                                                .contains('trabajo') ||
+                                            widget.title
+                                                .toLowerCase()
+                                                .contains('work')
+                                        ? l10n.restColorTitle
+                                        : l10n.workColorTitle,
+                                    style: TextStyle(
+                                      color: textColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                '00:15',
+                                style: TextStyle(
+                                  color: textColor.withValues(alpha: 0.85),
+                                  fontFamily: 'RobotoMono',
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: AppTheme.spacingMd),
+
+                        // Control Bar Mockup
+                        Row(
+                          key: const Key('preview_mockup_controls'),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.keyboard_double_arrow_left_rounded,
+                              color: textColor.withValues(alpha: 0.8),
+                              size: 22,
+                            ),
+                            const SizedBox(width: AppTheme.spacingLg),
+                            Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: textColor.withValues(alpha: 0.15),
+                                border: Border.all(
+                                  color: textColor.withValues(alpha: 0.4),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.pause_rounded,
+                                color: textColor,
+                                size: 22,
+                              ),
+                            ),
+                            const SizedBox(width: AppTheme.spacingLg),
+                            Icon(
+                              Icons.keyboard_double_arrow_right_rounded,
+                              color: textColor.withValues(alpha: 0.8),
+                              size: 22,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: AppTheme.spacingSm),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.keyboard_double_arrow_left_rounded,
-                        color: textColor.withValues(alpha: 0.85),
-                        size: 20,
-                      ),
-                      const SizedBox(width: AppTheme.spacingMd),
-                      Icon(
-                        Icons.pause_rounded,
-                        color: textColor,
-                        size: 24,
-                      ),
-                      const SizedBox(width: AppTheme.spacingMd),
-                      Icon(
-                        Icons.keyboard_double_arrow_right_rounded,
-                        color: textColor.withValues(alpha: 0.85),
-                        size: 20,
-                      ),
-                    ],
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             const SizedBox(height: AppTheme.spacingLg),

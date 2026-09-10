@@ -31,22 +31,20 @@ Color executionBackgroundColor({
 
 /// Text / ring / control chrome on the execution canvas.
 ///
-/// Work, rest, custom and preparation dynamically resolve high-contrast
-/// foreground color via WCAG [contrastTextColor].
-/// Warmup stays black on amber. Stretch stays white.
+/// Work and rest phases always use crisp [Colors.white] to ensure standard
+/// athletic display consistency regardless of the chosen background shade.
+/// Warmup stays black on amber. Stretch and preparation stay white.
+/// Custom intervals dynamically resolve foreground color via [contrastTextColor].
 Color executionChromeColor({
   required Color background,
   required IntervalType? type,
   bool isPreparation = false,
 }) {
-  if (isPreparation) return contrastTextColor(background);
+  if (isPreparation) return Colors.white;
   return switch (type) {
     IntervalType.warmup => Colors.black,
     IntervalType.stretch => Colors.white,
-    IntervalType.work ||
-    IntervalType.rest ||
-    IntervalType.custom ||
-    null =>
-      contrastTextColor(background),
+    IntervalType.work || IntervalType.rest => Colors.white,
+    IntervalType.custom || null => contrastTextColor(background),
   };
 }

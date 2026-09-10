@@ -134,8 +134,8 @@ void main() {
   });
 
   group('executionChromeColor', () {
-    test('uses contrastTextColor dynamically for work, rest and prep', () {
-      // Dark work color -> white text
+    test('work, rest, prep, and stretch consistently use Colors.white', () {
+      // Default work color -> white text
       expect(
         executionChromeColor(
           background: AppTheme.workColor,
@@ -144,16 +144,25 @@ void main() {
         Colors.white,
       );
 
-      // Light work color (Volt/Lime) -> black text
+      // Light work color preset (e.g. Amber/Gold) -> stays white as configured
       expect(
         executionChromeColor(
-          background: const Color(0xFFCDDC39),
+          background: const Color(0xFFFF8F00),
           type: IntervalType.work,
         ),
-        Colors.black,
+        Colors.white,
       );
 
-      // Dark prep color -> white text
+      // Rest color -> white text
+      expect(
+        executionChromeColor(
+          background: AppTheme.restColor,
+          type: IntervalType.rest,
+        ),
+        Colors.white,
+      );
+
+      // Prep color -> white text
       expect(
         executionChromeColor(
           background: AppTheme.prepColor,
@@ -161,6 +170,35 @@ void main() {
           isPreparation: true,
         ),
         Colors.white,
+      );
+
+      // Stretch -> white text
+      expect(
+        executionChromeColor(
+          background: AppTheme.stretchColor,
+          type: IntervalType.stretch,
+        ),
+        Colors.white,
+      );
+    });
+
+    test('custom interval dynamically resolves contrastTextColor', () {
+      // Dark custom background -> white text
+      expect(
+        executionChromeColor(
+          background: const Color(0xFF102030),
+          type: IntervalType.custom,
+        ),
+        Colors.white,
+      );
+
+      // Light custom background -> black text
+      expect(
+        executionChromeColor(
+          background: const Color(0xFFFFFFEE),
+          type: IntervalType.custom,
+        ),
+        Colors.black,
       );
     });
 

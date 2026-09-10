@@ -141,11 +141,12 @@ void main() {
       expect(find.byKey(const Key('work_color_tile')), findsOneWidget);
       expect(find.byKey(const Key('rest_color_tile')), findsOneWidget);
 
-      // Tap work color tile opens sheet
+      // Tap work color tile opens screen
       await tester.tap(find.byKey(const Key('work_color_tile')));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.byKey(const Key('phase_color_preview_card')), findsOneWidget);
+      expect(find.byKey(const Key('preview_phone_frame')), findsOneWidget);
     });
   });
 }
