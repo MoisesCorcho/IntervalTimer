@@ -93,7 +93,7 @@ abstract final class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: spacingMd,
-          vertical: spacingSm,
+          vertical: spacingMd,
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -136,7 +136,7 @@ abstract final class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: spacingMd,
-          vertical: spacingSm,
+          vertical: spacingMd,
         ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(

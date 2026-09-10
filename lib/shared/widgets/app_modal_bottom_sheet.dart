@@ -20,7 +20,12 @@ Future<T?> showAppModalBottomSheet<T>({
   final mediaQuery = MediaQuery.of(context);
   final maxHeight = mediaQuery.size.height * maxHeightFraction;
   final effectivePadding = contentPadding ??
-      const EdgeInsets.symmetric(horizontal: AppTheme.spacingMd);
+      const EdgeInsets.fromLTRB(
+        AppTheme.spacingMd,
+        AppTheme.spacingSm,
+        AppTheme.spacingMd,
+        0,
+      );
 
   return showModalBottomSheet<T>(
     context: context,
