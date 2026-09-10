@@ -8,8 +8,10 @@ import 'package:interval_timer/core/utils/execution_chrome.dart';
 import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
 import 'package:interval_timer/features/always_on/domain/always_on_controller.dart';
+import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
+import 'package:interval_timer/features/timer/presentation/widgets/timer_audio_controls_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/countdown_ring.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
@@ -147,6 +149,11 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
     final segmentTimeText = formatRemainingMs(timerState.remainingMs);
     final totalTimeText = formatTotalRemainingMs(timerState.totalRemainingMs);
     final l10n = context.l10n;
+    final settings = ref.watch(settingsControllerProvider).valueOrNull;
+    final allAudioMuted = settings != null &&
+        !settings.voiceEnabled &&
+        !settings.soundEnabled &&
+        !settings.vibrationEnabled;
     final phaseName = isPrep
         ? l10n.preparation
         : formatDisplayName(current?.name ?? '');
@@ -162,7 +169,9 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
               _ExecutionTopBar(
                 textColor: textColor,
                 totalTimeText: totalTimeText,
+                allAudioMuted: allAudioMuted,
                 onExit: _confirmExit,
+                onOpenAudioControls: () => showTimerAudioControlsSheet(context),
               ),
               const SizedBox(height: AppTheme.spacingMd),
               Text(
@@ -252,12 +261,16 @@ class _ExecutionTopBar extends StatelessWidget {
   const _ExecutionTopBar({
     required this.textColor,
     required this.totalTimeText,
+    required this.allAudioMuted,
     required this.onExit,
+    required this.onOpenAudioControls,
   });
 
   final Color textColor;
   final String totalTimeText;
+  final bool allAudioMuted;
   final VoidCallback onExit;
+  final VoidCallback onOpenAudioControls;
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +312,18 @@ class _ExecutionTopBar extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 48),
+        SizedBox(
+          width: 48,
+          child: _RectControlButton(
+            key: const Key('timer_audio_controls_button'),
+            icon: allAudioMuted ? Icons.volume_off : Icons.tune,
+            label: l10n.quickAudioSettingsTooltip,
+            color: textColor,
+            filled: false,
+            iconOnly: true,
+            onPressed: onOpenAudioControls,
+          ),
+        ),
       ],
     );
   }

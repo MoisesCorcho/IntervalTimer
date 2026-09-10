@@ -1126,4 +1126,35 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get restShort => 'descanso';
+
+  @override
+  String get quickAudioSettings => 'Sonido y vibración';
+
+  @override
+  String get quickAudioSettingsTooltip => 'Ajustes de sonido y vibración';
+
+  @override
+  String get voiceAnnouncements => 'Anuncios por voz';
+
+  @override
+  String get voiceAnnouncementsDesc =>
+      'Nombres de intervalos y cuenta regresiva';
+
+  @override
+  String get soundEffects => 'Sonidos del timer';
+
+  @override
+  String get soundEffectsDesc => 'Beeps de cuenta regresiva y cambio de fase';
+
+  @override
+  String get vibrationFeedback => 'Respuesta táctil';
+
+  @override
+  String get vibrationFeedbackDesc => 'Vibración al cambiar de intervalo';
+
+  @override
+  String get muteAll => 'Silenciar todo';
+
+  @override
+  String get unmuteAll => 'Activar todo';
 }

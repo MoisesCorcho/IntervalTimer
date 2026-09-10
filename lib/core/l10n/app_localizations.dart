@@ -2101,6 +2101,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'rest'**
   String get restShort;
+
+  /// No description provided for @quickAudioSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound & vibration'**
+  String get quickAudioSettings;
+
+  /// No description provided for @quickAudioSettingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound and vibration settings'**
+  String get quickAudioSettingsTooltip;
+
+  /// No description provided for @voiceAnnouncements.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice announcements'**
+  String get voiceAnnouncements;
+
+  /// No description provided for @voiceAnnouncementsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Interval names and countdown'**
+  String get voiceAnnouncementsDesc;
+
+  /// No description provided for @soundEffects.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer sounds'**
+  String get soundEffects;
+
+  /// No description provided for @soundEffectsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Countdown beeps and phase transitions'**
+  String get soundEffectsDesc;
+
+  /// No description provided for @vibrationFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Haptic feedback'**
+  String get vibrationFeedback;
+
+  /// No description provided for @vibrationFeedbackDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Vibration on interval changes'**
+  String get vibrationFeedbackDesc;
+
+  /// No description provided for @muteAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute all'**
+  String get muteAll;
+
+  /// No description provided for @unmuteAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute all'**
+  String get unmuteAll;
 }
 
 class _AppLocalizationsDelegate

@@ -507,5 +507,15 @@
   "metricExercises": "Exercises",
   "sessionExercisesTitle": "Session Exercises",
   "workShort": "work",
-  "restShort": "rest"
+  "restShort": "rest",
+  "quickAudioSettings": "Sound & vibration",
+  "quickAudioSettingsTooltip": "Sound and vibration settings",
+  "voiceAnnouncements": "Voice announcements",
+  "voiceAnnouncementsDesc": "Interval names and countdown",
+  "soundEffects": "Timer sounds",
+  "soundEffectsDesc": "Countdown beeps and phase transitions",
+  "vibrationFeedback": "Haptic feedback",
+  "vibrationFeedbackDesc": "Vibration on interval changes",
+  "muteAll": "Mute all",
+  "unmuteAll": "Unmute all"
 }

@@ -347,7 +347,6 @@
   "errorLoadingPresetCatalog": "Error al cargar el catálogo de rutinas.",
   "filterAll": "Todos",
   "exerciseCountShort": "{count} ejer.",
-  "retry": "Reintentar",
   "routineSavedToMyRoutines": "Rutina guardada en Mis Rutinas: \"{name}\"",
   "goToRoutines": "IR A RUTINAS",
   "errorCloningRoutine": "Error al clonar rutina: {error}",
@@ -357,5 +356,15 @@
   "metricExercises": "Ejercicios",
   "sessionExercisesTitle": "Ejercicios de la Sesión",
   "workShort": "trabajo",
-  "restShort": "descanso"
+  "restShort": "descanso",
+  "quickAudioSettings": "Sonido y vibración",
+  "quickAudioSettingsTooltip": "Ajustes de sonido y vibración",
+  "voiceAnnouncements": "Anuncios por voz",
+  "voiceAnnouncementsDesc": "Nombres de intervalos y cuenta regresiva",
+  "soundEffects": "Sonidos del timer",
+  "soundEffectsDesc": "Beeps de cuenta regresiva y cambio de fase",
+  "vibrationFeedback": "Respuesta táctil",
+  "vibrationFeedbackDesc": "Vibración al cambiar de intervalo",
+  "muteAll": "Silenciar todo",
+  "unmuteAll": "Activar todo"
 }
