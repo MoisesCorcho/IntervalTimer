@@ -152,6 +152,7 @@ abstract final class AppTheme {
           fontWeight: FontWeight.w500,
         ),
         actionTextColor: colorScheme.primary,
+        showCloseIcon: true,
         closeIconColor: Colors.white70,
       ),
     );
@@ -213,6 +214,7 @@ abstract final class AppTheme {
           fontWeight: FontWeight.w500,
         ),
         actionTextColor: colorScheme.primary,
+        showCloseIcon: true,
         closeIconColor: Colors.white70,
       ),
     );

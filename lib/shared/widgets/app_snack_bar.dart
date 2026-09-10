@@ -38,6 +38,7 @@ abstract final class AppSnackBar {
 
     final snackBar = SnackBar(
       duration: duration,
+      showCloseIcon: true,
       content: Row(
         children: [
           Icon(

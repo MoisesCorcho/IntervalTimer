@@ -164,4 +164,68 @@ void main() {
     expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
     expect(find.text('IR A RUTINAS'), findsOneWidget);
   });
+
+  testWidgets('popping PresetDetailScreen dismisses the SnackBar and does not leak it to parent', (tester) async {
+    final mockRepo = MockPresetCatalogRepository(
+      preset: testPreset,
+      exercise: testExercise,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          presetCatalogRepositoryProvider.overrideWithValue(mockRepo),
+          databaseProvider.overrideWithValue(db),
+          routineRepositoryProvider.overrideWithValue(RoutineRepository(db)),
+          workoutRepositoryProvider.overrideWithValue(WorkoutRepository(db)),
+          favoriteRepositoryProvider.overrideWithValue(favoriteRepo),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('es'),
+          home: Builder(
+            builder: (context) => Scaffold(
+              body: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const PresetDetailScreen(presetId: 'preset_hiit_15m'),
+                      ),
+                    );
+                  },
+                  child: const Text('Go to Detail'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Navigate to detail
+    await tester.tap(find.text('Go to Detail'));
+    await tester.pumpAndSettle();
+
+    // Duplicate
+    await tester.tap(find.byKey(const Key('duplicate_routine_button')));
+    await tester.pumpAndSettle();
+
+    // Verify SnackBar is visible on detail screen
+    expect(find.text('IR A RUTINAS'), findsOneWidget);
+
+    // Pop the detail screen via AppBar Back button
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+
+    // We are back at parent screen
+    expect(find.text('Go to Detail'), findsOneWidget);
+
+    // The SnackBar must NOT be leaked to parent screen!
+    expect(find.text('IR A RUTINAS'), findsNothing);
+  });
 }

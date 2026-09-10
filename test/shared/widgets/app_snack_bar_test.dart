@@ -69,5 +69,39 @@ void main() {
       expect(find.text('Ocurrió un error al guardar'), findsOneWidget);
       expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
     });
+
+    testWidgets('showSuccess renders close icon and tapping it dismisses the snackbar', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  AppSnackBar.showSuccess(
+                    context,
+                    message: 'Guardado',
+                    actionLabel: 'IR',
+                    onActionPressed: () {},
+                  );
+                },
+                child: const Text('Mostrar'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Mostrar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Guardado'), findsOneWidget);
+      expect(find.byIcon(Icons.close), findsOneWidget);
+
+      // Tap close icon
+      await tester.tap(find.byIcon(Icons.close));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Guardado'), findsNothing);
+    });
   });
 }
