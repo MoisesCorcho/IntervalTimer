@@ -9,6 +9,7 @@ import 'package:interval_timer/features/preset_routines/domain/services/preset_r
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_media_widget.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_technique_bottom_sheet.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
+import 'package:interval_timer/shared/widgets/app_snack_bar.dart';
 import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
 
 class PresetDetailScreen extends ConsumerWidget {
@@ -124,20 +125,18 @@ class PresetDetailScreen extends ConsumerWidget {
       );
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.routineSavedToMyRoutines(clonedRoutine.name)),
-            action: SnackBarAction(
-              label: context.l10n.goToRoutines,
-              onPressed: () => context.go('/workouts'),
-            ),
-          ),
+        AppSnackBar.showSuccess(
+          context,
+          message: context.l10n.routineSavedToMyRoutines(clonedRoutine.name),
+          actionLabel: context.l10n.goToRoutines,
+          onActionPressed: () => context.go('/workouts'),
         );
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.errorCloningRoutine(e.toString()))),
+        AppSnackBar.showError(
+          context,
+          message: context.l10n.errorCloningRoutine(e.toString()),
         );
       }
     }
@@ -255,14 +254,11 @@ class _PresetDetailBody extends StatelessWidget {
                 final clonerService = widgetRef.read(presetClonerServiceProvider);
                 final exerciseMapTyped = widgetRef.read(exerciseMapProvider).value ?? {};
                 clonerService.clonePreset(preset, exerciseMap: exerciseMapTyped).then((cloned) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(context.l10n.routineDuplicated(cloned.name)),
-                      action: SnackBarAction(
-                        label: context.l10n.goToRoutines,
-                        onPressed: () => context.go('/workouts'),
-                      ),
-                    ),
+                  AppSnackBar.showSuccess(
+                    context,
+                    message: context.l10n.routineDuplicated(cloned.name),
+                    actionLabel: context.l10n.goToRoutines,
+                    onActionPressed: () => context.go('/workouts'),
                   );
                 });
               },

@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/routine_repository.dart';
+import 'package:interval_timer/core/l10n/app_localizations.dart';
+import 'package:interval_timer/data/repositories/workout_repository.dart';
 import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/data/preset_catalog_repository.dart';
@@ -13,6 +15,7 @@ import 'package:interval_timer/features/preset_routines/domain/models/preset_exe
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
 import 'package:interval_timer/features/preset_routines/presentation/screens/preset_detail_screen.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
+import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 
 import '../../../helpers/fake_favorite_repository.dart';
 
@@ -125,5 +128,40 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Paso 1 Burpee'), findsOneWidget);
+  });
+
+  testWidgets('tapping duplicate button displays AppSnackBar with success icon and action', (tester) async {
+    final mockRepo = MockPresetCatalogRepository(
+      preset: testPreset,
+      exercise: testExercise,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          presetCatalogRepositoryProvider.overrideWithValue(mockRepo),
+          databaseProvider.overrideWithValue(db),
+          routineRepositoryProvider.overrideWithValue(RoutineRepository(db)),
+          workoutRepositoryProvider.overrideWithValue(WorkoutRepository(db)),
+          favoriteRepositoryProvider.overrideWithValue(favoriteRepo),
+        ],
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: Locale('es'),
+          home: PresetDetailScreen(presetId: 'preset_hiit_15m'),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Tap the duplicate routine button
+    await tester.tap(find.byKey(const Key('duplicate_routine_button')));
+    await tester.pumpAndSettle();
+
+    // Verify AppSnackBar renders success icon and action button
+    expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
+    expect(find.text('IR A RUTINAS'), findsOneWidget);
   });
 }

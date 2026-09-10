@@ -123,6 +123,24 @@ abstract final class AppTheme {
           borderRadius: BorderRadius.vertical(top: Radius.circular(radiusLg)),
         ),
       ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          side: BorderSide(
+            color: Colors.black.withValues(alpha: 0.08),
+          ),
+        ),
+        backgroundColor: const Color(0xFF1E2124),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        actionTextColor: colorScheme.primary,
+        closeIconColor: Colors.white70,
+      ),
     );
   }
 
@@ -165,6 +183,24 @@ abstract final class AppTheme {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(radiusLg)),
         ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radiusMd),
+          side: BorderSide(
+            color: Colors.white.withValues(alpha: 0.12),
+          ),
+        ),
+        backgroundColor: const Color(0xFF2C3036),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        actionTextColor: colorScheme.primary,
+        closeIconColor: Colors.white70,
       ),
     );
   }
