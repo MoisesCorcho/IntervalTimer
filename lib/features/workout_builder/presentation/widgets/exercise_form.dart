@@ -228,6 +228,7 @@ class ExerciseFormState extends State<ExerciseForm> {
             label: l10n.save,
             expand: true,
           ),
+          const SizedBox(height: AppTheme.spacingMd),
         ],
       ),
     );

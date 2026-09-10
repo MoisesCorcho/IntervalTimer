@@ -15,6 +15,7 @@ import 'package:interval_timer/features/workout_builder/domain/workout_flattener
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 import 'package:interval_timer/features/workout_builder/presentation/widgets/exercise_form.dart';
 import 'package:interval_timer/features/workout_builder/presentation/widgets/workout_rounds_card.dart';
+import 'package:interval_timer/shared/widgets/app_modal_bottom_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
@@ -96,67 +97,60 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
   Future<void> _showExerciseSheet({WorkoutExercise? existing}) async {
     if (!_editor.canEdit) return;
     setState(() => _actionError = null);
-    await showModalBottomSheet<void>(
+    await showAppModalBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: ExerciseForm(
-            initial: existing,
-            onSubmit: (result) async {
-              final ok = existing == null
-                  ? await _editor.addExercise(
+        return ExerciseForm(
+          initial: existing,
+          onSubmit: (result) async {
+            final ok = existing == null
+                ? await _editor.addExercise(
+                    name: result.name,
+                    sets: result.sets,
+                    workSeconds: result.workSeconds,
+                    restSeconds: result.restSeconds,
+                    restAfterExerciseSeconds:
+                        result.restAfterExerciseSeconds,
+                  )
+                : await _editor.updateExercise(
+                    existing.copyWith(
                       name: result.name,
                       sets: result.sets,
                       workSeconds: result.workSeconds,
                       restSeconds: result.restSeconds,
                       restAfterExerciseSeconds:
                           result.restAfterExerciseSeconds,
-                    )
-                  : await _editor.updateExercise(
-                      existing.copyWith(
-                        name: result.name,
-                        sets: result.sets,
-                        workSeconds: result.workSeconds,
-                        restSeconds: result.restSeconds,
-                        restAfterExerciseSeconds:
-                            result.restAfterExerciseSeconds,
-                      ),
-                    );
+                    ),
+                  );
 
-              if (!ok && context.mounted) {
-                _showPersistenceError(() async {
-                  if (existing == null) {
-                    await _editor.addExercise(
+            if (!ok && context.mounted) {
+              _showPersistenceError(() async {
+                if (existing == null) {
+                  await _editor.addExercise(
+                    name: result.name,
+                    sets: result.sets,
+                    workSeconds: result.workSeconds,
+                    restSeconds: result.restSeconds,
+                    restAfterExerciseSeconds:
+                        result.restAfterExerciseSeconds,
+                  );
+                } else {
+                  await _editor.updateExercise(
+                    existing.copyWith(
                       name: result.name,
                       sets: result.sets,
                       workSeconds: result.workSeconds,
                       restSeconds: result.restSeconds,
                       restAfterExerciseSeconds:
                           result.restAfterExerciseSeconds,
-                    );
-                  } else {
-                    await _editor.updateExercise(
-                      existing.copyWith(
-                        name: result.name,
-                        sets: result.sets,
-                        workSeconds: result.workSeconds,
-                        restSeconds: result.restSeconds,
-                        restAfterExerciseSeconds:
-                            result.restAfterExerciseSeconds,
-                      ),
-                    );
-                  }
-                });
-              }
+                    ),
+                  );
+                }
+              });
+            }
 
-              if (context.mounted) Navigator.pop(context);
-            },
-          ),
+            if (context.mounted) Navigator.pop(context);
+          },
         );
       },
     );

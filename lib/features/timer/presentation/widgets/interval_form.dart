@@ -182,6 +182,7 @@ class IntervalFormState extends State<IntervalForm> {
             label: l10n.save,
             expand: true,
           ),
+          const SizedBox(height: AppTheme.spacingMd),
         ],
       ),
     );

@@ -100,6 +100,13 @@ abstract final class AppTheme {
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+        showDragHandle: true,
+        backgroundColor: colorScheme.surface,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radiusLg)),
+        ),
+      ),
     );
   }
 
@@ -135,6 +142,13 @@ abstract final class AppTheme {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        showDragHandle: true,
+        backgroundColor: colorScheme.surface,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radiusLg)),
+        ),
       ),
     );
   }
