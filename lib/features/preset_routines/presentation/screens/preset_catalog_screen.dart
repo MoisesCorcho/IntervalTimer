@@ -186,6 +186,7 @@ class _PresetCategoryFilterChips extends StatelessWidget {
         children: [
           FilterChip(
             key: const Key('filter_chip_favorites'),
+            showCheckmark: false,
             avatar: Icon(
               Icons.star,
               size: 16,

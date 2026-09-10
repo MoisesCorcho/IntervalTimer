@@ -336,6 +336,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                       ),
                       FilterChip(
                         key: const Key('workouts_favorite_filter_chip'),
+                        showCheckmark: false,
                         avatar: Icon(
                           Icons.star,
                           size: 16,
