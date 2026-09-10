@@ -5,7 +5,7 @@
 
   "languageLabel": "Idioma",
   "languageHint": "Selecciona el idioma de la interfaz y la voz del temporizador.",
-  "languageAuto": "Automático (Sistema)",
+  "languageAuto": "Sistema",
   "languageEs": "Español",
   "languageEn": "English",
 
@@ -60,7 +60,7 @@
   "themeLabel": "Tema",
   "themeLight": "Claro",
   "themeDark": "Oscuro",
-  "themeSystem": "Seguir sistema",
+  "themeSystem": "Sistema",
 
   "voiceSectionTitle": "Voz",
   "voiceEnabledLabel": "Voz activada",

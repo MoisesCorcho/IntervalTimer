@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageHint => 'Select interface and timer voice language.';
 
   @override
-  String get languageAuto => 'Automatic (System)';
+  String get languageAuto => 'System';
 
   @override
   String get languageEs => 'Spanish';
@@ -175,7 +175,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDark => 'Dark';
 
   @override
-  String get themeSystem => 'Follow system';
+  String get themeSystem => 'System';
 
   @override
   String get voiceSectionTitle => 'Voice';

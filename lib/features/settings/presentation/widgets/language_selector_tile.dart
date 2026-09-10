@@ -22,7 +22,7 @@ class LanguageSelectorSection extends ConsumerWidget {
     const enLabel = 'English';
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           label,
@@ -32,18 +32,17 @@ class LanguageSelectorSection extends ConsumerWidget {
         SegmentedButton<AppLanguage>(
           key: const Key('language_segmented_button'),
           segments: [
-            ButtonSegment<AppLanguage>(
-              value: AppLanguage.system,
-              label: Text(autoLabel),
-              icon: const Icon(Icons.language),
-            ),
-            ButtonSegment<AppLanguage>(
+            const ButtonSegment<AppLanguage>(
               value: AppLanguage.es,
               label: Text(esLabel),
             ),
-            ButtonSegment<AppLanguage>(
+            const ButtonSegment<AppLanguage>(
               value: AppLanguage.en,
               label: Text(enLabel),
+            ),
+            ButtonSegment<AppLanguage>(
+              value: AppLanguage.system,
+              label: Text(autoLabel),
             ),
           ],
           selected: {settings.appLanguage},

@@ -78,10 +78,27 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('theme_segmented_button')), findsOneWidget);
-      expect(find.text(UiStrings.themeLight), findsOneWidget);
-      expect(find.text(UiStrings.themeDark), findsOneWidget);
-      expect(find.text(UiStrings.themeSystem), findsOneWidget);
-      expect(find.text('Seguir sistema'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('theme_segmented_button')),
+          matching: find.text(UiStrings.themeLight),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('theme_segmented_button')),
+          matching: find.text(UiStrings.themeDark),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('theme_segmented_button')),
+          matching: find.text(UiStrings.themeSystem),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('default theme selection is system', (tester) async {

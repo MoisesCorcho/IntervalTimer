@@ -22,7 +22,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Selecciona el idioma de la interfaz y la voz del temporizador.';
 
   @override
-  String get languageAuto => 'Automático (Sistema)';
+  String get languageAuto => 'Sistema';
 
   @override
   String get languageEs => 'Español';
@@ -178,7 +178,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get themeDark => 'Oscuro';
 
   @override
-  String get themeSystem => 'Seguir sistema';
+  String get themeSystem => 'Sistema';
 
   @override
   String get voiceSectionTitle => 'Voz';

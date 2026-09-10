@@ -5,7 +5,7 @@
 
   "languageLabel": "Language",
   "languageHint": "Select interface and timer voice language.",
-  "languageAuto": "Automatic (System)",
+  "languageAuto": "System",
   "languageEs": "Spanish",
   "languageEn": "English",
 
@@ -66,7 +66,7 @@
   "themeLabel": "Theme",
   "themeLight": "Light",
   "themeDark": "Dark",
-  "themeSystem": "Follow system",
+  "themeSystem": "System",
 
   "voiceSectionTitle": "Voice",
   "voiceEnabledLabel": "Voice enabled",

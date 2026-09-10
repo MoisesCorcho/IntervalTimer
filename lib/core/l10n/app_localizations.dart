@@ -125,7 +125,7 @@ abstract class AppLocalizations {
   /// No description provided for @languageAuto.
   ///
   /// In en, this message translates to:
-  /// **'Automatic (System)'**
+  /// **'System'**
   String get languageAuto;
 
   /// No description provided for @languageEs.
@@ -425,7 +425,7 @@ abstract class AppLocalizations {
   /// No description provided for @themeSystem.
   ///
   /// In en, this message translates to:
-  /// **'Follow system'**
+  /// **'System'**
   String get themeSystem;
 
   /// No description provided for @voiceSectionTitle.
