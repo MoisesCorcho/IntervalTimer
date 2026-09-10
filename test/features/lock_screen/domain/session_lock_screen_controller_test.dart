@@ -32,12 +32,13 @@ TimerState _running({int remainingMs = 30000}) {
 
 void main() {
   group('SessionLockScreenController show/update (R1, R2)', () {
-    test('running + pref on + permission → show once; tick updates', () async {
+    test('running + pref on + permission + background → show once; tick updates', () async {
       final driver = NoOpSessionSurfaceDriver(permissionGranted: true);
       final controller = SessionLockScreenController(
         driver,
         sessionLockScreenEnabled: true,
         permissionGranted: true,
+        isAppInBackground: true,
       );
 
       await controller.onTimerState(_running(remainingMs: 30500));
@@ -57,6 +58,34 @@ void main() {
     });
   });
 
+  group('SessionLockScreenController lifecycle background/foreground', () {
+    test('foreground by default does not show surface; switching to background shows; returning hides', () async {
+      final driver = NoOpSessionSurfaceDriver(permissionGranted: true);
+      final controller = SessionLockScreenController(
+        driver,
+        sessionLockScreenEnabled: true,
+        permissionGranted: true,
+        isAppInBackground: false,
+      );
+
+      await controller.onTimerState(_running());
+      expect(driver.showCount, 0, reason: 'Must not show notification while in foreground');
+      expect(controller.surfaceVisible, isFalse);
+
+      // Transition to background
+      await controller.setAppInBackground(true);
+      expect(driver.showCount, 1, reason: 'Must show notification upon background transition');
+      expect(controller.surfaceVisible, isTrue);
+
+      // Transition back to foreground
+      await controller.setAppInBackground(false);
+      expect(driver.hideCount, 1, reason: 'Must hide notification upon foreground return');
+      expect(controller.surfaceVisible, isFalse);
+
+      driver.dispose();
+    });
+  });
+
   group('SessionLockScreenController cleanup (R7, R9)', () {
     test('completed/cancelled/pref false → hide', () async {
       final driver = NoOpSessionSurfaceDriver(permissionGranted: true);
@@ -64,6 +93,7 @@ void main() {
         driver,
         sessionLockScreenEnabled: true,
         permissionGranted: true,
+        isAppInBackground: true,
       );
 
       await controller.onTimerState(_running());
@@ -100,6 +130,7 @@ void main() {
         driver,
         sessionLockScreenEnabled: true,
         permissionGranted: true,
+        isAppInBackground: true,
       );
 
       await expectLater(
@@ -126,6 +157,7 @@ void main() {
         driver,
         sessionLockScreenEnabled: true,
         permissionGranted: false,
+        isAppInBackground: true,
       );
 
       // First sync will request; NoOp grants on requestPermission.
@@ -135,6 +167,7 @@ void main() {
         denied,
         sessionLockScreenEnabled: true,
         permissionGranted: false,
+        isAppInBackground: true,
       );
       await c2.onTimerState(_running());
       expect(denied.showCount, 0);

@@ -4,47 +4,63 @@ import 'package:interval_timer/features/timer/application/timer_state.dart';
 
 void main() {
   group('SessionSurfacePolicy show (R1)', () {
-    test('running + pref on + permission → show', () {
+    test('running + pref on + permission + background → show', () {
       expect(
         SessionSurfacePolicy.shouldShowSessionSurface(
           sessionStatus: TimerStatus.running,
           sessionLockScreenEnabled: true,
           notificationPermissionGranted: true,
+          isAppInBackground: true,
         ),
         isTrue,
       );
     });
 
-    test('paused + pref on + permission → show', () {
+    test('paused + pref on + permission + background → show', () {
       expect(
         SessionSurfacePolicy.shouldShowSessionSurface(
           sessionStatus: TimerStatus.paused,
           sessionLockScreenEnabled: true,
           notificationPermissionGranted: true,
+          isAppInBackground: true,
         ),
         isTrue,
       );
     });
 
-    test('preparing + pref on + permission → show', () {
+    test('preparing + pref on + permission + background → show', () {
       expect(
         SessionSurfacePolicy.shouldShowSessionSurface(
           sessionStatus: TimerStatus.preparing,
           sessionLockScreenEnabled: true,
           notificationPermissionGranted: true,
+          isAppInBackground: true,
         ),
         isTrue,
       );
     });
   });
 
-  group('SessionSurfacePolicy hide (R14, R17)', () {
+  group('SessionSurfacePolicy hide (R14, R17 + foreground)', () {
+    test('foreground (not in background) → hide even when running', () {
+      expect(
+        SessionSurfacePolicy.shouldShowSessionSurface(
+          sessionStatus: TimerStatus.running,
+          sessionLockScreenEnabled: true,
+          notificationPermissionGranted: true,
+          isAppInBackground: false,
+        ),
+        isFalse,
+      );
+    });
+
     test('idle → hide', () {
       expect(
         SessionSurfacePolicy.shouldShowSessionSurface(
           sessionStatus: TimerStatus.idle,
           sessionLockScreenEnabled: true,
           notificationPermissionGranted: true,
+          isAppInBackground: true,
         ),
         isFalse,
       );
@@ -56,6 +72,7 @@ void main() {
           sessionStatus: TimerStatus.completed,
           sessionLockScreenEnabled: true,
           notificationPermissionGranted: true,
+          isAppInBackground: true,
         ),
         isFalse,
       );
@@ -67,6 +84,7 @@ void main() {
           sessionStatus: TimerStatus.running,
           sessionLockScreenEnabled: false,
           notificationPermissionGranted: true,
+          isAppInBackground: true,
         ),
         isFalse,
       );
@@ -78,6 +96,7 @@ void main() {
           sessionStatus: TimerStatus.running,
           sessionLockScreenEnabled: true,
           notificationPermissionGranted: false,
+          isAppInBackground: true,
         ),
         isFalse,
       );
