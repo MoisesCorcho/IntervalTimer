@@ -10,6 +10,7 @@ class PreferencesRepository {
   static const activeWorkoutIdKey = 'active_workout_id';
   static const prepSecondsKey = 'prep_seconds';
   static const themeModeKey = 'theme_mode';
+  static const themeColorKey = 'theme_color_argb';
   static const workColorKey = 'work_color_argb';
   static const restColorKey = 'rest_color_argb';
   static const defaultPrepSeconds = 10;
@@ -17,6 +18,7 @@ class PreferencesRepository {
   static const maxPrepSeconds = 60;
   /// Storage default for F27 theme preference (`light` | `dark` | `system`).
   static const defaultThemeMode = 'system';
+  static const defaultThemeColorArgb = AppTheme.primaryColorArgb;
   static const defaultWorkColorArgb = AppTheme.workColorArgb;
   static const defaultRestColorArgb = AppTheme.restColorArgb;
 
@@ -141,6 +143,13 @@ class PreferencesRepository {
     final clamped = value.clamp(minPrepSeconds, maxPrepSeconds);
     await setInt(prepSecondsKey, clamped);
   }
+
+  Future<int> getThemeColorArgb() async {
+    final value = await getInt(themeColorKey);
+    return value ?? defaultThemeColorArgb;
+  }
+
+  Future<void> setThemeColorArgb(int value) => setInt(themeColorKey, value);
 
   Future<int> getWorkColorArgb() async {
     final value = await getInt(workColorKey);

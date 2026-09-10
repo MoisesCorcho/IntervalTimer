@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/core/utils/contrast_text_color.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
@@ -109,6 +110,13 @@ class _SettingsBody extends ConsumerWidget {
                       .setThemeMode(selected.first);
                 },
               ),
+              const SizedBox(height: AppTheme.spacingMd),
+              Divider(
+                height: 1,
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: AppTheme.spacingMd),
+              _ThemeAccentColorSection(settings: settings),
               const SizedBox(height: AppTheme.spacingMd),
               Divider(
                 height: 1,
@@ -372,6 +380,93 @@ class _TimerPhaseColorsSection extends ConsumerWidget {
               ),
             );
           },
+        ),
+      ],
+    );
+  }
+}
+
+class _ThemeAccentColorSection extends ConsumerWidget {
+  const _ThemeAccentColorSection({required this.settings});
+
+  final AppSettings settings;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final muted = theme.textTheme.bodyMedium?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.themeAccentColorLabel,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: AppTheme.spacingXs),
+        Text(
+          l10n.themeAccentColorHint,
+          style: muted,
+        ),
+        const SizedBox(height: AppTheme.spacingSm),
+        Wrap(
+          key: const Key('settings_accent_color_selector'),
+          spacing: 8,
+          runSpacing: 8,
+          children: AppTheme.accentColorPresets.map((color) {
+            final isSelected = settings.themeColorArgb == color.toARGB32();
+            final checkColor = contrastTextColor(color);
+
+            return Semantics(
+              label: 'Accent color ${color.toARGB32()}',
+              selected: isSelected,
+              button: true,
+              child: InkWell(
+                key: Key('accent_color_swatch_${color.toARGB32()}'),
+                onTap: () {
+                  ref
+                      .read(settingsControllerProvider.notifier)
+                      .setThemeColor(color.toARGB32());
+                },
+                borderRadius: BorderRadius.circular(24),
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: isSelected
+                        ? Border.all(
+                            color: theme.colorScheme.primary,
+                            width: 2.5,
+                          )
+                        : null,
+                  ),
+                  child: Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                      boxShadow: AppTheme.buttonShadowFor(context),
+                    ),
+                    child: isSelected
+                        ? Icon(
+                            Icons.check,
+                            size: 18,
+                            color: checkColor,
+                          )
+                        : null,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );

@@ -61,6 +61,8 @@
   "themeLight": "Claro",
   "themeDark": "Oscuro",
   "themeSystem": "Sistema",
+  "themeAccentColorLabel": "Color de acento",
+  "themeAccentColorHint": "Elegí el color de acento para la interfaz.",
 
   "voiceSectionTitle": "Voz",
   "voiceEnabledLabel": "Voz activada",

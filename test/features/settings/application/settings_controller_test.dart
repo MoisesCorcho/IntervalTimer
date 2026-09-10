@@ -87,5 +87,14 @@ void main() {
       expect(settings.restColorArgb, newColor);
       expect(await settingsRepo.getRestColorArgb(), newColor);
     });
+
+    test('setThemeColor updates state and persists', () async {
+      const newColor = 0xFFFF9800; // Orange
+      await controller.setThemeColor(newColor);
+
+      final settings = container.read(settingsControllerProvider).requireValue;
+      expect(settings.themeColorArgb, newColor);
+      expect(await settingsRepo.getThemeColorArgb(), newColor);
+    });
   });
 }

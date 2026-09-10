@@ -67,6 +67,8 @@
   "themeLight": "Light",
   "themeDark": "Dark",
   "themeSystem": "System",
+  "themeAccentColorLabel": "Accent color",
+  "themeAccentColorHint": "Select an accent color for the app interface.",
 
   "voiceSectionTitle": "Voice",
   "voiceEnabledLabel": "Voice enabled",

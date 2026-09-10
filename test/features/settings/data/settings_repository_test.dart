@@ -91,5 +91,19 @@ void main() {
       expect(await again.getWorkColorArgb(), newWork);
       expect(await again.getRestColorArgb(), newRest);
     });
+
+    test('default theme color matches AppTheme.primaryColorArgb when absent', () async {
+      expect(await repo.getThemeColorArgb(), AppTheme.primaryColorArgb);
+    });
+
+    test('set and get theme color persists and survives re-read', () async {
+      const newThemeColor = 0xFFFF9800; // Orange
+      await repo.setThemeColorArgb(newThemeColor);
+
+      expect(await repo.getThemeColorArgb(), newThemeColor);
+
+      final again = SettingsRepository(PreferencesRepository(db));
+      expect(await again.getThemeColorArgb(), newThemeColor);
+    });
   });
 }

@@ -30,6 +30,7 @@ class AppSettings {
     this.keepScreenOnEnabled = true,
     this.sessionLockScreenEnabled = true,
     this.themeMode = AppThemeMode.system,
+    this.themeColorArgb = 0xFF4CAF50,
     this.bodyWeightUnit = BodyWeightUnit.kg,
     this.appLanguage = AppLanguage.system,
     this.workColorArgb = 0xFF2E7D32,
@@ -90,6 +91,9 @@ class AppSettings {
   /// Theme preference: light, dark, or follow system (F27).
   final AppThemeMode themeMode;
 
+  /// Custom primary accent color for the app interface (ARGB). Default 0xFF4CAF50.
+  final int themeColorArgb;
+
   /// Weight display/edit unit for body tracking UI (F15).
   final BodyWeightUnit bodyWeightUnit;
 
@@ -127,6 +131,7 @@ class AppSettings {
     bool? keepScreenOnEnabled,
     bool? sessionLockScreenEnabled,
     AppThemeMode? themeMode,
+    int? themeColorArgb,
     BodyWeightUnit? bodyWeightUnit,
     AppLanguage? appLanguage,
     int? workColorArgb,
@@ -166,6 +171,7 @@ class AppSettings {
       sessionLockScreenEnabled:
           sessionLockScreenEnabled ?? this.sessionLockScreenEnabled,
       themeMode: themeMode ?? this.themeMode,
+      themeColorArgb: themeColorArgb ?? this.themeColorArgb,
       bodyWeightUnit: bodyWeightUnit ?? this.bodyWeightUnit,
       appLanguage: appLanguage ?? this.appLanguage,
       workColorArgb: workColorArgb ?? this.workColorArgb,
@@ -201,8 +207,11 @@ class AppSettings {
             other.keepScreenOnEnabled == keepScreenOnEnabled &&
             other.sessionLockScreenEnabled == sessionLockScreenEnabled &&
             other.themeMode == themeMode &&
+            other.themeColorArgb == themeColorArgb &&
             other.bodyWeightUnit == bodyWeightUnit &&
-            other.appLanguage == appLanguage);
+            other.appLanguage == appLanguage &&
+            other.workColorArgb == workColorArgb &&
+            other.restColorArgb == restColorArgb);
   }
 
   @override
@@ -231,7 +240,10 @@ class AppSettings {
         keepScreenOnEnabled,
         sessionLockScreenEnabled,
         themeMode,
+        themeColorArgb,
         bodyWeightUnit,
         appLanguage,
+        workColorArgb,
+        restColorArgb,
       ]);
 }

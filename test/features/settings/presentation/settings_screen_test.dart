@@ -203,5 +203,35 @@ void main() {
       await tester.scrollUntilVisible(screenFinder, 300, scrollable: find.byType(Scrollable).first);
       expect(screenFinder, findsOneWidget);
     });
+
+    testWidgets('renders theme accent color swatches and selecting a color updates repo',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('settings_accent_color_selector')), findsOneWidget);
+
+      // Tap the orange swatch (0xFFFF9800)
+      final orangeSwatch = find.byKey(const Key('accent_color_swatch_4294940672')); // 0xFFFF9800
+      expect(orangeSwatch, findsOneWidget);
+
+      await tester.tap(orangeSwatch);
+      await tester.pumpAndSettle();
+
+      expect(await settingsRepo.getThemeColorArgb(), 0xFFFF9800);
+    });
   });
 }

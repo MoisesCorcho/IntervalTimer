@@ -96,7 +96,19 @@ abstract final class AppTheme {
     Color(0xFF283593), // Navy / Indigo
   ];
 
-  static ThemeData light() {
+  /// Curated athletic palette for app theme accent color customization.
+  static const accentColorPresets = <Color>[
+    primaryColor, // Athletic Green (Default)
+    Color(0xFFFF9800), // Energy Orange
+    Color(0xFF00BCD4), // Electric Cyan / Teal
+    Color(0xFF2196F3), // Athletic Blue
+    Color(0xFFE53935), // Crimson Red
+    Color(0xFF9C27B0), // Deep Purple
+    Color(0xFFFFB300), // Amber Gold
+    Color(0xFFE91E63), // Vivid Magenta
+  ];
+
+  static ThemeData light({Color primaryColor = primaryColor}) {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: primaryColor,
       brightness: Brightness.light,
@@ -158,7 +170,7 @@ abstract final class AppTheme {
     );
   }
 
-  static ThemeData dark() {
+  static ThemeData dark({Color primaryColor = primaryColor}) {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: primaryColor,
       brightness: Brightness.dark,

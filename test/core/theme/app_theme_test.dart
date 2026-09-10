@@ -38,5 +38,22 @@ void main() {
       // Action text color should match primary
       expect(snackBarTheme.actionTextColor, theme.colorScheme.primary);
     });
+
+    test('light and dark themes respect custom primaryColor seed', () {
+      const customPrimary = Color(0xFFFF9800); // Energy Orange
+      final lightTheme = AppTheme.light(primaryColor: customPrimary);
+      final darkTheme = AppTheme.dark(primaryColor: customPrimary);
+
+      // ColorScheme generated from custom seed
+      expect(lightTheme.colorScheme.primary, ColorScheme.fromSeed(seedColor: customPrimary, brightness: Brightness.light).primary);
+      expect(darkTheme.colorScheme.primary, ColorScheme.fromSeed(seedColor: customPrimary, brightness: Brightness.dark).primary);
+      expect(lightTheme.floatingActionButtonTheme.backgroundColor, lightTheme.colorScheme.primary);
+    });
+
+    test('accentColorPresets contains default primary color and curated options', () {
+      expect(AppTheme.accentColorPresets, isNotEmpty);
+      expect(AppTheme.accentColorPresets, contains(AppTheme.primaryColor));
+      expect(AppTheme.accentColorPresets, contains(const Color(0xFFFF9800))); // Orange
+    });
   });
 }

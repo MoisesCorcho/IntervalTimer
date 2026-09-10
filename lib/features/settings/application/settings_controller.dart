@@ -36,6 +36,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final keepScreenOnEnabled = await repo.getKeepScreenOnEnabled();
     final sessionLockScreenEnabled = await repo.getSessionLockScreenEnabled();
     final themeMode = await repo.getThemeMode();
+    final themeColorArgb = await repo.getThemeColorArgb();
     final bodyWeightUnit = await repo.getBodyWeightUnit();
     final appLanguage = await repo.getAppLanguage();
     final workColorArgb = await repo.getWorkColorArgb();
@@ -65,6 +66,7 @@ class SettingsController extends AsyncNotifier<AppSettings> {
       keepScreenOnEnabled: keepScreenOnEnabled,
       sessionLockScreenEnabled: sessionLockScreenEnabled,
       themeMode: themeMode,
+      themeColorArgb: themeColorArgb,
       bodyWeightUnit: bodyWeightUnit,
       appLanguage: appLanguage,
       workColorArgb: workColorArgb,
@@ -285,6 +287,13 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final current =
         state.valueOrNull ?? const AppSettings(prepSeconds: 10);
     state = AsyncData(current.copyWith(appLanguage: language));
+  }
+
+  Future<void> setThemeColor(int argb) async {
+    await ref.read(settingsRepositoryProvider).setThemeColorArgb(argb);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(themeColorArgb: argb));
   }
 
   Future<void> setWorkColor(int argb) async {

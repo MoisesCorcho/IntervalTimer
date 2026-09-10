@@ -56,16 +56,20 @@ class _AppState extends ConsumerState<App> {
     ref.watch(sessionLockScreenBootstrapProvider);
     final router = ref.watch(routerProvider);
     final settingsAsync = ref.watch(settingsControllerProvider);
+    final settings = settingsAsync.valueOrNull;
     final themeMode = _toFlutterThemeMode(
-      settingsAsync.valueOrNull?.themeMode ?? AppThemeMode.system,
+      settings?.themeMode ?? AppThemeMode.system,
     );
+    final primaryColor = settings != null
+        ? Color(settings.themeColorArgb)
+        : AppTheme.primaryColor;
 
     final effectiveLocale = ref.watch(effectiveLocaleProvider);
 
     return MaterialApp.router(
       onGenerateTitle: (context) => context.l10n.appTitle,
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
+      theme: AppTheme.light(primaryColor: primaryColor),
+      darkTheme: AppTheme.dark(primaryColor: primaryColor),
       themeMode: themeMode,
       routerConfig: router,
       locale: effectiveLocale,

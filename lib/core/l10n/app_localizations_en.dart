@@ -178,6 +178,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeSystem => 'System';
 
   @override
+  String get themeAccentColorLabel => 'Accent color';
+
+  @override
+  String get themeAccentColorHint =>
+      'Select an accent color for the app interface.';
+
+  @override
   String get voiceSectionTitle => 'Voice';
 
   @override

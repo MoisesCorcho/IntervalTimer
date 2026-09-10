@@ -428,6 +428,18 @@ abstract class AppLocalizations {
   /// **'System'**
   String get themeSystem;
 
+  /// No description provided for @themeAccentColorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent color'**
+  String get themeAccentColorLabel;
+
+  /// No description provided for @themeAccentColorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an accent color for the app interface.'**
+  String get themeAccentColorHint;
+
   /// No description provided for @voiceSectionTitle.
   ///
   /// In en, this message translates to:
