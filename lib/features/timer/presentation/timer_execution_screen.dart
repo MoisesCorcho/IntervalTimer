@@ -135,21 +135,25 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
 
     final current = timerState.currentInterval;
     final isPrep = timerState.isInPreparation;
-    // Phase color + chrome: brand work/rest always dark fill + white text/ring
-    // (F35), independent of app light/dark theme and of light colorArgb leftovers.
+    final settings = ref.watch(settingsControllerProvider).valueOrNull;
+    // Phase color + chrome: brand work/rest use user settings or swatches,
+    // preparation uses neutral AppTheme.prepColor (F35).
     final phaseInterval = isPrep ? timerState.nextInterval : current;
     final bgColor = executionBackgroundColor(
       interval: phaseInterval,
       prepFallback: Theme.of(context).colorScheme.surfaceContainerHighest,
+      isPreparation: isPrep,
+      workColor: settings != null ? Color(settings.workColorArgb) : null,
+      restColor: settings != null ? Color(settings.restColorArgb) : null,
     );
     final textColor = executionChromeColor(
       background: bgColor,
       type: phaseInterval?.type,
+      isPreparation: isPrep,
     );
     final segmentTimeText = formatRemainingMs(timerState.remainingMs);
     final totalTimeText = formatTotalRemainingMs(timerState.totalRemainingMs);
     final l10n = context.l10n;
-    final settings = ref.watch(settingsControllerProvider).valueOrNull;
     final allAudioMuted = settings != null &&
         !settings.voiceEnabled &&
         !settings.soundEnabled &&

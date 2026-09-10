@@ -517,5 +517,12 @@
   "vibrationFeedback": "Haptic feedback",
   "vibrationFeedbackDesc": "Vibration on interval changes",
   "muteAll": "Mute all",
-  "unmuteAll": "Unmute all"
+  "unmuteAll": "Unmute all",
+  "timerColorsSectionTitle": "Timer colors",
+  "workColorTitle": "Work color",
+  "workColorSubtitle": "Screen color during active intervals",
+  "restColorTitle": "Rest color",
+  "restColorSubtitle": "Screen color during rest intervals",
+  "resetToDefault": "Reset to default",
+  "saveColor": "Save"
 }

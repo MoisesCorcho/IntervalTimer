@@ -366,5 +366,12 @@
   "vibrationFeedback": "Respuesta táctil",
   "vibrationFeedbackDesc": "Vibración al cambiar de intervalo",
   "muteAll": "Silenciar todo",
-  "unmuteAll": "Activar todo"
+  "unmuteAll": "Activar todo",
+  "timerColorsSectionTitle": "Colores del cronómetro",
+  "workColorTitle": "Color de trabajo",
+  "workColorSubtitle": "Pantalla durante los intervalos activos",
+  "restColorTitle": "Color de descanso",
+  "restColorSubtitle": "Pantalla durante los intervalos de descanso",
+  "resetToDefault": "Restablecer original",
+  "saveColor": "Guardar"
 }

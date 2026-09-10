@@ -1142,4 +1142,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unmuteAll => 'Unmute all';
+
+  @override
+  String get timerColorsSectionTitle => 'Timer colors';
+
+  @override
+  String get workColorTitle => 'Work color';
+
+  @override
+  String get workColorSubtitle => 'Screen color during active intervals';
+
+  @override
+  String get restColorTitle => 'Rest color';
+
+  @override
+  String get restColorSubtitle => 'Screen color during rest intervals';
+
+  @override
+  String get resetToDefault => 'Reset to default';
+
+  @override
+  String get saveColor => 'Save';
 }

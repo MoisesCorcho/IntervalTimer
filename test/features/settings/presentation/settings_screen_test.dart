@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/app_localizations.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
@@ -113,6 +114,38 @@ void main() {
         find.byKey(const Key('theme_segmented_button')),
       );
       expect(button.selected, {AppThemeMode.dark});
+    });
+
+    testWidgets('shows work and rest color tiles and tapping opens picker sheet',
+        (tester) async {
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('work_color_tile')),
+        200.0,
+      );
+      await tester.ensureVisible(find.byKey(const Key('work_color_tile')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('work_color_tile')), findsOneWidget);
+      expect(find.byKey(const Key('rest_color_tile')), findsOneWidget);
+
+      // Tap work color tile opens sheet
+      await tester.tap(find.byKey(const Key('work_color_tile')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('phase_color_preview_card')), findsOneWidget);
     });
   });
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/routine.dart';
@@ -158,5 +159,19 @@ void main() {
 
     expect(find.byKey(const Key('last_interval_label')), findsOneWidget);
     expect(find.text(UiStrings.lastInterval), findsOneWidget);
+  });
+
+  testWidgets('preparation screen uses neutral dark slate AppTheme.prepColor',
+      (tester) async {
+    await pumpExecution(tester);
+
+    final controller = container.read(timerControllerProvider.notifier);
+    controller.bindRoutine(_twoIntervals());
+    controller.start(prepSeconds: 5);
+    controller.pause();
+    await tester.pump();
+
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+    expect(scaffold.backgroundColor, AppTheme.prepColor);
   });
 }

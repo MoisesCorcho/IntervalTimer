@@ -10,6 +10,7 @@ import 'package:interval_timer/features/always_on/presentation/keep_screen_on_se
 import 'package:interval_timer/features/body_tracking/presentation/body_weight_unit_settings_section.dart';
 import 'package:interval_timer/features/lock_screen/presentation/session_lock_screen_settings_section.dart';
 import 'package:interval_timer/features/settings/presentation/widgets/language_selector_tile.dart';
+import 'package:interval_timer/features/settings/presentation/widgets/phase_color_picker_sheet.dart';
 import 'package:interval_timer/features/sound_effects/presentation/sound_effects_settings_section.dart';
 import 'package:interval_timer/features/vibration/presentation/vibration_settings_section.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
@@ -126,6 +127,8 @@ class _SettingsBody extends ConsumerWidget {
           },
         ),
         const SizedBox(height: AppTheme.spacingLg),
+        _TimerPhaseColorsSection(settings: settings),
+        const SizedBox(height: AppTheme.spacingLg),
         Text(
           l10n.voiceSectionTitle,
           style: theme.textTheme.titleLarge,
@@ -203,6 +206,96 @@ class _SettingsBody extends ConsumerWidget {
         KeepScreenOnSettingsSection(settings: settings),
         const SizedBox(height: AppTheme.spacingLg),
         SessionLockScreenSettingsSection(settings: settings),
+      ],
+    );
+  }
+}
+
+class _TimerPhaseColorsSection extends ConsumerWidget {
+  const _TimerPhaseColorsSection({required this.settings});
+
+  final AppSettings settings;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final controller = ref.read(settingsControllerProvider.notifier);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.timerColorsSectionTitle,
+          style: theme.textTheme.titleMedium,
+        ),
+        const SizedBox(height: AppTheme.spacingSm),
+        ListTile(
+          key: const Key('work_color_tile'),
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.workColorTitle),
+          subtitle: Text(
+            l10n.workColorSubtitle,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          trailing: Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: Color(settings.workColorArgb),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: theme.dividerColor.withValues(alpha: 0.3),
+                width: 2,
+              ),
+              boxShadow: AppTheme.buttonShadowFor(context),
+            ),
+          ),
+          onTap: () {
+            showPhaseColorPickerSheet(
+              context: context,
+              title: l10n.workColorTitle,
+              initialColor: Color(settings.workColorArgb),
+              defaultColor: AppTheme.workColor,
+              onColorSelected: (c) => controller.setWorkColor(c.toARGB32()),
+            );
+          },
+        ),
+        ListTile(
+          key: const Key('rest_color_tile'),
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.restColorTitle),
+          subtitle: Text(
+            l10n.restColorSubtitle,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          trailing: Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: Color(settings.restColorArgb),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: theme.dividerColor.withValues(alpha: 0.3),
+                width: 2,
+              ),
+              boxShadow: AppTheme.buttonShadowFor(context),
+            ),
+          ),
+          onTap: () {
+            showPhaseColorPickerSheet(
+              context: context,
+              title: l10n.restColorTitle,
+              initialColor: Color(settings.restColorArgb),
+              defaultColor: AppTheme.restColor,
+              onColorSelected: (c) => controller.setRestColor(c.toARGB32()),
+            );
+          },
+        ),
       ],
     );
   }

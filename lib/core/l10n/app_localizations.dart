@@ -2161,6 +2161,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unmute all'**
   String get unmuteAll;
+
+  /// No description provided for @timerColorsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer colors'**
+  String get timerColorsSectionTitle;
+
+  /// No description provided for @workColorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Work color'**
+  String get workColorTitle;
+
+  /// No description provided for @workColorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen color during active intervals'**
+  String get workColorSubtitle;
+
+  /// No description provided for @restColorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest color'**
+  String get restColorTitle;
+
+  /// No description provided for @restColorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen color during rest intervals'**
+  String get restColorSubtitle;
+
+  /// No description provided for @resetToDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to default'**
+  String get resetToDefault;
+
+  /// No description provided for @saveColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveColor;
 }
 
 class _AppLocalizationsDelegate

@@ -32,6 +32,8 @@ class AppSettings {
     this.themeMode = AppThemeMode.system,
     this.bodyWeightUnit = BodyWeightUnit.kg,
     this.appLanguage = AppLanguage.system,
+    this.workColorArgb = 0xFF2E7D32,
+    this.restColorArgb = 0xFF1565C0,
   });
 
   /// Seconds of preparation before the first interval (0–60).
@@ -94,6 +96,12 @@ class AppSettings {
   /// Application language preference: system, es, or en (F28).
   final AppLanguage appLanguage;
 
+  /// Custom phase color for work intervals (ARGB). Default 0xFF2E7D32.
+  final int workColorArgb;
+
+  /// Custom phase color for rest intervals (ARGB). Default 0xFF1565C0.
+  final int restColorArgb;
+
   AppSettings copyWith({
     int? prepSeconds,
     bool? voiceEnabled,
@@ -121,6 +129,8 @@ class AppSettings {
     AppThemeMode? themeMode,
     BodyWeightUnit? bodyWeightUnit,
     AppLanguage? appLanguage,
+    int? workColorArgb,
+    int? restColorArgb,
   }) {
     return AppSettings(
       prepSeconds: prepSeconds ?? this.prepSeconds,
@@ -158,6 +168,8 @@ class AppSettings {
       themeMode: themeMode ?? this.themeMode,
       bodyWeightUnit: bodyWeightUnit ?? this.bodyWeightUnit,
       appLanguage: appLanguage ?? this.appLanguage,
+      workColorArgb: workColorArgb ?? this.workColorArgb,
+      restColorArgb: restColorArgb ?? this.restColorArgb,
     );
   }
 

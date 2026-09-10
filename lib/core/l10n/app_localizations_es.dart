@@ -1157,4 +1157,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get unmuteAll => 'Activar todo';
+
+  @override
+  String get timerColorsSectionTitle => 'Colores del cronómetro';
+
+  @override
+  String get workColorTitle => 'Color de trabajo';
+
+  @override
+  String get workColorSubtitle => 'Pantalla durante los intervalos activos';
+
+  @override
+  String get restColorTitle => 'Color de descanso';
+
+  @override
+  String get restColorSubtitle => 'Pantalla durante los intervalos de descanso';
+
+  @override
+  String get resetToDefault => 'Restablecer original';
+
+  @override
+  String get saveColor => 'Guardar';
 }

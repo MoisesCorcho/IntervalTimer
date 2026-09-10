@@ -38,6 +38,8 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final themeMode = await repo.getThemeMode();
     final bodyWeightUnit = await repo.getBodyWeightUnit();
     final appLanguage = await repo.getAppLanguage();
+    final workColorArgb = await repo.getWorkColorArgb();
+    final restColorArgb = await repo.getRestColorArgb();
     return AppSettings(
       prepSeconds: prep,
       voiceEnabled: voiceEnabled,
@@ -65,6 +67,8 @@ class SettingsController extends AsyncNotifier<AppSettings> {
       themeMode: themeMode,
       bodyWeightUnit: bodyWeightUnit,
       appLanguage: appLanguage,
+      workColorArgb: workColorArgb,
+      restColorArgb: restColorArgb,
     );
   }
 
@@ -281,5 +285,19 @@ class SettingsController extends AsyncNotifier<AppSettings> {
     final current =
         state.valueOrNull ?? const AppSettings(prepSeconds: 10);
     state = AsyncData(current.copyWith(appLanguage: language));
+  }
+
+  Future<void> setWorkColor(int argb) async {
+    await ref.read(settingsRepositoryProvider).setWorkColorArgb(argb);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(workColorArgb: argb));
+  }
+
+  Future<void> setRestColor(int argb) async {
+    await ref.read(settingsRepositoryProvider).setRestColorArgb(argb);
+    final current =
+        state.valueOrNull ?? const AppSettings(prepSeconds: 10);
+    state = AsyncData(current.copyWith(restColorArgb: argb));
   }
 }

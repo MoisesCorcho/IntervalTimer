@@ -1,5 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
@@ -70,6 +71,25 @@ void main() {
       await repo.setThemeMode(AppThemeMode.dark);
       expect(await prefs.getThemeMode(), 'dark');
       expect(await prefs.getString(PreferencesRepository.themeModeKey), 'dark');
+    });
+
+    test('default work and rest colors match AppTheme defaults when absent', () async {
+      expect(await repo.getWorkColorArgb(), AppTheme.workColor.toARGB32());
+      expect(await repo.getRestColorArgb(), AppTheme.restColor.toARGB32());
+    });
+
+    test('set and get work and rest colors persists and survives re-read', () async {
+      const newWork = 0xFFC62828;
+      const newRest = 0xFF6A1B9A;
+      await repo.setWorkColorArgb(newWork);
+      await repo.setRestColorArgb(newRest);
+
+      expect(await repo.getWorkColorArgb(), newWork);
+      expect(await repo.getRestColorArgb(), newRest);
+
+      final again = SettingsRepository(PreferencesRepository(db));
+      expect(await again.getWorkColorArgb(), newWork);
+      expect(await again.getRestColorArgb(), newRest);
     });
   });
 }

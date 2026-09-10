@@ -66,6 +66,22 @@ abstract final class AppTheme {
   static const workColor = Color(0xFF2E7D32); // Green 800
   static const restColor = Color(0xFF1565C0); // Blue 800
   static const stretchColor = Color(0xFF9C27B0);
+  /// Fixed neutral dark slate grey for the preparation countdown.
+  static const prepColor = Color(0xFF2E3239);
+
+  /// Curated athletic palette (10 shades) for customizable work and rest phases.
+  static const phaseColorPresets = <Color>[
+    Color(0xFF2E7D32), // Forest Green (default work)
+    Color(0xFF1565C0), // Deep Blue (default rest)
+    Color(0xFFC62828), // Crimson Red
+    Color(0xFFE65100), // Energy Orange
+    Color(0xFF6A1B9A), // Deep Purple
+    Color(0xFF00838F), // Cyan / Teal
+    Color(0xFFFF8F00), // Amber Gold
+    Color(0xFFAD1457), // Vivid Magenta
+    Color(0xFF827717), // Volt / Lime
+    Color(0xFF283593), // Navy / Indigo
+  ];
 
   static ThemeData light() {
     final colorScheme = ColorScheme.fromSeed(
