@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
 
 /// Single source of truth for app name + logo used in share cards, MaterialApp, etc.
 ///
@@ -40,7 +41,7 @@ abstract final class AppBranding {
             decoration: BoxDecoration(
               borderRadius: radius,
               gradient: const LinearGradient(
-                colors: [Color(0xFF2E7D32), Color(0xFF1565C0)],
+                colors: [AppTheme.workColor, AppTheme.restColor],
               ),
             ),
             child: Icon(

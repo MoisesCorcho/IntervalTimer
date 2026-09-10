@@ -1,4 +1,5 @@
 import 'package:uuid/uuid.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/interval_type.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/exercise.dart';
@@ -28,7 +29,7 @@ class PresetRoutineFlattener {
             id: generator.v4(),
             name: ref.sets > 1 ? '$name (SET $set/${ref.sets})' : name,
             durationSeconds: ref.workSeconds,
-            colorArgb: 0xFF4CAF50, // Verde Trabajo
+            colorArgb: AppTheme.workColorArgb,
             type: IntervalType.work,
           ),
         );
@@ -40,7 +41,7 @@ class PresetRoutineFlattener {
               id: generator.v4(),
               name: 'DESCANSO SET',
               durationSeconds: ref.restSeconds,
-              colorArgb: 0xFF2196F3, // Azul Descanso
+              colorArgb: AppTheme.restColorArgb,
               type: IntervalType.rest,
             ),
           );
@@ -54,7 +55,7 @@ class PresetRoutineFlattener {
             id: generator.v4(),
             name: 'DESCANSO SIGUIENTE EJERCICIO',
             durationSeconds: preset.restBetweenExercisesSeconds,
-            colorArgb: 0xFF9C27B0, // Púrpura Transición
+            colorArgb: AppTheme.stretchColorArgb,
             type: IntervalType.rest,
           ),
         );

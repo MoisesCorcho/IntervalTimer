@@ -147,7 +147,7 @@ abstract final class AppSnackBar {
 
   static Color _iconColorFor(AppSnackBarType type, ColorScheme colorScheme) {
     return switch (type) {
-      AppSnackBarType.success => const Color(0xFF4CAF50), // Athletic green
+      AppSnackBarType.success => colorScheme.primary,
       AppSnackBarType.error => const Color(0xFFEF5350),   // Red
       AppSnackBarType.warning => const Color(0xFFFFB74D), // Amber
       AppSnackBarType.info => colorScheme.primary,

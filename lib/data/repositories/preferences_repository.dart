@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/local/database.dart';
 
 class PreferencesRepository {
@@ -16,8 +17,8 @@ class PreferencesRepository {
   static const maxPrepSeconds = 60;
   /// Storage default for F27 theme preference (`light` | `dark` | `system`).
   static const defaultThemeMode = 'system';
-  static const defaultWorkColorArgb = 0xFF2E7D32; // Green 800 (AppTheme.workColor)
-  static const defaultRestColorArgb = 0xFF1565C0; // Blue 800 (AppTheme.restColor)
+  static const defaultWorkColorArgb = AppTheme.workColorArgb;
+  static const defaultRestColorArgb = AppTheme.restColorArgb;
 
   // F02 voice prefs
   static const voiceEnabledKey = 'voice_enabled';

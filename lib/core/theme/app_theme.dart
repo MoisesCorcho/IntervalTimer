@@ -57,22 +57,35 @@ abstract final class AppTheme {
         : buttonOuterShadow;
   }
 
+  /// Default primary brand seed color (athletic green).
+  static const primaryColorArgb = 0xFF4CAF50;
+  static const primaryColor = Color(primaryColorArgb);
+
   /// Default interval colors per type (ARGB).
   /// Work/rest use deeper tones so execution UI text/ring stay white
   /// ([contrastTextColor] → white when luminance ≤ 0.179), matching routine
   /// sessions on saturated backgrounds. Lighter Material 500 greens/blues
   /// force black text and looked inconsistent on the workout timer.
-  static const warmupColor = Color(0xFFFFC107);
-  static const workColor = Color(0xFF2E7D32); // Green 800
-  static const restColor = Color(0xFF1565C0); // Blue 800
-  static const stretchColor = Color(0xFF9C27B0);
+  static const warmupColorArgb = 0xFFFFC107;
+  static const warmupColor = Color(warmupColorArgb);
+
+  static const workColorArgb = 0xFF2E7D32; // Green 800
+  static const workColor = Color(workColorArgb);
+
+  static const restColorArgb = 0xFF1565C0; // Blue 800
+  static const restColor = Color(restColorArgb);
+
+  static const stretchColorArgb = 0xFF9C27B0;
+  static const stretchColor = Color(stretchColorArgb);
+
   /// Fixed neutral dark slate grey for the preparation countdown.
-  static const prepColor = Color(0xFF2E3239);
+  static const prepColorArgb = 0xFF2E3239;
+  static const prepColor = Color(prepColorArgb);
 
   /// Curated athletic palette (10 shades) for customizable work and rest phases.
   static const phaseColorPresets = <Color>[
-    Color(0xFF2E7D32), // Forest Green (default work)
-    Color(0xFF1565C0), // Deep Blue (default rest)
+    workColor, // Forest Green (default work)
+    restColor, // Deep Blue (default rest)
     Color(0xFFC62828), // Crimson Red
     Color(0xFFE65100), // Energy Orange
     Color(0xFF6A1B9A), // Deep Purple
@@ -85,7 +98,7 @@ abstract final class AppTheme {
 
   static ThemeData light() {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF4CAF50),
+      seedColor: primaryColor,
       brightness: Brightness.light,
     );
 
@@ -146,7 +159,7 @@ abstract final class AppTheme {
 
   static ThemeData dark() {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF4CAF50),
+      seedColor: primaryColor,
       brightness: Brightness.dark,
     );
 
