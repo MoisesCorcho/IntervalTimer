@@ -36,10 +36,11 @@ void main() {
     late PreferencesRepository prefs;
     late SettingsRepository settingsRepo;
 
-    setUp(() {
+    setUp(() async {
       db = AppDatabase.forTesting(NativeDatabase.memory());
       prefs = PreferencesRepository(db);
       settingsRepo = SettingsRepository(prefs);
+      await prefs.setHasSeenOnboarding(true);
     });
 
     tearDown(() async {

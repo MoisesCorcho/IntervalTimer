@@ -7,6 +7,7 @@ import 'package:interval_timer/app/router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/models/session_log_status.dart';
+import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/data/repositories/session_log_repository.dart';
 import 'package:interval_timer/features/calendar_history/application/calendar_history_providers.dart';
 import 'package:interval_timer/features/calendar_history/presentation/history_screen.dart';
@@ -178,6 +179,7 @@ void main() {
 
   testWidgets('shell still has 4 destinations without Progreso tab (R1)',
       (tester) async {
+    await PreferencesRepository(db).setHasSeenOnboarding(true);
     final container = createContainer();
     addTearDown(container.dispose);
 

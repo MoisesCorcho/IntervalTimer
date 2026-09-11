@@ -33,6 +33,7 @@ void main() {
 
     testWidgets('switching language to English updates MaterialApp locale reactively',
         (tester) async {
+      await prefs.setHasSeenOnboarding(true);
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
