@@ -143,6 +143,7 @@ abstract final class AppTheme {
       ),
       bottomSheetTheme: BottomSheetThemeData(
         showDragHandle: true,
+        clipBehavior: Clip.antiAlias,
         backgroundColor: colorScheme.surface,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(radiusLg)),
@@ -205,6 +206,7 @@ abstract final class AppTheme {
       ),
       bottomSheetTheme: BottomSheetThemeData(
         showDragHandle: true,
+        clipBehavior: Clip.antiAlias,
         backgroundColor: colorScheme.surface,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(radiusLg)),

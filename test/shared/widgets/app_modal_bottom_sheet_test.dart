@@ -14,6 +14,8 @@ void main() {
     expect(dark.bottomSheetTheme.showDragHandle, isTrue);
     expect(light.bottomSheetTheme.shape, isA<RoundedRectangleBorder>());
     expect(dark.bottomSheetTheme.shape, isA<RoundedRectangleBorder>());
+    expect(light.bottomSheetTheme.clipBehavior, Clip.antiAlias);
+    expect(dark.bottomSheetTheme.clipBehavior, Clip.antiAlias);
   });
 
   testWidgets('showAppModalBottomSheet configures drag handle, height constraint and padding', (
@@ -53,6 +55,7 @@ void main() {
     expect(bottomSheetFinder, findsOneWidget);
     final bottomSheet = tester.widget<BottomSheet>(bottomSheetFinder);
     expect(bottomSheet.showDragHandle, isTrue);
+    expect(bottomSheet.clipBehavior, Clip.antiAlias);
 
     // Height constraint test: 85% of 2400 is 2040, top clearance must be >= 360 (15%)
     final sheetTopLeft = tester.getTopLeft(bottomSheetFinder);
@@ -196,5 +199,41 @@ void main() {
     expect(fieldFinder, findsOneWidget);
     final fieldTopLeft = tester.getTopLeft(fieldFinder);
     expect(fieldTopLeft.dx, greaterThanOrEqualTo(AppTheme.spacingMd));
+  });
+
+  testWidgets('IntervalForm and ExerciseForm clip their scroll views without leaking content', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                IntervalForm(
+                  onSubmit: (_) {},
+                  defaultColorArgb: AppTheme.workColor.toARGB32(),
+                ),
+                ExerciseForm(onSubmit: (_) {}),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final formScrollables = tester.widgetList<SingleChildScrollView>(
+      find.byType(SingleChildScrollView),
+    ).where((w) => w.key != null || w.clipBehavior == Clip.none || w.clipBehavior == Clip.hardEdge).toList();
+
+    expect(formScrollables, isNotEmpty);
+    for (final scrollable in formScrollables) {
+      expect(
+        scrollable.clipBehavior,
+        isNot(Clip.none),
+        reason: 'Forms inside bottom sheets must not use Clip.none to avoid leaking content outside the sheet',
+      );
+    }
   });
 }

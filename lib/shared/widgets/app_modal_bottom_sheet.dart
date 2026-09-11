@@ -32,6 +32,7 @@ Future<T?> showAppModalBottomSheet<T>({
     isScrollControlled: true,
     useSafeArea: true,
     showDragHandle: true,
+    clipBehavior: Clip.antiAlias,
     isDismissible: isDismissible,
     enableDrag: enableDrag,
     constraints: BoxConstraints(
