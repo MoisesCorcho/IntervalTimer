@@ -14,6 +14,8 @@ import 'package:interval_timer/features/preset_routines/presentation/screens/pre
 import 'package:interval_timer/features/preset_routines/presentation/screens/preset_detail_screen.dart';
 import 'package:interval_timer/features/workout_builder/presentation/my_workouts_screen.dart';
 import 'package:interval_timer/features/workout_builder/presentation/workout_editor_screen.dart';
+import 'package:interval_timer/features/onboarding/application/onboarding_providers.dart';
+import 'package:interval_timer/features/onboarding/presentation/onboarding_screen.dart';
 
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -51,6 +53,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         if (location == '/execute' || location == '/completed') {
           return '/';
         }
+      }
+
+      final hasSeenOnboardingAsync = ref.read(hasSeenOnboardingProvider);
+      final hasSeenOnboarding = hasSeenOnboardingAsync.valueOrNull ?? true;
+
+      if (!hasSeenOnboarding && location != '/onboarding') {
+        return '/onboarding';
+      }
+
+      if (hasSeenOnboarding && location == '/onboarding') {
+        return '/';
       }
 
       return null;
@@ -137,6 +150,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const SessionCompleteScreen(),
       ),
+      GoRoute(
+        path: '/onboarding',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const OnboardingScreen(),
+      ),
     ],
   );
 });
@@ -145,6 +163,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 class _RouterRefreshNotifier extends ChangeNotifier {
   _RouterRefreshNotifier(this._ref) {
     _ref.listen(timerControllerProvider, (_, __) => notifyListeners());
+    _ref.listen(hasSeenOnboardingProvider, (_, __) => notifyListeners());
   }
 
   final Ref _ref;

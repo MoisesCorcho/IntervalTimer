@@ -6,6 +6,7 @@ import 'package:interval_timer/app/app_shell.dart';
 import 'package:interval_timer/app/router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/data/local/database.dart';
+import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/calendar_history/presentation/history_screen.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 
@@ -14,6 +15,7 @@ void main() {
       (tester) async {
     final db = AppDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
+    await PreferencesRepository(db).setHasSeenOnboarding(true);
 
     final container = ProviderContainer(
       overrides: [

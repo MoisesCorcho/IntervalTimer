@@ -6,6 +6,7 @@ import 'package:interval_timer/app/router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/models/session_log_status.dart';
+import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/data/repositories/session_log_repository.dart';
 import 'package:interval_timer/data/repositories/unlocked_achievement_repository.dart';
 import 'package:interval_timer/features/achievements/domain/achievement_catalog.dart';
@@ -145,6 +146,7 @@ void main() {
 
   testWidgets('router still has 4 shell destinations after F13 route',
       (tester) async {
+    await PreferencesRepository(db).setHasSeenOnboarding(true);
     final container = createContainer();
     addTearDown(container.dispose);
     final router = container.read(routerProvider);

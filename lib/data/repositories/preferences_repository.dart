@@ -90,6 +90,10 @@ class PreferencesRepository {
   static const appLanguageKey = 'app_language';
   static const defaultAppLanguage = 'system';
 
+  // F30 onboarding (`has_seen_onboarding`)
+  static const hasSeenOnboardingKey = 'has_seen_onboarding';
+  static const defaultHasSeenOnboarding = false;
+
   Future<String?> getString(String key) async {
     final row = await (_db.select(_db.appPreferences)
           ..where((t) => t.key.equals(key)))
@@ -175,6 +179,15 @@ class PreferencesRepository {
 
   Future<void> setBool(String key, bool value) =>
       setString(key, value ? 'true' : 'false');
+
+  Stream<bool> watchBool(String key, {required bool defaultValue}) {
+    return watchString(key).map((raw) {
+      if (raw == null) return defaultValue;
+      if (raw == 'true' || raw == '1') return true;
+      if (raw == 'false' || raw == '0') return false;
+      return defaultValue;
+    });
+  }
 
   Future<bool> getVoiceEnabled() =>
       getBool(voiceEnabledKey, defaultValue: defaultVoiceEnabled);
@@ -415,4 +428,20 @@ class PreferencesRepository {
           _ => defaultAppLanguage,
         });
   }
+
+  /// F30: Returns whether the user has completed or skipped the onboarding flow.
+  Future<bool> hasSeenOnboarding() => getBool(
+        hasSeenOnboardingKey,
+        defaultValue: defaultHasSeenOnboarding,
+      );
+
+  /// F30: Sets whether the user has completed or skipped the onboarding flow.
+  Future<void> setHasSeenOnboarding(bool value) =>
+      setBool(hasSeenOnboardingKey, value);
+
+  /// F30: Reactive stream of onboarding completion state.
+  Stream<bool> watchHasSeenOnboarding() => watchBool(
+        hasSeenOnboardingKey,
+        defaultValue: defaultHasSeenOnboarding,
+      );
 }
