@@ -69,5 +69,32 @@ void main() {
       expect(settings.themeMode, AppThemeMode.dark);
       expect(settings.prepSeconds, 30);
     });
+
+    test('setWorkColor updates state and persists', () async {
+      const newColor = 0xFFC62828;
+      await controller.setWorkColor(newColor);
+
+      final settings = container.read(settingsControllerProvider).requireValue;
+      expect(settings.workColorArgb, newColor);
+      expect(await settingsRepo.getWorkColorArgb(), newColor);
+    });
+
+    test('setRestColor updates state and persists', () async {
+      const newColor = 0xFF6A1B9A;
+      await controller.setRestColor(newColor);
+
+      final settings = container.read(settingsControllerProvider).requireValue;
+      expect(settings.restColorArgb, newColor);
+      expect(await settingsRepo.getRestColorArgb(), newColor);
+    });
+
+    test('setThemeColor updates state and persists', () async {
+      const newColor = 0xFFFF9800; // Orange
+      await controller.setThemeColor(newColor);
+
+      final settings = container.read(settingsControllerProvider).requireValue;
+      expect(settings.themeColorArgb, newColor);
+      expect(await settingsRepo.getThemeColorArgb(), newColor);
+    });
   });
 }

@@ -62,9 +62,9 @@ abstract final class UiStrings {
   static const themeLabel = 'Tema';
   static const themeLight = 'Claro';
   static const themeDark = 'Oscuro';
-  static const themeSystem = 'Seguir sistema';
+  static const themeSystem = 'Sistema';
   static const languageLabel = 'Idioma';
-  static const languageAuto = 'Automático (Sistema)';
+  static const languageAuto = 'Sistema';
   static const languageEs = 'Español';
   static const languageEn = 'English';
 

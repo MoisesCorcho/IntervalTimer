@@ -118,6 +118,8 @@ class IntervalFormState extends State<IntervalForm> {
     final l10n = context.l10n;
 
     return SingleChildScrollView(
+      clipBehavior: Clip.hardEdge,
+      padding: const EdgeInsets.only(top: AppTheme.spacingMd),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -182,6 +184,7 @@ class IntervalFormState extends State<IntervalForm> {
             label: l10n.save,
             expand: true,
           ),
+          const SizedBox(height: AppTheme.spacingMd),
         ],
       ),
     );

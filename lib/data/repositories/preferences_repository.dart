@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/data/local/database.dart';
 
 class PreferencesRepository {
@@ -9,11 +10,17 @@ class PreferencesRepository {
   static const activeWorkoutIdKey = 'active_workout_id';
   static const prepSecondsKey = 'prep_seconds';
   static const themeModeKey = 'theme_mode';
+  static const themeColorKey = 'theme_color_argb';
+  static const workColorKey = 'work_color_argb';
+  static const restColorKey = 'rest_color_argb';
   static const defaultPrepSeconds = 10;
   static const minPrepSeconds = 0;
   static const maxPrepSeconds = 60;
   /// Storage default for F27 theme preference (`light` | `dark` | `system`).
   static const defaultThemeMode = 'system';
+  static const defaultThemeColorArgb = AppTheme.primaryColorArgb;
+  static const defaultWorkColorArgb = AppTheme.workColorArgb;
+  static const defaultRestColorArgb = AppTheme.restColorArgb;
 
   // F02 voice prefs
   static const voiceEnabledKey = 'voice_enabled';
@@ -136,6 +143,27 @@ class PreferencesRepository {
     final clamped = value.clamp(minPrepSeconds, maxPrepSeconds);
     await setInt(prepSecondsKey, clamped);
   }
+
+  Future<int> getThemeColorArgb() async {
+    final value = await getInt(themeColorKey);
+    return value ?? defaultThemeColorArgb;
+  }
+
+  Future<void> setThemeColorArgb(int value) => setInt(themeColorKey, value);
+
+  Future<int> getWorkColorArgb() async {
+    final value = await getInt(workColorKey);
+    return value ?? defaultWorkColorArgb;
+  }
+
+  Future<void> setWorkColorArgb(int value) => setInt(workColorKey, value);
+
+  Future<int> getRestColorArgb() async {
+    final value = await getInt(restColorKey);
+    return value ?? defaultRestColorArgb;
+  }
+
+  Future<void> setRestColorArgb(int value) => setInt(restColorKey, value);
 
   Future<bool> getBool(String key, {required bool defaultValue}) async {
     final raw = await getString(key);

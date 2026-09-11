@@ -13,15 +13,18 @@ class SessionLockScreenController {
     this._driver, {
     bool sessionLockScreenEnabled = true,
     bool permissionGranted = false,
+    bool isAppInBackground = false,
     TimerState? initialState,
   })  : _sessionLockScreenEnabled = sessionLockScreenEnabled,
         _permissionGranted = permissionGranted,
+        _isAppInBackground = isAppInBackground,
         _state = initialState ?? const TimerState();
 
   final SessionSurfaceDriver _driver;
 
   bool _sessionLockScreenEnabled;
   bool _permissionGranted;
+  bool _isAppInBackground;
   TimerState _state;
 
   /// Whether a contextual permission request already ran this process.
@@ -35,6 +38,7 @@ class SessionLockScreenController {
 
   bool get sessionLockScreenEnabled => _sessionLockScreenEnabled;
   bool get permissionGranted => _permissionGranted;
+  bool get isAppInBackground => _isAppInBackground;
   bool get surfaceVisible => _surfaceVisible;
   SessionNotificationSnapshot? get lastSnapshot => _lastSnapshot;
 
@@ -42,7 +46,14 @@ class SessionLockScreenController {
         sessionStatus: _state.status,
         sessionLockScreenEnabled: _sessionLockScreenEnabled,
         notificationPermissionGranted: _permissionGranted,
+        isAppInBackground: _isAppInBackground,
       );
+
+  Future<void> setAppInBackground(bool value) async {
+    if (_isAppInBackground == value) return;
+    _isAppInBackground = value;
+    await sync();
+  }
 
   Future<void> setSessionLockScreenEnabled(bool value) async {
     if (_sessionLockScreenEnabled == value) return;

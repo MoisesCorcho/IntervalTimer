@@ -112,6 +112,8 @@ class ExerciseFormState extends State<ExerciseForm> {
     final l10n = context.l10n;
 
     return SingleChildScrollView(
+      clipBehavior: Clip.hardEdge,
+      padding: const EdgeInsets.only(top: AppTheme.spacingMd),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -228,6 +230,7 @@ class ExerciseFormState extends State<ExerciseForm> {
             label: l10n.save,
             expand: true,
           ),
+          const SizedBox(height: AppTheme.spacingMd),
         ],
       ),
     );

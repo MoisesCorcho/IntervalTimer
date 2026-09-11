@@ -46,7 +46,7 @@ void main() {
       await db.close();
     });
 
-    ProviderContainer _container() {
+    ProviderContainer createContainer() {
       return ProviderContainer(
         overrides: [
           databaseProvider.overrideWithValue(db),
@@ -61,7 +61,7 @@ void main() {
       );
     }
 
-    Future<void> _pumpApp(WidgetTester tester, ProviderContainer container) async {
+    Future<void> pumpApp(WidgetTester tester, ProviderContainer container) async {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
@@ -72,18 +72,18 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    MaterialApp _materialApp(WidgetTester tester) {
+    MaterialApp getMaterialApp(WidgetTester tester) {
       return tester.widget<MaterialApp>(find.byType(MaterialApp));
     }
 
     testWidgets('applies darkTheme when themeMode is dark (R2)', (tester) async {
       await settingsRepo.setThemeMode(AppThemeMode.dark);
-      final container = _container();
+      final container = createContainer();
       addTearDown(container.dispose);
 
-      await _pumpApp(tester, container);
+      await pumpApp(tester, container);
 
-      final app = _materialApp(tester);
+      final app = getMaterialApp(tester);
       expect(app.themeMode, ThemeMode.dark);
       expect(app.darkTheme, isNotNull);
       expect(app.darkTheme!.brightness, Brightness.dark);
@@ -99,12 +99,12 @@ void main() {
 
     testWidgets('applies light theme when themeMode is light', (tester) async {
       await settingsRepo.setThemeMode(AppThemeMode.light);
-      final container = _container();
+      final container = createContainer();
       addTearDown(container.dispose);
 
-      await _pumpApp(tester, container);
+      await pumpApp(tester, container);
 
-      final app = _materialApp(tester);
+      final app = getMaterialApp(tester);
       expect(app.themeMode, ThemeMode.light);
       expect(app.theme, isNotNull);
       expect(app.theme!.brightness, Brightness.light);
@@ -117,15 +117,29 @@ void main() {
 
     testWidgets('defaults to system themeMode when preference absent (R4)',
         (tester) async {
-      final container = _container();
+      final container = createContainer();
       addTearDown(container.dispose);
 
-      await _pumpApp(tester, container);
+      await pumpApp(tester, container);
 
-      final app = _materialApp(tester);
+      final app = getMaterialApp(tester);
       expect(app.themeMode, ThemeMode.system);
       expect(app.darkTheme, isNotNull);
       expect(app.theme, isNotNull);
+    });
+
+    testWidgets('applies custom themeColor to MaterialApp theme and darkTheme',
+        (tester) async {
+      const customPrimary = 0xFF00BCD4; // Cyan
+      await settingsRepo.setThemeColorArgb(customPrimary);
+      final container = createContainer();
+      addTearDown(container.dispose);
+
+      await pumpApp(tester, container);
+
+      final app = getMaterialApp(tester);
+      expect(app.theme!.colorScheme.primary, ColorScheme.fromSeed(seedColor: const Color(customPrimary), brightness: Brightness.light).primary);
+      expect(app.darkTheme!.colorScheme.primary, ColorScheme.fromSeed(seedColor: const Color(customPrimary), brightness: Brightness.dark).primary);
     });
   });
 }

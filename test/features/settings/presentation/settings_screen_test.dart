@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/app_localizations.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
@@ -44,6 +45,9 @@ void main() {
 
     testWidgets('shows stepper and changing value updates repo',
         (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
@@ -74,10 +78,27 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('theme_segmented_button')), findsOneWidget);
-      expect(find.text(UiStrings.themeLight), findsOneWidget);
-      expect(find.text(UiStrings.themeDark), findsOneWidget);
-      expect(find.text(UiStrings.themeSystem), findsOneWidget);
-      expect(find.text('Seguir sistema'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('theme_segmented_button')),
+          matching: find.text(UiStrings.themeLight),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('theme_segmented_button')),
+          matching: find.text(UiStrings.themeDark),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('theme_segmented_button')),
+          matching: find.text(UiStrings.themeSystem),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('default theme selection is system', (tester) async {
@@ -113,6 +134,104 @@ void main() {
         find.byKey(const Key('theme_segmented_button')),
       );
       expect(button.selected, {AppThemeMode.dark});
+    });
+
+    testWidgets('shows work and rest color tiles and tapping opens picker sheet',
+        (tester) async {
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('work_color_tile')),
+        200.0,
+      );
+      await tester.ensureVisible(find.byKey(const Key('work_color_tile')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('work_color_tile')), findsOneWidget);
+      expect(find.byKey(const Key('rest_color_tile')), findsOneWidget);
+
+      // Tap work color tile opens screen
+      await tester.tap(find.byKey(const Key('work_color_tile')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.byKey(const Key('preview_phone_frame')), findsOneWidget);
+    });
+
+    testWidgets('renders all settings grouped into distinct section cards',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 3000));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('settings_card_appearance')), findsOneWidget);
+      expect(find.byKey(const Key('settings_card_timer')), findsOneWidget);
+      expect(find.byKey(const Key('settings_card_voice')), findsOneWidget);
+
+      final sfxFinder = find.byKey(const Key('settings_card_sound_effects'));
+      await tester.scrollUntilVisible(sfxFinder, 300, scrollable: find.byType(Scrollable).first);
+      expect(sfxFinder, findsOneWidget);
+
+      final vibFinder = find.byKey(const Key('settings_card_vibration'));
+      await tester.scrollUntilVisible(vibFinder, 300, scrollable: find.byType(Scrollable).first);
+      expect(vibFinder, findsOneWidget);
+
+      final screenFinder = find.byKey(const Key('settings_card_screen_session'));
+      await tester.scrollUntilVisible(screenFinder, 300, scrollable: find.byType(Scrollable).first);
+      expect(screenFinder, findsOneWidget);
+    });
+
+    testWidgets('renders theme accent color swatches and selecting a color updates repo',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('settings_accent_color_selector')), findsOneWidget);
+
+      // Default is orange; tap the athletic green swatch (0xFF4CAF50)
+      final greenSwatch = find.byKey(const Key('accent_color_swatch_4283215696')); // 0xFF4CAF50
+      expect(greenSwatch, findsOneWidget);
+
+      await tester.tap(greenSwatch);
+      await tester.pumpAndSettle();
+
+      expect(await settingsRepo.getThemeColorArgb(), 0xFF4CAF50);
     });
   });
 }

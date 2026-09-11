@@ -5,7 +5,7 @@
 
   "languageLabel": "Idioma",
   "languageHint": "Selecciona el idioma de la interfaz y la voz del temporizador.",
-  "languageAuto": "Automático (Sistema)",
+  "languageAuto": "Sistema",
   "languageEs": "Español",
   "languageEn": "English",
 
@@ -60,7 +60,9 @@
   "themeLabel": "Tema",
   "themeLight": "Claro",
   "themeDark": "Oscuro",
-  "themeSystem": "Seguir sistema",
+  "themeSystem": "Sistema",
+  "themeAccentColorLabel": "Color de acento",
+  "themeAccentColorHint": "Elegí el color de acento para la interfaz.",
 
   "voiceSectionTitle": "Voz",
   "voiceEnabledLabel": "Voz activada",
@@ -347,7 +349,6 @@
   "errorLoadingPresetCatalog": "Error al cargar el catálogo de rutinas.",
   "filterAll": "Todos",
   "exerciseCountShort": "{count} ejer.",
-  "retry": "Reintentar",
   "routineSavedToMyRoutines": "Rutina guardada en Mis Rutinas: \"{name}\"",
   "goToRoutines": "IR A RUTINAS",
   "errorCloningRoutine": "Error al clonar rutina: {error}",
@@ -357,5 +358,22 @@
   "metricExercises": "Ejercicios",
   "sessionExercisesTitle": "Ejercicios de la Sesión",
   "workShort": "trabajo",
-  "restShort": "descanso"
+  "restShort": "descanso",
+  "quickAudioSettings": "Sonido y vibración",
+  "quickAudioSettingsTooltip": "Ajustes de sonido y vibración",
+  "voiceAnnouncements": "Anuncios por voz",
+  "voiceAnnouncementsDesc": "Nombres de intervalos y cuenta regresiva",
+  "soundEffects": "Sonidos del timer",
+  "soundEffectsDesc": "Beeps de cuenta regresiva y cambio de fase",
+  "vibrationFeedback": "Respuesta táctil",
+  "vibrationFeedbackDesc": "Vibración al cambiar de intervalo",
+  "muteAll": "Silenciar todo",
+  "unmuteAll": "Activar todo",
+  "timerColorsSectionTitle": "Colores del cronómetro",
+  "workColorTitle": "Color de trabajo",
+  "workColorSubtitle": "Pantalla durante los intervalos activos",
+  "restColorTitle": "Color de descanso",
+  "restColorSubtitle": "Pantalla durante los intervalos de descanso",
+  "resetToDefault": "Restablecer original",
+  "saveColor": "Guardar"
 }

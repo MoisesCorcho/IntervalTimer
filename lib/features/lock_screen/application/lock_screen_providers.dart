@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:interval_timer/app/app_lifecycle_provider.dart';
 import 'package:interval_timer/features/lock_screen/application/plugin_session_surface_driver.dart';
 import 'package:interval_timer/features/lock_screen/domain/session_lock_screen_controller.dart';
 import 'package:interval_timer/features/lock_screen/domain/session_remote_action_router.dart';
@@ -16,11 +17,19 @@ final sessionSurfaceDriverProvider = Provider<SessionSurfaceDriver>((ref) {
   return driver;
 });
 
-/// Creates and wires [SessionLockScreenController] to F01 timer + settings.
+/// Creates and wires [SessionLockScreenController] to F01 timer + settings + lifecycle.
 final sessionLockScreenControllerProvider =
     Provider<SessionLockScreenController>((ref) {
   final driver = ref.watch(sessionSurfaceDriverProvider);
-  final controller = SessionLockScreenController(driver);
+  final isBackground = ref.watch(isAppInBackgroundProvider);
+  final controller = SessionLockScreenController(
+    driver,
+    isAppInBackground: isBackground,
+  );
+
+  ref.listen<bool>(isAppInBackgroundProvider, (previous, next) {
+    unawaited(controller.setAppInBackground(next));
+  });
 
   final initialSettings = ref.read(settingsControllerProvider).valueOrNull;
   if (initialSettings != null) {

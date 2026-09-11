@@ -30,8 +30,11 @@ class AppSettings {
     this.keepScreenOnEnabled = true,
     this.sessionLockScreenEnabled = true,
     this.themeMode = AppThemeMode.system,
+    this.themeColorArgb = 0xFFFF6D00,
     this.bodyWeightUnit = BodyWeightUnit.kg,
     this.appLanguage = AppLanguage.system,
+    this.workColorArgb = 0xFF2E7D32,
+    this.restColorArgb = 0xFF1565C0,
   });
 
   /// Seconds of preparation before the first interval (0–60).
@@ -88,11 +91,20 @@ class AppSettings {
   /// Theme preference: light, dark, or follow system (F27).
   final AppThemeMode themeMode;
 
+  /// Custom primary accent color for the app interface (ARGB). Default 0xFFFF6D00.
+  final int themeColorArgb;
+
   /// Weight display/edit unit for body tracking UI (F15).
   final BodyWeightUnit bodyWeightUnit;
 
   /// Application language preference: system, es, or en (F28).
   final AppLanguage appLanguage;
+
+  /// Custom phase color for work intervals (ARGB). Default 0xFF2E7D32.
+  final int workColorArgb;
+
+  /// Custom phase color for rest intervals (ARGB). Default 0xFF1565C0.
+  final int restColorArgb;
 
   AppSettings copyWith({
     int? prepSeconds,
@@ -119,8 +131,11 @@ class AppSettings {
     bool? keepScreenOnEnabled,
     bool? sessionLockScreenEnabled,
     AppThemeMode? themeMode,
+    int? themeColorArgb,
     BodyWeightUnit? bodyWeightUnit,
     AppLanguage? appLanguage,
+    int? workColorArgb,
+    int? restColorArgb,
   }) {
     return AppSettings(
       prepSeconds: prepSeconds ?? this.prepSeconds,
@@ -156,8 +171,11 @@ class AppSettings {
       sessionLockScreenEnabled:
           sessionLockScreenEnabled ?? this.sessionLockScreenEnabled,
       themeMode: themeMode ?? this.themeMode,
+      themeColorArgb: themeColorArgb ?? this.themeColorArgb,
       bodyWeightUnit: bodyWeightUnit ?? this.bodyWeightUnit,
       appLanguage: appLanguage ?? this.appLanguage,
+      workColorArgb: workColorArgb ?? this.workColorArgb,
+      restColorArgb: restColorArgb ?? this.restColorArgb,
     );
   }
 
@@ -189,8 +207,11 @@ class AppSettings {
             other.keepScreenOnEnabled == keepScreenOnEnabled &&
             other.sessionLockScreenEnabled == sessionLockScreenEnabled &&
             other.themeMode == themeMode &&
+            other.themeColorArgb == themeColorArgb &&
             other.bodyWeightUnit == bodyWeightUnit &&
-            other.appLanguage == appLanguage);
+            other.appLanguage == appLanguage &&
+            other.workColorArgb == workColorArgb &&
+            other.restColorArgb == restColorArgb);
   }
 
   @override
@@ -219,7 +240,10 @@ class AppSettings {
         keepScreenOnEnabled,
         sessionLockScreenEnabled,
         themeMode,
+        themeColorArgb,
         bodyWeightUnit,
         appLanguage,
+        workColorArgb,
+        restColorArgb,
       ]);
 }

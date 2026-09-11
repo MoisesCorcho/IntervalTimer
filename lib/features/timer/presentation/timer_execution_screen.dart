@@ -8,8 +8,10 @@ import 'package:interval_timer/core/utils/execution_chrome.dart';
 import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
 import 'package:interval_timer/features/always_on/domain/always_on_controller.dart';
+import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
+import 'package:interval_timer/features/timer/presentation/widgets/timer_audio_controls_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/countdown_ring.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
@@ -133,20 +135,29 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
 
     final current = timerState.currentInterval;
     final isPrep = timerState.isInPreparation;
-    // Phase color + chrome: brand work/rest always dark fill + white text/ring
-    // (F35), independent of app light/dark theme and of light colorArgb leftovers.
+    final settings = ref.watch(settingsControllerProvider).valueOrNull;
+    // Phase color + chrome: brand work/rest use user settings or swatches,
+    // preparation uses neutral AppTheme.prepColor (F35).
     final phaseInterval = isPrep ? timerState.nextInterval : current;
     final bgColor = executionBackgroundColor(
       interval: phaseInterval,
       prepFallback: Theme.of(context).colorScheme.surfaceContainerHighest,
+      isPreparation: isPrep,
+      workColor: settings != null ? Color(settings.workColorArgb) : null,
+      restColor: settings != null ? Color(settings.restColorArgb) : null,
     );
     final textColor = executionChromeColor(
       background: bgColor,
       type: phaseInterval?.type,
+      isPreparation: isPrep,
     );
     final segmentTimeText = formatRemainingMs(timerState.remainingMs);
     final totalTimeText = formatTotalRemainingMs(timerState.totalRemainingMs);
     final l10n = context.l10n;
+    final allAudioMuted = settings != null &&
+        !settings.voiceEnabled &&
+        !settings.soundEnabled &&
+        !settings.vibrationEnabled;
     final phaseName = isPrep
         ? l10n.preparation
         : formatDisplayName(current?.name ?? '');
@@ -162,7 +173,9 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
               _ExecutionTopBar(
                 textColor: textColor,
                 totalTimeText: totalTimeText,
+                allAudioMuted: allAudioMuted,
                 onExit: _confirmExit,
+                onOpenAudioControls: () => showTimerAudioControlsSheet(context),
               ),
               const SizedBox(height: AppTheme.spacingMd),
               Text(
@@ -252,12 +265,16 @@ class _ExecutionTopBar extends StatelessWidget {
   const _ExecutionTopBar({
     required this.textColor,
     required this.totalTimeText,
+    required this.allAudioMuted,
     required this.onExit,
+    required this.onOpenAudioControls,
   });
 
   final Color textColor;
   final String totalTimeText;
+  final bool allAudioMuted;
   final VoidCallback onExit;
+  final VoidCallback onOpenAudioControls;
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +316,18 @@ class _ExecutionTopBar extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 48),
+        SizedBox(
+          width: 48,
+          child: _RectControlButton(
+            key: const Key('timer_audio_controls_button'),
+            icon: allAudioMuted ? Icons.volume_off : Icons.tune,
+            label: l10n.quickAudioSettingsTooltip,
+            color: textColor,
+            filled: false,
+            iconOnly: true,
+            onPressed: onOpenAudioControls,
+          ),
+        ),
       ],
     );
   }
@@ -406,7 +434,7 @@ class _ExecutionControlBar extends StatelessWidget {
         Expanded(
           child: _RectControlButton(
             key: const Key('previous_button'),
-            icon: Icons.skip_previous,
+            icon: Icons.keyboard_double_arrow_left_rounded,
             label: l10n.previous,
             color: textColor,
             filled: false,
@@ -431,7 +459,7 @@ class _ExecutionControlBar extends StatelessWidget {
         Expanded(
           child: _RectControlButton(
             key: const Key('skip_button'),
-            icon: Icons.skip_next,
+            icon: Icons.keyboard_double_arrow_right_rounded,
             label: l10n.nextInterval,
             color: textColor,
             filled: false,
@@ -491,7 +519,7 @@ class _RectControlButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: bg,
           borderRadius: borderRadius,
-          boxShadow: enabled ? AppTheme.buttonShadowFor(context) : null,
+          boxShadow: enabled ? AppTheme.buttonOuterShadow : null,
         ),
         child: Material(
           type: MaterialType.transparency,

@@ -61,6 +61,10 @@ void main() {
       final buttonWidget =
           tester.widget<SegmentedButton<AppLanguage>>(segmentedButton);
       expect(buttonWidget.selected, equals({AppLanguage.system}));
+      expect(
+        buttonWidget.segments.map((s) => s.value).toList(),
+        equals([AppLanguage.es, AppLanguage.en, AppLanguage.system]),
+      );
     });
 
     testWidgets('tapping Español persists AppLanguage.es to repository immediately',

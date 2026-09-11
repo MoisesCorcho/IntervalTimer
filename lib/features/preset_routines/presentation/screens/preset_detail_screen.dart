@@ -9,6 +9,7 @@ import 'package:interval_timer/features/preset_routines/domain/services/preset_r
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_media_widget.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_technique_bottom_sheet.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
+import 'package:interval_timer/shared/widgets/app_snack_bar.dart';
 import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
 
 class PresetDetailScreen extends ConsumerWidget {
@@ -24,63 +25,74 @@ class PresetDetailScreen extends ConsumerWidget {
     final presetAsync = ref.watch(presetDetailProvider(presetId));
     final exerciseMapAsync = ref.watch(exerciseMapProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.presetDetailTitle),
-        actions: [
-          FavoriteToggleButton(
-            targetId: presetId,
-            targetType: FavoriteTargetType.preset,
-          ),
-          IconButton(
-            key: const Key('duplicate_routine_appbar_button'),
-            icon: const Icon(Icons.copy),
-            tooltip: context.l10n.duplicateToMyRoutines,
-            onPressed: () => _handleDuplicate(context, ref),
-          ),
-        ],
-      ),
-      body: presetAsync.when(
-        data: (preset) {
-          if (preset == null) {
-            return Center(
-              child: Text(context.l10n.routineNotFound),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(context.l10n.presetDetailTitle),
+          actions: [
+            FavoriteToggleButton(
+              targetId: presetId,
+              targetType: FavoriteTargetType.preset,
+            ),
+            IconButton(
+              key: const Key('duplicate_routine_appbar_button'),
+              icon: const Icon(Icons.copy),
+              tooltip: context.l10n.duplicateToMyRoutines,
+              onPressed: () => _handleDuplicate(context, ref),
+            ),
+          ],
+        ),
+        body: presetAsync.when(
+          data: (preset) {
+            if (preset == null) {
+              return Center(
+                child: Text(context.l10n.routineNotFound),
+              );
+            }
+            final exerciseMap = exerciseMapAsync.value ?? {};
+            return _PresetDetailBody(
+              preset: preset,
+              exerciseMap: exerciseMap,
+              onDuplicate: () => _handleDuplicate(context, ref),
             );
-          }
-          final exerciseMap = exerciseMapAsync.value ?? {};
-          return _PresetDetailBody(preset: preset, exerciseMap: exerciseMap);
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('Error al cargar detalle: $err'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => ref.refresh(presetDetailProvider(presetId)),
-                child: Text(context.l10n.retry),
-              ),
-            ],
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (err, stack) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                const SizedBox(height: 16),
+                Text('Error al cargar detalle: $err'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => ref.refresh(presetDetailProvider(presetId)),
+                  child: Text(context.l10n.retry),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: presetAsync.maybeWhen(
-        data: (preset) => preset != null
-            ? FloatingActionButton.extended(
-                key: const Key('start_workout_fab'),
-                onPressed: () => _handleStartWorkout(context, ref, preset),
-                icon: const Icon(Icons.play_arrow),
-                label: Text(
-                  context.l10n.startWorkout,
-                  style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1),
-                ),
-              )
-            : null,
-        orElse: () => null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: presetAsync.maybeWhen(
+          data: (preset) => preset != null
+              ? FloatingActionButton.extended(
+                  key: const Key('start_workout_fab'),
+                  onPressed: () => _handleStartWorkout(context, ref, preset),
+                  icon: const Icon(Icons.play_arrow),
+                  label: Text(
+                    context.l10n.startWorkout,
+                    style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1),
+                  ),
+                )
+              : null,
+          orElse: () => null,
+        ),
       ),
     );
   }
@@ -124,20 +136,18 @@ class PresetDetailScreen extends ConsumerWidget {
       );
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.routineSavedToMyRoutines(clonedRoutine.name)),
-            action: SnackBarAction(
-              label: context.l10n.goToRoutines,
-              onPressed: () => context.go('/workouts'),
-            ),
-          ),
+        AppSnackBar.showSuccess(
+          context,
+          message: context.l10n.routineSavedToMyRoutines(clonedRoutine.name),
+          actionLabel: context.l10n.goToRoutines,
+          onActionPressed: () => context.go('/workouts'),
         );
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.errorCloningRoutine(e.toString()))),
+        AppSnackBar.showError(
+          context,
+          message: context.l10n.errorCloningRoutine(e.toString()),
         );
       }
     }
@@ -147,10 +157,12 @@ class PresetDetailScreen extends ConsumerWidget {
 class _PresetDetailBody extends StatelessWidget {
   final PresetRoutine preset;
   final Map<String, dynamic> exerciseMap;
+  final VoidCallback onDuplicate;
 
   const _PresetDetailBody({
     required this.preset,
     required this.exerciseMap,
+    required this.onDuplicate,
   });
 
   @override
@@ -248,24 +260,7 @@ class _PresetDetailBody extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: OutlinedButton.icon(
               key: const Key('duplicate_routine_button'),
-              onPressed: () {
-                final state = context.findAncestorWidgetOfExactType<PresetDetailScreen>();
-                // Invoke duplicate
-                final widgetRef = ProviderScope.containerOf(context, listen: false);
-                final clonerService = widgetRef.read(presetClonerServiceProvider);
-                final exerciseMapTyped = widgetRef.read(exerciseMapProvider).value ?? {};
-                clonerService.clonePreset(preset, exerciseMap: exerciseMapTyped).then((cloned) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(context.l10n.routineDuplicated(cloned.name)),
-                      action: SnackBarAction(
-                        label: context.l10n.goToRoutines,
-                        onPressed: () => context.go('/workouts'),
-                      ),
-                    ),
-                  );
-                });
-              },
+              onPressed: onDuplicate,
               icon: const Icon(Icons.bookmark_add_outlined),
               label: Text(context.l10n.duplicateToMyRoutines),
               style: OutlinedButton.styleFrom(

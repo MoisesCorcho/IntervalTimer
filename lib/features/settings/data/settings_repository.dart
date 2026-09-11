@@ -202,4 +202,16 @@ class SettingsRepository {
 
   Future<void> setAppLanguage(AppLanguage lang) =>
       _prefs.setAppLanguage(lang.code);
+
+  Future<int> getThemeColorArgb() => _prefs.getThemeColorArgb();
+
+  Future<void> setThemeColorArgb(int value) => _prefs.setThemeColorArgb(value);
+
+  Future<int> getWorkColorArgb() => _prefs.getWorkColorArgb();
+
+  Future<void> setWorkColorArgb(int value) => _prefs.setWorkColorArgb(value);
+
+  Future<int> getRestColorArgb() => _prefs.getRestColorArgb();
+
+  Future<void> setRestColorArgb(int value) => _prefs.setRestColorArgb(value);
 }

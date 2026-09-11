@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageHint => 'Select interface and timer voice language.';
 
   @override
-  String get languageAuto => 'Automatic (System)';
+  String get languageAuto => 'System';
 
   @override
   String get languageEs => 'Spanish';
@@ -175,7 +175,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDark => 'Dark';
 
   @override
-  String get themeSystem => 'Follow system';
+  String get themeSystem => 'System';
+
+  @override
+  String get themeAccentColorLabel => 'Accent color';
+
+  @override
+  String get themeAccentColorHint =>
+      'Select an accent color for the app interface.';
 
   @override
   String get voiceSectionTitle => 'Voice';
@@ -1112,4 +1119,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restShort => 'rest';
+
+  @override
+  String get quickAudioSettings => 'Sound & vibration';
+
+  @override
+  String get quickAudioSettingsTooltip => 'Sound and vibration settings';
+
+  @override
+  String get voiceAnnouncements => 'Voice announcements';
+
+  @override
+  String get voiceAnnouncementsDesc => 'Interval names and countdown';
+
+  @override
+  String get soundEffects => 'Timer sounds';
+
+  @override
+  String get soundEffectsDesc => 'Countdown beeps and phase transitions';
+
+  @override
+  String get vibrationFeedback => 'Haptic feedback';
+
+  @override
+  String get vibrationFeedbackDesc => 'Vibration on interval changes';
+
+  @override
+  String get muteAll => 'Mute all';
+
+  @override
+  String get unmuteAll => 'Unmute all';
+
+  @override
+  String get timerColorsSectionTitle => 'Timer colors';
+
+  @override
+  String get workColorTitle => 'Work color';
+
+  @override
+  String get workColorSubtitle => 'Screen color during active intervals';
+
+  @override
+  String get restColorTitle => 'Rest color';
+
+  @override
+  String get restColorSubtitle => 'Screen color during rest intervals';
+
+  @override
+  String get resetToDefault => 'Reset to default';
+
+  @override
+  String get saveColor => 'Save';
 }

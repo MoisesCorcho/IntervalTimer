@@ -22,7 +22,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Selecciona el idioma de la interfaz y la voz del temporizador.';
 
   @override
-  String get languageAuto => 'Automático (Sistema)';
+  String get languageAuto => 'Sistema';
 
   @override
   String get languageEs => 'Español';
@@ -178,7 +178,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get themeDark => 'Oscuro';
 
   @override
-  String get themeSystem => 'Seguir sistema';
+  String get themeSystem => 'Sistema';
+
+  @override
+  String get themeAccentColorLabel => 'Color de acento';
+
+  @override
+  String get themeAccentColorHint =>
+      'Elegí el color de acento para la interfaz.';
 
   @override
   String get voiceSectionTitle => 'Voz';
@@ -1126,4 +1133,56 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get restShort => 'descanso';
+
+  @override
+  String get quickAudioSettings => 'Sonido y vibración';
+
+  @override
+  String get quickAudioSettingsTooltip => 'Ajustes de sonido y vibración';
+
+  @override
+  String get voiceAnnouncements => 'Anuncios por voz';
+
+  @override
+  String get voiceAnnouncementsDesc =>
+      'Nombres de intervalos y cuenta regresiva';
+
+  @override
+  String get soundEffects => 'Sonidos del timer';
+
+  @override
+  String get soundEffectsDesc => 'Beeps de cuenta regresiva y cambio de fase';
+
+  @override
+  String get vibrationFeedback => 'Respuesta táctil';
+
+  @override
+  String get vibrationFeedbackDesc => 'Vibración al cambiar de intervalo';
+
+  @override
+  String get muteAll => 'Silenciar todo';
+
+  @override
+  String get unmuteAll => 'Activar todo';
+
+  @override
+  String get timerColorsSectionTitle => 'Colores del cronómetro';
+
+  @override
+  String get workColorTitle => 'Color de trabajo';
+
+  @override
+  String get workColorSubtitle => 'Pantalla durante los intervalos activos';
+
+  @override
+  String get restColorTitle => 'Color de descanso';
+
+  @override
+  String get restColorSubtitle => 'Pantalla durante los intervalos de descanso';
+
+  @override
+  String get resetToDefault => 'Restablecer original';
+
+  @override
+  String get saveColor => 'Guardar';
 }

@@ -13,6 +13,7 @@ import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 import 'package:interval_timer/features/timer/presentation/widgets/interval_form.dart';
+import 'package:interval_timer/shared/widgets/app_modal_bottom_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/interval_color_badge.dart';
 
@@ -35,44 +36,35 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
     // primary, which is light mint under dark mode and forces black timer text.
     final defaultColor = AppTheme.workColor.toARGB32();
 
-    await showModalBottomSheet<void>(
+    await showAppModalBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: AppTheme.spacingMd,
-            right: AppTheme.spacingMd,
-            top: AppTheme.spacingMd,
-            bottom: MediaQuery.viewInsetsOf(context).bottom + AppTheme.spacingMd,
-          ),
-          child: IntervalForm(
-            initial: existing,
-            defaultColorArgb: defaultColor,
-            onSubmit: (result) async {
-              final interval = existing?.copyWith(
-                    name: result.name,
-                    durationSeconds: result.durationSeconds,
-                    colorArgb: result.colorArgb,
-                    type: result.type,
-                    announceText: result.announceText,
-                  ) ??
-                  editor.createNewInterval(
-                    name: result.name,
-                    durationSeconds: result.durationSeconds,
-                    colorArgb: result.colorArgb,
-                    type: result.type,
-                    announceText: result.announceText,
-                  );
+        return IntervalForm(
+          initial: existing,
+          defaultColorArgb: defaultColor,
+          onSubmit: (result) async {
+            final interval = existing?.copyWith(
+                  name: result.name,
+                  durationSeconds: result.durationSeconds,
+                  colorArgb: result.colorArgb,
+                  type: result.type,
+                  announceText: result.announceText,
+                ) ??
+                editor.createNewInterval(
+                  name: result.name,
+                  durationSeconds: result.durationSeconds,
+                  colorArgb: result.colorArgb,
+                  type: result.type,
+                  announceText: result.announceText,
+                );
 
-              if (index != null) {
-                await editor.updateInterval(index, interval);
-              } else {
-                await editor.addInterval(interval);
-              }
-              if (context.mounted) Navigator.pop(context);
-            },
-          ),
+            if (index != null) {
+              await editor.updateInterval(index, interval);
+            } else {
+              await editor.addInterval(interval);
+            }
+            if (context.mounted) Navigator.pop(context);
+          },
         );
       },
     );

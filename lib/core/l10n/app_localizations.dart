@@ -125,7 +125,7 @@ abstract class AppLocalizations {
   /// No description provided for @languageAuto.
   ///
   /// In en, this message translates to:
-  /// **'Automatic (System)'**
+  /// **'System'**
   String get languageAuto;
 
   /// No description provided for @languageEs.
@@ -425,8 +425,20 @@ abstract class AppLocalizations {
   /// No description provided for @themeSystem.
   ///
   /// In en, this message translates to:
-  /// **'Follow system'**
+  /// **'System'**
   String get themeSystem;
+
+  /// No description provided for @themeAccentColorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent color'**
+  String get themeAccentColorLabel;
+
+  /// No description provided for @themeAccentColorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an accent color for the app interface.'**
+  String get themeAccentColorHint;
 
   /// No description provided for @voiceSectionTitle.
   ///
@@ -2101,6 +2113,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'rest'**
   String get restShort;
+
+  /// No description provided for @quickAudioSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound & vibration'**
+  String get quickAudioSettings;
+
+  /// No description provided for @quickAudioSettingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound and vibration settings'**
+  String get quickAudioSettingsTooltip;
+
+  /// No description provided for @voiceAnnouncements.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice announcements'**
+  String get voiceAnnouncements;
+
+  /// No description provided for @voiceAnnouncementsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Interval names and countdown'**
+  String get voiceAnnouncementsDesc;
+
+  /// No description provided for @soundEffects.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer sounds'**
+  String get soundEffects;
+
+  /// No description provided for @soundEffectsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Countdown beeps and phase transitions'**
+  String get soundEffectsDesc;
+
+  /// No description provided for @vibrationFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Haptic feedback'**
+  String get vibrationFeedback;
+
+  /// No description provided for @vibrationFeedbackDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Vibration on interval changes'**
+  String get vibrationFeedbackDesc;
+
+  /// No description provided for @muteAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute all'**
+  String get muteAll;
+
+  /// No description provided for @unmuteAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute all'**
+  String get unmuteAll;
+
+  /// No description provided for @timerColorsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer colors'**
+  String get timerColorsSectionTitle;
+
+  /// No description provided for @workColorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Work color'**
+  String get workColorTitle;
+
+  /// No description provided for @workColorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen color during active intervals'**
+  String get workColorSubtitle;
+
+  /// No description provided for @restColorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest color'**
+  String get restColorTitle;
+
+  /// No description provided for @restColorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen color during rest intervals'**
+  String get restColorSubtitle;
+
+  /// No description provided for @resetToDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to default'**
+  String get resetToDefault;
+
+  /// No description provided for @saveColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveColor;
 }
 
 class _AppLocalizationsDelegate

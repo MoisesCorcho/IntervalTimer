@@ -5,7 +5,7 @@
 
   "languageLabel": "Language",
   "languageHint": "Select interface and timer voice language.",
-  "languageAuto": "Automatic (System)",
+  "languageAuto": "System",
   "languageEs": "Spanish",
   "languageEn": "English",
 
@@ -66,7 +66,9 @@
   "themeLabel": "Theme",
   "themeLight": "Light",
   "themeDark": "Dark",
-  "themeSystem": "Follow system",
+  "themeSystem": "System",
+  "themeAccentColorLabel": "Accent color",
+  "themeAccentColorHint": "Select an accent color for the app interface.",
 
   "voiceSectionTitle": "Voice",
   "voiceEnabledLabel": "Voice enabled",
@@ -507,5 +509,22 @@
   "metricExercises": "Exercises",
   "sessionExercisesTitle": "Session Exercises",
   "workShort": "work",
-  "restShort": "rest"
+  "restShort": "rest",
+  "quickAudioSettings": "Sound & vibration",
+  "quickAudioSettingsTooltip": "Sound and vibration settings",
+  "voiceAnnouncements": "Voice announcements",
+  "voiceAnnouncementsDesc": "Interval names and countdown",
+  "soundEffects": "Timer sounds",
+  "soundEffectsDesc": "Countdown beeps and phase transitions",
+  "vibrationFeedback": "Haptic feedback",
+  "vibrationFeedbackDesc": "Vibration on interval changes",
+  "muteAll": "Mute all",
+  "unmuteAll": "Unmute all",
+  "timerColorsSectionTitle": "Timer colors",
+  "workColorTitle": "Work color",
+  "workColorSubtitle": "Screen color during active intervals",
+  "restColorTitle": "Rest color",
+  "restColorSubtitle": "Screen color during rest intervals",
+  "resetToDefault": "Reset to default",
+  "saveColor": "Save"
 }

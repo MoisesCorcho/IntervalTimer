@@ -4,19 +4,25 @@ import 'package:interval_timer/core/utils/contrast_text_color.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/interval_type.dart';
 
-/// Resolves the full-screen execution background for the current (or next
-/// prep) interval.
+/// Resolves the full-screen execution background for the current (or preparation)
+/// phase.
 ///
-/// Brand phase types always use the design-system swatches so chrome can stay
-/// white (F35). Custom intervals keep the user-picked [Interval.colorArgb].
+/// Preparation always uses the neutral [AppTheme.prepColor].
+/// Brand work and rest phases use the user-configured [workColor] and [restColor]
+/// (falling back to [AppTheme.workColor] and [AppTheme.restColor]).
+/// Custom intervals keep the user-picked [Interval.colorArgb].
 Color executionBackgroundColor({
   required Interval? interval,
   required Color prepFallback,
+  bool isPreparation = false,
+  Color? workColor,
+  Color? restColor,
 }) {
+  if (isPreparation) return AppTheme.prepColor;
   if (interval == null) return prepFallback;
   return switch (interval.type) {
-    IntervalType.work => AppTheme.workColor,
-    IntervalType.rest => AppTheme.restColor,
+    IntervalType.work => workColor ?? AppTheme.workColor,
+    IntervalType.rest => restColor ?? AppTheme.restColor,
     IntervalType.warmup => AppTheme.warmupColor,
     IntervalType.stretch => AppTheme.stretchColor,
     IntervalType.custom => Color(interval.colorArgb),
@@ -25,18 +31,20 @@ Color executionBackgroundColor({
 
 /// Text / ring / control chrome on the execution canvas.
 ///
-/// Work, rest and stretch are always white (F35 product look). Warmup stays
-/// black on amber. Custom colors use WCAG [contrastTextColor].
+/// Work and rest phases always use crisp [Colors.white] to ensure standard
+/// athletic display consistency regardless of the chosen background shade.
+/// Warmup stays black on amber. Stretch and preparation stay white.
+/// Custom intervals dynamically resolve foreground color via [contrastTextColor].
 Color executionChromeColor({
   required Color background,
   required IntervalType? type,
+  bool isPreparation = false,
 }) {
+  if (isPreparation) return Colors.white;
   return switch (type) {
-    IntervalType.work ||
-    IntervalType.rest ||
-    IntervalType.stretch =>
-      Colors.white,
     IntervalType.warmup => Colors.black,
+    IntervalType.stretch => Colors.white,
+    IntervalType.work || IntervalType.rest => Colors.white,
     IntervalType.custom || null => contrastTextColor(background),
   };
 }
