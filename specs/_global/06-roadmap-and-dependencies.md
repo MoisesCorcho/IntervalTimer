@@ -9,7 +9,7 @@
 | F03 | [Sesiones Preestablecidas con Animacion/Video](../features/03-preset-workout-sessions/requirements.md) | Fase 0 · Fundacion | No iniciada | F01 |
 | F04 | [Calendario e Historial de Sesiones](../features/04-workout-calendar-history/requirements.md) | Fase 0 · Fundacion | Completado | F01 |
 | F05 | [Editor de Rutinas Propias](../features/05-custom-routine-builder/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01, F03 |
-| F06 | [Capa Pro / Compras In-App](../features/06-pro-tier-iap/requirements.md) | Fase 1 · Personalizacion | No iniciada | F01 |
+| F06 | [Capa Pro / Compras In-App](../features/06-pro-tier-iap/requirements.md) | Fase 1 · Personalizacion | Specs corregidas | F01 |
 | F07 | [Seleccion de Voces (Sistema y Premium)](../features/07-multiple-tts-voices/requirements.md) | Fase 1 · Personalizacion | No iniciada | F02 |
 | F08 | [Repeticion de Circuitos (Rounds)](../features/08-circuit-repetition-rounds/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F01, F32, F34 |
 | F09 | [Progresion Automatica](../features/09-automatic-progression/requirements.md) | Fase 2 · Profundidad de Entrenamiento | No iniciada | F05, F04 |

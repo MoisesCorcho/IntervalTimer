@@ -49,4 +49,6 @@ app.*.map.json
 /terminals
 # Local AI runtime state
 .atl/
+.codegraph/
+.engram/
 untranslated_messages.json
