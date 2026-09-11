@@ -224,14 +224,14 @@ void main() {
 
       expect(find.byKey(const Key('settings_accent_color_selector')), findsOneWidget);
 
-      // Tap the orange swatch (0xFFFF9800)
-      final orangeSwatch = find.byKey(const Key('accent_color_swatch_4294940672')); // 0xFFFF9800
-      expect(orangeSwatch, findsOneWidget);
+      // Default is orange; tap the athletic green swatch (0xFF4CAF50)
+      final greenSwatch = find.byKey(const Key('accent_color_swatch_4283215696')); // 0xFF4CAF50
+      expect(greenSwatch, findsOneWidget);
 
-      await tester.tap(orangeSwatch);
+      await tester.tap(greenSwatch);
       await tester.pumpAndSettle();
 
-      expect(await settingsRepo.getThemeColorArgb(), 0xFFFF9800);
+      expect(await settingsRepo.getThemeColorArgb(), 0xFF4CAF50);
     });
   });
 }

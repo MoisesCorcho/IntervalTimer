@@ -40,7 +40,7 @@ void main() {
     });
 
     test('light and dark themes respect custom primaryColor seed', () {
-      const customPrimary = Color(0xFFFF9800); // Energy Orange
+      const customPrimary = Color(0xFF00BCD4); // Electric Cyan
       final lightTheme = AppTheme.light(primaryColor: customPrimary);
       final darkTheme = AppTheme.dark(primaryColor: customPrimary);
 
@@ -53,7 +53,8 @@ void main() {
     test('accentColorPresets contains default primary color and curated options', () {
       expect(AppTheme.accentColorPresets, isNotEmpty);
       expect(AppTheme.accentColorPresets, contains(AppTheme.primaryColor));
-      expect(AppTheme.accentColorPresets, contains(const Color(0xFFFF9800))); // Orange
+      expect(AppTheme.accentColorPresets.first, AppTheme.primaryColor);
+      expect(AppTheme.accentColorPresets, contains(const Color(0xFF4CAF50))); // Green
     });
   });
 }

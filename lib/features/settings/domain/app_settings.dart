@@ -30,7 +30,7 @@ class AppSettings {
     this.keepScreenOnEnabled = true,
     this.sessionLockScreenEnabled = true,
     this.themeMode = AppThemeMode.system,
-    this.themeColorArgb = 0xFF4CAF50,
+    this.themeColorArgb = 0xFFFF6D00,
     this.bodyWeightUnit = BodyWeightUnit.kg,
     this.appLanguage = AppLanguage.system,
     this.workColorArgb = 0xFF2E7D32,
@@ -91,7 +91,7 @@ class AppSettings {
   /// Theme preference: light, dark, or follow system (F27).
   final AppThemeMode themeMode;
 
-  /// Custom primary accent color for the app interface (ARGB). Default 0xFF4CAF50.
+  /// Custom primary accent color for the app interface (ARGB). Default 0xFFFF6D00.
   final int themeColorArgb;
 
   /// Weight display/edit unit for body tracking UI (F15).

@@ -130,7 +130,7 @@ void main() {
 
     testWidgets('applies custom themeColor to MaterialApp theme and darkTheme',
         (tester) async {
-      const customPrimary = 0xFFFF9800; // Orange
+      const customPrimary = 0xFF00BCD4; // Cyan
       await settingsRepo.setThemeColorArgb(customPrimary);
       final container = createContainer();
       addTearDown(container.dispose);

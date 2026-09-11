@@ -57,8 +57,8 @@ abstract final class AppTheme {
         : buttonOuterShadow;
   }
 
-  /// Default primary brand seed color (athletic green).
-  static const primaryColorArgb = 0xFF4CAF50;
+  /// Default primary brand seed color (electric solar orange).
+  static const primaryColorArgb = 0xFFFF6D00;
   static const primaryColor = Color(primaryColorArgb);
 
   /// Default interval colors per type (ARGB).
@@ -98,8 +98,8 @@ abstract final class AppTheme {
 
   /// Curated athletic palette for app theme accent color customization.
   static const accentColorPresets = <Color>[
-    primaryColor, // Athletic Green (Default)
-    Color(0xFFFF9800), // Energy Orange
+    primaryColor, // Electric Solar Orange (Default)
+    Color(0xFF4CAF50), // Athletic Green
     Color(0xFF00BCD4), // Electric Cyan / Teal
     Color(0xFF2196F3), // Athletic Blue
     Color(0xFFE53935), // Crimson Red
