@@ -4,43 +4,44 @@
 
 ---
 
-## Contexto y Principios
+## Contexto y Principios de Diseño
 
-Este documento describe el diseño técnico y arquitectónico para implementar `requirements.md` (F30).
-Se adhiere estrictamente a:
-- `_global/01-vision-and-principles.md` (El loop central es sagrado; el onboarding educa sin bloquear).
-- `_global/02-architecture-and-structure.md` (Clean Architecture + DDD, Riverpod como única fuente de estado).
-- `_global/04-design-system.md` (Tokens semánticos de color, tipografía y componentes vivos).
-- `_global/05-data-model.md` (Persistencia mediante Drift SQLite y `PreferencesRepository`).
-- `ANALISIS_MONETIZACION_FREEMIUM_F06.md` (Integración de Soft Paywall desacoplado con `PurchaseService`).
+Este documento define la arquitectura técnica y los estándares de interacción visual para implementar `requirements.md` (F30).
+Se fundamenta en:
+- `_global/01-vision-and-principles.md`: El loop central es sagrado; el onboarding educa e inspira sin imponer barreras.
+- `_global/02-architecture-and-structure.md`: Clean Architecture + DDD, Riverpod como única fuente reactiva de estado.
+- `_global/04-design-system.md`: Tokens semánticos, tipografía atlética, paleta de colores y componentes interactivos vivos.
+- `_global/05-data-model.md`: Persistencia atómica mediante Drift SQLite y `PreferencesRepository`.
 
 ---
 
 ## Arquitectura del Módulo (`lib/features/onboarding/`)
 
-Siguiendo las convenciones de Screaming Architecture del proyecto, la feature se ubica en su propio módulo:
+Siguiendo las convenciones de arquitectura modular por features:
 
 ```
 lib/features/onboarding/
 ├── application/
-│   ├── onboarding_controller.dart         # Controla navegación entre páginas y finalización
+│   ├── onboarding_controller.dart         # Controla navegación, cambio de página y finalización
 │   └── onboarding_providers.dart          # hasSeenOnboardingProvider, onboardingCurrentPageProvider
 ├── domain/
-│   └── onboarding_slide.dart              # Value object inmutable con contenido y tipo de diapositiva
+│   └── onboarding_slide_data.dart         # Value object inmutable con textos, etiquetas y configuración visual
 └── presentation/
-    ├── onboarding_screen.dart             # Pantalla raíz con PageView, Header, Indicadores y CTAs
+    ├── onboarding_screen.dart             # Pantalla raíz inmersiva (PageView, Header, Indicador y CTAs)
     └── widgets/
-        ├── onboarding_hero_graphic.dart   # Widgets visuales vivos (Timer Ring, Audio Waves, Badges)
-        ├── onboarding_page_indicator.dart # Dots indicator animado según Design System
-        ├── onboarding_skip_button.dart    # Botón "Saltar" en el header superior derecho
-        └── onboarding_paywall_card.dart   # Tarjeta de conversión Pro (Soft Paywall con Free Trial)
+        ├── onboarding_page_indicator.dart # Indicador de píldora expandible con animación desacelerada
+        ├── onboarding_skip_button.dart    # Botón sutil "Saltar" en el header superior
+        └── slides/
+            ├── timer_showcase_slide.dart  # Slide 1: CountdownRing animado con pulso rítmico
+            ├── audio_showcase_slide.dart  # Slide 2: Ecualizador de ondas animadas y badges flotantes
+            └── progress_showcase_slide.dart # Slide 3: Card de hábitos, racha activa y medalla dorada
 ```
 
 ---
 
 ## Persistencia y Modelo de Datos
 
-El estado de visualización del onboarding se almacena en la tabla SQLite existente `app_preferences` a través de [PreferencesRepository](file:///D:/MCP2_DISCO_2/PROGRAMACION/XAMPP/htdocs/PROYECTOS%20PROGRAMACION/Flutter/interval_timer/lib/data/repositories/preferences_repository.dart):
+La finalización del onboarding se registra en la tabla `app_preferences` a través de [PreferencesRepository](file:///D:/MCP2_DISCO_2/PROGRAMACION/XAMPP/htdocs/PROYECTOS%20PROGRAMACION/Flutter/interval_timer/lib/data/repositories/preferences_repository.dart):
 
 ```dart
 // Clave persistente en PreferencesRepository
@@ -60,26 +61,28 @@ Future<void> setHasSeenOnboarding(bool value) async {
 
 ---
 
-## Gestión de Estado (Riverpod)
+## Gestión de Estado Reactivo (Riverpod)
 
 ```dart
-// Provider que expone si el usuario ya vio el onboarding
+// Provider que expone si el usuario ya completó el onboarding
 final hasSeenOnboardingProvider = FutureProvider<bool>((ref) async {
   final repo = ref.watch(preferencesRepositoryProvider);
   return repo.hasSeenOnboarding();
 });
 
-// Controller para gestionar el avance del onboarding
+// Provider para el índice de página actual
+final onboardingPageProvider = StateProvider.autoDispose<int>((ref) => 0);
+
+// Controller para orquestar la navegación y cierre
 class OnboardingController extends AutoDisposeAsyncNotifier<void> {
   @override
   FutureOr<void> build() {}
 
-  Future<void> completeOnboarding({required bool isSubscribed}) async {
+  Future<void> completeOnboarding() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final repo = ref.read(preferencesRepositoryProvider);
       await repo.setHasSeenOnboarding(true);
-      // Invalida el provider para que el router y la UI reaccionen
       ref.invalidate(hasSeenOnboardingProvider);
     });
   }
@@ -95,10 +98,8 @@ final onboardingControllerProvider =
 
 ## Enrutamiento y Guard en `GoRouter` (`lib/app/router.dart`)
 
-El onboarding debe mostrarse únicamente en el primer inicio de la app y no debe ser accesible una vez completado:
-
-1. **Ruta Raíz Fuera del Shell:** `/onboarding` se registra como una ruta de pantalla completa en `_rootNavigatorKey`, sin mostrar el `BottomNavigationBar` de la app principal.
-2. **Lógica de Redirección (Guard Reactivo):**
+1. **Ruta Raíz Fuera del Shell:** `/onboarding` se registra en `_rootNavigatorKey`, presentando una experiencia inmersiva a pantalla completa sin barra inferior de navegación.
+2. **Redirección Reactiva:**
 
 ```dart
 redirect: (context, state) {
@@ -107,14 +108,14 @@ redirect: (context, state) {
   final location = state.matchedLocation;
 
   // 1. Prioridad: ejecución o completado del timer (F01/F35)
-  // ... (se preservan los guards de ejecución activa) ...
+  // ... (guards activos del temporizador) ...
 
   // 2. Redirección inicial a Onboarding si no se ha completado
   if (!hasSeen && location != '/onboarding') {
     return '/onboarding';
   }
 
-  // 3. Si ya se vio y el usuario intenta acceder manualmente a /onboarding, redirige a home
+  // 3. Si ya se vio y el usuario intenta entrar a /onboarding, redirige a inicio
   if (hasSeen && location == '/onboarding') {
     return '/';
   }
@@ -135,47 +136,50 @@ sequenceDiagram
     participant UI as OnboardingScreen
     participant Ctrl as OnboardingController
     participant Repo as PreferencesRepository (Drift)
-    participant IAP as PurchaseService (F06)
 
-    User->>Router: Abre la aplicación
+    User->>Router: Abre la aplicación por primera vez
     Router->>Repo: Consulta has_seen_onboarding
     Repo-->>Router: false
     Router->>UI: Redirige a /onboarding
     
-    loop Diapositivas 1 a 3
+    loop Diapositivas 1 a 2
         User->>UI: Desliza o pulsa Siguiente
-        UI-->>User: Muestra animación de valor (Timer, Audio, Stats)
+        UI-->>User: Micro-vibración háptica + animación de valor
         opt Pulsa "Saltar" (Skip)
-            User->>Ctrl: skipOnboarding()
+            User->>Ctrl: completeOnboarding()
             Ctrl->>Repo: setHasSeenOnboarding(true)
             Ctrl->>Router: go('/presets')
         end
     end
 
-    User->>UI: Llega a Diapositiva 4 (Soft Paywall)
-    alt Elige Prueba Gratuita (7 días)
-        User->>IAP: Iniciar prueba anual
-        IAP-->>User: Éxito en Google Play
-        User->>Ctrl: completeOnboarding(isSubscribed: true)
-        Ctrl->>Repo: setHasSeenOnboarding(true)
-        Ctrl->>Router: go('/presets')
-    else Elige Continuar Gratis
-        User->>Ctrl: completeOnboarding(isSubscribed: false)
-        Ctrl->>Repo: setHasSeenOnboarding(true)
-        Ctrl->>Router: go('/presets')
-    end
+    User->>UI: Llega a Diapositiva 3 (Hábito y Victoria)
+    User->>UI: Pulsa "¡Empezar a entrenar!"
+    UI->>Ctrl: completeOnboarding()
+    Ctrl->>Repo: setHasSeenOnboarding(true)
+    Ctrl->>Router: go('/presets')
 ```
 
 ---
 
-## Componentes Visuales del Design System (Sin PNGs pesados)
+## Estándares de Diseño Visual Premium y Micro-interacciones
 
-Para cumplir con la directiva de cero imágenes rasterizadas estáticas:
-
-- **Slide 1 (Timer & Workouts):** Instancia una versión compacta no interactiva de `CountdownRing` con arcos coloreados en `AppTheme.workColor` y `AppTheme.restColor`, demostrando visualmente el motor de intervalos.
-- **Slide 2 (Audio & Ducking):** Renderizado de ondas sonoras estilizadas (`CustomPainter` o animación con `AnimatedBuilder`) junto con iconos semánticos de altavoz, micrófono TTS y logo de música atenuada.
-- **Slide 3 (Métricas & Logros):** Card estilizada basada en el diseño de `SessionSummaryCard`, mostrando un chip de racha ("🔥 3 días"), un contador de calorías ("240 kcal") y una medalla de logro dorada (`Icons.emoji_events`).
-- **Slide 4 (Soft Paywall Card):** Card premium con badge "PRO", lista de bullets con checkmarks verdes, selector destacado de la prueba de 7 días (`$17.99/año`) y botón principal en Solar Orange (`AppTheme.primaryColor`).
+1. **Gradiente de Fondo Inmersivo:**
+   - Gradiente radial sutil que combina carbón profundo (`#121212` en dark mode) con un suave tinte difuminado del acento primario (Solar Orange `#FF6B00` al 6% de opacidad) en el tercio superior, aportando tridimensionalidad.
+2. **Slide 1 — Precisión & Timer Core:**
+   - Miniatura animada del `CountdownRing` con arcos coloreados en `AppTheme.workColor` (verde esmeralda) y `AppTheme.restColor` (ámbar cálido).
+   - Animación de respiración suave (pulso de escala de 0.98 a 1.02) que simula el latido rítmico del entrenamiento.
+3. **Slide 2 — Inmersión Sonora & Enfoque:**
+   - Visualizador de ecualizador con barras verticales simétricas que oscilan en bucle armónico con curvas senoidales independientes.
+   - Badges flotantes con acabado translúcido (*frosted glass* con `BackdropFilter` o `Container` con borde tenue) destacando: "Voz en off", "SFX de Boxeo" y "Atenuación Spotify".
+4. **Slide 3 — Hábito, Progreso & Logros:**
+   - Tarjeta estilizada con borde acentuado mostrando:
+     - Medalla dorada reluciente (`Icons.emoji_events`) con sutil efecto de resplandor.
+     - Chip de racha en llamas ("🔥 3 días seguidos").
+     - Métrica de energía activa ("250 kcal").
+   - Botón CTA principal de gran escala: alto contraste, bordes redondeados (16dp), elevación sutil y feedback háptico `HapticFeedback.mediumImpact()`.
+5. **Indicador de Píldora Animada (`OnboardingPageIndicator`):**
+   - Diapositivas inactivas: círculos de 8dp de diámetro con opacidad reducida (30%).
+   - Diapositiva activa: se expande a una píldora de 28dp de ancho con el color de acento principal (`AppTheme.primaryColor`), animada con `Curves.easeOutCubic` en 300ms.
 
 ---
 
@@ -183,14 +187,14 @@ Para cumplir con la directiva de cero imágenes rasterizadas estáticas:
 
 | Riesgo | Impacto | Estrategia de Mitigación |
 |---|---|---|
-| Parpadeo en GoRouter durante el arranque inicial al consultar Drift SQLite de forma asíncrona. | Medio | Precargar las preferencias durante la inicialización de `main.dart` o inicializar `hasSeenOnboardingProvider` antes de inflar el árbol de GoRouter, garantizando valor sincrónico disponible en el primer frame. |
-| Inestabilidad o timeout en la consulta de ofertas de Google Play / RevenueCat en la diapositiva 4. | Alto | Degradación suave: la card muestra la oferta base en caché o modo fallback, y el botón "Continuar con versión gratuita" siempre permanece completamente habilitado y funcional (R13). |
-| Usuario cierra la app a mitad de la diapositiva 2. | Bajo | Conforme a la regla D5, `setHasSeenOnboarding(true)` **nunca** se ejecuta al entrar ni en transiciones intermedias; solo se persiste ante acción explícita de salida (Skip, Continuar o Suscribirse). |
+| Parpadeo visual en GoRouter al consultar Drift asíncronamente en el arranque. | Medio | Precargar las preferencias en `main.dart` antes de que el árbol de GoRouter ejecute su primer ciclo de redirección, o proveer valor de respaldo sincronizado. |
+| Caída de frames (jank) en transiciones de página en teléfonos de gama baja. | Bajo | Cero shaders complejos o blur excesivo; animaciones calculadas con `Transform` y `AnimatedBuilder` optimizadas para composición por hardware en GPU. |
+| Usuario fuerza el cierre de la app durante la diapositiva 2. | Bajo | El flag `has_seen_onboarding` **nunca** se persiste prematuramente. Si se aborta el flujo, el onboarding se presenta de nuevo en la siguiente apertura (R12). |
 
 ---
 
 ## Alternativas Consideradas y Descartadas
 
-1. **Hard Paywall bloqueante en la diapositiva 4:** Descartado categóricamente. Violaría los principios rectores de `ANALISIS_MONETIZACION_FREEMIUM_F06.md`, reduciendo drásticamente la tasa de retención de nuevos usuarios y generando quejas en Google Play.
-2. **Uso de paquete de onboarding de terceros (`introduction_screen`):** Descartado. Agrega dependencias transitivas innecesarias, limita la personalización de widgets vivos del Design System y rompe la coherencia visual con nuestras animaciones y temas.
-3. **Navegar a la pantalla principal vacía (`/`) tras completar:** Descartado. Aterrizar en `/presets` reduce la fricción hacia la primera sesión completada (activación temprana).
+1. **Acoplar pantalla de Paywall Pro de F06 en este momento:** Descartado categóricamente. F06 aún no existe en código. Introduciría mocks innecesarios o dependencias fantasmas. La monetización se integrará en compuertas de producto orgánicas cuando F06 sea construida.
+2. **Imágenes estáticas o GIFs pre-renderizados:** Descartado. Aumentan el peso de la app, se distorsionan en pantallas panorámicas o tabletas y no responden dinámicamente a la paleta ni al modo oscuro.
+3. **Navegar a la pantalla de inicio vacía (`/`):** Descartado. Redirigir a `/presets` asegura que el atleta pueda comenzar un entrenamiento predefinido en menos de 10 segundos.
