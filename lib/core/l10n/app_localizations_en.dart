@@ -1198,11 +1198,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proBenefitZeroAdsDesc => '100% clean experience with no ads ever.';
 
   @override
-  String get proBenefitAudioDuckingTitle => 'Smart Audio Ducking';
+  String get proBenefitSfxClipsTitle => 'Sports SFX & Boxing Bells';
 
   @override
-  String get proBenefitAudioDuckingDesc =>
-      'Seamlessly lowers music volume on Spotify or Apple Music when interval alerts play.';
+  String get proBenefitSfxClipsDesc =>
+      'Traditional gong, referee whistle, gym bells, and pro synths.';
 
   @override
   String get proBenefitPhaseColorsTitle => 'Custom Phase Colors';
@@ -1271,4 +1271,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get proDevToggleDesc =>
       'Instantly switches between Free and Pro tiers in memory without store coupling.';
+
+  @override
+  String get proAvailableWithPro => 'Available with Interval Timer Pro';
 }

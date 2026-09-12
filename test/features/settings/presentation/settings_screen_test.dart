@@ -8,6 +8,8 @@ import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
 import 'package:interval_timer/features/lock_screen/domain/no_op_session_surface_driver.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
@@ -34,6 +36,7 @@ void main() {
           preferencesRepositoryProvider.overrideWithValue(prefs),
           settingsRepositoryProvider.overrideWithValue(settingsRepo),
           sessionSurfaceDriverProvider.overrideWithValue(sessionSurface),
+          isProUserProvider.overrideWith((ref) => Stream.value(true)),
         ],
       );
     });
@@ -232,6 +235,88 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(await settingsRepo.getThemeColorArgb(), 0xFF4CAF50);
+    });
+
+    testWidgets('free user tapping locked accent color opens Paywall and does not update repo',
+        (tester) async {
+      final freeContainer = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          preferencesRepositoryProvider.overrideWithValue(prefs),
+          settingsRepositoryProvider.overrideWithValue(settingsRepo),
+          sessionSurfaceDriverProvider.overrideWithValue(NoOpSessionSurfaceDriver()),
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
+        ],
+      );
+      addTearDown(freeContainer.dispose);
+
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: freeContainer,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final greenSwatch = find.byKey(const Key('accent_color_swatch_4283215696'));
+      expect(greenSwatch, findsOneWidget);
+
+      await tester.tap(greenSwatch);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PaywallModalScreen), findsOneWidget);
+      // Repo value should remain default orange
+      expect(await settingsRepo.getThemeColorArgb(), 0xFFFF6D00);
+    });
+
+    testWidgets('free user toggles music ducking freely without paywall',
+        (tester) async {
+      final freeContainer = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          preferencesRepositoryProvider.overrideWithValue(prefs),
+          settingsRepositoryProvider.overrideWithValue(settingsRepo),
+          sessionSurfaceDriverProvider.overrideWithValue(NoOpSessionSurfaceDriver()),
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
+        ],
+      );
+      addTearDown(freeContainer.dispose);
+
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: freeContainer,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final duckingFinder = find.byKey(const Key('music_ducking_switch'));
+      await tester.scrollUntilVisible(duckingFinder, 300,
+          scrollable: find.byType(Scrollable).first);
+      expect(duckingFinder, findsOneWidget);
+
+      // Default is true; tapping should turn it off without opening Paywall
+      await tester.tap(duckingFinder);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(PaywallModalScreen), findsNothing);
+      expect(await settingsRepo.getMusicDuckingEnabled(), isFalse);
     });
   });
 }

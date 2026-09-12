@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
+import 'package:interval_timer/core/l10n/app_localizations.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/models/interval.dart';
 import 'package:interval_timer/data/models/interval_type.dart';
@@ -12,6 +13,8 @@ import 'package:interval_timer/data/models/routine_item.dart';
 import 'package:interval_timer/data/models/session_log_status.dart';
 import 'package:interval_timer/data/repositories/session_log_repository.dart';
 import 'package:interval_timer/features/calendar_history/application/calendar_history_providers.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/session_summary/application/session_summary_controller.dart';
 import 'package:interval_timer/features/session_summary/application/session_summary_providers.dart';
 import 'package:interval_timer/features/session_summary/domain/share_image_renderer.dart';
@@ -215,5 +218,93 @@ void main() {
       findsOneWidget,
     );
     expect(find.text(UiStrings.sessionSummaryShareSaveGallery), findsOneWidget);
+  });
+
+  testWidgets('free user tapping note field opens PaywallModalScreen',
+      (tester) async {
+    final db = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    final repo = SessionLogRepository(db);
+
+    final routine = Routine(
+      id: 'r_note_free',
+      name: 'Note test free',
+      createdAt: DateTime.utc(2026),
+      items: [
+        RoutineItem.interval(
+          Interval(
+            id: 'i1',
+            name: 'W',
+            durationSeconds: 5,
+            colorArgb: 0xFF4CAF50,
+            type: IntervalType.work,
+          ),
+        ),
+      ],
+    );
+
+    final container = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        sessionLogRepositoryProvider.overrideWithValue(repo),
+        isProUserProvider.overrideWith((ref) => Stream.value(false)),
+        sessionSummaryControllerProvider.overrideWith(
+          () => SessionSummaryController(
+            repository: repo,
+            shareDriver: FakeShareSheetDriver(),
+            imageRenderer: FakeShareImageRenderer(),
+            tempFileWriter: (bytes) async => XFile.fromData(
+              bytes,
+              mimeType: 'image/png',
+              name: 't.png',
+            ),
+            logResolveAttempts: 5,
+            logResolveDelay: Duration.zero,
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final timer = container.read(timerControllerProvider.notifier);
+    timer.bindRoutine(routine);
+    timer.start(prepSeconds: 0);
+    var guard = 0;
+    while (container.read(timerControllerProvider).status !=
+            TimerStatus.completed &&
+        guard < 10) {
+      timer.skipForward();
+      guard++;
+    }
+
+    await tester.binding.setSurfaceSize(const Size(800, 1400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: Locale('es'),
+          home: SessionCompleteScreen(),
+        ),
+      ),
+    );
+    await _pumpUntilSheet(tester);
+
+    final gestureFinder = find.byKey(const Key('session_summary_note_gesture'));
+    await tester.scrollUntilVisible(
+      gestureFinder,
+      100,
+      scrollable: find.byType(Scrollable).last,
+    );
+    expect(gestureFinder, findsOneWidget);
+
+    await tester.tap(gestureFinder);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 600));
+
+    expect(find.byType(PaywallModalScreen), findsOneWidget);
   });
 }

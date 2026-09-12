@@ -146,9 +146,9 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
               ),
               const SizedBox(height: AppTheme.spacingSm),
               _BenefitItem(
-                icon: Icons.music_note_rounded,
-                title: l10n.proBenefitAudioDuckingTitle,
-                subtitle: l10n.proBenefitAudioDuckingDesc,
+                icon: Icons.sports_rounded,
+                title: l10n.proBenefitSfxClipsTitle,
+                subtitle: l10n.proBenefitSfxClipsDesc,
               ),
               const SizedBox(height: AppTheme.spacingSm),
               _BenefitItem(

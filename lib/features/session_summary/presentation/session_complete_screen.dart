@@ -6,6 +6,9 @@ import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/achievements/application/achievements_providers.dart';
 import 'package:interval_timer/features/achievements/domain/achievement_def.dart';
 import 'package:interval_timer/features/achievements/presentation/achievements_unlocked_sheet.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/features/session_summary/application/session_summary_providers.dart';
 import 'package:interval_timer/features/session_summary/domain/session_complete_models.dart';
 import 'package:interval_timer/features/session_summary/presentation/animated_flame_hero.dart';
@@ -149,6 +152,7 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
   Widget build(BuildContext context) {
     final state = ref.watch(sessionSummaryControllerProvider);
     final view = state.viewData;
+    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
 
@@ -314,41 +318,64 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
                                       const SizedBox(
                                         height: AppTheme.spacingMd,
                                       ),
-                                      Text(
-                                        context.l10n.sessionSummaryNotePrompt,
-                                        style: theme.textTheme.titleSmall
-                                            ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            context.l10n.sessionSummaryNotePrompt,
+                                            style: theme.textTheme.titleSmall
+                                                ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          if (!isPro) ...[
+                                            const SizedBox(width: 8),
+                                            const ProBadge(compact: true),
+                                          ],
+                                        ],
                                       ),
                                       const SizedBox(
                                         height: AppTheme.spacingSm,
                                       ),
-                                      TextField(
+                                      GestureDetector(
                                         key: const Key(
-                                          'session_summary_note_field',
+                                          'session_summary_note_gesture',
                                         ),
-                                        controller: _noteController,
-                                        enabled: view.noteEnabled &&
-                                            !state.isFinishing,
-                                        maxLength: kSessionNoteMaxLength,
-                                        maxLines: 3,
-                                        minLines: 2,
-                                        onChanged: (v) => ref
-                                            .read(
-                                              sessionSummaryControllerProvider
-                                                  .notifier,
-                                            )
-                                            .updateNoteDraft(v),
-                                        decoration: InputDecoration(
-                                          hintText: view.noteEnabled
-                                              ? context.l10n.historyAddNote
-                                              : context.l10n
-                                                  .sessionSummaryNoteUnavailable,
-                                          errorText: state.noteError
-                                              ? context.l10n
-                                                  .sessionSummaryNoteSaveFailed
+                                        onTap: isPro
+                                            ? null
+                                            : () => PaywallModalScreen.show(context),
+                                        behavior: HitTestBehavior.opaque,
+                                        child: TextField(
+                                          key: const Key(
+                                            'session_summary_note_field',
+                                          ),
+                                          controller: _noteController,
+                                          enabled: isPro &&
+                                              view.noteEnabled &&
+                                              !state.isFinishing,
+                                          maxLength: kSessionNoteMaxLength,
+                                          maxLines: 3,
+                                          minLines: 2,
+                                          onChanged: isPro
+                                              ? (v) => ref
+                                                  .read(
+                                                    sessionSummaryControllerProvider
+                                                        .notifier,
+                                                  )
+                                                  .updateNoteDraft(v)
                                               : null,
+                                          decoration: InputDecoration(
+                                            hintText: !isPro
+                                                ? context.l10n.proAvailableWithPro
+                                                : view.noteEnabled
+                                                    ? context.l10n.historyAddNote
+                                                    : context.l10n
+                                                        .sessionSummaryNoteUnavailable,
+                                            errorText: state.noteError
+                                                ? context.l10n
+                                                    .sessionSummaryNoteSaveFailed
+                                                : null,
+                                          ),
                                         ),
                                       ),
                                       if (state.logResolveTimedOut &&

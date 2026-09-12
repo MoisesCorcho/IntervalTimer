@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
@@ -26,6 +29,7 @@ class SoundEffectsSettingsSection extends ConsumerWidget {
     final masterOn = settings.soundEnabled;
     final controller = ref.read(settingsControllerProvider.notifier);
     final catalog = ref.watch(sfxCatalogProvider);
+    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -109,9 +113,18 @@ class SoundEffectsSettingsSection extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppTheme.spacingLg),
-        Text(
-          l10n.soundClipLabel,
-          style: theme.textTheme.titleMedium,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.soundClipLabel,
+              style: theme.textTheme.titleMedium,
+            ),
+            if (!isPro) ...[
+              const SizedBox(width: 8),
+              const ProBadge(compact: true),
+            ],
+          ],
         ),
         const SizedBox(height: AppTheme.spacingSm),
         _SoundSlotRow(
@@ -237,9 +250,23 @@ class _SoundSlotRow extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       final entry = catalog.all[index];
                       final selected = entry.id == soundId;
+                      final isPro =
+                          ref.read(isProUserProvider).valueOrNull ?? false;
+                      final isDefault = entry.id == catalog.defaultId(slot);
+                      final isLocked = !isPro && !isDefault;
+
                       return ListTile(
                         key: Key('sound_pick_${entry.id}'),
-                        title: Text(entry.id),
+                        title: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(entry.id),
+                            if (isLocked) ...[
+                              const SizedBox(width: 8),
+                              const ProBadge(compact: true),
+                            ],
+                          ],
+                        ),
                         selected: selected,
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -259,7 +286,13 @@ class _SoundSlotRow extends ConsumerWidget {
                               ),
                           ],
                         ),
-                        onTap: () => Navigator.of(context).pop(entry.id),
+                        onTap: () {
+                          if (isLocked) {
+                            PaywallModalScreen.show(context);
+                            return;
+                          }
+                          Navigator.of(context).pop(entry.id);
+                        },
                       );
                     },
                   ),

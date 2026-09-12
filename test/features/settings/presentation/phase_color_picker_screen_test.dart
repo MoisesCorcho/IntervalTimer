@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/app_localizations.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/settings/presentation/phase_color_picker_screen.dart';
 import 'package:interval_timer/shared/widgets/countdown_ring.dart';
 
@@ -13,8 +15,12 @@ void main() {
     required Color initialColor,
     required Color defaultColor,
     required ValueChanged<Color> onColorSelected,
+    bool isPro = true,
   }) {
     return ProviderScope(
+      overrides: [
+        isProUserProvider.overrideWith((ref) => Stream.value(isPro)),
+      ],
       child: MaterialApp(
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -182,6 +188,38 @@ void main() {
       await tester.pump();
 
       expect(saved, AppTheme.workColor);
+    });
+
+    testWidgets(
+        'free user saving non-default color shows Paywall and does not call callback',
+        (tester) async {
+      Color? selected;
+      const crimson = Color(0xFFC62828);
+
+      await tester.pumpWidget(
+        buildTestWidget(
+          title: 'Color de trabajo',
+          initialColor: AppTheme.workColor,
+          defaultColor: AppTheme.workColor,
+          isPro: false,
+          onColorSelected: (c) => selected = c,
+        ),
+      );
+      await tester.pump();
+
+      // Tap crimson swatch
+      await tester.tap(find.byKey(Key('color_swatch_${crimson.toARGB32()}')));
+      await tester.pump();
+
+      // Tap save
+      await tester.ensureVisible(find.byKey(const Key('save_color_button')));
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('save_color_button')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.byType(PaywallModalScreen), findsOneWidget);
+      expect(selected, isNull);
     });
   });
 }

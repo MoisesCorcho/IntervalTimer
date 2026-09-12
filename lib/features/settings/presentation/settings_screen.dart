@@ -215,14 +215,7 @@ class _SettingsBody extends ConsumerWidget {
               SwitchListTile(
                 key: const Key('music_ducking_switch'),
                 contentPadding: EdgeInsets.zero,
-                title: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(l10n.musicDuckingLabel),
-                    const SizedBox(width: 8),
-                    const ProBadge(compact: true),
-                  ],
-                ),
+                title: Text(l10n.musicDuckingLabel),
                 subtitle: Text(l10n.musicDuckingHint, style: muted),
                 value: settings.musicDuckingEnabled,
                 onChanged: settings.voiceEnabled
@@ -503,15 +496,25 @@ class _ThemeAccentColorSection extends ConsumerWidget {
     final muted = theme.textTheme.bodyMedium?.copyWith(
       color: theme.colorScheme.onSurfaceVariant,
     );
+    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.themeAccentColorLabel,
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.themeAccentColorLabel,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (!isPro) ...[
+              const SizedBox(width: 8),
+              const ProBadge(compact: true),
+            ],
+          ],
         ),
         const SizedBox(height: AppTheme.spacingXs),
         Text(
@@ -525,6 +528,8 @@ class _ThemeAccentColorSection extends ConsumerWidget {
           runSpacing: 8,
           children: AppTheme.accentColorPresets.map((color) {
             final isSelected = settings.themeColorArgb == color.toARGB32();
+            final isFreeColor = color == AppTheme.accentColorPresets.first;
+            final isLocked = !isPro && !isFreeColor;
             final checkColor = contrastTextColor(color);
 
             return Semantics(
@@ -534,6 +539,10 @@ class _ThemeAccentColorSection extends ConsumerWidget {
               child: InkWell(
                 key: Key('accent_color_swatch_${color.toARGB32()}'),
                 onTap: () {
+                  if (isLocked) {
+                    PaywallModalScreen.show(context);
+                    return;
+                  }
                   ref
                       .read(settingsControllerProvider.notifier)
                       .setThemeColor(color.toARGB32());
@@ -566,7 +575,13 @@ class _ThemeAccentColorSection extends ConsumerWidget {
                             size: 18,
                             color: checkColor,
                           )
-                        : null,
+                        : isLocked
+                            ? Icon(
+                                Icons.lock_rounded,
+                                size: 14,
+                                color: checkColor.withValues(alpha: 0.75),
+                              )
+                            : null,
                   ),
                 ),
               ),

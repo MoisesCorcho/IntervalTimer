@@ -2264,17 +2264,17 @@ abstract class AppLocalizations {
   /// **'100% clean experience with no ads ever.'**
   String get proBenefitZeroAdsDesc;
 
-  /// No description provided for @proBenefitAudioDuckingTitle.
+  /// No description provided for @proBenefitSfxClipsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Smart Audio Ducking'**
-  String get proBenefitAudioDuckingTitle;
+  /// **'Sports SFX & Boxing Bells'**
+  String get proBenefitSfxClipsTitle;
 
-  /// No description provided for @proBenefitAudioDuckingDesc.
+  /// No description provided for @proBenefitSfxClipsDesc.
   ///
   /// In en, this message translates to:
-  /// **'Seamlessly lowers music volume on Spotify or Apple Music when interval alerts play.'**
-  String get proBenefitAudioDuckingDesc;
+  /// **'Traditional gong, referee whistle, gym bells, and pro synths.'**
+  String get proBenefitSfxClipsDesc;
 
   /// No description provided for @proBenefitPhaseColorsTitle.
   ///
@@ -2395,6 +2395,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Instantly switches between Free and Pro tiers in memory without store coupling.'**
   String get proDevToggleDesc;
+
+  /// No description provided for @proAvailableWithPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Available with Interval Timer Pro'**
+  String get proAvailableWithPro;
 }
 
 class _AppLocalizationsDelegate

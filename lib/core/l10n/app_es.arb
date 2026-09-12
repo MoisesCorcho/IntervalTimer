@@ -384,8 +384,8 @@
   "proBenefitUnlimitedWorkoutsDesc": "Rompe el límite de 3 rutinas y guarda todos tus programas de entrenamiento.",
   "proBenefitZeroAdsTitle": "Cero distracciones",
   "proBenefitZeroAdsDesc": "Experiencia 100% limpia sin anuncios jamás.",
-  "proBenefitAudioDuckingTitle": "Audio Ducking inteligente",
-  "proBenefitAudioDuckingDesc": "Atenúa automáticamente tu música en Spotify o Apple Music durante las alertas.",
+  "proBenefitSfxClipsTitle": "Clips de audio deportivo y boxeo",
+  "proBenefitSfxClipsDesc": "Gong tradicional de boxeo, silbato de árbitro, campanas y sintetizadores pro.",
   "proBenefitPhaseColorsTitle": "Colores de fase personalizados",
   "proBenefitPhaseColorsDesc": "Personaliza los colores de trabajo y descanso con la paleta ergonómica completa.",
   "proBenefitCalendarNotesTitle": "Notas avanzadas de sesión",
@@ -405,5 +405,6 @@
   "proPrivacy": "Política de privacidad",
   "proDevSectionTitle": "Opciones de Desarrollador (Pro Tier)",
   "proDevToggleLabel": "Simular usuario Pro (Mock)",
-  "proDevToggleDesc": "Alterna instantáneamente entre Free y Pro en memoria sin vinculación a la tienda."
+  "proDevToggleDesc": "Alterna instantáneamente entre Free y Pro en memoria sin vinculación a la tienda.",
+  "proAvailableWithPro": "Disponible con Interval Timer Pro"
 }

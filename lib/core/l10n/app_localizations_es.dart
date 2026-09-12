@@ -1215,11 +1215,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Experiencia 100% limpia sin anuncios jamás.';
 
   @override
-  String get proBenefitAudioDuckingTitle => 'Audio Ducking inteligente';
+  String get proBenefitSfxClipsTitle => 'Clips de audio deportivo y boxeo';
 
   @override
-  String get proBenefitAudioDuckingDesc =>
-      'Atenúa automáticamente tu música en Spotify o Apple Music durante las alertas.';
+  String get proBenefitSfxClipsDesc =>
+      'Gong tradicional de boxeo, silbato de árbitro, campanas y sintetizadores pro.';
 
   @override
   String get proBenefitPhaseColorsTitle => 'Colores de fase personalizados';
@@ -1288,4 +1288,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get proDevToggleDesc =>
       'Alterna instantáneamente entre Free y Pro en memoria sin vinculación a la tienda.';
+
+  @override
+  String get proAvailableWithPro => 'Disponible con Interval Timer Pro';
 }

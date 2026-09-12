@@ -57,7 +57,7 @@ void main() {
     // Verify 5 Benefits
     expect(find.byIcon(Icons.fitness_center_rounded), findsOneWidget);
     expect(find.byIcon(Icons.block_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.music_note_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.sports_rounded), findsOneWidget);
     expect(find.byIcon(Icons.palette_rounded), findsOneWidget);
     expect(find.byIcon(Icons.edit_note_rounded), findsOneWidget);
 

@@ -64,6 +64,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(Localizations.localeOf(context).languageCode, 'es');
+
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
     });
   });
 }

@@ -535,8 +535,8 @@
   "proBenefitUnlimitedWorkoutsDesc": "Break free from the 3-routine limit and save all your training programs.",
   "proBenefitZeroAdsTitle": "Zero Distractions",
   "proBenefitZeroAdsDesc": "100% clean experience with no ads ever.",
-  "proBenefitAudioDuckingTitle": "Smart Audio Ducking",
-  "proBenefitAudioDuckingDesc": "Seamlessly lowers music volume on Spotify or Apple Music when interval alerts play.",
+  "proBenefitSfxClipsTitle": "Sports SFX & Boxing Bells",
+  "proBenefitSfxClipsDesc": "Traditional gong, referee whistle, gym bells, and pro synths.",
   "proBenefitPhaseColorsTitle": "Custom Phase Colors",
   "proBenefitPhaseColorsDesc": "Personalize your work and rest screen colors with the full ergonomic palette.",
   "proBenefitCalendarNotesTitle": "Advanced Session Notes",
@@ -567,5 +567,6 @@
   "proPrivacy": "Privacy Policy",
   "proDevSectionTitle": "Developer Options (Pro Tier)",
   "proDevToggleLabel": "Simulate Pro User (Mock)",
-  "proDevToggleDesc": "Instantly switches between Free and Pro tiers in memory without store coupling."
+  "proDevToggleDesc": "Instantly switches between Free and Pro tiers in memory without store coupling.",
+  "proAvailableWithPro": "Available with Interval Timer Pro"
 }
