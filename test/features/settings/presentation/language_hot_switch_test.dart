@@ -33,6 +33,9 @@ void main() {
 
     testWidgets('switching language to English updates MaterialApp locale reactively',
         (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
       await prefs.setHasSeenOnboarding(true);
       await tester.pumpWidget(
         ProviderScope(
