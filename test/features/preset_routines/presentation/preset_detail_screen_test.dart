@@ -163,6 +163,9 @@ void main() {
     // Verify AppSnackBar renders success icon and action button
     expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
     expect(find.text('IR A RUTINAS'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(Duration.zero);
   });
 
   testWidgets('popping PresetDetailScreen dismisses the SnackBar and does not leak it to parent', (tester) async {
@@ -227,5 +230,8 @@ void main() {
 
     // The SnackBar must NOT be leaked to parent screen!
     expect(find.text('IR A RUTINAS'), findsNothing);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(Duration.zero);
   });
 }

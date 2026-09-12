@@ -1170,4 +1170,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveColor => 'Save';
+
+  @override
+  String get proBadge => 'PRO';
+
+  @override
+  String get proBadgeTooltip => 'Pro Feature';
+
+  @override
+  String get proUpgradeTitle => 'Unlock Interval Timer Pro';
+
+  @override
+  String get proUpgradeSubtitle =>
+      'Take your training to the highest level without limits or interruptions.';
+
+  @override
+  String get proBenefitUnlimitedWorkoutsTitle => 'Unlimited Custom Workouts';
+
+  @override
+  String get proBenefitUnlimitedWorkoutsDesc =>
+      'Break free from the 3-routine limit and save all your training programs.';
+
+  @override
+  String get proBenefitZeroAdsTitle => 'Zero Distractions';
+
+  @override
+  String get proBenefitZeroAdsDesc => '100% clean experience with no ads ever.';
+
+  @override
+  String get proBenefitAudioDuckingTitle => 'Smart Audio Ducking';
+
+  @override
+  String get proBenefitAudioDuckingDesc =>
+      'Seamlessly lowers music volume on Spotify or Apple Music when interval alerts play.';
+
+  @override
+  String get proBenefitPhaseColorsTitle => 'Custom Phase Colors';
+
+  @override
+  String get proBenefitPhaseColorsDesc =>
+      'Personalize your work and rest screen colors with the full ergonomic palette.';
+
+  @override
+  String get proBenefitCalendarNotesTitle => 'Advanced Session Notes';
+
+  @override
+  String get proBenefitCalendarNotesDesc =>
+      'Track weights, feelings, and personal records directly in your training calendar.';
+
+  @override
+  String proFreeWorkoutsCounter(int count, int limit) {
+    return '$count of $limit free workouts used';
+  }
+
+  @override
+  String get proUnlimitedWorkoutsCounter => 'Unlimited Workouts (Pro)';
+
+  @override
+  String get proBestValue => 'BEST VALUE';
+
+  @override
+  String proSavePercent(int percent) {
+    return 'Save $percent%';
+  }
+
+  @override
+  String get proStartFreeTrial => 'START 7-DAY FREE TRIAL';
+
+  @override
+  String get proUnlockLifetime => 'UNLOCK LIFETIME ACCESS';
+
+  @override
+  String get proSubscribe => 'UNLOCK PRO';
+
+  @override
+  String get proRestorePurchases => 'Restore Purchases';
+
+  @override
+  String get proPurchaseSuccess => 'Welcome to Interval Timer Pro!';
+
+  @override
+  String get proRestoreSuccess => 'Purchases successfully restored!';
+
+  @override
+  String get proLegalNotice =>
+      'Payment will be charged to your store account. Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period.';
+
+  @override
+  String get proTerms => 'Terms of Service';
+
+  @override
+  String get proPrivacy => 'Privacy Policy';
+
+  @override
+  String get proDevSectionTitle => 'Developer Options (Pro Tier)';
+
+  @override
+  String get proDevToggleLabel => 'Simulate Pro User (Mock)';
+
+  @override
+  String get proDevToggleDesc =>
+      'Instantly switches between Free and Pro tiers in memory without store coupling.';
 }

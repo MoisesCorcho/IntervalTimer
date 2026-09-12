@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/data/models/workout.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 import 'package:interval_timer/features/workout_builder/domain/workout_validators.dart';
 
 class WorkoutsListController extends AsyncNotifier<List<Workout>> {
   StreamSubscription<List<Workout>>? _subscription;
+  bool _isMutating = false;
 
   @override
   Future<List<Workout>> build() async {
@@ -31,19 +33,39 @@ class WorkoutsListController extends AsyncNotifier<List<Workout>> {
   }
 
   Future<Workout?> createWorkout(String name) async {
+    if (_isMutating) return null;
+
+    final isPro = ref.read(isProUserProvider).valueOrNull ?? false;
+    final currentCount = state.valueOrNull?.length ?? 0;
+    if (!isPro && currentCount >= freeWorkoutsLimit) return null;
+
     final error = WorkoutValidators.validateWorkoutName(name);
     if (error != null) return null;
 
-    final repo = ref.read(workoutRepositoryProvider);
-    return repo.createWorkout(formatDisplayName(name));
+    _isMutating = true;
+    try {
+      final repo = ref.read(workoutRepositoryProvider);
+      return await repo.createWorkout(formatDisplayName(name));
+    } finally {
+      _isMutating = false;
+    }
   }
 
   Future<Workout?> duplicateWorkout(String id) async {
-    final repo = ref.read(workoutRepositoryProvider);
+    if (_isMutating) return null;
+
+    final isPro = ref.read(isProUserProvider).valueOrNull ?? false;
+    final currentCount = state.valueOrNull?.length ?? 0;
+    if (!isPro && currentCount >= freeWorkoutsLimit) return null;
+
+    _isMutating = true;
     try {
+      final repo = ref.read(workoutRepositoryProvider);
       return await repo.duplicateWorkout(id);
     } catch (_) {
       return null;
+    } finally {
+      _isMutating = false;
     }
   }
 

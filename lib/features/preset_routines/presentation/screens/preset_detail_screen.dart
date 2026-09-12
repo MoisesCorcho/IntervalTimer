@@ -8,6 +8,8 @@ import 'package:interval_timer/features/preset_routines/domain/models/preset_rou
 import 'package:interval_timer/features/preset_routines/domain/services/preset_routine_flattener.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_media_widget.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_technique_bottom_sheet.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/shared/widgets/app_snack_bar.dart';
 import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
@@ -123,6 +125,12 @@ class PresetDetailScreen extends ConsumerWidget {
 
 
   Future<void> _handleDuplicate(BuildContext context, WidgetRef ref) async {
+    final canCreate = ref.read(canCreateWorkoutProvider);
+    if (!canCreate) {
+      PaywallModalScreen.show(context);
+      return;
+    }
+
     final preset = ref.read(presetDetailProvider(presetId)).value;
     if (preset == null) return;
 

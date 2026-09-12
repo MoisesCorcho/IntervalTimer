@@ -526,5 +526,46 @@
   "restColorTitle": "Rest color",
   "restColorSubtitle": "Screen color during rest intervals",
   "resetToDefault": "Reset to default",
-  "saveColor": "Save"
+  "saveColor": "Save",
+  "proBadge": "PRO",
+  "proBadgeTooltip": "Pro Feature",
+  "proUpgradeTitle": "Unlock Interval Timer Pro",
+  "proUpgradeSubtitle": "Take your training to the highest level without limits or interruptions.",
+  "proBenefitUnlimitedWorkoutsTitle": "Unlimited Custom Workouts",
+  "proBenefitUnlimitedWorkoutsDesc": "Break free from the 3-routine limit and save all your training programs.",
+  "proBenefitZeroAdsTitle": "Zero Distractions",
+  "proBenefitZeroAdsDesc": "100% clean experience with no ads ever.",
+  "proBenefitAudioDuckingTitle": "Smart Audio Ducking",
+  "proBenefitAudioDuckingDesc": "Seamlessly lowers music volume on Spotify or Apple Music when interval alerts play.",
+  "proBenefitPhaseColorsTitle": "Custom Phase Colors",
+  "proBenefitPhaseColorsDesc": "Personalize your work and rest screen colors with the full ergonomic palette.",
+  "proBenefitCalendarNotesTitle": "Advanced Session Notes",
+  "proBenefitCalendarNotesDesc": "Track weights, feelings, and personal records directly in your training calendar.",
+  "proFreeWorkoutsCounter": "{count} of {limit} free workouts used",
+  "@proFreeWorkoutsCounter": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "proUnlimitedWorkoutsCounter": "Unlimited Workouts (Pro)",
+  "proBestValue": "BEST VALUE",
+  "proSavePercent": "Save {percent}%",
+  "@proSavePercent": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "proStartFreeTrial": "START 7-DAY FREE TRIAL",
+  "proUnlockLifetime": "UNLOCK LIFETIME ACCESS",
+  "proSubscribe": "UNLOCK PRO",
+  "proRestorePurchases": "Restore Purchases",
+  "proPurchaseSuccess": "Welcome to Interval Timer Pro!",
+  "proRestoreSuccess": "Purchases successfully restored!",
+  "proLegalNotice": "Payment will be charged to your store account. Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period.",
+  "proTerms": "Terms of Service",
+  "proPrivacy": "Privacy Policy",
+  "proDevSectionTitle": "Developer Options (Pro Tier)",
+  "proDevToggleLabel": "Simulate Pro User (Mock)",
+  "proDevToggleDesc": "Instantly switches between Free and Pro tiers in memory without store coupling."
 }

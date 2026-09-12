@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/app_localizations.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/settings/presentation/phase_color_picker_screen.dart';
@@ -13,20 +14,22 @@ void main() {
     required Color defaultColor,
     required ValueChanged<Color> onColorSelected,
   }) {
-    return MaterialApp(
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('es')],
-      locale: const Locale('es'),
-      home: PhaseColorPickerScreen(
-        title: title,
-        initialColor: initialColor,
-        defaultColor: defaultColor,
-        onColorSelected: onColorSelected,
+    return ProviderScope(
+      child: MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('es')],
+        locale: const Locale('es'),
+        home: PhaseColorPickerScreen(
+          title: title,
+          initialColor: initialColor,
+          defaultColor: defaultColor,
+          onColorSelected: onColorSelected,
+        ),
       ),
     );
   }

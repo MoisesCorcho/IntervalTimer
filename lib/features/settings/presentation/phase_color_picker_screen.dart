@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/contrast_text_color.dart';
+import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/countdown_ring.dart';
 
@@ -60,7 +61,14 @@ class _PhaseColorPickerScreenState extends State<PhaseColorPickerScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(widget.title),
+            const SizedBox(width: 8),
+            const ProBadge(compact: true),
+          ],
+        ),
         leading: const BackButton(),
       ),
       body: SafeArea(
