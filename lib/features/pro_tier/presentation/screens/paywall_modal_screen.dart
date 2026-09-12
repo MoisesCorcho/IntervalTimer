@@ -16,11 +16,23 @@ class PaywallModalScreen extends ConsumerStatefulWidget {
 
   /// Presents the Paywall as a modal bottom sheet.
   static Future<void> show(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF141417) : const Color(0xFFF9F9FB);
+
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Colors.transparent,
+      showDragHandle: true,
+      backgroundColor: backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppTheme.radiusXl)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.92,
+      ),
       builder: (context) => const PaywallModalScreen(),
     );
   }
@@ -44,50 +56,25 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
     final backgroundColor = isDark ? const Color(0xFF141417) : const Color(0xFFF9F9FB);
     final cardColor = isDark ? const Color(0xFF1E1E24) : Colors.white;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.radiusXl)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x66000000),
-            blurRadius: 24,
-            offset: Offset(0, -4),
-          ),
-        ],
-      ),
+    return Material(
+      color: backgroundColor,
       child: SafeArea(
         top: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingMd, vertical: AppTheme.spacingMd),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Top drag handle & Close Button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(width: 40),
-                  Container(
-                    width: 36,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  IconButton(
-                    key: const Key('paywall_close_button'),
-                    icon: const Icon(Icons.close_rounded),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(
+                AppTheme.spacingMd,
+                AppTheme.spacingSm,
+                AppTheme.spacingMd,
+                AppTheme.spacingMd,
               ),
-              const SizedBox(height: AppTheme.spacingSm),
-
-              // Header Crown & Glow
-              Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Header Crown & Glow
+                  Center(
                 child: Container(
                   width: 64,
                   height: 64,
@@ -140,6 +127,12 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
               ),
               const SizedBox(height: AppTheme.spacingSm),
               _BenefitItem(
+                icon: Icons.straighten_rounded,
+                title: l10n.proBenefitBodyTrackingTitle,
+                subtitle: l10n.proBenefitBodyTrackingDesc,
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              _BenefitItem(
                 icon: Icons.block_rounded,
                 title: l10n.proBenefitZeroAdsTitle,
                 subtitle: l10n.proBenefitZeroAdsDesc,
@@ -158,9 +151,9 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
               ),
               const SizedBox(height: AppTheme.spacingSm),
               _BenefitItem(
-                icon: Icons.edit_note_rounded,
-                title: l10n.proBenefitCalendarNotesTitle,
-                subtitle: l10n.proBenefitCalendarNotesDesc,
+                icon: Icons.favorite_rounded,
+                title: l10n.proBenefitIndieDevTitle,
+                subtitle: l10n.proBenefitIndieDevDesc,
               ),
               const SizedBox(height: AppTheme.spacingLg),
 
@@ -220,7 +213,7 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
                       else
                         AppPrimaryButton(
                           key: const Key('paywall_primary_cta'),
-                          onPressed: () => _handlePurchase(context, selectedPackage),
+                          onPressed: () => _handlePurchase(selectedPackage),
                           label: _getCtaLabel(l10n, selectedPackage),
                         ),
                     ],
@@ -234,7 +227,7 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
               Center(
                 child: TextButton(
                   key: const Key('paywall_restore_button'),
-                  onPressed: isLoading ? null : () => _handleRestore(context),
+                  onPressed: isLoading ? null : () => _handleRestore(),
                   child: Text(
                     l10n.proRestorePurchases,
                     style: TextStyle(
@@ -283,8 +276,19 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
             ],
           ),
         ),
-      ),
-    );
+        Positioned(
+          top: 0,
+          right: AppTheme.spacingXs,
+          child: IconButton(
+            key: const Key('paywall_close_button'),
+            icon: const Icon(Icons.close_rounded),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+      ],
+    ),
+  ),
+);
   }
 
   String _getCtaLabel(dynamic l10n, ProductPackage package) {
@@ -297,7 +301,7 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
     return l10n.proSubscribe;
   }
 
-  Future<void> _handlePurchase(BuildContext context, ProductPackage package) async {
+  Future<void> _handlePurchase(ProductPackage package) async {
     HapticFeedback.mediumImpact();
     final result = await ref.read(paywallControllerProvider.notifier).purchase(package);
     if (!mounted) return;
@@ -310,7 +314,7 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
     }
   }
 
-  Future<void> _handleRestore(BuildContext context) async {
+  Future<void> _handleRestore() async {
     HapticFeedback.lightImpact();
     final result = await ref.read(paywallControllerProvider.notifier).restorePurchases();
     if (!mounted) return;

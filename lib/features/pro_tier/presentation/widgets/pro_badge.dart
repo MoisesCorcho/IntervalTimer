@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
-import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 

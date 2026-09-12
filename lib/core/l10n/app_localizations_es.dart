@@ -1232,8 +1232,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proBenefitCalendarNotesTitle => 'Notas avanzadas de sesión';
 
   @override
-  String get proBenefitCalendarNotesDesc =>
-      'Registra cargas, sensaciones y récords directamente en tu historial.';
+  String get proBenefitIndieDevTitle => 'Apoyo al desarrollo independiente';
+
+  @override
+  String get proBenefitIndieDevDesc =>
+      'Impulsa mejoras continuas, sin inversores y con una app 100% enfocada en ti.';
+
+  @override
+  String get proBenefitBodyTrackingTitle => 'Seguimiento corporal completo';
+
+  @override
+  String get proBenefitBodyTrackingDesc =>
+      'Registra medidas corporales y accede a todo tu historial de peso sin límites.';
 
   @override
   String proFreeWorkoutsCounter(int count, int limit) {

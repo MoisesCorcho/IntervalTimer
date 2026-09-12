@@ -54,12 +54,15 @@ void main() {
     expect(find.byIcon(Icons.workspace_premium_rounded), findsWidgets);
     expect(find.text('Desbloquea Interval Timer Pro'), findsOneWidget);
 
-    // Verify 5 Benefits
+    // Verify 6 Benefits
     expect(find.byIcon(Icons.fitness_center_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.straighten_rounded), findsOneWidget);
+    expect(find.text('Seguimiento corporal completo'), findsOneWidget);
     expect(find.byIcon(Icons.block_rounded), findsOneWidget);
     expect(find.byIcon(Icons.sports_rounded), findsOneWidget);
     expect(find.byIcon(Icons.palette_rounded), findsOneWidget);
-    expect(find.byIcon(Icons.edit_note_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
+    expect(find.text('Apoyo al desarrollo independiente'), findsOneWidget);
 
     // Verify 3 Packages
     expect(find.text('Mensual'), findsOneWidget);
@@ -129,5 +132,48 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(await prefs.isProUser(), isTrue);
+  });
+
+  testWidgets('PaywallModalScreen.show presents BottomSheet with native drag handle and close button', (tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          preferencesRepositoryProvider.overrideWithValue(prefs),
+          billingRepositoryProvider.overrideWithValue(driver),
+        ],
+        child: MaterialApp(
+          locale: const Locale('es'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () => PaywallModalScreen.show(context),
+                child: const Text('Open Paywall'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open Paywall'));
+    await tester.pumpAndSettle();
+
+    final bottomSheetFinder = find.byType(BottomSheet);
+    expect(bottomSheetFinder, findsOneWidget);
+    final bottomSheet = tester.widget<BottomSheet>(bottomSheetFinder);
+    expect(bottomSheet.showDragHandle, isTrue);
+
+    // Verify close button pops the sheet
+    expect(find.byKey(const Key('paywall_close_button')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('paywall_close_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PaywallModalScreen), findsNothing);
   });
 }

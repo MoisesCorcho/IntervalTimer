@@ -2294,11 +2294,29 @@ abstract class AppLocalizations {
   /// **'Advanced Session Notes'**
   String get proBenefitCalendarNotesTitle;
 
-  /// No description provided for @proBenefitCalendarNotesDesc.
+  /// No description provided for @proBenefitIndieDevTitle.
   ///
   /// In en, this message translates to:
-  /// **'Track weights, feelings, and personal records directly in your training calendar.'**
-  String get proBenefitCalendarNotesDesc;
+  /// **'Support Indie Development'**
+  String get proBenefitIndieDevTitle;
+
+  /// No description provided for @proBenefitIndieDevDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel ongoing updates with no corporate investors and an app 100% focused on you.'**
+  String get proBenefitIndieDevDesc;
+
+  /// No description provided for @proBenefitBodyTrackingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Body Tracking'**
+  String get proBenefitBodyTrackingTitle;
+
+  /// No description provided for @proBenefitBodyTrackingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Log body circumferences and access your full, unlimited weight history.'**
+  String get proBenefitBodyTrackingDesc;
 
   /// No description provided for @proFreeWorkoutsCounter.
   ///

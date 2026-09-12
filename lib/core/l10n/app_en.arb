@@ -540,7 +540,10 @@
   "proBenefitPhaseColorsTitle": "Custom Phase Colors",
   "proBenefitPhaseColorsDesc": "Personalize your work and rest screen colors with the full ergonomic palette.",
   "proBenefitCalendarNotesTitle": "Advanced Session Notes",
-  "proBenefitCalendarNotesDesc": "Track weights, feelings, and personal records directly in your training calendar.",
+  "proBenefitIndieDevTitle": "Support Indie Development",
+  "proBenefitIndieDevDesc": "Fuel ongoing updates with no corporate investors and an app 100% focused on you.",
+  "proBenefitBodyTrackingTitle": "Full Body Tracking",
+  "proBenefitBodyTrackingDesc": "Log body circumferences and access your full, unlimited weight history.",
   "proFreeWorkoutsCounter": "{count} of {limit} free workouts used",
   "@proFreeWorkoutsCounter": {
     "placeholders": {
