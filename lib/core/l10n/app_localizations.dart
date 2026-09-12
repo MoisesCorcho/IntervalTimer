@@ -2401,6 +2401,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Available with Interval Timer Pro'**
   String get proAvailableWithPro;
+
+  /// Notice indicating older weight records are preserved and locked behind Pro
+  ///
+  /// In en, this message translates to:
+  /// **'You have {count} earlier weight records saved'**
+  String bodyWeightHistoryProLocked(int count);
+
+  /// No description provided for @bodyWeightHistoryProCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock your full progress with Pro'**
+  String get bodyWeightHistoryProCta;
 }
 
 class _AppLocalizationsDelegate

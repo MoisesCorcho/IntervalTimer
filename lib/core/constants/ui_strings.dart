@@ -344,6 +344,10 @@ abstract final class UiStrings {
   static const bodyWeightViewRecords = 'Ver registros';
   static const bodyWeightViewRecordsCount = 'Ver registros ({count})';
   static const bodyWeightHistorySheetTitle = 'Registros de peso';
+  static const bodyWeightHistoryProLocked =
+      'Tenés {count} pesajes anteriores guardados';
+  static const bodyWeightHistoryProCta =
+      'Desbloqueá tu evolución completa con Pro';
   static const bodyWeightLastLine = 'Último: {value} {unit} · {date}';
   static const bodyWeightDeleteTitle = '¿Eliminar registro?';
   static const bodyWeightDeleteMessage =

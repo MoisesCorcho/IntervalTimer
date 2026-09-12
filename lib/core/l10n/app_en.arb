@@ -568,5 +568,15 @@
   "proDevSectionTitle": "Developer Options (Pro Tier)",
   "proDevToggleLabel": "Simulate Pro User (Mock)",
   "proDevToggleDesc": "Instantly switches between Free and Pro tiers in memory without store coupling.",
-  "proAvailableWithPro": "Available with Interval Timer Pro"
+  "proAvailableWithPro": "Available with Interval Timer Pro",
+  "bodyWeightHistoryProLocked": "You have {count} earlier weight records saved",
+  "@bodyWeightHistoryProLocked": {
+    "description": "Notice indicating older weight records are preserved and locked behind Pro",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bodyWeightHistoryProCta": "Unlock your full progress with Pro"
 }

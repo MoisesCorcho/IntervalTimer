@@ -6,6 +6,8 @@ import 'package:interval_timer/features/body_tracking/application/body_tracking_
 import 'package:interval_timer/features/body_tracking/domain/body_measurement.dart';
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
 import 'package:interval_timer/features/body_tracking/presentation/body_measurement_form.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
@@ -27,7 +29,8 @@ class BodyWeightHistorySheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final measurementsAsync = ref.watch(bodyMeasurementsProvider);
+    final measurementsAsync = ref.watch(visibleBodyMeasurementsProvider);
+    final hiddenCount = ref.watch(hiddenMeasurementsCountProvider);
     final unit = ref.watch(bodyWeightUnitProvider).valueOrNull ??
         BodyWeightUnit.kg;
     final theme = Theme.of(context);
@@ -105,22 +108,28 @@ class BodyWeightHistorySheet extends ConsumerWidget {
                 }
                 // Newest first for browsing / edit / delete.
                 final ordered = list.reversed.toList();
+                final hasLockedCard = hiddenCount > 0;
+                final itemCount = ordered.length + (hasLockedCard ? 1 : 0);
+
                 return ListView.separated(
                   key: const Key('body_weight_history_list'),
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppTheme.spacingMd,
                     vertical: AppTheme.spacingSm,
                   ),
-                  itemCount: ordered.length,
+                  itemCount: itemCount,
                   separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
-                    final m = ordered[index];
-                    return _MeasurementTile(
-                      measurement: m,
-                      unit: unit,
-                      onEdit: () => _openForm(context, ref, existing: m),
-                      onDelete: () => _confirmDelete(context, ref, m),
-                    );
+                    if (index < ordered.length) {
+                      final m = ordered[index];
+                      return _MeasurementTile(
+                        measurement: m,
+                        unit: unit,
+                        onEdit: () => _openForm(context, ref, existing: m),
+                        onDelete: () => _confirmDelete(context, ref, m),
+                      );
+                    }
+                    return _LockedProHistoryCard(hiddenCount: hiddenCount);
                   },
                 );
               },
@@ -266,3 +275,82 @@ class _MeasurementTile extends StatelessWidget {
     return Text(parts.join(' · '));
   }
 }
+
+class _LockedProHistoryCard extends StatelessWidget {
+  const _LockedProHistoryCard({required this.hiddenCount});
+
+  final int hiddenCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+
+    return InkWell(
+      key: const Key('body_weight_history_pro_locked_card'),
+      onTap: () => PaywallModalScreen.show(context),
+      borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+      child: Container(
+        padding: const EdgeInsets.all(AppTheme.spacingMd),
+        margin: const EdgeInsets.symmetric(vertical: AppTheme.spacingSm),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+          border: Border.all(
+            color: const Color(0xFFFFB300).withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(AppTheme.spacingSm),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFB300).withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.lock_outline,
+                color: Color(0xFFFFB300),
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: AppTheme.spacingMd),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l10n.bodyWeightHistoryProLocked(hiddenCount),
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const ProBadge(compact: true),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    l10n.bodyWeightHistoryProCta,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppTheme.spacingSm),
+            const Icon(Icons.chevron_right, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

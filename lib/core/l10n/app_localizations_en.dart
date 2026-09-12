@@ -1274,4 +1274,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proAvailableWithPro => 'Available with Interval Timer Pro';
+
+  @override
+  String bodyWeightHistoryProLocked(int count) {
+    return 'You have $count earlier weight records saved';
+  }
+
+  @override
+  String get bodyWeightHistoryProCta => 'Unlock your full progress with Pro';
 }
