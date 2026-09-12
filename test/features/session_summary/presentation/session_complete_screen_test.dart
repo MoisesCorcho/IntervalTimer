@@ -13,7 +13,6 @@ import 'package:interval_timer/data/models/routine_item.dart';
 import 'package:interval_timer/data/models/session_log_status.dart';
 import 'package:interval_timer/data/repositories/session_log_repository.dart';
 import 'package:interval_timer/features/calendar_history/application/calendar_history_providers.dart';
-import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/session_summary/application/session_summary_controller.dart';
 import 'package:interval_timer/features/session_summary/application/session_summary_providers.dart';
@@ -220,7 +219,7 @@ void main() {
     expect(find.text(UiStrings.sessionSummaryShareSaveGallery), findsOneWidget);
   });
 
-  testWidgets('free user tapping note field opens PaywallModalScreen',
+  testWidgets('user can enter note directly without paywall',
       (tester) async {
     final db = AppDatabase.forTesting(NativeDatabase.memory());
     addTearDown(db.close);
@@ -243,11 +242,19 @@ void main() {
       ],
     );
 
+    await repo.insert(
+      sourceId: 'r_note_free',
+      displayName: 'Note test free',
+      endedAt: DateTime(2026, 7, 16, 12),
+      status: SessionLogStatus.completed,
+      totalDurationSeconds: 5,
+      itemCount: 1,
+    );
+
     final container = ProviderContainer(
       overrides: [
         databaseProvider.overrideWithValue(db),
         sessionLogRepositoryProvider.overrideWithValue(repo),
-        isProUserProvider.overrideWith((ref) => Stream.value(false)),
         sessionSummaryControllerProvider.overrideWith(
           () => SessionSummaryController(
             repository: repo,
@@ -293,18 +300,21 @@ void main() {
     );
     await _pumpUntilSheet(tester);
 
-    final gestureFinder = find.byKey(const Key('session_summary_note_gesture'));
+    final noteFieldFinder = find.byKey(const Key('session_summary_note_field'));
     await tester.scrollUntilVisible(
-      gestureFinder,
+      noteFieldFinder,
       100,
       scrollable: find.byType(Scrollable).last,
     );
-    expect(gestureFinder, findsOneWidget);
+    expect(noteFieldFinder, findsOneWidget);
 
-    await tester.tap(gestureFinder);
+    await tester.enterText(noteFieldFinder, 'Gran entreno!');
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 600));
 
-    expect(find.byType(PaywallModalScreen), findsOneWidget);
+    expect(
+      container.read(sessionSummaryControllerProvider).noteDraft,
+      'Gran entreno!',
+    );
+    expect(find.byType(PaywallModalScreen), findsNothing);
   });
 }
