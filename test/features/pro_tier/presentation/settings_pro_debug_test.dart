@@ -74,8 +74,16 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Verify Pro Tier card
+    // Verify Pro Tier card at the top
     expect(find.byKey(const Key('settings_card_pro_tier')), findsOneWidget);
+
+    // Scroll to Developer toggle switch at the bottom
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings_debug_pro_toggle')),
+      200.0,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
 
     // Verify Developer toggle switch
     expect(find.byKey(const Key('settings_debug_pro_toggle')), findsOneWidget);
@@ -86,13 +94,36 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(await prefs.isProUser(), isTrue);
+
+    // Scroll back up to Pro Tier card to verify state update
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings_card_pro_tier')),
+      -200.0,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     expect(find.text('Pro Activo'), findsOneWidget);
 
-    // Toggle switch OFF
+    // Scroll to toggle switch OFF
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings_debug_pro_toggle')),
+      200.0,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
     await tester.tap(find.byKey(const Key('settings_debug_pro_toggle')));
     await tester.pumpAndSettle();
 
     expect(await prefs.isProUser(), isFalse);
+
+    // Scroll back up to Pro Tier card to verify state update
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('settings_card_pro_tier')),
+      -200.0,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     expect(find.text('Desbloquea Interval Timer Pro'), findsOneWidget);
 
     await tester.pump(const Duration(milliseconds: 100));

@@ -80,6 +80,10 @@ class _SettingsBody extends ConsumerWidget {
         vertical: AppTheme.spacingMd,
       ),
       children: [
+        // 0. Pro Tier (Top highlight banner)
+        const _ProTierSettingsSection(),
+        const SizedBox(height: AppTheme.spacingMd),
+
         // 1. General & Appearance
         SettingsSectionCard(
           key: const Key('settings_card_appearance'),
@@ -289,12 +293,7 @@ class _SettingsBody extends ConsumerWidget {
             ],
           ),
         ),
-        const SizedBox(height: AppTheme.spacingMd),
-
-        // 7. Pro Tier
-        const _ProTierSettingsSection(),
-
-        // 8. Developer Options (Debug/Profile only)
+        // 7. Developer Options (Debug/Profile only)
         if (kDebugMode || kProfileMode) ...[
           const SizedBox(height: AppTheme.spacingMd),
           const _DeveloperProToggleSection(),
@@ -332,7 +331,7 @@ class _ProTierSettingsSection extends ConsumerWidget {
                 ),
               ),
               child: Icon(
-                isPro ? Icons.verified_rounded : Icons.lock_open_rounded,
+                isPro ? Icons.verified_rounded : Icons.workspace_premium_rounded,
                 color: const Color(0xFF2E1C00),
                 size: 22,
               ),
