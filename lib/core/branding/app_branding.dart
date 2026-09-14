@@ -17,7 +17,7 @@ abstract final class AppBranding {
   static String get tagline => UiStrings.appTagline;
 
   /// Path registered in `pubspec.yaml` under `flutter.assets`.
-  static const String logoAsset = 'assets/branding/app_logo.png';
+  static const String logoAsset = 'assets/branding/app_icon.png';
 
   /// Brand mark. Falls back to a timer icon if the asset is missing.
   static Widget logo({
