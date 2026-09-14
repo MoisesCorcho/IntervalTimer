@@ -581,5 +581,11 @@
       }
     }
   },
-  "bodyWeightHistoryProCta": "Unlock your full progress with Pro"
+  "bodyWeightHistoryProCta": "Unlock your full progress with Pro",
+  "proActiveTitle": "Pro Active",
+  "proActiveSubtitle": "You have unlimited access to all premium features.",
+  "proActiveMembershipLabel": "Active Membership",
+  "proManageSubscription": "Manage subscription",
+  "proManageSubscriptionNotice": "You can manage or cancel your subscription through your device's app store.",
+  "proDismissDialog": "Got it"
 }

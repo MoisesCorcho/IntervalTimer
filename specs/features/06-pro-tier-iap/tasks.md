@@ -9,6 +9,7 @@
 - [x] Todos los criterios de aceptación R1 a R18 de `requirements.md` están implementados y verificados.
 - [x] Arquitectura Ports & Adapters completa con `BillingRepository` y `FakeBillingDriver` totalmente funcional en dev.
 - [x] Switch de depuración en `SettingsScreen` (debug mode) para alternar Free y Pro instantáneamente en vivo.
+- [x] Vista modal de estado de suscripción `ProStatusModalSheet` para usuarios Pro activos sin botones de compra. _(R19)_
 - [x] Límite estricto de 3 rutinas en Free aplicado tanto a creación manual como a duplicación de rutinas y clonación de presets.
 - [x] Bloqueo de condiciones de carrera mediante mutex/debounce en guardado y duplicación atómica.
 - [x] Política de downgrade verificada: rutinas previas preservadas y ejecutables, creación bloqueada mientras count ≥ 3.
@@ -56,6 +57,7 @@
 - [x] Integrar compuerta en `PresetDetailScreen`: botón duplicar gatilla Paywall si se alcanzó el límite. _(cubre R15)_
 - [x] Integrar `ProBadge` en `PhaseColorPickerSheet`/`Screen`, `TimerAudioControlsSheet` (ducking) y notas de `HistoryScreen`. _(cubre R4, R8, R9, R10)_
 - [x] Agregar tarjeta de depuración en `SettingsScreen` (solo en debug/profile) con `SwitchListTile` para alternar usuario Free/Pro en vivo. _(cubre R14)_
+- [x] Implementar `ProStatusModalSheet` con resumen de beneficios desbloqueados, enlace de gestión en tiendas y blindar `PaywallModalScreen` ante `isPro == true`. _(cubre R19)_
 
 ### 5. Suite de Pruebas Automatizadas (TDD, Edge Cases & Regresión)
 - [x] **Unit test:** Validar que `canCreateWorkoutProvider` retorne `true` con ≤ 2 rutinas en Free, `false` con 3 rutinas en Free, y siempre `true` si `isPro == true`. _(cubre R2, R3)_
@@ -67,6 +69,7 @@
 - [x] **Widget test:** Validar renderizado de `PaywallModalScreen`, selección de plan anual por defecto y pulsación de compra con feedback háptico. _(cubre R5, R6)_
 - [x] **Widget test:** Validar que un fallo o cancelación de compra en el paywall muestre un snackbar informativo sin alterar el estado del usuario. _(cubre R11)_
 - [x] **Widget test:** Validar que el switch de depuración en `SettingsScreen` alterne inmediatamente el estado `isPro` y reactive los componentes de la interfaz. _(cubre R14)_
+- [x] **Widget test:** Validar que pulsar la tarjeta Pro en `SettingsScreen` cuando `isPro == true` abra `ProStatusModalSheet` y no ofrezca opciones ni botones de pago. _(cubre R19)_
 - [x] **Regression test:** Ejecutar suite completa (`flutter test`) asegurando 0 fallos en los 445 tests previos.
 
 ---
@@ -93,6 +96,7 @@
 | **R16** | Política de Downgrade y Preservación de Datos | 3.4, 5.3 |
 | **R17** | Fallback Seguro de Personalizaciones Cosméticas | 3.7, 5.4 |
 | **R18** | Prevención de Condiciones de Carrera (Double-Tap) | 3.6, 5.5 |
+| **R19** | Estado Pro Activo y Gestión de Suscripción | 4.7, 5.10 |
 
 ---
 

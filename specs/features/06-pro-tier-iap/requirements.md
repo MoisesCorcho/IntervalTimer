@@ -169,6 +169,15 @@ DONDE el usuario tiene 2 rutinas creadas y pulsa repetidamente en milisegundos e
 CUANDO se procesan las peticiones concurrentes,  
 EL SISTEMA DEBE ejecutar la verificación y guardado de forma atómica y bloqueante (mutex/debounce), impidiendo que se sobrepase el límite de 3 rutinas por ejecuciones paralelas.
 
+#### R19 — Estado Pro Activo y Gestión de Suscripción
+DONDE el usuario posee el estado `isPro == true`,  
+CUANDO interactúa con la tarjeta Pro en la pantalla de Ajustes o accede a la vista de suscripción,  
+EL SISTEMA DEBE:
+1. Ocultar estrictamente opciones de compra, precios de suscripción y botones de pago redundantes.
+2. Presentar una vista modal informativa (`ProStatusModalSheet`) confirmando el estado activo de la membresía con el distintivo visual Pro.
+3. Mostrar el catálogo de beneficios actualmente desbloqueados (rutinas ilimitadas, métricas corporales, SFX deportivos, personalización de colores, cero publicidad).
+4. Proveer un botón de cierre y una acción accesible para gestionar la suscripción directamente en la tienda de aplicaciones correspondiente (Google Play / App Store).
+
 ---
 
 ## Matriz de Cruce Funcional y Casos Borde (A x B x C)

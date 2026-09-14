@@ -6,6 +6,7 @@ import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/contrast_text_color.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/pro_status_modal_sheet.dart';
 import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
@@ -337,23 +338,27 @@ class _ProTierSettingsSection extends ConsumerWidget {
               ),
             ),
             title: Text(
-              isPro ? 'Pro Activo' : l10n.proUpgradeTitle,
+              isPro ? l10n.proActiveTitle : l10n.proUpgradeTitle,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             subtitle: Text(
-              isPro
-                  ? 'Tienes acceso ilimitado a todas las funciones premium.'
-                  : l10n.proUpgradeSubtitle,
+              isPro ? l10n.proActiveSubtitle : l10n.proUpgradeSubtitle,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             trailing: isPro
-                ? const ProBadge(hideWhenPro: false)
+                ? const IgnorePointer(child: ProBadge(hideWhenPro: false))
                 : const Icon(Icons.chevron_right_rounded),
-            onTap: () => PaywallModalScreen.show(context),
+            onTap: () {
+              if (isPro) {
+                ProStatusModalSheet.show(context);
+              } else {
+                PaywallModalScreen.show(context);
+              }
+            },
           ),
         ],
       ),

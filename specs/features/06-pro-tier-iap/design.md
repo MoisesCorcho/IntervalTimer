@@ -173,8 +173,18 @@ Desplegado mediante `showModalBottomSheet` a pantalla completa o ruta `/paywall`
 - **Selector de Planes:** Tarjetas seleccionables destacando la opción Anual con etiqueta "Ahorra 50% - 7 días gratis".
 - **Botón CTA Primario:** Animación de escala sutil al pulsar.
 - **Enlace "Restaurar Compras" y Términos:** Cumple estrictamente con las políticas de Google Play Store y Apple App Store.
+- **Defensa ante `isPro == true`:** Si se despliega cuando el usuario ya cuenta con Pro activo, conmuta automáticamente a la vista de estado activo (`ProStatusModalSheet`) evitando presentar opciones de compra.
 
-### 3. Switch de Depuración en `SettingsScreen`
+### 3. `ProStatusModalSheet` (Gestión de Suscripción Activa)
+Desplegado mediante `showModalBottomSheet` desde la tarjeta de Ajustes (`_ProCard`) cuando `isPro == true`:
+- **Encabezado:** Badge Pro dorado/ámbar con `Icons.verified_rounded` y título *"Pro Activo"*.
+- **Subtítulo:** Confirmación de membresía y acceso ilimitado a todas las funciones premium.
+- **Resumen de Beneficios:** Lista visual de las 6 ventajas activas (Rutinas ilimitadas, Medidas y métricas corporales, Cero anuncios, Clips SFX deportivos, Colores de fase ergonómicos y Soporte a desarrollo indie).
+- **Acciones:**
+  - Botón secundario/texto *"Administrar suscripción"* que orienta al usuario a gestionar su plan en Google Play Store / Apple App Store.
+  - Botón primario *"Entendido"* para cerrar la hoja modal.
+
+### 4. Switch de Depuración en `SettingsScreen`
 - Visible únicamente cuando `kDebugMode || kProfileMode`.
 - Componente `SwitchListTile` rotulado: `"Simular usuario Pro (Mock)"`.
 - Al activarse/desactivarse, notifica a `BillingRepository.toggleMockPro(bool)`, actualizando la app de inmediato.

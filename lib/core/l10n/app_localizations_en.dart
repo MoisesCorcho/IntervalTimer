@@ -1292,4 +1292,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bodyWeightHistoryProCta => 'Unlock your full progress with Pro';
+
+  @override
+  String get proActiveTitle => 'Pro Active';
+
+  @override
+  String get proActiveSubtitle =>
+      'You have unlimited access to all premium features.';
+
+  @override
+  String get proActiveMembershipLabel => 'Active Membership';
+
+  @override
+  String get proManageSubscription => 'Manage subscription';
+
+  @override
+  String get proManageSubscriptionNotice =>
+      'You can manage or cancel your subscription through your device\'s app store.';
+
+  @override
+  String get proDismissDialog => 'Got it';
 }

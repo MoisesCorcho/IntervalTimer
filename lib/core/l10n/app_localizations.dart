@@ -2431,6 +2431,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlock your full progress with Pro'**
   String get bodyWeightHistoryProCta;
+
+  /// No description provided for @proActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro Active'**
+  String get proActiveTitle;
+
+  /// No description provided for @proActiveSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unlimited access to all premium features.'**
+  String get proActiveSubtitle;
+
+  /// No description provided for @proActiveMembershipLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Membership'**
+  String get proActiveMembershipLabel;
+
+  /// No description provided for @proManageSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get proManageSubscription;
+
+  /// No description provided for @proManageSubscriptionNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'You can manage or cancel your subscription through your device\'s app store.'**
+  String get proManageSubscriptionNotice;
+
+  /// No description provided for @proDismissDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get proDismissDialog;
 }
 
 class _AppLocalizationsDelegate

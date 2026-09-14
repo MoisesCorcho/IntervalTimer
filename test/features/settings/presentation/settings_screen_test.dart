@@ -275,6 +275,10 @@ void main() {
       expect(find.byType(PaywallModalScreen), findsOneWidget);
       // Repo value should remain default orange
       expect(await settingsRepo.getThemeColorArgb(), 0xFFFF6D00);
+
+      // Close paywall cleanly so no open route or timer leaks
+      await tester.tap(find.byKey(const Key('paywall_close_button')));
+      await tester.pumpAndSettle();
     });
 
     testWidgets('free user toggles music ducking freely without paywall',

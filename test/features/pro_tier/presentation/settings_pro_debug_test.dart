@@ -11,6 +11,7 @@ import 'package:interval_timer/features/lock_screen/application/lock_screen_prov
 import 'package:interval_timer/features/lock_screen/domain/no_op_session_surface_driver.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/data/fake_billing_driver.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/pro_status_modal_sheet.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/presentation/settings_screen.dart';
@@ -126,6 +127,45 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Desbloquea Interval Timer Pro'), findsOneWidget);
 
+    await tester.pump(const Duration(milliseconds: 100));
+  });
+
+  testWidgets('Tapping Pro card opens ProStatusModalSheet when isPro is true, and PaywallModalScreen when false (R19)', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 2400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    // 1. When Free: tapping Pro card opens PaywallModalScreen with purchase options
+    await tester.tap(find.byKey(const Key('settings_card_pro_tier')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('paywall_primary_cta')), findsOneWidget);
+    expect(find.text('Mensual'), findsOneWidget);
+
+    // Close paywall
+    await tester.tap(find.byKey(const Key('paywall_close_button')));
+    await tester.pumpAndSettle();
+
+    // 2. Enable Pro
+    await prefs.setIsProUser(true);
+    await tester.pumpAndSettle();
+
+    // 3. When Pro: tapping Pro card opens ProStatusModalSheet with active state and no purchase CTA
+    await tester.tap(find.byKey(const Key('settings_card_pro_tier')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Membresía Activa'), findsOneWidget);
+    expect(find.byKey(const Key('pro_status_dismiss_button')), findsOneWidget);
+    expect(find.byKey(const Key('paywall_primary_cta')), findsNothing);
+    expect(find.text('Mensual'), findsNothing);
+
+    // Close status sheet
+    await tester.tap(find.byKey(const Key('pro_status_close_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProStatusModalSheet), findsNothing);
     await tester.pump(const Duration(milliseconds: 100));
   });
 }

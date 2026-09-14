@@ -7,6 +7,7 @@ import 'package:interval_timer/features/pro_tier/application/paywall_controller.
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/domain/product_package.dart';
 import 'package:interval_timer/features/pro_tier/domain/purchase_result.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/pro_status_modal_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/app_snack_bar.dart';
 
@@ -46,6 +47,11 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
+    if (isPro) {
+      return const ProStatusModalSheet();
+    }
+
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;

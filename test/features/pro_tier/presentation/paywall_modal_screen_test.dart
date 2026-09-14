@@ -25,11 +25,12 @@ void main() {
     await db.close();
   });
 
-  Widget buildTestWidget() {
+  Widget buildTestWidget({bool isPro = false}) {
     return ProviderScope(
       overrides: [
         preferencesRepositoryProvider.overrideWithValue(prefs),
         billingRepositoryProvider.overrideWithValue(driver),
+        isProUserProvider.overrideWith((ref) => Stream.value(isPro)),
       ],
       child: const MaterialApp(
         locale: Locale('es'),
@@ -144,6 +145,7 @@ void main() {
         overrides: [
           preferencesRepositoryProvider.overrideWithValue(prefs),
           billingRepositoryProvider.overrideWithValue(driver),
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
         ],
         child: MaterialApp(
           locale: const Locale('es'),
@@ -175,5 +177,24 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(PaywallModalScreen), findsNothing);
+  });
+
+  testWidgets('PaywallModalScreen defensively renders ProStatusModalSheet when isPro is true (R19)', (tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(buildTestWidget(isPro: true));
+    await tester.pumpAndSettle();
+
+    // Verifies active Pro state is shown
+    expect(find.text('Pro Activo'), findsOneWidget);
+    expect(find.text('Membresía Activa'), findsOneWidget);
+
+    // Verifies no purchase CTA or package cards are shown
+    expect(find.byKey(const Key('paywall_primary_cta')), findsNothing);
+    expect(find.text('Mensual'), findsNothing);
+    expect(find.text('Anual'), findsNothing);
+    expect(find.text('De por vida'), findsNothing);
   });
 }

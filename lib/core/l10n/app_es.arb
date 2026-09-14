@@ -419,5 +419,11 @@
       }
     }
   },
-  "bodyWeightHistoryProCta": "Desbloqueá tu evolución completa con Pro"
+  "bodyWeightHistoryProCta": "Desbloqueá tu evolución completa con Pro",
+  "proActiveTitle": "Pro Activo",
+  "proActiveSubtitle": "Tienes acceso ilimitado a todas las funciones premium.",
+  "proActiveMembershipLabel": "Membresía Activa",
+  "proManageSubscription": "Administrar suscripción",
+  "proManageSubscriptionNotice": "Puedes administrar o cancelar tu suscripción desde la tienda de aplicaciones de tu dispositivo.",
+  "proDismissDialog": "Entendido"
 }
