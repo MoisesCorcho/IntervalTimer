@@ -159,17 +159,18 @@ final canCreateWorkoutProvider = Provider<bool>((ref) {
 Badge sutil en ámbar/oro metálico con el Design System:
 - Dimensiones: 16-20dp de alto, tipografía `labelSmall` en negrita con espaciado 1.0.
 - Si `isPro == true`, se oculta automáticamente.
-- Reutilizable en `PhaseColorPicker`, `TimerAudioControlsSheet`, `WorkoutEditorScreen` y tarjetas de rutinas.
+- Reutilizable en `PhaseColorPicker`, selector de clips SFX (`SoundEffectsSettingsSection`), formulario de medidas corporales (`BodyMeasurementForm`), `WorkoutEditorScreen` y tarjetas de rutinas.
 
 ### 2. `PaywallModalScreen`
 Desplegado mediante `showModalBottomSheet` a pantalla completa o ruta `/paywall`:
 - **Header:** Icono de corona o llama dorada procedural en `AppTheme.accentColorPresets`.
-- **Carrusel de Beneficios:**
+- **Lista de Beneficios Reales:**
   1. Rutinas ilimitadas (libérate del límite de 3 rutinas).
-  2. Experiencia 100% limpia sin anuncios intersticiales.
-  3. Audio Ducking inteligente con Spotify y Apple Music.
-  4. Selector de colores de fase ergonómicos con vista en mockup.
-  5. Notas ilimitadas de sensaciones y pesos en calendario.
+  2. Seguimiento corporal completo (historial de peso y registro de medidas de cintura, brazo y pierna).
+  3. Cero publicidad intersticial (entrenamiento 100% ininterrumpido).
+  4. Efectos de sonido deportivos de alta fidelidad (Gong, Campana, Silbato).
+  5. Selector de colores de fase ergonómicos con mockup interactivo en tiempo real.
+  6. Apoyo directo al desarrollo independiente.
 - **Selector de Planes:** Tarjetas seleccionables destacando la opción Anual con etiqueta "Ahorra 50% - 7 días gratis".
 - **Botón CTA Primario:** Animación de escala sutil al pulsar.
 - **Enlace "Restaurar Compras" y Términos:** Cumple estrictamente con las políticas de Google Play Store y Apple App Store.

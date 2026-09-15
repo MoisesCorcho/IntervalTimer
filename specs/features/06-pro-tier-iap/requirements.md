@@ -8,7 +8,7 @@
 
 ## Resumen
 
-Capa de monetización freemium ética y de alto valor percibido para la aplicación, diseñada bajo la premisa innegociable de que **el loop básico de entrenamiento es sagrado y 100% gratuito**, mientras que se monetiza la conveniencia operativa (rutinas creadas ilimitadas, notas de sesión, pantalla de bloqueo), el confort auditivo (atenuación de música/ducking, catálogo extendido de SFX) y la personalización estética profunda (paleta curada de acentos, selector de colores de fase con mockup interactivo).
+Capa de monetización freemium ética y de alto valor percibido para la aplicación, diseñada bajo la premisa innegociable de que **el loop básico de entrenamiento es sagrado y 100% gratuito**, mientras que se monetiza la conveniencia operativa (rutinas creadas ilimitadas más allá de 3), el seguimiento biométrico avanzado (historial ilimitado y registro de medidas corporales en F15), el catálogo extendido de efectos de sonido deportivos (SFX de alta fidelidad en F36) y la personalización estética profunda (selector de colores de fase con mockup interactivo).
 
 La arquitectura implementa el patrón **Ports & Adapters**, desacoplando el dominio y la presentación de los servicios de facturación mediante una interfaz abstracta (`BillingRepository`), respaldada inicialmente por un adaptador simulado (`FakeBillingDriver`) con switch de depuración para validar inmediatamente la experiencia visual Free vs. Pro y simplificar los tests automatizados sin requerir cuentas de Google Play Console en desarrollo.
 
@@ -22,9 +22,10 @@ La arquitectura implementa el patrón **Ports & Adapters**, desacoplando el domi
 ## Dependencias blandas e integraciones
 
 - **F32 - Constructor de Entrenamientos por Ejercicios:** Compuerta de límite de 3 rutinas propias para usuarios Free.
-- **F17 - Integración de Música / Audio Ducking:** Habilitación de atenuación inteligente en capa Pro.
-- **F36 - Efectos de Sonido del Temporizador (SFX):** Desbloqueo del catálogo ampliado de clips deportivos.
-- **F04 - Calendario e Historial de Sesiones:** Habilitación de creación y edición de notas de entrenamiento en Pro.
+- **F15 - Registro de Peso y Medidas Corporales:** Límite de 5 registros históricos y bloqueo de medidas corporales avanzadas (cintura, brazo, pierna) para Free.
+- **F36 - Efectos de Sonido del Temporizador (SFX):** Desbloqueo del catálogo ampliado de clips deportivos (Gong, Campana, Silbato).
+- **F17 - Integración de Música / Audio Ducking:** Funcionalidad de confort auditivo esencial 100% libre para todos los usuarios.
+- **F04 - Calendario e Historial de Sesiones:** Creación y edición de notas post-entreno 100% libres para preservar la retención del atleta.
 
 ## Postrequisitos (features que dependen de esta)
 
@@ -77,7 +78,7 @@ CUANDO presiona el botón para agregar una nueva rutina o duplicar una existente
 EL SISTEMA DEBE bloquear la creación y abrir inmediatamente la pantalla modal de suscripción (`PaywallModalScreen`).
 
 #### R4 — Señalización visual con `ProBadge`
-DONDE cualquier componente de interfaz incluye características exclusivas de Pro (ej. colores de fase personalizados, paleta de 8 acentos, audio ducking, clips de audio deportivo),  
+DONDE cualquier componente de interfaz incluye características exclusivas de Pro (ej. colores de fase personalizados, clips de audio deportivo no predeterminados, campos de medidas corporales avanzadas),  
 CUANDO el usuario tiene el estado `isPro == false`,  
 EL SISTEMA DEBE renderizar un badge visual `ProBadge` sutil en color ámbar/dorado con icono de candado o corona.
 
@@ -86,7 +87,13 @@ DONDE el usuario pulsa un componente Pro o el botón de upgrade en Ajustes,
 CUANDO se despliega `PaywallModalScreen`,  
 EL SISTEMA DEBE mostrar:
 1. Encabezado premium con medalla o corona animada y título de valor aspiracional.
-2. Carrusel/lista de 5 beneficios clave (Rutinas ilimitadas, Cero publicidad, Audio Ducking, Paleta completa y Notas de sesión).
+2. Lista estructurada de los 6 beneficios clave reales:
+   - Rutinas ilimitadas (más allá del límite de 3 rutinas propias).
+   - Seguimiento corporal completo (historial de peso y registro de medidas de cintura, brazo y pierna).
+   - Cero publicidad intersticial.
+   - Efectos de sonido deportivos de alta fidelidad (catálogo de clips SFX: campana, gong, silbato).
+   - Colores de fase personalizables con mockup interactivo en tiempo real.
+   - Apoyo directo al desarrollo independiente.
 3. Selector de planes de compra: Mensual, Anual con 7 días de prueba (destacada como 'Mejor valor') y Pago Único de por vida (Lifetime).
 4. Botón de acción primario ("Probar 7 días gratis" o "Comenzar Pro").
 5. Enlace visible para "Restaurar compras".
@@ -108,15 +115,15 @@ DONDE el usuario navega a la selección de acento o colores de fase (`PhaseColor
 CUANDO `isPro == false`,  
 EL SISTEMA DEBE permitir visualizar la vista previa interactiva en el mockup de teléfono, pero bloquear la persistencia con un llamado a `PaywallModalScreen` si selecciona un color Pro.
 
-#### R9 — Restricción y desbloqueo de audio avanzado
-DONDE el usuario navega a Ajustes de audio,  
-CUANDO `isPro == false`,  
-EL SISTEMA DEBE deshabilitar el switch de Music Ducking y el selector de clips SFX deportivos, mostrando el badge Pro y abriendo el paywall al intentar activarlos.
+#### R9 — Restricción y desbloqueo de clips SFX deportivos
+DONDE el usuario navega a Ajustes de efectos de sonido (`SoundEffectsSettingsSection`) y abre el selector de clips de audio (`_openPicker`),  
+CUANDO el clip seleccionado es un sonido deportivo Pro (no predeterminado) y el usuario tiene el estado `isPro == false`,  
+EL SISTEMA DEBE mostrar el distintivo `ProBadge` junto al clip y desplegar `PaywallModalScreen` al intentar seleccionarlo, manteniendo el clip por defecto y la función de Music Ducking 100% gratuitos y accesibles para todos los usuarios.
 
-#### R10 — Restricción y desbloqueo de notas en calendario
-DONDE el usuario consulta el detalle de una sesión en el historial (`calendar_history`),  
-CUANDO `isPro == false`,  
-EL SISTEMA DEBE permitir leer notas existentes pero requerir Pro para crear o editar nuevas anotaciones de sesión.
+#### R10 — Restricción y desbloqueo de seguimiento corporal (Body Tracking)
+DONDE el usuario interactúa con el módulo de registro corporal (F15),  
+CUANDO el usuario tiene el estado `isPro == false`,  
+EL SISTEMA DEBE permitir registrar y consultar el peso corporal libremente con hasta 5 registros históricos visibles (`kFreeBodyMeasurementsLimit = 5`), pero requerir Pro (abriendo `PaywallModalScreen`) para registrar medidas avanzadas (cintura, brazo, pierna) y visualizar el historial completo previo, manteniendo las notas de sesión en calendario 100% libres.
 
 ---
 
@@ -187,7 +194,8 @@ EL SISTEMA DEBE:
 | **Presets (F03) ✕ Límite Free (F32) ✕ Paywall (F06)** | Usuario Free con 3 rutinas abre un preset en `/presets` y pulsa "Duplicar a Mis Rutinas". | Bloqueo preventivo a nivel de controlador; abre `PaywallModalScreen` antes de invocar la copia en Drift. |
 | **Acciones de Rutina ✕ Límite Free ✕ Quick Tap** | Usuario Free con 2 rutinas pulsa rápidamente 2 veces "Duplicar" en el menú de tarjeta. | Mutex en repositorio: la 1ra copia pasa (total: 3); la 2da falla con compuerta de límite y abre Paywall. |
 | **Downgrade Pro→Free ✕ Ejecución (F01) ✕ Workouts (F32)** | Usuario Pro con 8 rutinas cancela suscripción. Abre una rutina creada cuando era Pro. | Ejecución perfecta del timer sin bloqueos; el límite solo prohíbe crear la 9na rutina. |
-| **Audio Ducking (F17) ✕ Timer Activo (F01) ✕ Sheet Rápido** | Usuario Free abre `TimerAudioControlsSheet` durante el ejercicio y toca el toggle Ducking. | El switch permanece inactivo, muestra `ProBadge` y pospone la apertura del paywall para no interrumpir el set. |
+| **Clips SFX (F36) ✕ Ajustes de Sonido ✕ Selector** | Usuario Free selecciona un sonido deportivo Pro (Gong, Silbato) en Ajustes de SFX. | Muestra `ProBadge`, abre `PaywallModalScreen` preventivamente y no persiste la selección bloqueada. |
+| **Body Tracking (F15) ✕ Límite Free ✕ SQLite** | Usuario Free registra peso y medidas. Posee más de 5 registros previos en base de datos. | Permite registrar peso corporal libremente; oculta medidas avanzadas e historial > 5 con opción a desbloquear Pro. |
 | **Backup Import (F29) ✕ Límite Free (F06) ✕ SQLite** | Usuario Free restaura un backup JSON que contiene 6 rutinas creadas en otro equipo. | Se restauran las 6 rutinas (datos sagrados), pero la UI bloquea nuevas creaciones ("6 / 3 rutinas"). |
 | **Offline Mode ✕ Compra previa ✕ Reinicio de App** | Usuario Pro viaja en avión sin internet durante 15 días y reinicia la app repetidamente. | El flag `is_pro_user` en SQLite persiste intacto y la app mantiene todas las funciones Pro activas. |
 

@@ -14,8 +14,8 @@
 - [x] Bloqueo de condiciones de carrera mediante mutex/debounce en guardado y duplicación atómica.
 - [x] Política de downgrade verificada: rutinas previas preservadas y ejecutables, creación bloqueada mientras count ≥ 3.
 - [x] Fallback seguro no destructivo en personalizaciones cosméticas de fases y acentos.
-- [x] Componente visual `ProBadge` elegante y uniforme integrado en selectores de colores, audio ducking y notas.
-- [x] Modal inmersivo `PaywallModalScreen` con estética del Design System, carrusel de beneficios, planes de precios y restauración.
+- [x] Componente visual `ProBadge` elegante y uniforme integrado en selectores de colores, clips SFX deportivos y campos de medidas corporales.
+- [x] Modal inmersivo `PaywallModalScreen` con estética del Design System, lista de 6 beneficios, planes de precios y restauración.
 - [x] Persistencia atómica de `is_pro_user` en Drift SQLite con soporte offline 100% resiliente.
 - [x] Suite completa de pruebas unitarias, de aplicación y de widgets ejecutada en verde (`flutter test`).
 - [x] Cero regresiones en los 445 tests existentes del proyecto.
@@ -49,13 +49,13 @@
 - [x] Desarrollar `ProBadge`: chip/insignia reutilizable con estilo ámbar/dorado metálico, ocultable automáticamente para usuarios Pro. _(cubre R4)_
 - [x] Desarrollar `PaywallModalScreen`:
   - [x] Encabezado con corona o llama dorada procedural y micro-animación de entrada. _(cubre R5)_
-  - [x] Carrusel/lista visual de los 5 beneficios clave con iconos vectoriales. _(cubre R5)_
+  - [x] Lista visual de los 6 beneficios clave con iconos vectoriales y textos traducidos. _(cubre R5)_
   - [x] Selector interactivo de tarjetas de planes (Mensual, Anual con etiqueta 'Ahorra 50%', Lifetime). _(cubre R5, R6)_
   - [x] Botón CTA primario prominente con micro-interacción háptica (`mediumImpact`). _(cubre R5, R6)_
   - [x] Enlace accesible a "Restaurar compras" y textos legales de suscripción. _(cubre R5, R7, R12)_
 - [x] Integrar compuerta en `MyWorkoutsScreen`: mostrar contador `"X / 3 rutinas gratuitas"` y gatillar `PaywallModalScreen` al intentar crear una 4ta rutina en Free. _(cubre R2, R3)_
 - [x] Integrar compuerta en `PresetDetailScreen`: botón duplicar gatilla Paywall si se alcanzó el límite. _(cubre R15)_
-- [x] Integrar `ProBadge` en `PhaseColorPickerSheet`/`Screen`, `TimerAudioControlsSheet` (ducking) y notas de `HistoryScreen`. _(cubre R4, R8, R9, R10)_
+- [x] Integrar `ProBadge` en `PhaseColorPickerSheet`/`Screen`, selector de clips SFX (`SoundEffectsSettingsSection`) y campos de medidas corporales en `BodyMeasurementForm`. _(cubre R4, R8, R9, R10)_
 - [x] Agregar tarjeta de depuración en `SettingsScreen` (solo en debug/profile) con `SwitchListTile` para alternar usuario Free/Pro en vivo. _(cubre R14)_
 - [x] Implementar `ProStatusModalSheet` con resumen de beneficios desbloqueados, enlace de gestión en tiendas y blindar `PaywallModalScreen` ante `isPro == true`. _(cubre R19)_
 
@@ -86,8 +86,8 @@
 | **R6** | Desbloqueo reactivo inmediato tras compra | 2.1, 2.2, 3.2, 3.8, 4.2, 5.7 |
 | **R7** | Restauración de compras previas con éxito | 2.2, 3.2, 3.8, 4.2 |
 | **R8** | Bloqueo de personalización estética Pro | 4.5 |
-| **R9** | Bloqueo de audio avanzado (ducking y clips SFX) | 4.5 |
-| **R10** | Bloqueo de notas en calendario en Free | 4.5 |
+| **R9** | Bloqueo de clips SFX deportivos (ducking 100% libre) | 4.5 |
+| **R10** | Bloqueo de medidas corporales avanzadas e hist. > 5 (notas 100% libres) | 4.5 |
 | **R11** | Manejo de compra cancelada o fallida con mensaje | 2.1, 2.3, 3.8, 5.8 |
 | **R12** | Restauración sin compras activas | 2.3, 3.8, 4.2 |
 | **R13** | Funcionamiento y resiliencia offline | 1.1, 1.2 |
