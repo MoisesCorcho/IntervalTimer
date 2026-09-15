@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/app_localizations.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/settings/presentation/phase_color_picker_screen.dart';
@@ -215,6 +216,12 @@ void main() {
       await tester.ensureVisible(find.byKey(const Key('save_color_button')));
       await tester.pump();
       await tester.tap(find.byKey(const Key('save_color_button')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.byType(BenefitUnlockDialog), findsOneWidget);
+
+      await tester.tap(find.text('Desbloquear con Pro'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
 

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
 import 'package:interval_timer/features/pro_tier/data/billing_repository.dart';
 import 'package:interval_timer/features/pro_tier/data/fake_billing_driver.dart';
 import 'package:interval_timer/features/pro_tier/data/revenue_cat_billing_driver.dart';
@@ -55,6 +57,9 @@ final canCreateWorkoutProvider = Provider<bool>((ref) {
   final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
   if (isPro) return true;
 
+  final hasExtraSlot = ref.watch(isBenefitUnlockedProvider(RewardedBenefit.extraWorkoutSlot));
+  final limit = hasExtraSlot ? (freeWorkoutsLimit + 1) : freeWorkoutsLimit;
+
   final count = ref.watch(customWorkoutsCountProvider);
-  return count < freeWorkoutsLimit;
+  return count < limit;
 });

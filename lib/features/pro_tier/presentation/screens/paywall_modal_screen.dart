@@ -7,6 +7,8 @@ import 'package:interval_timer/features/pro_tier/application/paywall_controller.
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/domain/product_package.dart';
 import 'package:interval_timer/features/pro_tier/domain/purchase_result.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/pro_status_modal_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/app_snack_bar.dart';
@@ -240,6 +242,27 @@ class _PaywallModalScreenState extends ConsumerState<PaywallModalScreen> {
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
+                  ),
+                ),
+              ),
+
+              // F37 Rewarded Ad alternative option
+              Center(
+                child: TextButton.icon(
+                  key: const Key('paywall_rewarded_ad_button'),
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          Navigator.of(context).pop();
+                          BenefitUnlockDialog.show(
+                            context: context,
+                            benefit: RewardedBenefit.extraWorkoutSlot,
+                          );
+                        },
+                  icon: const Icon(Icons.play_circle_outline, size: 16),
+                  label: const Text(
+                    'O probá 24 horas viendo un anuncio',
+                    style: TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

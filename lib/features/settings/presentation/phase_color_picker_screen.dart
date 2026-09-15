@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/contrast_text_color.dart';
-import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
-import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/countdown_ring.dart';
@@ -439,15 +440,20 @@ class _PhaseColorPickerScreenState extends ConsumerState<PhaseColorPickerScreen>
                               child: AppPrimaryButton(
                                 key: const Key('save_color_button'),
                                 onPressed: () {
-                                  final isPro =
-                                      ref.read(isProUserProvider).valueOrNull ??
-                                          false;
-                                  if (!isPro &&
-                                      _selectedColor.toARGB32() !=
-                                          widget.defaultColor.toARGB32()) {
-                                    PaywallModalScreen.show(context);
-                                    return;
-                                  }
+                                   final isUnlocked = ref.read(
+                                     isBenefitUnlockedProvider(
+                                       RewardedBenefit.phaseColorsPass,
+                                     ),
+                                   );
+                                   if (!isUnlocked &&
+                                       _selectedColor.toARGB32() !=
+                                           widget.defaultColor.toARGB32()) {
+                                     BenefitUnlockDialog.show(
+                                       context: context,
+                                       benefit: RewardedBenefit.phaseColorsPass,
+                                     );
+                                     return;
+                                   }
                                   widget.onColorSelected(_selectedColor);
                                   Navigator.of(context).pop();
                                 },

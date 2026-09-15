@@ -21,7 +21,9 @@ import 'package:interval_timer/features/preset_routines/data/preset_catalog_repo
 import 'package:interval_timer/features/preset_routines/domain/models/enums.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/exercise.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/preset_hero_carousel.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workouts_list_controller.dart';
 import 'package:interval_timer/features/workout_builder/presentation/my_workouts_screen.dart';
@@ -344,6 +346,48 @@ void main() {
     // Only favorited workout is shown in custom workouts list
     expect(find.text('Favorited Workout'), findsWidgets);
     expect(find.text('Regular Workout'), findsNothing);
+  });
+
+  testWidgets('4th workout is locked with Archivada badge and tapping opens BenefitUnlockDialog', (tester) async {
+    final workouts = List.generate(
+      4,
+      (i) => Workout(
+        id: 'w-$i',
+        name: 'Workout $i',
+        createdAt: DateTime.utc(2026, 1, 1),
+        updatedAt: DateTime.utc(2026, 1, 1),
+        exercises: const [],
+      ),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
+          workoutsListProvider.overrideWith(() => _StaticWorkoutsList(workouts)),
+        ],
+        child: const MaterialApp(
+          home: MyWorkoutsScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Workouts 0, 1, 2 are free and active (no lock badge)
+    expect(find.byKey(const Key('workout_locked_badge_w-0')), findsNothing);
+    expect(find.byKey(const Key('workout_locked_badge_w-1')), findsNothing);
+    expect(find.byKey(const Key('workout_locked_badge_w-2')), findsNothing);
+
+    // Workout 3 (4th workout) has Archivada badge and lock icon
+    expect(find.byKey(const Key('workout_locked_badge_w-3')), findsOneWidget);
+    expect(find.text('Archivada'), findsOneWidget);
+
+    // Tapping on the 4th workout opens BenefitUnlockDialog
+    await tester.tap(find.text('Workout 3'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BenefitUnlockDialog), findsOneWidget);
   });
 }
 

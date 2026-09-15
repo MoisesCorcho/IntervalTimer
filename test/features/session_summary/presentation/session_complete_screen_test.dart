@@ -14,6 +14,11 @@ import 'package:interval_timer/data/models/session_log_status.dart';
 import 'package:interval_timer/data/repositories/session_log_repository.dart';
 import 'package:interval_timer/features/calendar_history/application/calendar_history_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/data/repositories/preferences_repository.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/data/temporary_pass_repository.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
+import 'package:interval_timer/features/monetization/infrastructure/fake_ad_service.dart';
 import 'package:interval_timer/features/session_summary/application/session_summary_controller.dart';
 import 'package:interval_timer/features/session_summary/application/session_summary_providers.dart';
 import 'package:interval_timer/features/session_summary/domain/share_image_renderer.dart';
@@ -316,5 +321,232 @@ void main() {
       'Gran entreno!',
     );
     expect(find.byType(PaywallModalScreen), findsNothing);
+  });
+
+  testWidgets('tapping Listo triggers showInterstitialIfEligible when adFreePass is inactive', (tester) async {
+    final db = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    final repo = SessionLogRepository(db);
+    final prefs = PreferencesRepository(db);
+    final passRepo = TemporaryPassRepository(db, prefs);
+    final fakeAdService = FakeAdService(temporaryPassRepository: passRepo);
+
+    final routine = Routine(
+      id: 'r1',
+      name: 'Test HIIT',
+      createdAt: DateTime.utc(2026),
+      items: [
+        RoutineItem.interval(
+          Interval(
+            id: 'i1',
+            name: 'Trabajo',
+            durationSeconds: 5,
+            colorArgb: 0xFF4CAF50,
+            type: IntervalType.work,
+          ),
+        ),
+      ],
+    );
+
+    await repo.insert(
+      sourceId: 'r1',
+      displayName: 'Test HIIT',
+      endedAt: DateTime(2026, 7, 16, 12),
+      status: SessionLogStatus.completed,
+      totalDurationSeconds: 5,
+      itemCount: 1,
+    );
+
+    final container = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        sessionLogRepositoryProvider.overrideWithValue(repo),
+        adServiceProvider.overrideWithValue(fakeAdService),
+        sessionSummaryControllerProvider.overrideWith(
+          () => SessionSummaryController(
+            repository: repo,
+            shareDriver: FakeShareSheetDriver(),
+            imageRenderer: FakeShareImageRenderer(),
+            tempFileWriter: (bytes) async => XFile.fromData(
+              bytes,
+              mimeType: 'image/png',
+              name: 't.png',
+            ),
+            logResolveAttempts: 5,
+            logResolveDelay: Duration.zero,
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final timer = container.read(timerControllerProvider.notifier);
+    timer.bindRoutine(routine);
+    timer.start(prepSeconds: 0);
+    var guard = 0;
+    while (container.read(timerControllerProvider).status !=
+            TimerStatus.completed &&
+        guard < 10) {
+      timer.skipForward();
+      guard++;
+    }
+
+    await tester.binding.setSurfaceSize(const Size(800, 1400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final router = GoRouter(
+      initialLocation: '/completed',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: Text('Home')),
+        ),
+        GoRoute(
+          path: '/completed',
+          builder: (context, state) => const SessionCompleteScreen(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          routerConfig: router,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('es'),
+        ),
+      ),
+    );
+    await _pumpUntilSheet(tester);
+
+    final listoFinder = find.byKey(const Key('back_to_routine_button'));
+    expect(listoFinder, findsOneWidget);
+
+    expect(fakeAdService.interstitialShownCount, 0);
+
+    await tester.tap(listoFinder);
+    await tester.pumpAndSettle();
+
+    expect(fakeAdService.interstitialShownCount, 1);
+  });
+
+  testWidgets('tapping Listo bypasses interstitial when adFreePass is active', (tester) async {
+    final db = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    final repo = SessionLogRepository(db);
+    final prefs = PreferencesRepository(db);
+    final passRepo = TemporaryPassRepository(db, prefs);
+    final fakeAdService = FakeAdService(temporaryPassRepository: passRepo);
+
+    // Concedemos pase adFreePass activo
+    await passRepo.grantPass(
+      benefit: RewardedBenefit.adFreePass,
+      duration: const Duration(hours: 24),
+    );
+
+    final routine = Routine(
+      id: 'r1',
+      name: 'Test HIIT',
+      createdAt: DateTime.utc(2026),
+      items: [
+        RoutineItem.interval(
+          Interval(
+            id: 'i1',
+            name: 'Trabajo',
+            durationSeconds: 5,
+            colorArgb: 0xFF4CAF50,
+            type: IntervalType.work,
+          ),
+        ),
+      ],
+    );
+
+    await repo.insert(
+      sourceId: 'r1',
+      displayName: 'Test HIIT',
+      endedAt: DateTime(2026, 7, 16, 12),
+      status: SessionLogStatus.completed,
+      totalDurationSeconds: 5,
+      itemCount: 1,
+    );
+
+    final container = ProviderContainer(
+      overrides: [
+        databaseProvider.overrideWithValue(db),
+        sessionLogRepositoryProvider.overrideWithValue(repo),
+        temporaryPassRepositoryProvider.overrideWithValue(passRepo),
+        adServiceProvider.overrideWithValue(fakeAdService),
+        sessionSummaryControllerProvider.overrideWith(
+          () => SessionSummaryController(
+            repository: repo,
+            shareDriver: FakeShareSheetDriver(),
+            imageRenderer: FakeShareImageRenderer(),
+            tempFileWriter: (bytes) async => XFile.fromData(
+              bytes,
+              mimeType: 'image/png',
+              name: 't.png',
+            ),
+            logResolveAttempts: 5,
+            logResolveDelay: Duration.zero,
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    // Wait for the active passes stream to emit the initial state
+    await container.read(activeTemporaryPassesProvider.future);
+
+    final timer = container.read(timerControllerProvider.notifier);
+    timer.bindRoutine(routine);
+    timer.start(prepSeconds: 0);
+    var guard = 0;
+    while (container.read(timerControllerProvider).status !=
+            TimerStatus.completed &&
+        guard < 10) {
+      timer.skipForward();
+      guard++;
+    }
+
+    await tester.binding.setSurfaceSize(const Size(800, 1400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final router = GoRouter(
+      initialLocation: '/completed',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: Text('Home')),
+        ),
+        GoRoute(
+          path: '/completed',
+          builder: (context, state) => const SessionCompleteScreen(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          routerConfig: router,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('es'),
+        ),
+      ),
+    );
+    await _pumpUntilSheet(tester);
+
+    final listoFinder = find.byKey(const Key('back_to_routine_button'));
+    expect(listoFinder, findsOneWidget);
+
+    await tester.tap(listoFinder);
+    await tester.pumpAndSettle();
+
+    // Must NOT have shown interstitial because adFreePass is active
+    expect(fakeAdService.interstitialShownCount, 0);
   });
 }

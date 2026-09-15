@@ -3802,6 +3802,651 @@ class FavoriteRoutinesCompanion extends UpdateCompanion<FavoriteRoutineRow> {
   }
 }
 
+class $TemporaryPassesTable extends TemporaryPasses
+    with TableInfo<$TemporaryPassesTable, TemporaryPassRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TemporaryPassesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _benefitTypeMeta = const VerificationMeta(
+    'benefitType',
+  );
+  @override
+  late final GeneratedColumn<String> benefitType = GeneratedColumn<String>(
+    'benefit_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _grantedAtUtcMeta = const VerificationMeta(
+    'grantedAtUtc',
+  );
+  @override
+  late final GeneratedColumn<DateTime> grantedAtUtc = GeneratedColumn<DateTime>(
+    'granted_at_utc',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expiresAtUtcMeta = const VerificationMeta(
+    'expiresAtUtc',
+  );
+  @override
+  late final GeneratedColumn<DateTime> expiresAtUtc = GeneratedColumn<DateTime>(
+    'expires_at_utc',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('rewarded_ad'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    benefitType,
+    grantedAtUtc,
+    expiresAtUtc,
+    source,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'temporary_passes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TemporaryPassRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('benefit_type')) {
+      context.handle(
+        _benefitTypeMeta,
+        benefitType.isAcceptableOrUnknown(
+          data['benefit_type']!,
+          _benefitTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_benefitTypeMeta);
+    }
+    if (data.containsKey('granted_at_utc')) {
+      context.handle(
+        _grantedAtUtcMeta,
+        grantedAtUtc.isAcceptableOrUnknown(
+          data['granted_at_utc']!,
+          _grantedAtUtcMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_grantedAtUtcMeta);
+    }
+    if (data.containsKey('expires_at_utc')) {
+      context.handle(
+        _expiresAtUtcMeta,
+        expiresAtUtc.isAcceptableOrUnknown(
+          data['expires_at_utc']!,
+          _expiresAtUtcMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_expiresAtUtcMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TemporaryPassRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TemporaryPassRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      benefitType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}benefit_type'],
+      )!,
+      grantedAtUtc: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}granted_at_utc'],
+      )!,
+      expiresAtUtc: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}expires_at_utc'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+    );
+  }
+
+  @override
+  $TemporaryPassesTable createAlias(String alias) {
+    return $TemporaryPassesTable(attachedDatabase, alias);
+  }
+}
+
+class TemporaryPassRow extends DataClass
+    implements Insertable<TemporaryPassRow> {
+  final String id;
+  final String benefitType;
+  final DateTime grantedAtUtc;
+  final DateTime expiresAtUtc;
+  final String source;
+  const TemporaryPassRow({
+    required this.id,
+    required this.benefitType,
+    required this.grantedAtUtc,
+    required this.expiresAtUtc,
+    required this.source,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['benefit_type'] = Variable<String>(benefitType);
+    map['granted_at_utc'] = Variable<DateTime>(grantedAtUtc);
+    map['expires_at_utc'] = Variable<DateTime>(expiresAtUtc);
+    map['source'] = Variable<String>(source);
+    return map;
+  }
+
+  TemporaryPassesCompanion toCompanion(bool nullToAbsent) {
+    return TemporaryPassesCompanion(
+      id: Value(id),
+      benefitType: Value(benefitType),
+      grantedAtUtc: Value(grantedAtUtc),
+      expiresAtUtc: Value(expiresAtUtc),
+      source: Value(source),
+    );
+  }
+
+  factory TemporaryPassRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TemporaryPassRow(
+      id: serializer.fromJson<String>(json['id']),
+      benefitType: serializer.fromJson<String>(json['benefitType']),
+      grantedAtUtc: serializer.fromJson<DateTime>(json['grantedAtUtc']),
+      expiresAtUtc: serializer.fromJson<DateTime>(json['expiresAtUtc']),
+      source: serializer.fromJson<String>(json['source']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'benefitType': serializer.toJson<String>(benefitType),
+      'grantedAtUtc': serializer.toJson<DateTime>(grantedAtUtc),
+      'expiresAtUtc': serializer.toJson<DateTime>(expiresAtUtc),
+      'source': serializer.toJson<String>(source),
+    };
+  }
+
+  TemporaryPassRow copyWith({
+    String? id,
+    String? benefitType,
+    DateTime? grantedAtUtc,
+    DateTime? expiresAtUtc,
+    String? source,
+  }) => TemporaryPassRow(
+    id: id ?? this.id,
+    benefitType: benefitType ?? this.benefitType,
+    grantedAtUtc: grantedAtUtc ?? this.grantedAtUtc,
+    expiresAtUtc: expiresAtUtc ?? this.expiresAtUtc,
+    source: source ?? this.source,
+  );
+  TemporaryPassRow copyWithCompanion(TemporaryPassesCompanion data) {
+    return TemporaryPassRow(
+      id: data.id.present ? data.id.value : this.id,
+      benefitType: data.benefitType.present
+          ? data.benefitType.value
+          : this.benefitType,
+      grantedAtUtc: data.grantedAtUtc.present
+          ? data.grantedAtUtc.value
+          : this.grantedAtUtc,
+      expiresAtUtc: data.expiresAtUtc.present
+          ? data.expiresAtUtc.value
+          : this.expiresAtUtc,
+      source: data.source.present ? data.source.value : this.source,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TemporaryPassRow(')
+          ..write('id: $id, ')
+          ..write('benefitType: $benefitType, ')
+          ..write('grantedAtUtc: $grantedAtUtc, ')
+          ..write('expiresAtUtc: $expiresAtUtc, ')
+          ..write('source: $source')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, benefitType, grantedAtUtc, expiresAtUtc, source);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TemporaryPassRow &&
+          other.id == this.id &&
+          other.benefitType == this.benefitType &&
+          other.grantedAtUtc == this.grantedAtUtc &&
+          other.expiresAtUtc == this.expiresAtUtc &&
+          other.source == this.source);
+}
+
+class TemporaryPassesCompanion extends UpdateCompanion<TemporaryPassRow> {
+  final Value<String> id;
+  final Value<String> benefitType;
+  final Value<DateTime> grantedAtUtc;
+  final Value<DateTime> expiresAtUtc;
+  final Value<String> source;
+  final Value<int> rowid;
+  const TemporaryPassesCompanion({
+    this.id = const Value.absent(),
+    this.benefitType = const Value.absent(),
+    this.grantedAtUtc = const Value.absent(),
+    this.expiresAtUtc = const Value.absent(),
+    this.source = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TemporaryPassesCompanion.insert({
+    required String id,
+    required String benefitType,
+    required DateTime grantedAtUtc,
+    required DateTime expiresAtUtc,
+    this.source = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       benefitType = Value(benefitType),
+       grantedAtUtc = Value(grantedAtUtc),
+       expiresAtUtc = Value(expiresAtUtc);
+  static Insertable<TemporaryPassRow> custom({
+    Expression<String>? id,
+    Expression<String>? benefitType,
+    Expression<DateTime>? grantedAtUtc,
+    Expression<DateTime>? expiresAtUtc,
+    Expression<String>? source,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (benefitType != null) 'benefit_type': benefitType,
+      if (grantedAtUtc != null) 'granted_at_utc': grantedAtUtc,
+      if (expiresAtUtc != null) 'expires_at_utc': expiresAtUtc,
+      if (source != null) 'source': source,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TemporaryPassesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? benefitType,
+    Value<DateTime>? grantedAtUtc,
+    Value<DateTime>? expiresAtUtc,
+    Value<String>? source,
+    Value<int>? rowid,
+  }) {
+    return TemporaryPassesCompanion(
+      id: id ?? this.id,
+      benefitType: benefitType ?? this.benefitType,
+      grantedAtUtc: grantedAtUtc ?? this.grantedAtUtc,
+      expiresAtUtc: expiresAtUtc ?? this.expiresAtUtc,
+      source: source ?? this.source,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (benefitType.present) {
+      map['benefit_type'] = Variable<String>(benefitType.value);
+    }
+    if (grantedAtUtc.present) {
+      map['granted_at_utc'] = Variable<DateTime>(grantedAtUtc.value);
+    }
+    if (expiresAtUtc.present) {
+      map['expires_at_utc'] = Variable<DateTime>(expiresAtUtc.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TemporaryPassesCompanion(')
+          ..write('id: $id, ')
+          ..write('benefitType: $benefitType, ')
+          ..write('grantedAtUtc: $grantedAtUtc, ')
+          ..write('expiresAtUtc: $expiresAtUtc, ')
+          ..write('source: $source, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AdMetadataTable extends AdMetadata
+    with TableInfo<$AdMetadataTable, AdMetadataRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AdMetadataTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtUtcMeta = const VerificationMeta(
+    'updatedAtUtc',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAtUtc = GeneratedColumn<DateTime>(
+    'updated_at_utc',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [key, value, updatedAtUtc];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ad_metadata';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AdMetadataRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('updated_at_utc')) {
+      context.handle(
+        _updatedAtUtcMeta,
+        updatedAtUtc.isAcceptableOrUnknown(
+          data['updated_at_utc']!,
+          _updatedAtUtcMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtUtcMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  AdMetadataRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AdMetadataRow(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+      updatedAtUtc: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at_utc'],
+      )!,
+    );
+  }
+
+  @override
+  $AdMetadataTable createAlias(String alias) {
+    return $AdMetadataTable(attachedDatabase, alias);
+  }
+}
+
+class AdMetadataRow extends DataClass implements Insertable<AdMetadataRow> {
+  final String key;
+  final String value;
+  final DateTime updatedAtUtc;
+  const AdMetadataRow({
+    required this.key,
+    required this.value,
+    required this.updatedAtUtc,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['value'] = Variable<String>(value);
+    map['updated_at_utc'] = Variable<DateTime>(updatedAtUtc);
+    return map;
+  }
+
+  AdMetadataCompanion toCompanion(bool nullToAbsent) {
+    return AdMetadataCompanion(
+      key: Value(key),
+      value: Value(value),
+      updatedAtUtc: Value(updatedAtUtc),
+    );
+  }
+
+  factory AdMetadataRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AdMetadataRow(
+      key: serializer.fromJson<String>(json['key']),
+      value: serializer.fromJson<String>(json['value']),
+      updatedAtUtc: serializer.fromJson<DateTime>(json['updatedAtUtc']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'value': serializer.toJson<String>(value),
+      'updatedAtUtc': serializer.toJson<DateTime>(updatedAtUtc),
+    };
+  }
+
+  AdMetadataRow copyWith({
+    String? key,
+    String? value,
+    DateTime? updatedAtUtc,
+  }) => AdMetadataRow(
+    key: key ?? this.key,
+    value: value ?? this.value,
+    updatedAtUtc: updatedAtUtc ?? this.updatedAtUtc,
+  );
+  AdMetadataRow copyWithCompanion(AdMetadataCompanion data) {
+    return AdMetadataRow(
+      key: data.key.present ? data.key.value : this.key,
+      value: data.value.present ? data.value.value : this.value,
+      updatedAtUtc: data.updatedAtUtc.present
+          ? data.updatedAtUtc.value
+          : this.updatedAtUtc,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AdMetadataRow(')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
+          ..write('updatedAtUtc: $updatedAtUtc')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(key, value, updatedAtUtc);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AdMetadataRow &&
+          other.key == this.key &&
+          other.value == this.value &&
+          other.updatedAtUtc == this.updatedAtUtc);
+}
+
+class AdMetadataCompanion extends UpdateCompanion<AdMetadataRow> {
+  final Value<String> key;
+  final Value<String> value;
+  final Value<DateTime> updatedAtUtc;
+  final Value<int> rowid;
+  const AdMetadataCompanion({
+    this.key = const Value.absent(),
+    this.value = const Value.absent(),
+    this.updatedAtUtc = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AdMetadataCompanion.insert({
+    required String key,
+    required String value,
+    required DateTime updatedAtUtc,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       value = Value(value),
+       updatedAtUtc = Value(updatedAtUtc);
+  static Insertable<AdMetadataRow> custom({
+    Expression<String>? key,
+    Expression<String>? value,
+    Expression<DateTime>? updatedAtUtc,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (value != null) 'value': value,
+      if (updatedAtUtc != null) 'updated_at_utc': updatedAtUtc,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AdMetadataCompanion copyWith({
+    Value<String>? key,
+    Value<String>? value,
+    Value<DateTime>? updatedAtUtc,
+    Value<int>? rowid,
+  }) {
+    return AdMetadataCompanion(
+      key: key ?? this.key,
+      value: value ?? this.value,
+      updatedAtUtc: updatedAtUtc ?? this.updatedAtUtc,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (updatedAtUtc.present) {
+      map['updated_at_utc'] = Variable<DateTime>(updatedAtUtc.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AdMetadataCompanion(')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
+          ..write('updatedAtUtc: $updatedAtUtc, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3822,6 +4467,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FavoriteRoutinesTable favoriteRoutines = $FavoriteRoutinesTable(
     this,
   );
+  late final $TemporaryPassesTable temporaryPasses = $TemporaryPassesTable(
+    this,
+  );
+  late final $AdMetadataTable adMetadata = $AdMetadataTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3837,6 +4486,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     bodyMeasurements,
     unlockedAchievements,
     favoriteRoutines,
+    temporaryPasses,
+    adMetadata,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -6592,6 +7243,382 @@ typedef $$FavoriteRoutinesTableProcessedTableManager =
       FavoriteRoutineRow,
       PrefetchHooks Function()
     >;
+typedef $$TemporaryPassesTableCreateCompanionBuilder =
+    TemporaryPassesCompanion Function({
+      required String id,
+      required String benefitType,
+      required DateTime grantedAtUtc,
+      required DateTime expiresAtUtc,
+      Value<String> source,
+      Value<int> rowid,
+    });
+typedef $$TemporaryPassesTableUpdateCompanionBuilder =
+    TemporaryPassesCompanion Function({
+      Value<String> id,
+      Value<String> benefitType,
+      Value<DateTime> grantedAtUtc,
+      Value<DateTime> expiresAtUtc,
+      Value<String> source,
+      Value<int> rowid,
+    });
+
+class $$TemporaryPassesTableFilterComposer
+    extends Composer<_$AppDatabase, $TemporaryPassesTable> {
+  $$TemporaryPassesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get benefitType => $composableBuilder(
+    column: $table.benefitType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get grantedAtUtc => $composableBuilder(
+    column: $table.grantedAtUtc,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get expiresAtUtc => $composableBuilder(
+    column: $table.expiresAtUtc,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TemporaryPassesTableOrderingComposer
+    extends Composer<_$AppDatabase, $TemporaryPassesTable> {
+  $$TemporaryPassesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get benefitType => $composableBuilder(
+    column: $table.benefitType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get grantedAtUtc => $composableBuilder(
+    column: $table.grantedAtUtc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get expiresAtUtc => $composableBuilder(
+    column: $table.expiresAtUtc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TemporaryPassesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TemporaryPassesTable> {
+  $$TemporaryPassesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get benefitType => $composableBuilder(
+    column: $table.benefitType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get grantedAtUtc => $composableBuilder(
+    column: $table.grantedAtUtc,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get expiresAtUtc => $composableBuilder(
+    column: $table.expiresAtUtc,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+}
+
+class $$TemporaryPassesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TemporaryPassesTable,
+          TemporaryPassRow,
+          $$TemporaryPassesTableFilterComposer,
+          $$TemporaryPassesTableOrderingComposer,
+          $$TemporaryPassesTableAnnotationComposer,
+          $$TemporaryPassesTableCreateCompanionBuilder,
+          $$TemporaryPassesTableUpdateCompanionBuilder,
+          (
+            TemporaryPassRow,
+            BaseReferences<
+              _$AppDatabase,
+              $TemporaryPassesTable,
+              TemporaryPassRow
+            >,
+          ),
+          TemporaryPassRow,
+          PrefetchHooks Function()
+        > {
+  $$TemporaryPassesTableTableManager(
+    _$AppDatabase db,
+    $TemporaryPassesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TemporaryPassesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TemporaryPassesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TemporaryPassesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> benefitType = const Value.absent(),
+                Value<DateTime> grantedAtUtc = const Value.absent(),
+                Value<DateTime> expiresAtUtc = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TemporaryPassesCompanion(
+                id: id,
+                benefitType: benefitType,
+                grantedAtUtc: grantedAtUtc,
+                expiresAtUtc: expiresAtUtc,
+                source: source,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String benefitType,
+                required DateTime grantedAtUtc,
+                required DateTime expiresAtUtc,
+                Value<String> source = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TemporaryPassesCompanion.insert(
+                id: id,
+                benefitType: benefitType,
+                grantedAtUtc: grantedAtUtc,
+                expiresAtUtc: expiresAtUtc,
+                source: source,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TemporaryPassesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TemporaryPassesTable,
+      TemporaryPassRow,
+      $$TemporaryPassesTableFilterComposer,
+      $$TemporaryPassesTableOrderingComposer,
+      $$TemporaryPassesTableAnnotationComposer,
+      $$TemporaryPassesTableCreateCompanionBuilder,
+      $$TemporaryPassesTableUpdateCompanionBuilder,
+      (
+        TemporaryPassRow,
+        BaseReferences<_$AppDatabase, $TemporaryPassesTable, TemporaryPassRow>,
+      ),
+      TemporaryPassRow,
+      PrefetchHooks Function()
+    >;
+typedef $$AdMetadataTableCreateCompanionBuilder =
+    AdMetadataCompanion Function({
+      required String key,
+      required String value,
+      required DateTime updatedAtUtc,
+      Value<int> rowid,
+    });
+typedef $$AdMetadataTableUpdateCompanionBuilder =
+    AdMetadataCompanion Function({
+      Value<String> key,
+      Value<String> value,
+      Value<DateTime> updatedAtUtc,
+      Value<int> rowid,
+    });
+
+class $$AdMetadataTableFilterComposer
+    extends Composer<_$AppDatabase, $AdMetadataTable> {
+  $$AdMetadataTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAtUtc => $composableBuilder(
+    column: $table.updatedAtUtc,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AdMetadataTableOrderingComposer
+    extends Composer<_$AppDatabase, $AdMetadataTable> {
+  $$AdMetadataTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAtUtc => $composableBuilder(
+    column: $table.updatedAtUtc,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AdMetadataTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AdMetadataTable> {
+  $$AdMetadataTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAtUtc => $composableBuilder(
+    column: $table.updatedAtUtc,
+    builder: (column) => column,
+  );
+}
+
+class $$AdMetadataTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AdMetadataTable,
+          AdMetadataRow,
+          $$AdMetadataTableFilterComposer,
+          $$AdMetadataTableOrderingComposer,
+          $$AdMetadataTableAnnotationComposer,
+          $$AdMetadataTableCreateCompanionBuilder,
+          $$AdMetadataTableUpdateCompanionBuilder,
+          (
+            AdMetadataRow,
+            BaseReferences<_$AppDatabase, $AdMetadataTable, AdMetadataRow>,
+          ),
+          AdMetadataRow,
+          PrefetchHooks Function()
+        > {
+  $$AdMetadataTableTableManager(_$AppDatabase db, $AdMetadataTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AdMetadataTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AdMetadataTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AdMetadataTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<DateTime> updatedAtUtc = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AdMetadataCompanion(
+                key: key,
+                value: value,
+                updatedAtUtc: updatedAtUtc,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required String value,
+                required DateTime updatedAtUtc,
+                Value<int> rowid = const Value.absent(),
+              }) => AdMetadataCompanion.insert(
+                key: key,
+                value: value,
+                updatedAtUtc: updatedAtUtc,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AdMetadataTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AdMetadataTable,
+      AdMetadataRow,
+      $$AdMetadataTableFilterComposer,
+      $$AdMetadataTableOrderingComposer,
+      $$AdMetadataTableAnnotationComposer,
+      $$AdMetadataTableCreateCompanionBuilder,
+      $$AdMetadataTableUpdateCompanionBuilder,
+      (
+        AdMetadataRow,
+        BaseReferences<_$AppDatabase, $AdMetadataTable, AdMetadataRow>,
+      ),
+      AdMetadataRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6616,4 +7643,8 @@ class $AppDatabaseManager {
       $$UnlockedAchievementsTableTableManager(_db, _db.unlockedAchievements);
   $$FavoriteRoutinesTableTableManager get favoriteRoutines =>
       $$FavoriteRoutinesTableTableManager(_db, _db.favoriteRoutines);
+  $$TemporaryPassesTableTableManager get temporaryPasses =>
+      $$TemporaryPassesTableTableManager(_db, _db.temporaryPasses);
+  $$AdMetadataTableTableManager get adMetadata =>
+      $$AdMetadataTableTableManager(_db, _db.adMetadata);
 }

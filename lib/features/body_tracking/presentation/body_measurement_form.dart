@@ -7,6 +7,9 @@ import 'package:interval_timer/core/utils/local_date_format.dart';
 import 'package:interval_timer/features/body_tracking/application/body_tracking_providers.dart';
 import 'package:interval_timer/features/body_tracking/domain/body_measurement.dart';
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
@@ -189,7 +192,7 @@ class _BodyMeasurementFormSheetState
 
   @override
   Widget build(BuildContext context) {
-    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
+    final isPro = ref.watch(isBenefitUnlockedProvider(RewardedBenefit.bodyTrackingPass));
     final unit = ref.watch(bodyWeightUnitProvider).valueOrNull ??
         BodyWeightUnit.kg;
     final unitLabel = unit == BodyWeightUnit.kg
@@ -265,7 +268,10 @@ class _BodyMeasurementFormSheetState
                   ],
                 ),
                 trailing: const Icon(Icons.expand_more),
-                onTap: () => PaywallModalScreen.show(context),
+                onTap: () => BenefitUnlockDialog.show(
+                  context: context,
+                  benefit: RewardedBenefit.bodyTrackingPass,
+                ),
               )
             else
               ExpansionTile(

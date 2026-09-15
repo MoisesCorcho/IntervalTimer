@@ -6,6 +6,7 @@ import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/body_measurement_repository.dart';
 import 'package:interval_timer/features/body_tracking/application/body_tracking_providers.dart';
 import 'package:interval_timer/features/body_tracking/presentation/body_measurement_form.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
@@ -71,8 +72,14 @@ void main() {
       findsOneWidget,
     );
 
-    // Tapping the tile opens PaywallModalScreen
+    // Tapping the tile opens BenefitUnlockDialog
     await tester.tap(measuresTile);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BenefitUnlockDialog), findsOneWidget);
+
+    // Tapping "Desbloquear con Pro" opens PaywallModalScreen
+    await tester.tap(find.text('Desbloquear con Pro'));
     await tester.pumpAndSettle();
 
     expect(find.byType(PaywallModalScreen), findsOneWidget);
