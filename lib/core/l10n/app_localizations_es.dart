@@ -9,7 +9,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Interval Timer';
+  String get appTitle => 'Repulse';
 
   @override
   String get appTagline => 'Tu asistente de entrenamiento';
@@ -1193,7 +1193,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proBadgeTooltip => 'Función Pro';
 
   @override
-  String get proUpgradeTitle => 'Desbloquea Interval Timer Pro';
+  String get proTierSectionTitle => 'Repulse Pro';
+
+  @override
+  String get proUpgradeTitle => 'Desbloquea Repulse Pro';
 
   @override
   String get proUpgradeSubtitle =>
@@ -1274,7 +1277,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proRestorePurchases => 'Restaurar compras';
 
   @override
-  String get proPurchaseSuccess => '¡Bienvenido a Interval Timer Pro!';
+  String get proPurchaseSuccess => '¡Bienvenido a Repulse Pro!';
 
   @override
   String get proRestoreSuccess => '¡Compras restauradas con éxito!';
@@ -1300,7 +1303,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Alterna instantáneamente entre Free y Pro en memoria sin vinculación a la tienda.';
 
   @override
-  String get proAvailableWithPro => 'Disponible con Interval Timer Pro';
+  String get proAvailableWithPro => 'Disponible con Repulse Pro';
 
   @override
   String bodyWeightHistoryProLocked(int count) {

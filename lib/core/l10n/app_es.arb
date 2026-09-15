@@ -1,6 +1,6 @@
 {
   "@@locale": "es",
-  "appTitle": "Interval Timer",
+  "appTitle": "Repulse",
   "appTagline": "Tu asistente de entrenamiento",
 
   "languageLabel": "Idioma",
@@ -378,7 +378,8 @@
   "saveColor": "Guardar",
   "proBadge": "PRO",
   "proBadgeTooltip": "Función Pro",
-  "proUpgradeTitle": "Desbloquea Interval Timer Pro",
+  "proTierSectionTitle": "Repulse Pro",
+  "proUpgradeTitle": "Desbloquea Repulse Pro",
   "proUpgradeSubtitle": "Lleva tus entrenamientos al máximo nivel sin límites ni interrupciones.",
   "proBenefitUnlimitedWorkoutsTitle": "Rutinas personalizadas ilimitadas",
   "proBenefitUnlimitedWorkoutsDesc": "Rompe el límite de 3 rutinas y guarda todos tus programas de entrenamiento.",
@@ -394,14 +395,25 @@
   "proBenefitBodyTrackingTitle": "Seguimiento corporal completo",
   "proBenefitBodyTrackingDesc": "Registra medidas corporales y accede a todo tu historial de peso sin límites.",
   "proFreeWorkoutsCounter": "{count} de {limit} rutinas gratuitas",
+  "@proFreeWorkoutsCounter": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
   "proUnlimitedWorkoutsCounter": "Rutinas ilimitadas (Pro)",
   "proBestValue": "MEJOR VALOR",
   "proSavePercent": "Ahorra {percent}%",
+  "@proSavePercent": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
   "proStartFreeTrial": "COMENZAR 7 DÍAS GRATIS",
   "proUnlockLifetime": "DESBLOQUEAR ACCESO DE POR VIDA",
   "proSubscribe": "DESBLOQUEAR PRO",
   "proRestorePurchases": "Restaurar compras",
-  "proPurchaseSuccess": "¡Bienvenido a Interval Timer Pro!",
+  "proPurchaseSuccess": "¡Bienvenido a Repulse Pro!",
   "proRestoreSuccess": "¡Compras restauradas con éxito!",
   "proLegalNotice": "El pago se cargará a tu cuenta de la tienda. La suscripción se renovará automáticamente a menos que se cancele al menos 24 horas antes del final del período actual.",
   "proTerms": "Términos de servicio",
@@ -409,7 +421,7 @@
   "proDevSectionTitle": "Opciones de Desarrollador (Pro Tier)",
   "proDevToggleLabel": "Simular usuario Pro (Mock)",
   "proDevToggleDesc": "Alterna instantáneamente entre Free y Pro en memoria sin vinculación a la tienda.",
-  "proAvailableWithPro": "Disponible con Interval Timer Pro",
+  "proAvailableWithPro": "Disponible con Repulse Pro",
   "bodyWeightHistoryProLocked": "Tenés {count} pesajes anteriores guardados",
   "@bodyWeightHistoryProLocked": {
     "description": "Notice indicating older weight records are preserved and locked behind Pro",

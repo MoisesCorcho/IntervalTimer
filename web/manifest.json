@@ -1,11 +1,11 @@
 {
-    "name": "interval_timer",
-    "short_name": "interval_timer",
+    "name": "Repulse: HIIT & Interval Timer",
+    "short_name": "Repulse",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Repulse: HIIT & Interval Timer",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

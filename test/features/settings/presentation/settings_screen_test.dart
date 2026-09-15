@@ -322,5 +322,30 @@ void main() {
       expect(find.byType(PaywallModalScreen), findsNothing);
       expect(await settingsRepo.getMusicDuckingEnabled(), isFalse);
     });
+
+    testWidgets('renders pro tier section card with localized title Repulse Pro',
+        (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final proCardFinder = find.byKey(const Key('settings_card_pro_tier'));
+      await tester.scrollUntilVisible(proCardFinder, 300,
+          scrollable: find.byType(Scrollable).first);
+      expect(proCardFinder, findsOneWidget);
+      expect(find.text('Repulse Pro'), findsOneWidget);
+    });
   });
 }

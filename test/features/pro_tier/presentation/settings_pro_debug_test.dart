@@ -125,7 +125,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
-    expect(find.text('Desbloquea Interval Timer Pro'), findsOneWidget);
+    expect(find.text('Desbloquea Repulse Pro'), findsOneWidget);
 
     await tester.pump(const Duration(milliseconds: 100));
   });

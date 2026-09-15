@@ -53,7 +53,7 @@ void main() {
 
     // Verify Title & Crown
     expect(find.byIcon(Icons.workspace_premium_rounded), findsWidgets);
-    expect(find.text('Desbloquea Interval Timer Pro'), findsOneWidget);
+    expect(find.text('Desbloquea Repulse Pro'), findsOneWidget);
 
     // Verify 6 Benefits
     expect(find.byIcon(Icons.fitness_center_rounded), findsOneWidget);

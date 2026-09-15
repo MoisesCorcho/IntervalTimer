@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Interval Timer'**
+  /// **'Repulse'**
   String get appTitle;
 
   /// No description provided for @appTagline.
@@ -2228,10 +2228,16 @@ abstract class AppLocalizations {
   /// **'Pro Feature'**
   String get proBadgeTooltip;
 
+  /// No description provided for @proTierSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Repulse Pro'**
+  String get proTierSectionTitle;
+
   /// No description provided for @proUpgradeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Unlock Interval Timer Pro'**
+  /// **'Unlock Repulse Pro'**
   String get proUpgradeTitle;
 
   /// No description provided for @proUpgradeSubtitle.
@@ -2369,7 +2375,7 @@ abstract class AppLocalizations {
   /// No description provided for @proPurchaseSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to Interval Timer Pro!'**
+  /// **'Welcome to Repulse Pro!'**
   String get proPurchaseSuccess;
 
   /// No description provided for @proRestoreSuccess.
@@ -2417,7 +2423,7 @@ abstract class AppLocalizations {
   /// No description provided for @proAvailableWithPro.
   ///
   /// In en, this message translates to:
-  /// **'Available with Interval Timer Pro'**
+  /// **'Available with Repulse Pro'**
   String get proAvailableWithPro;
 
   /// Notice indicating older weight records are preserved and locked behind Pro

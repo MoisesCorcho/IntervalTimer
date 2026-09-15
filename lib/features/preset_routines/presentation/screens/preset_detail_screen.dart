@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
@@ -127,7 +128,10 @@ class PresetDetailScreen extends ConsumerWidget {
   Future<void> _handleDuplicate(BuildContext context, WidgetRef ref) async {
     final canCreate = ref.read(canCreateWorkoutProvider);
     if (!canCreate) {
-      PaywallModalScreen.show(context);
+      await HapticFeedback.lightImpact();
+      if (context.mounted) {
+        PaywallModalScreen.show(context);
+      }
       return;
     }
 

@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Interval Timer",
+  "appTitle": "Repulse",
   "appTagline": "Your workout assistant",
 
   "languageLabel": "Language",
@@ -529,7 +529,8 @@
   "saveColor": "Save",
   "proBadge": "PRO",
   "proBadgeTooltip": "Pro Feature",
-  "proUpgradeTitle": "Unlock Interval Timer Pro",
+  "proTierSectionTitle": "Repulse Pro",
+  "proUpgradeTitle": "Unlock Repulse Pro",
   "proUpgradeSubtitle": "Take your training to the highest level without limits or interruptions.",
   "proBenefitUnlimitedWorkoutsTitle": "Unlimited Custom Workouts",
   "proBenefitUnlimitedWorkoutsDesc": "Break free from the 3-routine limit and save all your training programs.",
@@ -563,7 +564,7 @@
   "proUnlockLifetime": "UNLOCK LIFETIME ACCESS",
   "proSubscribe": "UNLOCK PRO",
   "proRestorePurchases": "Restore Purchases",
-  "proPurchaseSuccess": "Welcome to Interval Timer Pro!",
+  "proPurchaseSuccess": "Welcome to Repulse Pro!",
   "proRestoreSuccess": "Purchases successfully restored!",
   "proLegalNotice": "Payment will be charged to your store account. Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period.",
   "proTerms": "Terms of Service",
@@ -571,7 +572,7 @@
   "proDevSectionTitle": "Developer Options (Pro Tier)",
   "proDevToggleLabel": "Simulate Pro User (Mock)",
   "proDevToggleDesc": "Instantly switches between Free and Pro tiers in memory without store coupling.",
-  "proAvailableWithPro": "Available with Interval Timer Pro",
+  "proAvailableWithPro": "Available with Repulse Pro",
   "bodyWeightHistoryProLocked": "You have {count} earlier weight records saved",
   "@bodyWeightHistoryProLocked": {
     "description": "Notice indicating older weight records are preserved and locked behind Pro",

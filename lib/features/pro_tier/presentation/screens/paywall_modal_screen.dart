@@ -418,6 +418,7 @@ class _PackageCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppTheme.radiusMd),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOutCubic,
         padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingMd, vertical: AppTheme.spacingMd),
         decoration: BoxDecoration(
           color: cardColor,

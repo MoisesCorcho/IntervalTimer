@@ -2,7 +2,7 @@
 abstract final class UiStrings {
   /// Product display name — single source for MaterialApp + share branding.
   /// Change here when the temporary package name is replaced.
-  static const appTitle = 'Interval Timer';
+  static const appTitle = 'Repulse';
 
   /// Tagline under [appTitle] on share cards (via [AppBranding.tagline]).
   static const appTagline = 'Tu asistente de entrenamiento';

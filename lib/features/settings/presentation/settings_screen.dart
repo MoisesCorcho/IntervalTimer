@@ -316,7 +316,7 @@ class _ProTierSettingsSection extends ConsumerWidget {
     return SettingsSectionCard(
       key: const Key('settings_card_pro_tier'),
       icon: Icons.workspace_premium_rounded,
-      title: 'Interval Timer Pro',
+      title: l10n.proTierSectionTitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
