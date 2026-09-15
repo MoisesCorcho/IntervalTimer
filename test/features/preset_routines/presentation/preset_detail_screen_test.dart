@@ -1,8 +1,11 @@
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/data/local/database.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/data/repositories/routine_repository.dart';
 import 'package:interval_timer/core/l10n/app_localizations.dart';
 import 'package:interval_timer/data/repositories/workout_repository.dart';
@@ -163,6 +166,9 @@ void main() {
     // Verify AppSnackBar renders success icon and action button
     expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
     expect(find.text('IR A RUTINAS'), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(Duration.zero);
   });
 
   testWidgets('popping PresetDetailScreen dismisses the SnackBar and does not leak it to parent', (tester) async {
@@ -227,5 +233,69 @@ void main() {
 
     // The SnackBar must NOT be leaked to parent screen!
     expect(find.text('IR A RUTINAS'), findsNothing);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(Duration.zero);
+  });
+
+  testWidgets('tapping duplicate button when canCreate is false triggers haptic feedback and opens PaywallModalScreen', (tester) async {
+    final mockRepo = MockPresetCatalogRepository(
+      preset: testPreset,
+      exercise: testExercise,
+    );
+
+    final log = <MethodCall>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (MethodCall methodCall) async {
+        log.add(methodCall);
+        return null;
+      },
+    );
+    addTearDown(() {
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      );
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          presetCatalogRepositoryProvider.overrideWithValue(mockRepo),
+          databaseProvider.overrideWithValue(db),
+          routineRepositoryProvider.overrideWithValue(RoutineRepository(db)),
+          workoutRepositoryProvider.overrideWithValue(WorkoutRepository(db)),
+          favoriteRepositoryProvider.overrideWithValue(favoriteRepo),
+          canCreateWorkoutProvider.overrideWithValue(false),
+        ],
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: Locale('es'),
+          home: PresetDetailScreen(presetId: 'preset_hiit_15m'),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Tap duplicate button
+    await tester.tap(find.byKey(const Key('duplicate_routine_button')));
+    await tester.pumpAndSettle();
+
+    // Verify haptic feedback was called
+    expect(
+      log.any((call) =>
+          call.method == 'HapticFeedback.vibrate' &&
+          call.arguments == 'HapticFeedbackType.lightImpact'),
+      isTrue,
+    );
+
+    // Verify PaywallModalScreen opened
+    expect(find.byType(PaywallModalScreen), findsOneWidget);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(Duration.zero);
   });
 }

@@ -20,7 +20,7 @@ class BodyWeightSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final measurementsAsync = ref.watch(bodyMeasurementsProvider);
+    final measurementsAsync = ref.watch(visibleBodyMeasurementsProvider);
     final unit = ref.watch(bodyWeightUnitProvider).valueOrNull ??
         BodyWeightUnit.kg;
     final weightReading = ref.watch(userWeightKgProvider);

@@ -43,6 +43,9 @@ void main() {
 
   testWidgets('kg/lb segmented control updates preference (R8)',
       (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
@@ -51,12 +54,15 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    final lbFinder = find.text(UiStrings.bodyWeightUnitLb);
+    await tester.scrollUntilVisible(lbFinder, 200, scrollable: find.byType(Scrollable).first);
+
     expect(find.byKey(const Key('body_weight_unit_settings')), findsOneWidget);
     expect(find.byKey(const Key('body_weight_unit_segmented')), findsOneWidget);
     expect(find.text(UiStrings.bodyWeightUnitKg), findsWidgets);
-    expect(find.text(UiStrings.bodyWeightUnitLb), findsOneWidget);
+    expect(lbFinder, findsOneWidget);
 
-    await tester.tap(find.text(UiStrings.bodyWeightUnitLb));
+    await tester.tap(lbFinder);
     await tester.pumpAndSettle();
 
     final unit = await settingsRepo.getBodyWeightUnit();

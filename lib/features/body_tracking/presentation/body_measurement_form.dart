@@ -7,6 +7,9 @@ import 'package:interval_timer/core/utils/local_date_format.dart';
 import 'package:interval_timer/features/body_tracking/application/body_tracking_providers.dart';
 import 'package:interval_timer/features/body_tracking/domain/body_measurement.dart';
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/dialog_actions_row.dart';
 
@@ -186,6 +189,7 @@ class _BodyMeasurementFormSheetState
 
   @override
   Widget build(BuildContext context) {
+    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
     final unit = ref.watch(bodyWeightUnitProvider).valueOrNull ??
         BodyWeightUnit.kg;
     final unitLabel = unit == BodyWeightUnit.kg
@@ -247,12 +251,30 @@ class _BodyMeasurementFormSheetState
               },
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            ExpansionTile(
-              key: const Key('body_weight_measures_tile'),
-              initiallyExpanded: _measuresExpanded,
-              title: Text(context.l10n.bodyWeightMeasuresOptional),
-              onExpansionChanged: (v) => setState(() => _measuresExpanded = v),
-              children: [
+            if (!isPro)
+              ListTile(
+                key: const Key('body_weight_measures_tile'),
+                contentPadding: EdgeInsets.zero,
+                title: Row(
+                  children: [
+                    Expanded(
+                      child: Text(context.l10n.bodyWeightMeasuresOptional),
+                    ),
+                    const SizedBox(width: 8),
+                    const ProBadge(compact: true),
+                  ],
+                ),
+                trailing: const Icon(Icons.expand_more),
+                onTap: () => PaywallModalScreen.show(context),
+              )
+            else
+              ExpansionTile(
+                key: const Key('body_weight_measures_tile'),
+                initiallyExpanded: _measuresExpanded,
+                title: Text(context.l10n.bodyWeightMeasuresOptional),
+                onExpansionChanged: (v) =>
+                    setState(() => _measuresExpanded = v),
+                children: [
                 TextField(
                   key: const Key('body_weight_waist_input'),
                   controller: _waistController,

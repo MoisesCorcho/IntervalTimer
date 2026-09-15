@@ -4,6 +4,7 @@ import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/body_tracking/domain/body_measurement.dart';
 import 'package:interval_timer/features/body_tracking/domain/body_measurement_weight_reader.dart';
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/stats/domain/weight_reader.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
@@ -17,6 +18,34 @@ final bodyMeasurementRepositoryProvider =
 final bodyMeasurementsProvider =
     StreamProvider.autoDispose<List<BodyMeasurement>>((ref) {
   return ref.watch(bodyMeasurementRepositoryProvider).watchAll();
+});
+
+/// Maximum number of historical measurements visible for Free tier.
+const kFreeBodyMeasurementsLimit = 5;
+
+/// Measurements filtered according to user's Pro subscription status.
+/// When user is Free, only the latest [kFreeBodyMeasurementsLimit] records are returned.
+final visibleBodyMeasurementsProvider =
+    Provider.autoDispose<AsyncValue<List<BodyMeasurement>>>((ref) {
+  final allAsync = ref.watch(bodyMeasurementsProvider);
+  final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
+
+  return allAsync.whenData((list) {
+    if (isPro || list.length <= kFreeBodyMeasurementsLimit) {
+      return list;
+    }
+    return list.sublist(list.length - kFreeBodyMeasurementsLimit);
+  });
+});
+
+/// Number of older measurements preserved in database but hidden from Free tier.
+final hiddenMeasurementsCountProvider = Provider.autoDispose<int>((ref) {
+  final all = ref.watch(bodyMeasurementsProvider).valueOrNull ?? const [];
+  final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
+  if (isPro || all.length <= kFreeBodyMeasurementsLimit) {
+    return 0;
+  }
+  return all.length - kFreeBodyMeasurementsLimit;
 });
 
 /// Latest weight in kg by max localDate, or null when empty.
@@ -68,13 +97,32 @@ class BodyMeasurementController {
     double? armCm,
     double? legCm,
     String? existingId,
-  }) {
+  }) async {
+    final current = _ref.read(isProUserProvider).valueOrNull;
+    final bool isPro = current ?? await _ref.read(isProUserProvider.future);
+    double? effectiveWaist = waistCm;
+    double? effectiveArm = armCm;
+    double? effectiveLeg = legCm;
+
+    if (!isPro) {
+      if (existingId != null) {
+        final existing = await _repo.getById(existingId);
+        effectiveWaist = existing?.waistCm;
+        effectiveArm = existing?.armCm;
+        effectiveLeg = existing?.legCm;
+      } else {
+        effectiveWaist = null;
+        effectiveArm = null;
+        effectiveLeg = null;
+      }
+    }
+
     return _repo.upsertByLocalDate(
       localDate: localDate,
       weightKg: weightKg,
-      waistCm: waistCm,
-      armCm: armCm,
-      legCm: legCm,
+      waistCm: effectiveWaist,
+      armCm: effectiveArm,
+      legCm: effectiveLeg,
       existingId: existingId,
     );
   }

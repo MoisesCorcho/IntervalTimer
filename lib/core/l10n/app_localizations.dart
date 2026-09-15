@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Interval Timer'**
+  /// **'Repulse'**
   String get appTitle;
 
   /// No description provided for @appTagline.
@@ -2215,6 +2215,264 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get saveColor;
+
+  /// No description provided for @proBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'PRO'**
+  String get proBadge;
+
+  /// No description provided for @proBadgeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro Feature'**
+  String get proBadgeTooltip;
+
+  /// No description provided for @proTierSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Repulse Pro'**
+  String get proTierSectionTitle;
+
+  /// No description provided for @proUpgradeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Repulse Pro'**
+  String get proUpgradeTitle;
+
+  /// No description provided for @proUpgradeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Take your training to the highest level without limits or interruptions.'**
+  String get proUpgradeSubtitle;
+
+  /// No description provided for @proBenefitUnlimitedWorkoutsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited Custom Workouts'**
+  String get proBenefitUnlimitedWorkoutsTitle;
+
+  /// No description provided for @proBenefitUnlimitedWorkoutsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Break free from the 3-routine limit and save all your training programs.'**
+  String get proBenefitUnlimitedWorkoutsDesc;
+
+  /// No description provided for @proBenefitZeroAdsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Zero Distractions'**
+  String get proBenefitZeroAdsTitle;
+
+  /// No description provided for @proBenefitZeroAdsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'100% clean experience with no ads ever.'**
+  String get proBenefitZeroAdsDesc;
+
+  /// No description provided for @proBenefitSfxClipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sports SFX & Boxing Bells'**
+  String get proBenefitSfxClipsTitle;
+
+  /// No description provided for @proBenefitSfxClipsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Traditional gong, referee whistle, gym bells, and pro synths.'**
+  String get proBenefitSfxClipsDesc;
+
+  /// No description provided for @proBenefitPhaseColorsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Phase Colors'**
+  String get proBenefitPhaseColorsTitle;
+
+  /// No description provided for @proBenefitPhaseColorsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Personalize your work and rest screen colors with the full ergonomic palette.'**
+  String get proBenefitPhaseColorsDesc;
+
+  /// No description provided for @proBenefitCalendarNotesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Session Notes'**
+  String get proBenefitCalendarNotesTitle;
+
+  /// No description provided for @proBenefitIndieDevTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Indie Development'**
+  String get proBenefitIndieDevTitle;
+
+  /// No description provided for @proBenefitIndieDevDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel ongoing updates with no corporate investors and an app 100% focused on you.'**
+  String get proBenefitIndieDevDesc;
+
+  /// No description provided for @proBenefitBodyTrackingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Body Tracking'**
+  String get proBenefitBodyTrackingTitle;
+
+  /// No description provided for @proBenefitBodyTrackingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Log body circumferences and access your full, unlimited weight history.'**
+  String get proBenefitBodyTrackingDesc;
+
+  /// No description provided for @proFreeWorkoutsCounter.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {limit} free workouts used'**
+  String proFreeWorkoutsCounter(int count, int limit);
+
+  /// No description provided for @proUnlimitedWorkoutsCounter.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited Workouts (Pro)'**
+  String get proUnlimitedWorkoutsCounter;
+
+  /// No description provided for @proBestValue.
+  ///
+  /// In en, this message translates to:
+  /// **'BEST VALUE'**
+  String get proBestValue;
+
+  /// No description provided for @proSavePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String proSavePercent(int percent);
+
+  /// No description provided for @proStartFreeTrial.
+  ///
+  /// In en, this message translates to:
+  /// **'START 7-DAY FREE TRIAL'**
+  String get proStartFreeTrial;
+
+  /// No description provided for @proUnlockLifetime.
+  ///
+  /// In en, this message translates to:
+  /// **'UNLOCK LIFETIME ACCESS'**
+  String get proUnlockLifetime;
+
+  /// No description provided for @proSubscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'UNLOCK PRO'**
+  String get proSubscribe;
+
+  /// No description provided for @proRestorePurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchases'**
+  String get proRestorePurchases;
+
+  /// No description provided for @proPurchaseSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Repulse Pro!'**
+  String get proPurchaseSuccess;
+
+  /// No description provided for @proRestoreSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases successfully restored!'**
+  String get proRestoreSuccess;
+
+  /// No description provided for @proLegalNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment will be charged to your store account. Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period.'**
+  String get proLegalNotice;
+
+  /// No description provided for @proTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get proTerms;
+
+  /// No description provided for @proPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get proPrivacy;
+
+  /// No description provided for @proDevSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer Options (Pro Tier)'**
+  String get proDevSectionTitle;
+
+  /// No description provided for @proDevToggleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Simulate Pro User (Mock)'**
+  String get proDevToggleLabel;
+
+  /// No description provided for @proDevToggleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Instantly switches between Free and Pro tiers in memory without store coupling.'**
+  String get proDevToggleDesc;
+
+  /// No description provided for @proAvailableWithPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Available with Repulse Pro'**
+  String get proAvailableWithPro;
+
+  /// Notice indicating older weight records are preserved and locked behind Pro
+  ///
+  /// In en, this message translates to:
+  /// **'You have {count} earlier weight records saved'**
+  String bodyWeightHistoryProLocked(int count);
+
+  /// No description provided for @bodyWeightHistoryProCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock your full progress with Pro'**
+  String get bodyWeightHistoryProCta;
+
+  /// No description provided for @proActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro Active'**
+  String get proActiveTitle;
+
+  /// No description provided for @proActiveSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unlimited access to all premium features.'**
+  String get proActiveSubtitle;
+
+  /// No description provided for @proActiveMembershipLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Membership'**
+  String get proActiveMembershipLabel;
+
+  /// No description provided for @proManageSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get proManageSubscription;
+
+  /// No description provided for @proManageSubscriptionNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'You can manage or cancel your subscription through your device\'s app store.'**
+  String get proManageSubscriptionNotice;
+
+  /// No description provided for @proDismissDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get proDismissDialog;
 }
 
 class _AppLocalizationsDelegate

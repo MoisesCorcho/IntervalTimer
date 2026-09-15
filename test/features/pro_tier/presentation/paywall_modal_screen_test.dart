@@ -1,0 +1,200 @@
+import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:interval_timer/core/l10n/app_localizations.dart';
+import 'package:interval_timer/data/local/database.dart';
+import 'package:interval_timer/data/repositories/preferences_repository.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/data/fake_billing_driver.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
+
+void main() {
+  late AppDatabase db;
+  late PreferencesRepository prefs;
+  late FakeBillingDriver driver;
+
+  setUp(() {
+    db = AppDatabase.forTesting(NativeDatabase.memory());
+    prefs = PreferencesRepository(db);
+    driver = FakeBillingDriver(preferencesRepository: prefs);
+  });
+
+  tearDown(() async {
+    await db.close();
+  });
+
+  Widget buildTestWidget({bool isPro = false}) {
+    return ProviderScope(
+      overrides: [
+        preferencesRepositoryProvider.overrideWithValue(prefs),
+        billingRepositoryProvider.overrideWithValue(driver),
+        isProUserProvider.overrideWith((ref) => Stream.value(isPro)),
+      ],
+      child: const MaterialApp(
+        locale: Locale('es'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: PaywallModalScreen(),
+        ),
+      ),
+    );
+  }
+
+  testWidgets('PaywallModalScreen renders header, benefits, packages, and CTA (R4, R5, R6)', (tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    // Verify Title & Crown
+    expect(find.byIcon(Icons.workspace_premium_rounded), findsWidgets);
+    expect(find.text('Desbloquea Repulse Pro'), findsOneWidget);
+
+    // Verify 6 Benefits
+    expect(find.byIcon(Icons.fitness_center_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.straighten_rounded), findsOneWidget);
+    expect(find.text('Seguimiento corporal completo'), findsOneWidget);
+    expect(find.byIcon(Icons.block_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.sports_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.palette_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
+    expect(find.text('Apoyo al desarrollo independiente'), findsOneWidget);
+
+    // Verify 3 Packages
+    expect(find.text('Mensual'), findsOneWidget);
+    expect(find.text('Anual'), findsOneWidget);
+    expect(find.text('De por vida'), findsOneWidget);
+
+    // Verify Annual highlighted with best value tag
+    expect(find.text('MEJOR VALOR'), findsOneWidget);
+
+    // Verify CTA and restore button
+    expect(find.byKey(const Key('paywall_primary_cta')), findsOneWidget);
+    expect(find.byKey(const Key('paywall_restore_button')), findsOneWidget);
+  });
+
+  testWidgets('Selecting a package updates the selection and CTA label (R5, R6)', (tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    // Annual is selected by default, offering free trial
+    expect(find.text('COMENZAR 7 DÍAS GRATIS'), findsOneWidget);
+
+    // Tap Lifetime package
+    await tester.tap(find.text('De por vida'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('DESBLOQUEAR ACCESO DE POR VIDA'), findsOneWidget);
+
+    // Tap Monthly package
+    await tester.tap(find.text('Mensual'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('DESBLOQUEAR PRO'), findsOneWidget);
+  });
+
+  testWidgets('Tapping CTA executes purchase and enables Pro (R6, R8)', (tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    expect(await prefs.isProUser(), isFalse);
+
+    await tester.tap(find.byKey(const Key('paywall_primary_cta')));
+    await tester.pumpAndSettle();
+
+    expect(await prefs.isProUser(), isTrue);
+  });
+
+  testWidgets('Tapping restore purchases successfully restores Pro (R7, R12)', (tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    driver.hasPriorPurchase = true;
+    await tester.pumpWidget(buildTestWidget());
+    await tester.pumpAndSettle();
+
+    expect(await prefs.isProUser(), isFalse);
+
+    await tester.tap(find.byKey(const Key('paywall_restore_button')));
+    await tester.pumpAndSettle();
+
+    expect(await prefs.isProUser(), isTrue);
+  });
+
+  testWidgets('PaywallModalScreen.show presents BottomSheet with native drag handle and close button', (tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          preferencesRepositoryProvider.overrideWithValue(prefs),
+          billingRepositoryProvider.overrideWithValue(driver),
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
+        ],
+        child: MaterialApp(
+          locale: const Locale('es'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () => PaywallModalScreen.show(context),
+                child: const Text('Open Paywall'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open Paywall'));
+    await tester.pumpAndSettle();
+
+    final bottomSheetFinder = find.byType(BottomSheet);
+    expect(bottomSheetFinder, findsOneWidget);
+    final bottomSheet = tester.widget<BottomSheet>(bottomSheetFinder);
+    expect(bottomSheet.showDragHandle, isTrue);
+
+    // Verify close button pops the sheet
+    expect(find.byKey(const Key('paywall_close_button')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('paywall_close_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PaywallModalScreen), findsNothing);
+  });
+
+  testWidgets('PaywallModalScreen defensively renders ProStatusModalSheet when isPro is true (R19)', (tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(buildTestWidget(isPro: true));
+    await tester.pumpAndSettle();
+
+    // Verifies active Pro state is shown
+    expect(find.text('Pro Activo'), findsOneWidget);
+    expect(find.text('Membresía Activa'), findsOneWidget);
+
+    // Verifies no purchase CTA or package cards are shown
+    expect(find.byKey(const Key('paywall_primary_cta')), findsNothing);
+    expect(find.text('Mensual'), findsNothing);
+    expect(find.text('Anual'), findsNothing);
+    expect(find.text('De por vida'), findsNothing);
+  });
+}

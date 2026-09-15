@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/contrast_text_color.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
 import 'package:interval_timer/shared/widgets/countdown_ring.dart';
 
@@ -13,7 +17,7 @@ import 'package:interval_timer/shared/widgets/countdown_ring.dart';
 /// - Non-interactive preview frame encased in an [IgnorePointer].
 /// - 10-shade athletic palette swatch grid with instant preview.
 /// - One-tap reset and save action buttons.
-class PhaseColorPickerScreen extends StatefulWidget {
+class PhaseColorPickerScreen extends ConsumerStatefulWidget {
   const PhaseColorPickerScreen({
     super.key,
     required this.title,
@@ -28,10 +32,11 @@ class PhaseColorPickerScreen extends StatefulWidget {
   final ValueChanged<Color> onColorSelected;
 
   @override
-  State<PhaseColorPickerScreen> createState() => _PhaseColorPickerScreenState();
+  ConsumerState<PhaseColorPickerScreen> createState() =>
+      _PhaseColorPickerScreenState();
 }
 
-class _PhaseColorPickerScreenState extends State<PhaseColorPickerScreen>
+class _PhaseColorPickerScreenState extends ConsumerState<PhaseColorPickerScreen>
     with SingleTickerProviderStateMixin {
   late Color _selectedColor;
   late final AnimationController _animController;
@@ -60,7 +65,14 @@ class _PhaseColorPickerScreenState extends State<PhaseColorPickerScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(widget.title),
+            const SizedBox(width: 8),
+            const ProBadge(compact: true),
+          ],
+        ),
         leading: const BackButton(),
       ),
       body: SafeArea(
@@ -427,6 +439,15 @@ class _PhaseColorPickerScreenState extends State<PhaseColorPickerScreen>
                               child: AppPrimaryButton(
                                 key: const Key('save_color_button'),
                                 onPressed: () {
+                                  final isPro =
+                                      ref.read(isProUserProvider).valueOrNull ??
+                                          false;
+                                  if (!isPro &&
+                                      _selectedColor.toARGB32() !=
+                                          widget.defaultColor.toARGB32()) {
+                                    PaywallModalScreen.show(context);
+                                    return;
+                                  }
                                   widget.onColorSelected(_selectedColor);
                                   Navigator.of(context).pop();
                                 },

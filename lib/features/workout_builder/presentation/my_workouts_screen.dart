@@ -9,6 +9,9 @@ import 'package:interval_timer/features/favorites/application/favorite_providers
 import 'package:interval_timer/features/favorites/presentation/widgets/home_favorites_section.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/preset_hero_carousel.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
@@ -35,6 +38,12 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
   bool _favoritesOnly = false;
 
   Future<void> _showCreateDialog() async {
+    final canCreate = ref.read(canCreateWorkoutProvider);
+    if (!canCreate) {
+      PaywallModalScreen.show(context);
+      return;
+    }
+
     final controller = TextEditingController();
     String? nameError;
 
@@ -181,6 +190,11 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
       case WorkoutAction.edit:
         context.push('/workouts/${workout.id}/edit');
       case WorkoutAction.duplicate:
+        final canCreate = ref.read(canCreateWorkoutProvider);
+        if (!canCreate) {
+          PaywallModalScreen.show(context);
+          return;
+        }
         final dup = await ref
             .read(workoutsListProvider.notifier)
             .duplicateWorkout(workout.id);
@@ -326,13 +340,36 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        l10n.myRoutines,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                l10n.myRoutines,
+                                style:
+                                    Theme.of(context).textTheme.titleMedium?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                              ),
+                              const SizedBox(width: 8),
+                              const ProBadge(compact: true),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            ref.watch(isProUserProvider).valueOrNull ?? false
+                                ? l10n.proUnlimitedWorkoutsCounter
+                                : l10n.proFreeWorkoutsCounter(workouts.length, freeWorkoutsLimit),
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  fontSize: 11,
                                 ),
+                          ),
+                        ],
                       ),
                       FilterChip(
                         key: const Key('workouts_favorite_filter_chip'),

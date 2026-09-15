@@ -9,7 +9,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Interval Timer';
+  String get appTitle => 'Repulse';
 
   @override
   String get appTagline => 'Tu asistente de entrenamiento';
@@ -1185,4 +1185,152 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get saveColor => 'Guardar';
+
+  @override
+  String get proBadge => 'PRO';
+
+  @override
+  String get proBadgeTooltip => 'Función Pro';
+
+  @override
+  String get proTierSectionTitle => 'Repulse Pro';
+
+  @override
+  String get proUpgradeTitle => 'Desbloquea Repulse Pro';
+
+  @override
+  String get proUpgradeSubtitle =>
+      'Lleva tus entrenamientos al máximo nivel sin límites ni interrupciones.';
+
+  @override
+  String get proBenefitUnlimitedWorkoutsTitle =>
+      'Rutinas personalizadas ilimitadas';
+
+  @override
+  String get proBenefitUnlimitedWorkoutsDesc =>
+      'Rompe el límite de 3 rutinas y guarda todos tus programas de entrenamiento.';
+
+  @override
+  String get proBenefitZeroAdsTitle => 'Cero distracciones';
+
+  @override
+  String get proBenefitZeroAdsDesc =>
+      'Experiencia 100% limpia sin anuncios jamás.';
+
+  @override
+  String get proBenefitSfxClipsTitle => 'Clips de audio deportivo y boxeo';
+
+  @override
+  String get proBenefitSfxClipsDesc =>
+      'Gong tradicional de boxeo, silbato de árbitro, campanas y sintetizadores pro.';
+
+  @override
+  String get proBenefitPhaseColorsTitle => 'Colores de fase personalizados';
+
+  @override
+  String get proBenefitPhaseColorsDesc =>
+      'Personaliza los colores de trabajo y descanso con la paleta ergonómica completa.';
+
+  @override
+  String get proBenefitCalendarNotesTitle => 'Notas avanzadas de sesión';
+
+  @override
+  String get proBenefitIndieDevTitle => 'Apoyo al desarrollo independiente';
+
+  @override
+  String get proBenefitIndieDevDesc =>
+      'Impulsa mejoras continuas, sin inversores y con una app 100% enfocada en ti.';
+
+  @override
+  String get proBenefitBodyTrackingTitle => 'Seguimiento corporal completo';
+
+  @override
+  String get proBenefitBodyTrackingDesc =>
+      'Registra medidas corporales y accede a todo tu historial de peso sin límites.';
+
+  @override
+  String proFreeWorkoutsCounter(int count, int limit) {
+    return '$count de $limit rutinas gratuitas';
+  }
+
+  @override
+  String get proUnlimitedWorkoutsCounter => 'Rutinas ilimitadas (Pro)';
+
+  @override
+  String get proBestValue => 'MEJOR VALOR';
+
+  @override
+  String proSavePercent(int percent) {
+    return 'Ahorra $percent%';
+  }
+
+  @override
+  String get proStartFreeTrial => 'COMENZAR 7 DÍAS GRATIS';
+
+  @override
+  String get proUnlockLifetime => 'DESBLOQUEAR ACCESO DE POR VIDA';
+
+  @override
+  String get proSubscribe => 'DESBLOQUEAR PRO';
+
+  @override
+  String get proRestorePurchases => 'Restaurar compras';
+
+  @override
+  String get proPurchaseSuccess => '¡Bienvenido a Repulse Pro!';
+
+  @override
+  String get proRestoreSuccess => '¡Compras restauradas con éxito!';
+
+  @override
+  String get proLegalNotice =>
+      'El pago se cargará a tu cuenta de la tienda. La suscripción se renovará automáticamente a menos que se cancele al menos 24 horas antes del final del período actual.';
+
+  @override
+  String get proTerms => 'Términos de servicio';
+
+  @override
+  String get proPrivacy => 'Política de privacidad';
+
+  @override
+  String get proDevSectionTitle => 'Opciones de Desarrollador (Pro Tier)';
+
+  @override
+  String get proDevToggleLabel => 'Simular usuario Pro (Mock)';
+
+  @override
+  String get proDevToggleDesc =>
+      'Alterna instantáneamente entre Free y Pro en memoria sin vinculación a la tienda.';
+
+  @override
+  String get proAvailableWithPro => 'Disponible con Repulse Pro';
+
+  @override
+  String bodyWeightHistoryProLocked(int count) {
+    return 'Tenés $count pesajes anteriores guardados';
+  }
+
+  @override
+  String get bodyWeightHistoryProCta =>
+      'Desbloqueá tu evolución completa con Pro';
+
+  @override
+  String get proActiveTitle => 'Pro Activo';
+
+  @override
+  String get proActiveSubtitle =>
+      'Tienes acceso ilimitado a todas las funciones premium.';
+
+  @override
+  String get proActiveMembershipLabel => 'Membresía Activa';
+
+  @override
+  String get proManageSubscription => 'Administrar suscripción';
+
+  @override
+  String get proManageSubscriptionNotice =>
+      'Puedes administrar o cancelar tu suscripción desde la tienda de aplicaciones de tu dispositivo.';
+
+  @override
+  String get proDismissDialog => 'Entendido';
 }

@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Interval Timer';
+  String get appTitle => 'Repulse';
 
   @override
   String get appTagline => 'Your workout assistant';
@@ -1170,4 +1170,149 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveColor => 'Save';
+
+  @override
+  String get proBadge => 'PRO';
+
+  @override
+  String get proBadgeTooltip => 'Pro Feature';
+
+  @override
+  String get proTierSectionTitle => 'Repulse Pro';
+
+  @override
+  String get proUpgradeTitle => 'Unlock Repulse Pro';
+
+  @override
+  String get proUpgradeSubtitle =>
+      'Take your training to the highest level without limits or interruptions.';
+
+  @override
+  String get proBenefitUnlimitedWorkoutsTitle => 'Unlimited Custom Workouts';
+
+  @override
+  String get proBenefitUnlimitedWorkoutsDesc =>
+      'Break free from the 3-routine limit and save all your training programs.';
+
+  @override
+  String get proBenefitZeroAdsTitle => 'Zero Distractions';
+
+  @override
+  String get proBenefitZeroAdsDesc => '100% clean experience with no ads ever.';
+
+  @override
+  String get proBenefitSfxClipsTitle => 'Sports SFX & Boxing Bells';
+
+  @override
+  String get proBenefitSfxClipsDesc =>
+      'Traditional gong, referee whistle, gym bells, and pro synths.';
+
+  @override
+  String get proBenefitPhaseColorsTitle => 'Custom Phase Colors';
+
+  @override
+  String get proBenefitPhaseColorsDesc =>
+      'Personalize your work and rest screen colors with the full ergonomic palette.';
+
+  @override
+  String get proBenefitCalendarNotesTitle => 'Advanced Session Notes';
+
+  @override
+  String get proBenefitIndieDevTitle => 'Support Indie Development';
+
+  @override
+  String get proBenefitIndieDevDesc =>
+      'Fuel ongoing updates with no corporate investors and an app 100% focused on you.';
+
+  @override
+  String get proBenefitBodyTrackingTitle => 'Full Body Tracking';
+
+  @override
+  String get proBenefitBodyTrackingDesc =>
+      'Log body circumferences and access your full, unlimited weight history.';
+
+  @override
+  String proFreeWorkoutsCounter(int count, int limit) {
+    return '$count of $limit free workouts used';
+  }
+
+  @override
+  String get proUnlimitedWorkoutsCounter => 'Unlimited Workouts (Pro)';
+
+  @override
+  String get proBestValue => 'BEST VALUE';
+
+  @override
+  String proSavePercent(int percent) {
+    return 'Save $percent%';
+  }
+
+  @override
+  String get proStartFreeTrial => 'START 7-DAY FREE TRIAL';
+
+  @override
+  String get proUnlockLifetime => 'UNLOCK LIFETIME ACCESS';
+
+  @override
+  String get proSubscribe => 'UNLOCK PRO';
+
+  @override
+  String get proRestorePurchases => 'Restore Purchases';
+
+  @override
+  String get proPurchaseSuccess => 'Welcome to Repulse Pro!';
+
+  @override
+  String get proRestoreSuccess => 'Purchases successfully restored!';
+
+  @override
+  String get proLegalNotice =>
+      'Payment will be charged to your store account. Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period.';
+
+  @override
+  String get proTerms => 'Terms of Service';
+
+  @override
+  String get proPrivacy => 'Privacy Policy';
+
+  @override
+  String get proDevSectionTitle => 'Developer Options (Pro Tier)';
+
+  @override
+  String get proDevToggleLabel => 'Simulate Pro User (Mock)';
+
+  @override
+  String get proDevToggleDesc =>
+      'Instantly switches between Free and Pro tiers in memory without store coupling.';
+
+  @override
+  String get proAvailableWithPro => 'Available with Repulse Pro';
+
+  @override
+  String bodyWeightHistoryProLocked(int count) {
+    return 'You have $count earlier weight records saved';
+  }
+
+  @override
+  String get bodyWeightHistoryProCta => 'Unlock your full progress with Pro';
+
+  @override
+  String get proActiveTitle => 'Pro Active';
+
+  @override
+  String get proActiveSubtitle =>
+      'You have unlimited access to all premium features.';
+
+  @override
+  String get proActiveMembershipLabel => 'Active Membership';
+
+  @override
+  String get proManageSubscription => 'Manage subscription';
+
+  @override
+  String get proManageSubscriptionNotice =>
+      'You can manage or cancel your subscription through your device\'s app store.';
+
+  @override
+  String get proDismissDialog => 'Got it';
 }

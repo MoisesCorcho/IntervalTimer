@@ -1,6 +1,6 @@
 {
   "@@locale": "es",
-  "appTitle": "Interval Timer",
+  "appTitle": "Repulse",
   "appTagline": "Tu asistente de entrenamiento",
 
   "languageLabel": "Idioma",
@@ -375,5 +375,67 @@
   "restColorTitle": "Color de descanso",
   "restColorSubtitle": "Pantalla durante los intervalos de descanso",
   "resetToDefault": "Restablecer original",
-  "saveColor": "Guardar"
+  "saveColor": "Guardar",
+  "proBadge": "PRO",
+  "proBadgeTooltip": "Función Pro",
+  "proTierSectionTitle": "Repulse Pro",
+  "proUpgradeTitle": "Desbloquea Repulse Pro",
+  "proUpgradeSubtitle": "Lleva tus entrenamientos al máximo nivel sin límites ni interrupciones.",
+  "proBenefitUnlimitedWorkoutsTitle": "Rutinas personalizadas ilimitadas",
+  "proBenefitUnlimitedWorkoutsDesc": "Rompe el límite de 3 rutinas y guarda todos tus programas de entrenamiento.",
+  "proBenefitZeroAdsTitle": "Cero distracciones",
+  "proBenefitZeroAdsDesc": "Experiencia 100% limpia sin anuncios jamás.",
+  "proBenefitSfxClipsTitle": "Clips de audio deportivo y boxeo",
+  "proBenefitSfxClipsDesc": "Gong tradicional de boxeo, silbato de árbitro, campanas y sintetizadores pro.",
+  "proBenefitPhaseColorsTitle": "Colores de fase personalizados",
+  "proBenefitPhaseColorsDesc": "Personaliza los colores de trabajo y descanso con la paleta ergonómica completa.",
+  "proBenefitCalendarNotesTitle": "Notas avanzadas de sesión",
+  "proBenefitIndieDevTitle": "Apoyo al desarrollo independiente",
+  "proBenefitIndieDevDesc": "Impulsa mejoras continuas, sin inversores y con una app 100% enfocada en ti.",
+  "proBenefitBodyTrackingTitle": "Seguimiento corporal completo",
+  "proBenefitBodyTrackingDesc": "Registra medidas corporales y accede a todo tu historial de peso sin límites.",
+  "proFreeWorkoutsCounter": "{count} de {limit} rutinas gratuitas",
+  "@proFreeWorkoutsCounter": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "proUnlimitedWorkoutsCounter": "Rutinas ilimitadas (Pro)",
+  "proBestValue": "MEJOR VALOR",
+  "proSavePercent": "Ahorra {percent}%",
+  "@proSavePercent": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "proStartFreeTrial": "COMENZAR 7 DÍAS GRATIS",
+  "proUnlockLifetime": "DESBLOQUEAR ACCESO DE POR VIDA",
+  "proSubscribe": "DESBLOQUEAR PRO",
+  "proRestorePurchases": "Restaurar compras",
+  "proPurchaseSuccess": "¡Bienvenido a Repulse Pro!",
+  "proRestoreSuccess": "¡Compras restauradas con éxito!",
+  "proLegalNotice": "El pago se cargará a tu cuenta de la tienda. La suscripción se renovará automáticamente a menos que se cancele al menos 24 horas antes del final del período actual.",
+  "proTerms": "Términos de servicio",
+  "proPrivacy": "Política de privacidad",
+  "proDevSectionTitle": "Opciones de Desarrollador (Pro Tier)",
+  "proDevToggleLabel": "Simular usuario Pro (Mock)",
+  "proDevToggleDesc": "Alterna instantáneamente entre Free y Pro en memoria sin vinculación a la tienda.",
+  "proAvailableWithPro": "Disponible con Repulse Pro",
+  "bodyWeightHistoryProLocked": "Tenés {count} pesajes anteriores guardados",
+  "@bodyWeightHistoryProLocked": {
+    "description": "Notice indicating older weight records are preserved and locked behind Pro",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bodyWeightHistoryProCta": "Desbloqueá tu evolución completa con Pro",
+  "proActiveTitle": "Pro Activo",
+  "proActiveSubtitle": "Tienes acceso ilimitado a todas las funciones premium.",
+  "proActiveMembershipLabel": "Membresía Activa",
+  "proManageSubscription": "Administrar suscripción",
+  "proManageSubscriptionNotice": "Puedes administrar o cancelar tu suscripción desde la tienda de aplicaciones de tu dispositivo.",
+  "proDismissDialog": "Entendido"
 }

@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/contrast_text_color.dart';
+import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/pro_tier/presentation/screens/pro_status_modal_sheet.dart';
+import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
@@ -76,6 +81,10 @@ class _SettingsBody extends ConsumerWidget {
         vertical: AppTheme.spacingMd,
       ),
       children: [
+        // 0. Pro Tier (Top highlight banner)
+        const _ProTierSettingsSection(),
+        const SizedBox(height: AppTheme.spacingMd),
+
         // 1. General & Appearance
         SettingsSectionCard(
           key: const Key('settings_card_appearance'),
@@ -285,7 +294,100 @@ class _SettingsBody extends ConsumerWidget {
             ],
           ),
         ),
+        // 7. Developer Options (Debug/Profile only)
+        if (kDebugMode || kProfileMode) ...[
+          const SizedBox(height: AppTheme.spacingMd),
+          const _DeveloperProToggleSection(),
+        ],
       ],
+    );
+  }
+}
+
+class _ProTierSettingsSection extends ConsumerWidget {
+  const _ProTierSettingsSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+
+    return SettingsSectionCard(
+      key: const Key('settings_card_pro_tier'),
+      icon: Icons.workspace_premium_rounded,
+      title: l10n.proTierSectionTitle,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [Color(0xFFFFD54F), Color(0xFFFF8F00)],
+                ),
+              ),
+              child: Icon(
+                isPro ? Icons.verified_rounded : Icons.workspace_premium_rounded,
+                color: const Color(0xFF2E1C00),
+                size: 22,
+              ),
+            ),
+            title: Text(
+              isPro ? l10n.proActiveTitle : l10n.proUpgradeTitle,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              isPro ? l10n.proActiveSubtitle : l10n.proUpgradeSubtitle,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            trailing: isPro
+                ? const IgnorePointer(child: ProBadge(hideWhenPro: false))
+                : const Icon(Icons.chevron_right_rounded),
+            onTap: () {
+              if (isPro) {
+                ProStatusModalSheet.show(context);
+              } else {
+                PaywallModalScreen.show(context);
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DeveloperProToggleSection extends ConsumerWidget {
+  const _DeveloperProToggleSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
+    final l10n = context.l10n;
+
+    return SettingsSectionCard(
+      key: const Key('settings_card_developer_options'),
+      icon: Icons.developer_mode_rounded,
+      title: l10n.proDevSectionTitle,
+      child: SwitchListTile(
+        key: const Key('settings_debug_pro_toggle'),
+        contentPadding: EdgeInsets.zero,
+        title: Text(l10n.proDevToggleLabel),
+        subtitle: Text(l10n.proDevToggleDesc),
+        value: isPro,
+        onChanged: (val) {
+          ref.read(billingRepositoryProvider).toggleMockPro(val);
+        },
+      ),
     );
   }
 }
@@ -398,15 +500,25 @@ class _ThemeAccentColorSection extends ConsumerWidget {
     final muted = theme.textTheme.bodyMedium?.copyWith(
       color: theme.colorScheme.onSurfaceVariant,
     );
+    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.themeAccentColorLabel,
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.themeAccentColorLabel,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (!isPro) ...[
+              const SizedBox(width: 8),
+              const ProBadge(compact: true),
+            ],
+          ],
         ),
         const SizedBox(height: AppTheme.spacingXs),
         Text(
@@ -420,6 +532,8 @@ class _ThemeAccentColorSection extends ConsumerWidget {
           runSpacing: 8,
           children: AppTheme.accentColorPresets.map((color) {
             final isSelected = settings.themeColorArgb == color.toARGB32();
+            final isFreeColor = color == AppTheme.accentColorPresets.first;
+            final isLocked = !isPro && !isFreeColor;
             final checkColor = contrastTextColor(color);
 
             return Semantics(
@@ -429,6 +543,10 @@ class _ThemeAccentColorSection extends ConsumerWidget {
               child: InkWell(
                 key: Key('accent_color_swatch_${color.toARGB32()}'),
                 onTap: () {
+                  if (isLocked) {
+                    PaywallModalScreen.show(context);
+                    return;
+                  }
                   ref
                       .read(settingsControllerProvider.notifier)
                       .setThemeColor(color.toARGB32());
@@ -461,7 +579,13 @@ class _ThemeAccentColorSection extends ConsumerWidget {
                             size: 18,
                             color: checkColor,
                           )
-                        : null,
+                        : isLocked
+                            ? Icon(
+                                Icons.lock_rounded,
+                                size: 14,
+                                color: checkColor.withValues(alpha: 0.75),
+                              )
+                            : null,
                   ),
                 ),
               ),

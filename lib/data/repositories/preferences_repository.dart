@@ -94,6 +94,10 @@ class PreferencesRepository {
   static const hasSeenOnboardingKey = 'has_seen_onboarding';
   static const defaultHasSeenOnboarding = false;
 
+  // F06 pro tier (`is_pro_user`)
+  static const isProUserKey = 'is_pro_user';
+  static const defaultIsProUser = false;
+
   Future<String?> getString(String key) async {
     final row = await (_db.select(_db.appPreferences)
           ..where((t) => t.key.equals(key)))
@@ -443,5 +447,20 @@ class PreferencesRepository {
   Stream<bool> watchHasSeenOnboarding() => watchBool(
         hasSeenOnboardingKey,
         defaultValue: defaultHasSeenOnboarding,
+      );
+
+  /// F06: Returns whether the user has active Pro status.
+  Future<bool> isProUser() => getBool(
+        isProUserKey,
+        defaultValue: defaultIsProUser,
+      );
+
+  /// F06: Sets whether the user has active Pro status.
+  Future<void> setIsProUser(bool value) => setBool(isProUserKey, value);
+
+  /// F06: Reactive stream of Pro user entitlement state.
+  Stream<bool> watchIsProUser() => watchBool(
+        isProUserKey,
+        defaultValue: defaultIsProUser,
       );
 }

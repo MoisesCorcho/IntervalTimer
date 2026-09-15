@@ -44,6 +44,9 @@ Kiro, que usa `.kiro/specs/`). Ambas leen este `AGENTS.md` automaticamente en la
   el campo `instructions` apuntando a `specs/_global/*.md`, para que opencode precargue los documentos
   globales (vision, arquitectura, convenciones, design system, data model, roadmap) en cada sesion en
   vez de depender de que el agente decida ir a leerlos por su cuenta.
+- **Antigravity (Google DeepMind):**
+  - Lee `AGENTS.md` de forma nativa a través de sus reglas de workspace.
+  - **Protocolo RDD (Receipt-Driven Development):** Dado que el transporte nativo de recibos inmutables de `gentle-ai review` está reservado a `opencode`, `claude-code` y `codex`, toda verificación RDD en Antigravity se realiza orquestando un **subagente ciego** (`invoke_subagent` de tipo `research` o `self`) sin historial de chat. El subagente recibe exclusivamente el diff congelado (`git diff --cached` o de rama) y las directivas del lente asignado (ej. `review-reliability`), emitiendo el veredicto adversarial (aprobado / bloqueos) antes de commitear o mergear.
 
 ## Documentos globales (cargar siempre al inicio de sesion)
 
