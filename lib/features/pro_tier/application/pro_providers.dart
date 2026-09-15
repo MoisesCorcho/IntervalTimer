@@ -1,16 +1,33 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/features/pro_tier/data/billing_repository.dart';
 import 'package:interval_timer/features/pro_tier/data/fake_billing_driver.dart';
+import 'package:interval_timer/features/pro_tier/data/revenue_cat_billing_driver.dart';
+import 'package:interval_timer/features/pro_tier/data/revenue_cat_config.dart';
 import 'package:interval_timer/features/pro_tier/domain/product_package.dart';
 import 'package:interval_timer/features/workout_builder/application/workout_providers.dart';
 
 /// Maximum number of custom workouts allowed in the Free tier.
 const freeWorkoutsLimit = 3;
 
-/// Injects the active [BillingRepository] implementation (defaults to [FakeBillingDriver]).
+/// Injects the active [BillingRepository] implementation.
+/// Defaults to [FakeBillingDriver] in debug/test or when RevenueCat API keys are absent.
+/// Injects [RevenueCatBillingDriver] in release mode (or when FORCE_REVENUECAT is true) if configured.
 final billingRepositoryProvider = Provider<BillingRepository>((ref) {
   final prefs = ref.watch(preferencesRepositoryProvider);
-  return FakeBillingDriver(preferencesRepository: prefs);
+
+  const forceRevenueCat = bool.fromEnvironment('FORCE_REVENUECAT', defaultValue: false);
+  final shouldUseRevenueCat = (kReleaseMode || forceRevenueCat) && RevenueCatConfig.isConfigured;
+
+  final BillingRepository driver;
+  if (shouldUseRevenueCat) {
+    driver = RevenueCatBillingDriver(preferencesRepository: prefs);
+  } else {
+    driver = FakeBillingDriver(preferencesRepository: prefs);
+  }
+
+  ref.onDispose(() => driver.dispose());
+  return driver;
 });
 
 /// Reactive stream provider exposing whether the user has Pro entitlement.

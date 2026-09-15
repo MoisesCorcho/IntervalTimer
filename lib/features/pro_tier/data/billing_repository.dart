@@ -24,4 +24,7 @@ abstract class BillingRepository {
 
   /// Toggles mock Pro entitlement in real-time (debug environments only).
   Future<void> toggleMockPro(bool enable);
+
+  /// Releases resources, stream subscriptions, and native listeners.
+  void dispose() {}
 }

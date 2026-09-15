@@ -92,4 +92,7 @@ class FakeBillingDriver implements BillingRepository {
   Future<void> toggleMockPro(bool enable) async {
     await _prefs.setIsProUser(enable);
   }
+
+  @override
+  void dispose() {}
 }
