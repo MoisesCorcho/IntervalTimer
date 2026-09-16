@@ -8,6 +8,8 @@ import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
 import 'package:interval_timer/features/lock_screen/domain/no_op_session_surface_driver.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
@@ -346,6 +348,91 @@ void main() {
           scrollable: find.byType(Scrollable).first);
       expect(proCardFinder, findsOneWidget);
       expect(find.text('Repulse Pro'), findsOneWidget);
+    });
+
+    testWidgets('shows lock icon on custom phase color when phaseColorsPass is inactive',
+        (tester) async {
+      await settingsRepo.setWorkColorArgb(0xFF9C27B0); // Custom purple
+      final customColorContainer = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          preferencesRepositoryProvider.overrideWithValue(prefs),
+          settingsRepositoryProvider.overrideWithValue(settingsRepo),
+          sessionSurfaceDriverProvider.overrideWithValue(NoOpSessionSurfaceDriver()),
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
+          isBenefitUnlockedProvider(RewardedBenefit.phaseColorsPass).overrideWithValue(false),
+        ],
+      );
+      addTearDown(customColorContainer.dispose);
+
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: customColorContainer,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final workColorTile = find.byKey(const Key('work_color_tile'));
+      expect(workColorTile, findsOneWidget);
+      // Lock icon should be visible inside workColorTile trailing
+      expect(
+        find.descendant(
+          of: workColorTile,
+          matching: find.byIcon(Icons.lock_rounded),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('does not show lock icon on phase color when phaseColorsPass is active',
+        (tester) async {
+      await settingsRepo.setWorkColorArgb(0xFF9C27B0); // Custom purple
+      final unlockedContainer = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          preferencesRepositoryProvider.overrideWithValue(prefs),
+          settingsRepositoryProvider.overrideWithValue(settingsRepo),
+          sessionSurfaceDriverProvider.overrideWithValue(NoOpSessionSurfaceDriver()),
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
+          isBenefitUnlockedProvider(RewardedBenefit.phaseColorsPass).overrideWithValue(true),
+        ],
+      );
+      addTearDown(unlockedContainer.dispose);
+
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: unlockedContainer,
+          child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale('es'),
+            home: SettingsScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final workColorTile = find.byKey(const Key('work_color_tile'));
+      expect(workColorTile, findsOneWidget);
+      expect(
+        find.descendant(
+          of: workColorTile,
+          matching: find.byIcon(Icons.lock_rounded),
+        ),
+        findsNothing,
+      );
     });
   });
 }

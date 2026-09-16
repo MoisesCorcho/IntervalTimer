@@ -448,12 +448,16 @@ class _PhaseColorPickerScreenState extends ConsumerState<PhaseColorPickerScreen>
                                    if (!isUnlocked &&
                                        _selectedColor.toARGB32() !=
                                            widget.defaultColor.toARGB32()) {
-                                     BenefitUnlockDialog.show(
-                                       context: context,
-                                       benefit: RewardedBenefit.phaseColorsPass,
-                                     );
-                                     return;
-                                   }
+                                      BenefitUnlockDialog.show(
+                                        context: context,
+                                        benefit: RewardedBenefit.phaseColorsPass,
+                                        onUnlocked: () {
+                                          widget.onColorSelected(_selectedColor);
+                                          Navigator.of(context).pop();
+                                        },
+                                      );
+                                      return;
+                                    }
                                   widget.onColorSelected(_selectedColor);
                                   Navigator.of(context).pop();
                                 },

@@ -188,16 +188,33 @@ class _SoundSlotRow extends ConsumerWidget {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final resolved = catalog.resolveOrDefault(soundId, slot);
+    final isPro =
+        ref.watch(isBenefitUnlockedProvider(RewardedBenefit.proAudioPass));
+    final isDefault = soundId == catalog.defaultId(slot);
+    final isLocked = !isPro && !isDefault;
 
     return ListTile(
       key: Key('sound_slot_${slot.name}'),
       contentPadding: EdgeInsets.zero,
       title: Text(label),
-      subtitle: Text(
-        resolved.id,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
+      subtitle: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            resolved.id,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          if (isLocked) ...[
+            const SizedBox(width: 4),
+            Icon(
+              Icons.lock_rounded,
+              size: 14,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ],
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -292,6 +309,8 @@ class _SoundSlotRow extends ConsumerWidget {
                             BenefitUnlockDialog.show(
                               context: context,
                               benefit: RewardedBenefit.proAudioPass,
+                              onUnlocked: () =>
+                                  Navigator.of(context).pop(entry.id),
                             );
                             return;
                           }

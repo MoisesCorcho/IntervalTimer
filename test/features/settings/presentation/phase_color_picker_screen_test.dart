@@ -1,9 +1,16 @@
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/app_localizations.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/data/local/database.dart';
+import 'package:interval_timer/data/repositories/preferences_repository.dart';
+import 'package:interval_timer/features/monetization/application/daily_rewarded_ad_tracker.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/data/temporary_pass_repository.dart';
+import 'package:interval_timer/features/monetization/infrastructure/fake_ad_service.dart';
 import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
@@ -17,10 +24,12 @@ void main() {
     required Color defaultColor,
     required ValueChanged<Color> onColorSelected,
     bool isPro = true,
+    List<Override> overrides = const [],
   }) {
     return ProviderScope(
       overrides: [
         isProUserProvider.overrideWith((ref) => Stream.value(isPro)),
+        ...overrides,
       ],
       child: MaterialApp(
         localizationsDelegates: const [
@@ -227,6 +236,64 @@ void main() {
 
       expect(find.byType(PaywallModalScreen), findsOneWidget);
       expect(selected, isNull);
+    });
+
+    testWidgets(
+        'watching rewarded video calls onUnlocked to auto-save selected color and close screen',
+        (tester) async {
+      final db = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
+      final prefs = PreferencesRepository(db);
+      final passRepo = TemporaryPassRepository(db, prefs);
+      final fakeAdService = FakeAdService(temporaryPassRepository: passRepo);
+      fakeAdService.isReady = true;
+      fakeAdService.shouldUserCompleteAd = true;
+      final tracker = DailyRewardedAdTracker(prefs);
+
+      Color? selected;
+      const crimson = Color(0xFFC62828);
+
+      await tester.pumpWidget(
+        buildTestWidget(
+          title: 'Color de trabajo',
+          initialColor: AppTheme.workColor,
+          defaultColor: AppTheme.workColor,
+          isPro: false,
+          onColorSelected: (c) => selected = c,
+          overrides: [
+            temporaryPassRepositoryProvider.overrideWithValue(passRepo),
+            adServiceProvider.overrideWithValue(fakeAdService),
+            dailyRewardedAdTrackerProvider.overrideWithValue(tracker),
+            canWatchRewardedAdProvider.overrideWith((ref) => true),
+            dailyRewardedAdCountProvider.overrideWith((ref) => 0),
+          ],
+        ),
+      );
+      await tester.pump();
+
+      // Tap crimson swatch
+      await tester.tap(find.byKey(Key('color_swatch_${crimson.toARGB32()}')));
+      await tester.pump();
+
+      // Tap save
+      await tester.ensureVisible(find.byKey(const Key('save_color_button')));
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('save_color_button')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.byType(BenefitUnlockDialog), findsOneWidget);
+
+      // Tap the rewarded unlock button
+      final watchAdButton = find.byKey(const Key('benefit_unlock_watch_ad_button'));
+      expect(watchAdButton, findsOneWidget);
+      await tester.tap(watchAdButton);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(selected, crimson);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpAndSettle();
     });
   });
 }

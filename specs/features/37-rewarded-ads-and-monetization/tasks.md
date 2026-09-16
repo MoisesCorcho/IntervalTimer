@@ -20,7 +20,7 @@
   - Selector de sonidos deportivos Pro (`SoundService` / F36).
   - Selector de colores de fase (`PhaseColorPickerScreen`).
   - Seguimiento corporal / historial de peso extendido (F15).
-- [x] Opción secundaria de ver video bonificado integrada en el pie de `PaywallModalScreen`.
+- [x] Enfoque exclusivo de conversión en `PaywallModalScreen` (sin distracciones publicitarias que canibalicen la venta Pro).
 - [x] Persistencia atómica de pases temporales en Drift SQLite (`TemporaryPassesTable`) con protección contra manipulación de reloj del dispositivo.
 - [x] Verificación adversarial **RDD (Receipt-Driven Development)** completada mediante subagente ciego sin contexto previo al merge.
 - [x] Cero regresiones en la suite completa de tests automatizados del proyecto (`flutter test`).
@@ -68,7 +68,7 @@
   - [x] Botón primario de compra Pro (navega a `PaywallModalScreen`).
   - [x] Botón secundario con icono de play *"Ver video (30s) para desbloquear"*.
   - [x] Estado deshabilitado reactivo cuando no hay internet o se alcanzó el límite diario (2/2). _(cubre R03, R06, R08)_
-- [x] Actualizar `PaywallModalScreen` (F06) para incluir en el pie una sección secundaria discreta: *"¿Sin tarjeta? Mirá un video bonificado para probar por 24h"*. _(cubre R03)_
+- [x] Garantizar enfoque exclusivo de suscripción en `PaywallModalScreen` (F06) sin atajos publicitarios. _(cubre R03)_
 - [x] Integrar compuerta en `SessionCompleteScreen`:
   - [x] Al presionar "Listo", evaluar si corresponde mostrar intersticial con cooldown de 10 min.
   - [x] Omitir si `adFreePass` está activo o el usuario es Pro. _(cubre R01, R02)_

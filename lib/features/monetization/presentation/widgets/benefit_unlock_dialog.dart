@@ -99,7 +99,7 @@ class BenefitUnlockDialog extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Esta función pertenece al plan Pro. Podés desbloquearla de forma ilimitada o probarla viendo un anuncio.',
+              'Esta función pertenece al plan Pro. Puedes desbloquearla de forma ilimitada o probarla viendo un anuncio.',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
@@ -147,6 +147,7 @@ class BenefitUnlockDialog extends ConsumerWidget {
                 }
 
                 return OutlinedButton.icon(
+                  key: const Key('benefit_unlock_watch_ad_button'),
                   onPressed: (!canWatch || state.isLoading)
                       ? null
                       : () async {

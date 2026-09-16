@@ -4,6 +4,8 @@ import 'package:interval_timer/data/repositories/preferences_repository.dart';
 import 'package:interval_timer/features/body_tracking/domain/body_measurement.dart';
 import 'package:interval_timer/features/body_tracking/domain/body_measurement_weight_reader.dart';
 import 'package:interval_timer/features/body_tracking/domain/weight_unit.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/stats/domain/weight_reader.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
@@ -28,10 +30,11 @@ const kFreeBodyMeasurementsLimit = 5;
 final visibleBodyMeasurementsProvider =
     Provider.autoDispose<AsyncValue<List<BodyMeasurement>>>((ref) {
   final allAsync = ref.watch(bodyMeasurementsProvider);
-  final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
+  final isUnlocked =
+      ref.watch(isBenefitUnlockedProvider(RewardedBenefit.bodyTrackingPass));
 
   return allAsync.whenData((list) {
-    if (isPro || list.length <= kFreeBodyMeasurementsLimit) {
+    if (isUnlocked || list.length <= kFreeBodyMeasurementsLimit) {
       return list;
     }
     return list.sublist(list.length - kFreeBodyMeasurementsLimit);
@@ -41,8 +44,9 @@ final visibleBodyMeasurementsProvider =
 /// Number of older measurements preserved in database but hidden from Free tier.
 final hiddenMeasurementsCountProvider = Provider.autoDispose<int>((ref) {
   final all = ref.watch(bodyMeasurementsProvider).valueOrNull ?? const [];
-  final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
-  if (isPro || all.length <= kFreeBodyMeasurementsLimit) {
+  final isUnlocked =
+      ref.watch(isBenefitUnlockedProvider(RewardedBenefit.bodyTrackingPass));
+  if (isUnlocked || all.length <= kFreeBodyMeasurementsLimit) {
     return 0;
   }
   return all.length - kFreeBodyMeasurementsLimit;
@@ -98,13 +102,14 @@ class BodyMeasurementController {
     double? legCm,
     String? existingId,
   }) async {
-    final current = _ref.read(isProUserProvider).valueOrNull;
-    final bool isPro = current ?? await _ref.read(isProUserProvider.future);
+    final bool isUnlocked = _ref.read(
+      isBenefitUnlockedProvider(RewardedBenefit.bodyTrackingPass),
+    );
     double? effectiveWaist = waistCm;
     double? effectiveArm = armCm;
     double? effectiveLeg = legCm;
 
-    if (!isPro) {
+    if (!isUnlocked) {
       if (existingId != null) {
         final existing = await _repo.getById(existingId);
         effectiveWaist = existing?.waistCm;

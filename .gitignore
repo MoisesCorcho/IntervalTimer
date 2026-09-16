@@ -53,3 +53,4 @@ app.*.map.json
 .codegraph/
 .engram/
 untranslated_messages.json
+ANALISIS_*.md

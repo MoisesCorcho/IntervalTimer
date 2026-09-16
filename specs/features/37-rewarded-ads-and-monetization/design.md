@@ -22,8 +22,8 @@ Este documento especifica el diseño técnico detallado para la capa publicitari
 ```
 ┌────────────────────────────────────────────────────────┐
 │                   PRESENTATION LAYER                   │
-│   [BenefitUnlockDialog] [PaywallModalScreen (update)]  │
-│   [RewardedAdButton]    [CooldownTimerBadge]           │
+│   [BenefitUnlockDialog] [CooldownTimerBadge]           │
+│   [RewardedBenefit]     [MonetizationController]       │
 └───────────────────────────▲────────────────────────────┘
                             │
 ┌───────────────────────────┴────────────────────────────┐

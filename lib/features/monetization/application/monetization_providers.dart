@@ -122,8 +122,8 @@ class MonetizationController extends StateNotifier<MonetizationState> {
     if (!canWatch) {
       final isCooldown = await _tracker.isCooldownActive();
       final msg = isCooldown
-          ? 'Por favor esperá unos minutos antes de ver otro anuncio.'
-          : 'Límite diario de 2 videos alcanzado. Podés volver a ver videos mañana o pasarte a Pro.';
+          ? 'Por favor espera unos minutos antes de ver otro anuncio.'
+          : 'Límite diario de 2 videos alcanzado. Puedes volver a ver videos mañana o pasar a Pro.';
       state = state.copyWith(isLoading: false, errorMessage: msg);
       return false;
     }

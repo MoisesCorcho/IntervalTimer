@@ -129,7 +129,7 @@ class AdMobAdService implements AdService {
       if (_rewardedAd == null) {
         return const AdRewardResult.failure(
           AdRewardStatus.adNotAvailable,
-          'No hay anuncios bonificados disponibles. Comprobá tu conexión a internet.',
+          'No hay anuncios bonificados disponibles. Comprueba tu conexión a internet.',
         );
       }
     }

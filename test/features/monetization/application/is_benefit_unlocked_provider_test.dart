@@ -59,7 +59,7 @@ void main() {
     });
 
     test('returns true when Free user has an active temporary pass for that benefit', () async {
-      final now = DateTime.utc(2026, 9, 15, 12, 0);
+      final now = DateTime.now().toUtc();
       await passRepo.grantPass(
         benefit: RewardedBenefit.proAudioPass,
         duration: const Duration(hours: 12),
@@ -89,7 +89,7 @@ void main() {
     });
 
     test('canCreateWorkoutProvider allows 4th workout when extraWorkoutSlot pass is active', () async {
-      final now = DateTime.utc(2026, 9, 15, 12, 0);
+      final now = DateTime.now().toUtc();
 
       final container = ProviderContainer(
         overrides: [
