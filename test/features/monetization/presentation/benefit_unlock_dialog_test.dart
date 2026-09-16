@@ -108,9 +108,9 @@ void main() {
     });
 
     testWidgets('video button is disabled when daily cap is reached', (tester) async {
-      final now = DateTime.utc(2026, 9, 15, 10, 0);
-      await tracker.recordAdWatched(now);
-      await tracker.recordAdWatched(now.add(const Duration(minutes: 20)));
+      final now = DateTime.now().toUtc();
+      await tracker.recordAdWatched(now.subtract(const Duration(hours: 1)));
+      await tracker.recordAdWatched(now.subtract(const Duration(minutes: 20)));
 
       await tester.pumpWidget(
         buildTestWidget(benefit: RewardedBenefit.phaseColorsPass),
