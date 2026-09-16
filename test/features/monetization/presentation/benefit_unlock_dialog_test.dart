@@ -125,5 +125,29 @@ void main() {
       );
       expect(button.onPressed, isNull); // Disabled button
     });
+
+    testWidgets('video button displays remaining cooldown countdown and is disabled when cooldown is active', (tester) async {
+      final now = DateTime.now().toUtc();
+      // Ad watched 5 minutes ago -> remaining cooldown is 10 minutes (10:00)
+      final watchedAt = now.subtract(const Duration(minutes: 5));
+      await tracker.recordAdWatched(watchedAt);
+
+      await tester.pumpWidget(
+        buildTestWidget(benefit: RewardedBenefit.phaseColorsPass),
+      );
+
+      await tester.tap(find.text('Open Dialog'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Disponible en 10:00'), findsOneWidget);
+      final button = tester.widget<OutlinedButton>(
+        find.byKey(const Key('benefit_unlock_watch_ad_button')),
+      );
+      expect(button.onPressed, isNull);
+
+      // Advance 1 second and verify it counts down
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.textContaining('Disponible en 09:59'), findsOneWidget);
+    });
   });
 }

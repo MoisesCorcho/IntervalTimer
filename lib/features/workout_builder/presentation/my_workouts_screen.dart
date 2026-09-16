@@ -122,10 +122,10 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
     }
 
     final isPro = ref.read(isProUserProvider).valueOrNull ?? false;
-    final hasExtraSlot = ref.read(isBenefitUnlockedProvider(RewardedBenefit.extraWorkoutSlot));
+    final limit = ref.read(maxWorkoutsLimitProvider);
     final workouts = ref.read(workoutsListProvider).valueOrNull ?? [];
     final originalIndex = workouts.indexWhere((w) => w.id == workout.id);
-    final isLocked = !isPro && !hasExtraSlot && originalIndex >= freeWorkoutsLimit;
+    final isLocked = !isPro && originalIndex >= limit;
     if (isLocked) {
       BenefitUnlockDialog.show(
         context: context,
@@ -202,10 +202,10 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
     if (action == null || !mounted) return;
 
     final isPro = ref.read(isProUserProvider).valueOrNull ?? false;
-    final hasExtraSlot = ref.read(isBenefitUnlockedProvider(RewardedBenefit.extraWorkoutSlot));
+    final limit = ref.read(maxWorkoutsLimitProvider);
     final workouts = ref.read(workoutsListProvider).valueOrNull ?? [];
     final originalIndex = workouts.indexWhere((w) => w.id == workout.id);
-    final isLocked = !isPro && !hasExtraSlot && originalIndex >= freeWorkoutsLimit;
+    final isLocked = !isPro && originalIndex >= limit;
 
     switch (action) {
       case WorkoutAction.train:
@@ -289,8 +289,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
     final catalogAsync = ref.watch(presetCatalogProvider);
     final favoriteIds = ref.watch(favoriteIdsStreamProvider).valueOrNull ?? {};
     final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
-    final hasExtraSlot =
-        ref.watch(isBenefitUnlockedProvider(RewardedBenefit.extraWorkoutSlot));
+    final limit = ref.watch(maxWorkoutsLimitProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.workoutsTitle)),
@@ -406,7 +405,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                           Text(
                             ref.watch(isProUserProvider).valueOrNull ?? false
                                 ? l10n.proUnlimitedWorkoutsCounter
-                                : l10n.proFreeWorkoutsCounter(workouts.length, freeWorkoutsLimit),
+                                : l10n.proFreeWorkoutsCounter(workouts.length, limit),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   fontSize: 11,
@@ -464,9 +463,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                       final showRounds = workout.rounds > 1;
                       final originalIndex =
                           workouts.indexWhere((w) => w.id == workout.id);
-                      final isLocked = !isPro &&
-                          !hasExtraSlot &&
-                          originalIndex >= freeWorkoutsLimit;
+                      final isLocked = !isPro && originalIndex >= limit;
 
                       return Card(
                         child: ListTile(

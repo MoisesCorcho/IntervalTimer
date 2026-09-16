@@ -50,16 +50,21 @@ final customWorkoutsCountProvider = Provider<int>((ref) {
   return workouts.length;
 });
 
+/// Retorna el límite máximo de rutinas personalizadas permitidas para usuarios Free
+/// (3 por defecto, o 4 si tiene el pase extraWorkoutSlot activo).
+final maxWorkoutsLimitProvider = Provider<int>((ref) {
+  final hasExtraSlot = ref.watch(isBenefitUnlockedProvider(RewardedBenefit.extraWorkoutSlot));
+  return hasExtraSlot ? (freeWorkoutsLimit + 1) : freeWorkoutsLimit;
+});
+
 /// Evaluates whether the user is authorized to create/duplicate a workout.
 /// Pro users: always true.
-/// Free users: true if customWorkoutsCount < freeWorkoutsLimit (3).
+/// Free users: true if customWorkoutsCount < limit.
 final canCreateWorkoutProvider = Provider<bool>((ref) {
   final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
   if (isPro) return true;
 
-  final hasExtraSlot = ref.watch(isBenefitUnlockedProvider(RewardedBenefit.extraWorkoutSlot));
-  final limit = hasExtraSlot ? (freeWorkoutsLimit + 1) : freeWorkoutsLimit;
-
+  final limit = ref.watch(maxWorkoutsLimitProvider);
   final count = ref.watch(customWorkoutsCountProvider);
   return count < limit;
 });

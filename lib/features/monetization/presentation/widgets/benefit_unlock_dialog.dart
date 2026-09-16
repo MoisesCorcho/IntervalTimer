@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/features/monetization/application/daily_rewarded_ad_tracker.dart';
@@ -132,66 +134,9 @@ class BenefitUnlockDialog extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             // Opción Secundaria: Video Bonificado
-            Builder(
-              builder: (context) {
-                final canWatchAsync = ref.watch(canWatchRewardedAdProvider);
-                final dailyCountAsync = ref.watch(dailyRewardedAdCountProvider);
-                final canWatch = canWatchAsync.valueOrNull ?? false;
-                final dailyCount = dailyCountAsync.valueOrNull ?? 0;
-                final capReached =
-                    dailyCount >= DailyRewardedAdTracker.maxDailyAds;
-
-                String buttonText = 'Ver video para desbloquear';
-                if (capReached) {
-                  buttonText = 'Límite diario alcanzado (2/2)';
-                }
-
-                return OutlinedButton.icon(
-                  key: const Key('benefit_unlock_watch_ad_button'),
-                  onPressed: (!canWatch || state.isLoading)
-                      ? null
-                      : () async {
-                          final success = await ref
-                              .read(monetizationControllerProvider.notifier)
-                              .requestRewardedUnlock(benefit);
-
-                          if (!context.mounted) return;
-
-                          if (success) {
-                            Navigator.of(context).pop();
-                            onUnlocked?.call();
-                            AppSnackBar.showSuccess(
-                              context,
-                              message: '¡Pase temporal activado con éxito!',
-                            );
-                          } else {
-                            final err = ref
-                                .read(monetizationControllerProvider)
-                                .errorMessage;
-                            if (err != null) {
-                              AppSnackBar.showError(
-                                context,
-                                message: err,
-                              );
-                            }
-                          }
-                        },
-                  icon: state.isLoading
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.play_circle_outline, size: 20),
-                  label: Text(buttonText),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                );
-              },
+            _RewardedAdWatchButton(
+              benefit: benefit,
+              onUnlocked: onUnlocked,
             ),
           ],
         ),
@@ -234,3 +179,159 @@ class BenefitUnlockDialog extends ConsumerWidget {
     }
   }
 }
+
+class _RewardedAdWatchButton extends ConsumerStatefulWidget {
+  final RewardedBenefit benefit;
+  final VoidCallback? onUnlocked;
+
+  const _RewardedAdWatchButton({
+    required this.benefit,
+    this.onUnlocked,
+  });
+
+  @override
+  ConsumerState<_RewardedAdWatchButton> createState() =>
+      _RewardedAdWatchButtonState();
+}
+
+class _RewardedAdWatchButtonState
+    extends ConsumerState<_RewardedAdWatchButton> {
+  Timer? _timer;
+  Duration _remainingCooldown = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _initCooldown();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _initCooldown() async {
+    final tracker = ref.read(dailyRewardedAdTrackerProvider);
+    final remaining = await tracker.getRemainingCooldown();
+    if (!mounted) return;
+
+    setState(() {
+      _remainingCooldown = remaining;
+    });
+
+    if (remaining > Duration.zero) {
+      _startCooldownTimer();
+    }
+  }
+
+  void _startCooldownTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_remainingCooldown > const Duration(seconds: 1)) {
+        setState(() {
+          _remainingCooldown -= const Duration(seconds: 1);
+        });
+      } else {
+        timer.cancel();
+        _timer = null;
+        setState(() {
+          _remainingCooldown = Duration.zero;
+        });
+        ref.invalidate(canWatchRewardedAdProvider);
+        ref.invalidate(dailyRewardedAdCountProvider);
+      }
+    });
+  }
+
+  String _formatDuration(Duration d) {
+    final totalSeconds = (d.inMilliseconds / 1000).ceil();
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    final mm = minutes.toString().padLeft(2, '0');
+    final ss = seconds.toString().padLeft(2, '0');
+    return '$mm:$ss';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final canWatchAsync = ref.watch(canWatchRewardedAdProvider);
+    final dailyCountAsync = ref.watch(dailyRewardedAdCountProvider);
+    final state = ref.watch(monetizationControllerProvider);
+
+    ref.listen(canWatchRewardedAdProvider, (prev, next) {
+      if (next.valueOrNull == false) {
+        _initCooldown();
+      }
+    });
+
+    final canWatch = canWatchAsync.valueOrNull ?? false;
+    final dailyCount = dailyCountAsync.valueOrNull ?? 0;
+    final capReached = dailyCount >= DailyRewardedAdTracker.maxDailyAds;
+
+    final isCooldown = !canWatch && !capReached && (_remainingCooldown > Duration.zero);
+
+    String buttonText = 'Ver video para desbloquear';
+    if (capReached) {
+      buttonText = 'Límite diario alcanzado (2/2)';
+    } else if (isCooldown) {
+      buttonText = 'Disponible en ${_formatDuration(_remainingCooldown)}';
+    }
+
+    final isBlocked = !canWatch || capReached || isCooldown;
+
+    return OutlinedButton.icon(
+      key: const Key('benefit_unlock_watch_ad_button'),
+      onPressed: (isBlocked || state.isLoading)
+          ? null
+          : () async {
+              final success = await ref
+                  .read(monetizationControllerProvider.notifier)
+                  .requestRewardedUnlock(widget.benefit);
+
+              if (!context.mounted) return;
+
+              if (success) {
+                Navigator.of(context).pop();
+                widget.onUnlocked?.call();
+                AppSnackBar.showSuccess(
+                  context,
+                  message: '¡Pase temporal activado con éxito!',
+                );
+              } else {
+                final err = ref
+                    .read(monetizationControllerProvider)
+                    .errorMessage;
+                if (err != null) {
+                  AppSnackBar.showError(
+                    context,
+                    message: err,
+                  );
+                }
+              }
+            },
+      icon: state.isLoading
+          ? const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(
+              isCooldown ? Icons.timer_outlined : Icons.play_circle_outline,
+              size: 20,
+            ),
+      label: Text(buttonText),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+      ),
+    );
+  }
+}
+
