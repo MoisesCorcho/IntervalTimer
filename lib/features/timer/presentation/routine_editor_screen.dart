@@ -15,7 +15,6 @@ import 'package:interval_timer/features/workout_builder/application/workout_prov
 import 'package:interval_timer/features/timer/presentation/widgets/interval_form.dart';
 import 'package:interval_timer/shared/widgets/app_modal_bottom_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
-import 'package:interval_timer/shared/widgets/interval_color_badge.dart';
 
 class RoutineEditorScreen extends ConsumerStatefulWidget {
   const RoutineEditorScreen({super.key});
@@ -161,13 +160,15 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                 child: ListView.separated(
                   padding: const EdgeInsets.all(AppTheme.spacingMd),
                   itemCount: routine.items.length,
-                  separatorBuilder: (_, __) =>
+                  separatorBuilder: (_, _) =>
                       const SizedBox(height: AppTheme.spacingSm),
                   itemBuilder: (context, index) {
                     final item = routine.items[index];
                     final interval = switch (item) {
                       IntervalRoutineItem(:final interval) => interval,
                     };
+
+                    final theme = Theme.of(context);
 
                     return Card(
                       child: ListTile(
@@ -177,11 +178,31 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                                   index: index,
                                 )
                             : null,
-                        title: IntervalColorBadge(
-                          name: interval.name,
-                          color: Color(interval.colorArgb),
-                          durationLabel:
-                              formatDurationMmSs(interval.durationSeconds),
+                        leading: CircleAvatar(
+                          radius: 16,
+                          backgroundColor:
+                              theme.colorScheme.surfaceContainerHighest,
+                          child: Text(
+                            '${index + 1}',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                        title: Text(
+                          interval.name,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(
+                          formatDurationMmSs(interval.durationSeconds),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                         trailing: canEdit
                             ? IconButton(
