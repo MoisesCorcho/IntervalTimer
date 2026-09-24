@@ -7,7 +7,6 @@ import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/data/models/workout.dart';
 import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
 import 'package:interval_timer/features/favorites/presentation/widgets/home_favorites_section.dart';
-import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
 import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
 import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
