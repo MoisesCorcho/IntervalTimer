@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
+import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_media_widget.dart';
 import 'package:interval_timer/shared/widgets/favorite_toggle_button.dart';
@@ -48,7 +49,7 @@ class HomeFavoritesSection extends ConsumerWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: items.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (_, _) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final item = items[index];
                   return _FavoriteCard(item: item);
@@ -75,10 +76,8 @@ class _FavoriteCard extends StatelessWidget {
     final isPreset = item is PresetFavoriteItem;
 
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
         onTap: () {
           if (isPreset) {
             context.push('/presets/${item.id}');

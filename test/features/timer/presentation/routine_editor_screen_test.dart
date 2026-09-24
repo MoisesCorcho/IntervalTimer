@@ -83,5 +83,83 @@ void main() {
       // Verify delete buttons
       expect(find.byIcon(Icons.delete_outline), findsNWidgets(2));
     });
+
+    testWidgets('renders item title and subtitle with dark theme onSurface and onSurfaceVariant colors', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            routineEditorProvider.overrideWith(
+              () => FakeRoutineEditorController(testRoutine),
+            ),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: ThemeMode.dark,
+            home: const RoutineEditorScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final darkTheme = AppTheme.dark();
+      final titleWidget = tester.widget<Text>(find.text('BURPEES'));
+      expect(titleWidget.style?.color, equals(darkTheme.colorScheme.onSurface));
+
+      final subtitleWidget = tester.widget<Text>(find.text('00:45'));
+      expect(subtitleWidget.style?.color, equals(darkTheme.colorScheme.onSurfaceVariant));
+    });
+
+    testWidgets('dynamically switching themeMode from light to dark updates item text colors', (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          routineEditorProvider.overrideWith(
+            () => FakeRoutineEditorController(testRoutine),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: ThemeMode.light,
+            home: const RoutineEditorScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final lightTheme = AppTheme.light();
+      final titleLight = tester.widget<Text>(find.text('BURPEES'));
+      expect(titleLight.style?.color, equals(lightTheme.colorScheme.onSurface));
+
+      // Switch theme mode to dark without starting a routine
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: ThemeMode.dark,
+            home: const RoutineEditorScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final darkTheme = AppTheme.dark();
+      final titleDark = tester.widget<Text>(find.text('BURPEES'));
+      expect(titleDark.style?.color, equals(darkTheme.colorScheme.onSurface));
+    });
   });
 }

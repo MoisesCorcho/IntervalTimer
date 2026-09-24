@@ -123,9 +123,14 @@ abstract final class AppTheme {
         foregroundColor: colorScheme.onSurface,
       ),
       cardTheme: CardThemeData(
-        elevation: 1,
+        elevation: 0,
+        color: colorScheme.surfaceContainer,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusMd),
+          side: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.45),
+            width: 1.0,
+          ),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -186,9 +191,14 @@ abstract final class AppTheme {
         foregroundColor: colorScheme.onSurface,
       ),
       cardTheme: CardThemeData(
-        elevation: 1,
+        elevation: 0,
+        color: colorScheme.surfaceContainer,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusMd),
+          side: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+            width: 1.0,
+          ),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
