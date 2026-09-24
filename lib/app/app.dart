@@ -7,6 +7,7 @@ import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
 import 'package:interval_timer/features/calendar_history/application/session_history_listener.dart';
 import 'package:interval_timer/features/lock_screen/application/lock_screen_providers.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
 import 'package:interval_timer/features/settings/application/language_providers.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/domain/app_theme_mode.dart';
@@ -54,6 +55,8 @@ class _AppState extends ConsumerState<App> {
     ref.watch(alwaysOnBootstrapProvider);
     // Bootstrap F20 session lock screen / notification surface.
     ref.watch(sessionLockScreenBootstrapProvider);
+    // Bootstrap F37 AdService initialization and background ad preloading.
+    ref.watch(adServiceBootstrapProvider);
     final router = ref.watch(routerProvider);
     final settingsAsync = ref.watch(settingsControllerProvider);
     final settings = settingsAsync.valueOrNull;

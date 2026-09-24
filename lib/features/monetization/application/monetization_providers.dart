@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/features/monetization/application/daily_rewarded_ad_tracker.dart';
@@ -25,20 +26,46 @@ final dailyRewardedAdTrackerProvider = Provider<DailyRewardedAdTracker>((ref) {
   return DailyRewardedAdTracker(prefs);
 });
 
+/// Determina si corresponde instanciar el adaptador nativo de AdMob.
+///
+/// Protege contra fallos en Web y Desktop (Windows/macOS/Linux) donde
+/// `google_mobile_ads` no tiene soporte nativo registrado.
+bool shouldEnableAdMob({
+  required TargetPlatform platform,
+  required bool isWeb,
+  required bool isReleaseMode,
+  bool forceAdMob = false,
+}) {
+  final isMobile = !isWeb &&
+      (platform == TargetPlatform.android || platform == TargetPlatform.iOS);
+  return isMobile && (isReleaseMode || forceAdMob);
+}
+
 /// Proveedor del servicio de anuncios (Ports & Adapters).
-/// Inyecta [FakeAdService] por defecto para desarrollo, CI y tests deterministas.
-/// Inyecta [AdMobAdService] en entornos de producción (release mode) o con FORCE_ADMOB=true.
+/// Inyecta [FakeAdService] por defecto para desarrollo, CI, desktop y tests deterministas.
+/// Inyecta [AdMobAdService] en entornos móviles de producción (release mode) o con FORCE_ADMOB=true.
 final adServiceProvider = Provider<AdService>((ref) {
   final passRepo = ref.watch(temporaryPassRepositoryProvider);
 
   const forceAdMob = bool.fromEnvironment('FORCE_ADMOB', defaultValue: false);
-  final shouldUseAdMob = (kReleaseMode || forceAdMob);
+  final shouldUseAdMob = shouldEnableAdMob(
+    platform: defaultTargetPlatform,
+    isWeb: kIsWeb,
+    isReleaseMode: kReleaseMode,
+    forceAdMob: forceAdMob,
+  );
 
   if (shouldUseAdMob) {
     return AdMobAdService(temporaryPassRepository: passRepo);
   }
 
   return FakeAdService(temporaryPassRepository: passRepo);
+});
+
+/// Bootstrap provider para inicializar el servicio de anuncios y precarga al inicio de la app.
+final adServiceBootstrapProvider = Provider<void>((ref) {
+  final adService = ref.watch(adServiceProvider);
+  unawaited(adService.initialize());
 });
 
 /// Stream reactivo de pases temporales activos vigentes.

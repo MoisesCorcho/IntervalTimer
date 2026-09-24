@@ -5,7 +5,7 @@ import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dar
 
 /// Implementación simulada de [AdService] para desarrollo, CI y pruebas deterministas.
 class FakeAdService implements AdService {
-  final TemporaryPassRepository _temporaryPassRepository;
+  final TemporaryPassRepository? _temporaryPassRepository;
 
   static const Duration interstitialCooldown = Duration(minutes: 10);
 
@@ -15,7 +15,7 @@ class FakeAdService implements AdService {
   int interstitialShownCount = 0;
 
   FakeAdService({
-    required TemporaryPassRepository temporaryPassRepository,
+    TemporaryPassRepository? temporaryPassRepository,
   }) : _temporaryPassRepository = temporaryPassRepository;
 
   @override
@@ -59,7 +59,7 @@ class FakeAdService implements AdService {
   @override
   Future<bool> canShowInterstitial({DateTime? referenceTimeUtc}) async {
     final now = referenceTimeUtc ?? DateTime.now().toUtc();
-    final lastShown = await _temporaryPassRepository.getLastInterstitialShown();
+    final lastShown = await _temporaryPassRepository?.getLastInterstitialShown();
     if (lastShown == null) return true;
 
     final difference = now.difference(lastShown);
@@ -82,6 +82,6 @@ class FakeAdService implements AdService {
     }
 
     interstitialShownCount++;
-    await _temporaryPassRepository.recordLastInterstitialShown(now);
+    await _temporaryPassRepository?.recordLastInterstitialShown(now);
   }
 }

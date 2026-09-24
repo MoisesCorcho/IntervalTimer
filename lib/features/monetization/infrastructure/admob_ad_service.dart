@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:interval_timer/features/monetization/data/temporary_pass_repository.dart';
@@ -9,7 +8,8 @@ import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dar
 
 /// Implementación concreta de producción de [AdService] respaldada por Google Mobile Ads (AdMob).
 class AdMobAdService implements AdService {
-  final TemporaryPassRepository _temporaryPassRepository;
+  final TemporaryPassRepository? _temporaryPassRepository;
+  final Future<void> Function()? _mobileAdsInitializer;
 
   static const Duration interstitialCooldown = Duration(minutes: 10);
 
@@ -30,19 +30,29 @@ class AdMobAdService implements AdService {
   InterstitialAd? _interstitialAd;
   bool _isInterstitialLoading = false;
 
+  bool _isInitialized = false;
+  Completer<void>? _initCompleter;
+
   AdMobAdService({
-    required TemporaryPassRepository temporaryPassRepository,
-  }) : _temporaryPassRepository = temporaryPassRepository;
+    TemporaryPassRepository? temporaryPassRepository,
+    Future<void> Function()? mobileAdsInitializer,
+  })  : _temporaryPassRepository = temporaryPassRepository,
+        _mobileAdsInitializer = mobileAdsInitializer;
+
+  /// Retorna si el SDK de Mobile Ads ya completó su inicialización.
+  bool get isInitialized => _isInitialized;
 
   String get rewardedAdUnitId {
     const customAndroid = String.fromEnvironment('ADMOB_ANDROID_REWARDED_ID');
     const customIos = String.fromEnvironment('ADMOB_IOS_REWARDED_ID');
 
+    final isAndroid = defaultTargetPlatform == TargetPlatform.android;
+
     if (!kReleaseMode) {
-      return Platform.isAndroid ? _androidTestRewardedId : _iosTestRewardedId;
+      return isAndroid ? _androidTestRewardedId : _iosTestRewardedId;
     }
 
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       return customAndroid.isNotEmpty ? customAndroid : _androidTestRewardedId;
     } else {
       return customIos.isNotEmpty ? customIos : _iosTestRewardedId;
@@ -53,13 +63,15 @@ class AdMobAdService implements AdService {
     const customAndroid = String.fromEnvironment('ADMOB_ANDROID_INTERSTITIAL_ID');
     const customIos = String.fromEnvironment('ADMOB_IOS_INTERSTITIAL_ID');
 
+    final isAndroid = defaultTargetPlatform == TargetPlatform.android;
+
     if (!kReleaseMode) {
-      return Platform.isAndroid
+      return isAndroid
           ? _androidTestInterstitialId
           : _iosTestInterstitialId;
     }
 
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       return customAndroid.isNotEmpty
           ? customAndroid
           : _androidTestInterstitialId;
@@ -73,12 +85,33 @@ class AdMobAdService implements AdService {
 
   @override
   Future<void> initialize() async {
+    if (_isInitialized) return;
+    if (_initCompleter != null) return _initCompleter!.future;
+
+    final completer = Completer<void>();
+    _initCompleter = completer;
+
     try {
-      await MobileAds.instance.initialize();
-      preloadRewardedAd();
-      preloadInterstitialAd();
+      if (_mobileAdsInitializer != null) {
+        await _mobileAdsInitializer();
+      } else {
+        await MobileAds.instance.initialize();
+      }
+      _isInitialized = true;
+      unawaited(preloadRewardedAd());
+      unawaited(preloadInterstitialAd());
     } catch (e) {
       debugPrint('[AdMobAdService] Error initializing MobileAds: $e');
+    } finally {
+      _initCompleter = null;
+      if (!completer.isCompleted) completer.complete();
+    }
+  }
+
+  /// Garantiza que AdMob esté inicializado antes de ejecutar operaciones de carga o visualización.
+  Future<void> ensureInitialized() async {
+    if (!_isInitialized) {
+      await initialize();
     }
   }
 
@@ -89,6 +122,7 @@ class AdMobAdService implements AdService {
 
   @override
   Future<void> preloadRewardedAd() async {
+    await ensureInitialized();
     if (_rewardedAd != null) return;
     if (_rewardedPreloadCompleter != null) {
       return _rewardedPreloadCompleter!.future;
@@ -124,6 +158,7 @@ class AdMobAdService implements AdService {
 
   @override
   Future<AdRewardResult> showRewardedAd(RewardedBenefit benefit) async {
+    await ensureInitialized();
     if (_rewardedAd == null) {
       await preloadRewardedAd();
       if (_rewardedAd == null) {
@@ -199,8 +234,9 @@ class AdMobAdService implements AdService {
 
   @override
   Future<bool> canShowInterstitial({DateTime? referenceTimeUtc}) async {
+    await ensureInitialized();
     final now = referenceTimeUtc ?? DateTime.now().toUtc();
-    final lastShown = await _temporaryPassRepository.getLastInterstitialShown();
+    final lastShown = await _temporaryPassRepository?.getLastInterstitialShown();
     if (lastShown == null) return true;
 
     final difference = now.difference(lastShown);
@@ -209,6 +245,7 @@ class AdMobAdService implements AdService {
 
   @override
   Future<void> preloadInterstitialAd() async {
+    await ensureInitialized();
     if (_interstitialAd != null) return;
     if (_interstitialPreloadCompleter != null) {
       return _interstitialPreloadCompleter!.future;
@@ -244,6 +281,7 @@ class AdMobAdService implements AdService {
 
   @override
   Future<void> showInterstitialIfEligible({DateTime? referenceTimeUtc}) async {
+    await ensureInitialized();
     final now = referenceTimeUtc ?? DateTime.now().toUtc();
     final eligible = await canShowInterstitial(referenceTimeUtc: now);
     if (!eligible) return;
@@ -271,7 +309,7 @@ class AdMobAdService implements AdService {
       },
     );
 
-    await _temporaryPassRepository.recordLastInterstitialShown(now);
+    await _temporaryPassRepository?.recordLastInterstitialShown(now);
     try {
       await _interstitialAd!.show();
       await completer.future.timeout(
