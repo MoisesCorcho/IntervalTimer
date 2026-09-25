@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/domain/app_settings.dart';
 import 'package:interval_timer/features/sound_effects/domain/audioplayers_sfx_player.dart';
@@ -26,7 +28,12 @@ final sfxCatalogProvider = Provider<SfxCatalog>((ref) => const SfxCatalog());
 final soundEffectsControllerProvider = Provider<SoundEffectsController>((ref) {
   final player = ref.watch(sfxPlayerProvider);
   final catalog = ref.watch(sfxCatalogProvider);
-  final controller = SoundEffectsController(player, catalog: catalog);
+  final controller = SoundEffectsController(
+    player,
+    catalog: catalog,
+    isProAudioUnlocked: () =>
+        ref.read(isBenefitUnlockedProvider(RewardedBenefit.proAudioPass)),
+  );
 
   final initialSettings = ref.read(settingsControllerProvider).valueOrNull;
   if (initialSettings != null) {

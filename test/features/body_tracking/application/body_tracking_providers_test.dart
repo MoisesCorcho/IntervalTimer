@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/data/local/database.dart';
 import 'package:interval_timer/data/repositories/body_measurement_repository.dart';
 import 'package:interval_timer/features/body_tracking/application/body_tracking_providers.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 
@@ -197,4 +199,80 @@ void main() {
       expect(saved.legCm, 56.0);
     });
   });
+
+  group('Rewarded pass bodyTrackingPass support (Modelo B)', () {
+    test('when Free user has active bodyTrackingPass and 7 measurements, returns all 7', () async {
+      await seedMeasurements(7);
+      final container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          bodyMeasurementRepositoryProvider.overrideWithValue(repo),
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
+          isBenefitUnlockedProvider(RewardedBenefit.bodyTrackingPass).overrideWithValue(true),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      container.listen(bodyMeasurementsProvider, (_, __) {});
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      final visible = container.read(visibleBodyMeasurementsProvider).valueOrNull;
+      expect(visible, isNotNull);
+      expect(visible!.length, 7);
+      expect(container.read(hiddenMeasurementsCountProvider), 0);
+    });
+
+    test('persists body measures on new entry when user is Free with active bodyTrackingPass', () async {
+      final container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          bodyMeasurementRepositoryProvider.overrideWithValue(repo),
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
+          isBenefitUnlockedProvider(RewardedBenefit.bodyTrackingPass).overrideWithValue(true),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final controller = container.read(bodyMeasurementControllerProvider);
+      final saved = await controller.save(
+        localDate: '2026-08-10',
+        weightKg: 75.0,
+        waistCm: 82.0,
+        armCm: 36.0,
+        legCm: 56.0,
+      );
+
+      expect(saved.weightKg, 75.0);
+      expect(saved.waistCm, 82.0);
+      expect(saved.armCm, 36.0);
+      expect(saved.legCm, 56.0);
+    });
+
+    test('when bodyTrackingPass expires, dynamically falls back to last 5 without losing data in DB', () async {
+      await seedMeasurements(7);
+      // Pass is now inactive (expired or false)
+      final container = ProviderContainer(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          bodyMeasurementRepositoryProvider.overrideWithValue(repo),
+          isProUserProvider.overrideWith((ref) => Stream.value(false)),
+          isBenefitUnlockedProvider(RewardedBenefit.bodyTrackingPass).overrideWithValue(false),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      container.listen(bodyMeasurementsProvider, (_, __) {});
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      final visible = container.read(visibleBodyMeasurementsProvider).valueOrNull;
+      expect(visible, isNotNull);
+      expect(visible!.length, 5);
+      expect(container.read(hiddenMeasurementsCountProvider), 2);
+
+      // Verify ZERO DATA LOSS in database: all 7 records still exist in repo
+      final allInDb = await repo.getAll();
+      expect(allInDb.length, 7);
+    });
+  });
 }
+

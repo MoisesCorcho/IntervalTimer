@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart' hide Interval;
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/core/utils/name_format.dart';
@@ -44,7 +43,7 @@ class IntervalFormState extends State<IntervalForm> {
   late final TextEditingController _nameController;
   late final TextEditingController _announceController;
   late int _durationSeconds;
-  late Color _selectedColor;
+  late int _colorArgb;
   late IntervalType _selectedType;
 
   String? _nameError;
@@ -62,7 +61,7 @@ class IntervalFormState extends State<IntervalForm> {
     _announceController =
         TextEditingController(text: initial?.announceText ?? '');
     _durationSeconds = initial?.durationSeconds ?? 60;
-    _selectedColor = Color(initial?.colorArgb ?? widget.defaultColorArgb);
+    _colorArgb = initial?.colorArgb ?? widget.defaultColorArgb;
     _selectedType = initial?.type ?? IntervalType.work;
   }
 
@@ -106,7 +105,7 @@ class IntervalFormState extends State<IntervalForm> {
       IntervalFormResult(
         name: formatDisplayName(_nameController.text),
         durationSeconds: _durationSeconds,
-        colorArgb: _selectedColor.toARGB32(),
+        colorArgb: _colorArgb,
         type: _selectedType,
         announceText: announceTrimmed.isEmpty ? null : announceTrimmed,
       ),
@@ -161,23 +160,6 @@ class IntervalFormState extends State<IntervalForm> {
             onChanged: (value) => setState(() => _durationSeconds = value),
           ),
           const SizedBox(height: AppTheme.spacingLg),
-          Text(
-            l10n.color,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-          ColorPicker(
-            pickerColor: _selectedColor,
-            onColorChanged: (color) => setState(() => _selectedColor = color),
-            enableAlpha: false,
-            displayThumbColor: true,
-            paletteType: PaletteType.hsvWithHue,
-            labelTypes: const [],
-            pickerAreaHeightPercent: 0.7,
-          ),
-          const SizedBox(height: AppTheme.spacingMd),
           AppPrimaryButton(
             key: const Key('interval_save_button'),
             onPressed: submit,

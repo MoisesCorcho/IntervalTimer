@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:interval_timer/core/l10n/l10n_extension.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
-import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
-import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
@@ -29,7 +30,7 @@ class SoundEffectsSettingsSection extends ConsumerWidget {
     final masterOn = settings.soundEnabled;
     final controller = ref.read(settingsControllerProvider.notifier);
     final catalog = ref.watch(sfxCatalogProvider);
-    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
+    final isPro = ref.watch(isBenefitUnlockedProvider(RewardedBenefit.proAudioPass));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -187,16 +188,33 @@ class _SoundSlotRow extends ConsumerWidget {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final resolved = catalog.resolveOrDefault(soundId, slot);
+    final isPro =
+        ref.watch(isBenefitUnlockedProvider(RewardedBenefit.proAudioPass));
+    final isDefault = soundId == catalog.defaultId(slot);
+    final isLocked = !isPro && !isDefault;
 
     return ListTile(
       key: Key('sound_slot_${slot.name}'),
       contentPadding: EdgeInsets.zero,
       title: Text(label),
-      subtitle: Text(
-        resolved.id,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
+      subtitle: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            resolved.id,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          if (isLocked) ...[
+            const SizedBox(width: 4),
+            Icon(
+              Icons.lock_rounded,
+              size: 14,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ],
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -251,7 +269,7 @@ class _SoundSlotRow extends ConsumerWidget {
                       final entry = catalog.all[index];
                       final selected = entry.id == soundId;
                       final isPro =
-                          ref.read(isProUserProvider).valueOrNull ?? false;
+                          ref.read(isBenefitUnlockedProvider(RewardedBenefit.proAudioPass));
                       final isDefault = entry.id == catalog.defaultId(slot);
                       final isLocked = !isPro && !isDefault;
 
@@ -288,7 +306,12 @@ class _SoundSlotRow extends ConsumerWidget {
                         ),
                         onTap: () {
                           if (isLocked) {
-                            PaywallModalScreen.show(context);
+                            BenefitUnlockDialog.show(
+                              context: context,
+                              benefit: RewardedBenefit.proAudioPass,
+                              onUnlocked: () =>
+                                  Navigator.of(context).pop(entry.id),
+                            );
                             return;
                           }
                           Navigator.of(context).pop(entry.id);

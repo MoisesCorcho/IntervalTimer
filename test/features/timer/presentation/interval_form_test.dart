@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/core/constants/ui_strings.dart';
 import 'package:interval_timer/core/theme/app_theme.dart';
+import 'package:interval_timer/data/models/interval.dart';
+import 'package:interval_timer/data/models/interval_type.dart';
 import 'package:interval_timer/features/timer/presentation/widgets/interval_form.dart';
 import 'package:interval_timer/shared/widgets/interval_duration_picker.dart';
 
@@ -151,6 +153,77 @@ void main() {
 
     expect(find.text(UiStrings.announceTextTooLong), findsOneWidget);
     expect(result, isNull);
+  });
+
+  testWidgets('does not render color picker wheel and submits defaultColorArgb', (tester) async {
+    IntervalFormResult? result;
+    const defaultColor = 0xFF2E7D32;
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: IntervalForm(
+              defaultColorArgb: defaultColor,
+              onSubmit: (r) => result = r,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // Verify no color picker wheel or label is rendered
+    expect(find.text('Color'), findsNothing);
+
+    await tester.enterText(
+      find.byKey(const Key('interval_name_field')),
+      'Plank',
+    );
+
+    final saveButton = find.byKey(const Key('interval_save_button'));
+    await tester.ensureVisible(saveButton);
+    await tester.tap(saveButton);
+    await tester.pump();
+
+    expect(result, isNotNull);
+    expect(result!.colorArgb, equals(defaultColor));
+  });
+
+  testWidgets('editing existing interval preserves its custom colorArgb and type', (tester) async {
+    IntervalFormResult? result;
+    const existingColor = 0xFF9C27B0;
+    const initialInterval = Interval(
+      id: 'item-1',
+      name: 'BURPEES',
+      durationSeconds: 45,
+      colorArgb: existingColor,
+      type: IntervalType.work,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: IntervalForm(
+              initial: initialInterval,
+              defaultColorArgb: 0xFF2E7D32,
+              onSubmit: (r) => result = r,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final saveButton = find.byKey(const Key('interval_save_button'));
+    await tester.ensureVisible(saveButton);
+    await tester.tap(saveButton);
+    await tester.pump();
+
+    expect(result, isNotNull);
+    expect(result!.colorArgb, equals(existingColor));
+    expect(result!.name, equals('BURPEES'));
+    expect(result!.durationSeconds, equals(45));
   });
 }
 

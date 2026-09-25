@@ -8,6 +8,8 @@ import 'package:interval_timer/core/utils/execution_chrome.dart';
 import 'package:interval_timer/core/utils/name_format.dart';
 import 'package:interval_timer/features/always_on/application/always_on_providers.dart';
 import 'package:interval_timer/features/always_on/domain/always_on_controller.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_providers.dart';
 import 'package:interval_timer/features/timer/application/timer_state.dart';
@@ -136,15 +138,24 @@ class _TimerExecutionScreenState extends ConsumerState<TimerExecutionScreen>
     final current = timerState.currentInterval;
     final isPrep = timerState.isInPreparation;
     final settings = ref.watch(settingsControllerProvider).valueOrNull;
-    // Phase color + chrome: brand work/rest use user settings or swatches,
-    // preparation uses neutral AppTheme.prepColor (F35).
+    final isColorsUnlocked =
+        ref.watch(isBenefitUnlockedProvider(RewardedBenefit.phaseColorsPass));
+    // Phase color + chrome: brand work/rest use user settings when unlocked,
+    // otherwise dynamically fallback to standard brand colors (Modelo B).
+    // Preparation uses neutral AppTheme.prepColor (F35).
     final phaseInterval = isPrep ? timerState.nextInterval : current;
+    final workColor = (isColorsUnlocked && settings != null)
+        ? Color(settings.workColorArgb)
+        : null;
+    final restColor = (isColorsUnlocked && settings != null)
+        ? Color(settings.restColorArgb)
+        : null;
     final bgColor = executionBackgroundColor(
       interval: phaseInterval,
       prepFallback: Theme.of(context).colorScheme.surfaceContainerHighest,
       isPreparation: isPrep,
-      workColor: settings != null ? Color(settings.workColorArgb) : null,
-      restColor: settings != null ? Color(settings.restColorArgb) : null,
+      workColor: workColor,
+      restColor: restColor,
     );
     final textColor = executionChromeColor(
       background: bgColor,

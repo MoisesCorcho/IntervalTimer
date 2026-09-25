@@ -15,7 +15,6 @@ import 'package:interval_timer/features/workout_builder/application/workout_prov
 import 'package:interval_timer/features/timer/presentation/widgets/interval_form.dart';
 import 'package:interval_timer/shared/widgets/app_modal_bottom_sheet.dart';
 import 'package:interval_timer/shared/widgets/app_primary_button.dart';
-import 'package:interval_timer/shared/widgets/interval_color_badge.dart';
 
 class RoutineEditorScreen extends ConsumerStatefulWidget {
   const RoutineEditorScreen({super.key});
@@ -114,6 +113,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
     });
 
     final l10n = context.l10n;
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.routineTitle)),
@@ -130,7 +130,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                   children: [
                     Text(
                       l10n.emptyRoutineHint,
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: theme.textTheme.titleMedium,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppTheme.spacingMd),
@@ -145,7 +145,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                       Text(
                         _startError!,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
+                          color: theme.colorScheme.error,
                         ),
                       ),
                     ],
@@ -161,7 +161,7 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                 child: ListView.separated(
                   padding: const EdgeInsets.all(AppTheme.spacingMd),
                   itemCount: routine.items.length,
-                  separatorBuilder: (_, __) =>
+                  separatorBuilder: (_, _) =>
                       const SizedBox(height: AppTheme.spacingSm),
                   itemBuilder: (context, index) {
                     final item = routine.items[index];
@@ -169,29 +169,22 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
                       IntervalRoutineItem(:final interval) => interval,
                     };
 
-                    return Card(
-                      child: ListTile(
-                        onTap: canEdit
-                            ? () => _showIntervalSheet(
-                                  existing: interval,
-                                  index: index,
-                                )
-                            : null,
-                        title: IntervalColorBadge(
-                          name: interval.name,
-                          color: Color(interval.colorArgb),
-                          durationLabel:
-                              formatDurationMmSs(interval.durationSeconds),
-                        ),
-                        trailing: canEdit
-                            ? IconButton(
-                                icon: const Icon(Icons.delete_outline),
-                                onPressed: () => ref
-                                    .read(routineEditorProvider.notifier)
-                                    .removeInterval(index),
+                    return _RoutineIntervalCard(
+                      key: ValueKey(interval.id),
+                      interval: interval,
+                      index: index,
+                      canEdit: canEdit,
+                      onTap: canEdit
+                          ? () => _showIntervalSheet(
+                                existing: interval,
+                                index: index,
                               )
-                            : null,
-                      ),
+                          : null,
+                      onDelete: canEdit
+                          ? () => ref
+                              .read(routineEditorProvider.notifier)
+                              .removeInterval(index)
+                          : null,
                     );
                   },
                 ),
@@ -236,6 +229,66 @@ class _RoutineEditorScreenState extends ConsumerState<RoutineEditorScreen> {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _RoutineIntervalCard extends StatelessWidget {
+  const _RoutineIntervalCard({
+    super.key,
+    required this.interval,
+    required this.index,
+    required this.canEdit,
+    required this.onTap,
+    required this.onDelete,
+  });
+
+  final Interval interval;
+  final int index;
+  final bool canEdit;
+  final VoidCallback? onTap;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: ListTile(
+        onTap: onTap,
+        leading: CircleAvatar(
+          radius: 16,
+          backgroundColor: theme.colorScheme.surfaceContainerHighest,
+          child: Text(
+            '${index + 1}',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        ),
+        title: Text(
+          interval.name,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: theme.colorScheme.onSurface,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Text(
+          formatDurationMmSs(interval.durationSeconds),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        trailing: onDelete != null
+            ? IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: onDelete,
+              )
+            : null,
       ),
     );
   }

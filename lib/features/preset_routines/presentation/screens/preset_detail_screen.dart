@@ -7,6 +7,8 @@ import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/domain/models/preset_routine.dart';
 import 'package:interval_timer/features/preset_routines/domain/services/preset_routine_flattener.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_media_widget.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/exercise_technique_bottom_sheet.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
@@ -130,7 +132,10 @@ class PresetDetailScreen extends ConsumerWidget {
     if (!canCreate) {
       await HapticFeedback.lightImpact();
       if (context.mounted) {
-        PaywallModalScreen.show(context);
+        BenefitUnlockDialog.show(
+          context: context,
+          benefit: RewardedBenefit.extraWorkoutSlot,
+        );
       }
       return;
     }
@@ -322,11 +327,17 @@ class _PresetDetailBody extends StatelessWidget {
                   ),
                   title: Text(
                     '${index + 1}. $name',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onSurface,
+                    ),
                   ),
                   subtitle: Text(
                     '${ref.sets} sets × ${ref.workSeconds}s ${context.l10n.workShort}'
                     '${ref.restSeconds > 0 ? " / ${ref.restSeconds}s ${context.l10n.restShort}" : ""}',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {

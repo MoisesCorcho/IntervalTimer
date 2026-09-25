@@ -7,10 +7,11 @@ import 'package:interval_timer/data/models/favorite_routine.dart';
 import 'package:interval_timer/data/models/workout.dart';
 import 'package:interval_timer/features/favorites/application/favorite_providers.dart';
 import 'package:interval_timer/features/favorites/presentation/widgets/home_favorites_section.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/preset_routines/application/preset_providers.dart';
 import 'package:interval_timer/features/preset_routines/presentation/widgets/preset_hero_carousel.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
-import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/features/pro_tier/presentation/widgets/pro_badge.dart';
 import 'package:interval_timer/features/settings/application/settings_providers.dart';
 import 'package:interval_timer/features/settings/data/settings_repository.dart';
@@ -40,7 +41,13 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
   Future<void> _showCreateDialog() async {
     final canCreate = ref.read(canCreateWorkoutProvider);
     if (!canCreate) {
-      PaywallModalScreen.show(context);
+      BenefitUnlockDialog.show(
+        context: context,
+        benefit: RewardedBenefit.extraWorkoutSlot,
+        onUnlocked: () {
+          _showCreateDialog();
+        },
+      );
       return;
     }
 
@@ -113,10 +120,25 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
       return;
     }
 
+    final isPro = ref.read(isProUserProvider).valueOrNull ?? false;
+    final limit = ref.read(maxWorkoutsLimitProvider);
+    final workouts = ref.read(workoutsListProvider).valueOrNull ?? [];
+    final originalIndex = workouts.indexWhere((w) => w.id == workout.id);
+    final isLocked = !isPro && originalIndex >= limit;
+    if (isLocked) {
+      BenefitUnlockDialog.show(
+        context: context,
+        benefit: RewardedBenefit.extraWorkoutSlot,
+      );
+      return;
+    }
+
     final timerStatus = ref.read(timerControllerProvider).status;
-    if (timerStatus == TimerStatus.running ||
+    final isTimerActive = timerStatus == TimerStatus.running ||
         timerStatus == TimerStatus.paused ||
-        timerStatus == TimerStatus.preparing) {
+        timerStatus == TimerStatus.preparing;
+
+    if (isTimerActive) {
       final leave = await showDialog<bool>(
         context: context,
         builder: (dialogContext) {
@@ -125,19 +147,13 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
             title: Text(l10n.exitConfirmTitle),
             content: Text(l10n.exitConfirmMessage),
             actions: [
-              DialogActionsRow(
-                children: [
-                  AppSecondaryButton(
-                    compact: true,
-                    onPressed: () => Navigator.pop(dialogContext, false),
-                    label: l10n.exitConfirmContinue,
-                  ),
-                  AppPrimaryButton(
-                    compact: true,
-                    onPressed: () => Navigator.pop(dialogContext, true),
-                    label: l10n.exitConfirmLeave,
-                  ),
-                ],
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(l10n.exitConfirmContinue),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(l10n.exitConfirmLeave),
               ),
             ],
           );
@@ -184,15 +200,38 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
     );
     if (action == null || !mounted) return;
 
+    final isPro = ref.read(isProUserProvider).valueOrNull ?? false;
+    final limit = ref.read(maxWorkoutsLimitProvider);
+    final workouts = ref.read(workoutsListProvider).valueOrNull ?? [];
+    final originalIndex = workouts.indexWhere((w) => w.id == workout.id);
+    final isLocked = !isPro && originalIndex >= limit;
+
     switch (action) {
       case WorkoutAction.train:
+        if (isLocked) {
+          BenefitUnlockDialog.show(
+            context: context,
+            benefit: RewardedBenefit.extraWorkoutSlot,
+          );
+          return;
+        }
         await _trainWorkout(workout);
       case WorkoutAction.edit:
+        if (isLocked) {
+          BenefitUnlockDialog.show(
+            context: context,
+            benefit: RewardedBenefit.extraWorkoutSlot,
+          );
+          return;
+        }
         context.push('/workouts/${workout.id}/edit');
       case WorkoutAction.duplicate:
         final canCreate = ref.read(canCreateWorkoutProvider);
         if (!canCreate) {
-          PaywallModalScreen.show(context);
+          BenefitUnlockDialog.show(
+            context: context,
+            benefit: RewardedBenefit.extraWorkoutSlot,
+          );
           return;
         }
         final dup = await ref
@@ -248,6 +287,8 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
     final workoutsAsync = ref.watch(workoutsListProvider);
     final catalogAsync = ref.watch(presetCatalogProvider);
     final favoriteIds = ref.watch(favoriteIdsStreamProvider).valueOrNull ?? {};
+    final isPro = ref.watch(isProUserProvider).valueOrNull ?? false;
+    final limit = ref.watch(maxWorkoutsLimitProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.workoutsTitle)),
@@ -363,7 +404,7 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                           Text(
                             ref.watch(isProUserProvider).valueOrNull ?? false
                                 ? l10n.proUnlimitedWorkoutsCounter
-                                : l10n.proFreeWorkoutsCounter(workouts.length, freeWorkoutsLimit),
+                                : l10n.proFreeWorkoutsCounter(workouts.length, limit),
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   fontSize: 11,
@@ -419,10 +460,56 @@ class _MyWorkoutsScreenState extends ConsumerState<MyWorkoutsScreen> {
                       final countLabel =
                           l10n.exerciseCountLabel(workout.exercises.length);
                       final showRounds = workout.rounds > 1;
+                      final originalIndex =
+                          workouts.indexWhere((w) => w.id == workout.id);
+                      final isLocked = !isPro && originalIndex >= limit;
 
                       return Card(
                         child: ListTile(
-                          title: Text(workout.name),
+                          onTap: isLocked
+                              ? () => BenefitUnlockDialog.show(
+                                    context: context,
+                                    benefit: RewardedBenefit.extraWorkoutSlot,
+                                  )
+                              : () => _trainWorkout(workout),
+                          title: Row(
+                            children: [
+                              if (isLocked) ...[
+                                Icon(
+                                  Icons.lock,
+                                  size: 16,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                const SizedBox(width: 6),
+                              ],
+                              Expanded(child: Text(workout.name)),
+                              if (isLocked)
+                                Container(
+                                  key:
+                                      Key('workout_locked_badge_${workout.id}'),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    'Archivada',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

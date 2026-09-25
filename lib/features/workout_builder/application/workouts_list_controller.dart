@@ -32,12 +32,19 @@ class WorkoutsListController extends AsyncNotifier<List<Workout>> {
     return completer.future;
   }
 
+  bool _canMutateWorkoutCount() {
+    final isPro = ref.read(isProUserProvider).valueOrNull ?? false;
+    if (isPro) return true;
+
+    final limit = ref.read(maxWorkoutsLimitProvider);
+    final currentCount = state.valueOrNull?.length ?? 0;
+    return currentCount < limit;
+  }
+
   Future<Workout?> createWorkout(String name) async {
     if (_isMutating) return null;
 
-    final isPro = ref.read(isProUserProvider).valueOrNull ?? false;
-    final currentCount = state.valueOrNull?.length ?? 0;
-    if (!isPro && currentCount >= freeWorkoutsLimit) return null;
+    if (!_canMutateWorkoutCount()) return null;
 
     final error = WorkoutValidators.validateWorkoutName(name);
     if (error != null) return null;
@@ -54,9 +61,7 @@ class WorkoutsListController extends AsyncNotifier<List<Workout>> {
   Future<Workout?> duplicateWorkout(String id) async {
     if (_isMutating) return null;
 
-    final isPro = ref.read(isProUserProvider).valueOrNull ?? false;
-    final currentCount = state.valueOrNull?.length ?? 0;
-    if (!isPro && currentCount >= freeWorkoutsLimit) return null;
+    if (!_canMutateWorkoutCount()) return null;
 
     _isMutating = true;
     try {

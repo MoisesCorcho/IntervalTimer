@@ -10,9 +10,16 @@ class TimerShowcaseSlide extends StatefulWidget {
 }
 
 class _TimerShowcaseSlideState extends State<TimerShowcaseSlide>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _pulseController;
   late final Animation<double> _scaleAnimation;
+  late final AnimationController _cycleController;
+
+  static const int _workDurationMs = 3000;
+  static const int _restDurationMs = 2000;
+  static const int _totalDurationMs = _workDurationMs + _restDurationMs;
+  static const double _workRatio = _workDurationMs / _totalDurationMs;
+  static const double _restRatio = _restDurationMs / _totalDurationMs;
 
   @override
   void initState() {
@@ -28,11 +35,17 @@ class _TimerShowcaseSlideState extends State<TimerShowcaseSlide>
         curve: Curves.easeInOutSine,
       ),
     );
+
+    _cycleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: _totalDurationMs),
+    )..repeat();
   }
 
   @override
   void dispose() {
     _pulseController.dispose();
+    _cycleController.dispose();
     super.dispose();
   }
 
@@ -50,64 +63,90 @@ class _TimerShowcaseSlideState extends State<TimerShowcaseSlide>
           // Animated Hero Ring Showcase
           ScaleTransition(
             scale: _scaleAnimation,
-            child: Container(
-              padding: const EdgeInsets.all(AppTheme.spacingMd),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.workColor.withValues(alpha: 0.2),
-                    blurRadius: 32,
-                    spreadRadius: 4,
+            child: AnimatedBuilder(
+              animation: _cycleController,
+              builder: (context, _) {
+                final value = _cycleController.value;
+                final bool isWork = value < _workRatio;
+                final Color phaseColor = isWork ? AppTheme.workColor : AppTheme.restColor;
+                final String phaseLabel = isWork ? 'TRABAJO' : 'DESCANSO';
+
+                final double remainingFraction;
+                final int remainingSeconds;
+
+                if (isWork) {
+                  final workProgress = value / _workRatio;
+                  remainingFraction = (1.0 - workProgress).clamp(0.0, 1.0);
+                  remainingSeconds = (remainingFraction * 3).ceil().clamp(1, 3);
+                } else {
+                  final restProgress = (value - _workRatio) / _restRatio;
+                  remainingFraction = (1.0 - restProgress).clamp(0.0, 1.0);
+                  remainingSeconds = (remainingFraction * 2).ceil().clamp(1, 2);
+                }
+
+                final formattedTime = '00:${remainingSeconds.toString().padLeft(2, '0')}';
+
+                return Container(
+                  padding: const EdgeInsets.all(AppTheme.spacingMd),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: phaseColor.withValues(alpha: 0.2),
+                        blurRadius: 32,
+                        spreadRadius: 4,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: CountdownRing(
-                remainingFraction: 0.75,
-                color: AppTheme.workColor,
-                size: 170,
-                strokeWidth: 10,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppTheme.spacingSm + 2,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppTheme.workColor.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-                      ),
-                      child: const Text(
-                        'TRABAJO',
-                        style: TextStyle(
-                          color: AppTheme.workColor,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 11,
-                          letterSpacing: 1.2,
+                  child: CountdownRing(
+                    remainingFraction: remainingFraction,
+                    color: phaseColor,
+                    size: 170,
+                    strokeWidth: 10,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.spacingSm + 2,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: phaseColor.withValues(alpha: 0.2),
+                            borderRadius:
+                                BorderRadius.circular(AppTheme.radiusSm),
+                          ),
+                          child: Text(
+                            phaseLabel,
+                            style: TextStyle(
+                              color: phaseColor,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 11,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 4),
+                        Text(
+                          formattedTime,
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w900,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        Text(
+                          'Ronda 1/8',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '00:45',
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w900,
-                        fontFeatures: const [FontFeature.tabularFigures()],
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    Text(
-                      'Ronda 1/8',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: colorScheme.onSurface.withValues(alpha: 0.6),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
           const Spacer(),

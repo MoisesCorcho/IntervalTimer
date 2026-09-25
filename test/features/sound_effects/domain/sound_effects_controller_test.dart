@@ -299,4 +299,45 @@ void main() {
       expect(player.plays, [tickPath]);
     });
   });
+
+  group('Pro Audio Dynamic Fallback Tests', () {
+    test('falls back to default sound when Pro audio is locked and Pro clip is selected', () async {
+      final player = FakeSfxPlayer();
+      const proVariantId = 'sfx_work_start_02';
+      final settings = SoundEffectsSettings.defaults.copyWith(
+        soundIdWorkStart: proVariantId,
+      );
+
+      final controller = SoundEffectsController(
+        player,
+        catalog: catalog,
+        settings: settings,
+        isProAudioUnlocked: () => false,
+      );
+
+      await controller.onIntervalStarted(_started(type: IntervalType.work));
+
+      expect(player.plays, [workPath]);
+    });
+
+    test('plays Pro sound when Pro audio is unlocked', () async {
+      final player = FakeSfxPlayer();
+      const proVariantId = 'sfx_work_start_02';
+      final proEntry = catalog.resolve(proVariantId)!;
+      final settings = SoundEffectsSettings.defaults.copyWith(
+        soundIdWorkStart: proVariantId,
+      );
+
+      final controller = SoundEffectsController(
+        player,
+        catalog: catalog,
+        settings: settings,
+        isProAudioUnlocked: () => true,
+      );
+
+      await controller.onIntervalStarted(_started(type: IntervalType.work));
+
+      expect(player.plays, [proEntry.assetSourcePath]);
+    });
+  });
 }

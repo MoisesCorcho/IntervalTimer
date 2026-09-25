@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:interval_timer/data/local/database.dart';
+import 'package:interval_timer/features/monetization/presentation/widgets/benefit_unlock_dialog.dart';
 import 'package:interval_timer/features/pro_tier/application/pro_providers.dart';
 import 'package:interval_timer/features/pro_tier/presentation/screens/paywall_modal_screen.dart';
 import 'package:interval_timer/data/repositories/routine_repository.dart';
@@ -292,7 +293,13 @@ void main() {
       isTrue,
     );
 
-    // Verify PaywallModalScreen opened
+    // Verify BenefitUnlockDialog opened
+    expect(find.byType(BenefitUnlockDialog), findsOneWidget);
+
+    // Tapping "Desbloquear con Pro" opens PaywallModalScreen
+    await tester.tap(find.text('Desbloquear con Pro'));
+    await tester.pumpAndSettle();
+
     expect(find.byType(PaywallModalScreen), findsOneWidget);
 
     await tester.pumpWidget(const SizedBox());

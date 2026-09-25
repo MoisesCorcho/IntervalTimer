@@ -210,6 +210,7 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final theme = Theme.of(context);
     final workoutAsync =
         ref.watch(workoutEditorControllerProvider(widget.workoutId));
     final canEdit = _editor.canEdit;
@@ -335,12 +336,21 @@ class _WorkoutEditorScreenState extends ConsumerState<WorkoutEditorScreen> {
                                           existing: exercise,
                                         )
                                     : null,
-                                title: Text(exercise.name),
+                                title: Text(
+                                  exercise.name,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: theme.colorScheme.onSurface,
+                                  ),
+                                ),
                                 subtitle: Text(
                                   '${l10n.exerciseSetsChip(exercise.sets)} · '
                                   '${formatDurationMmSs(exercise.workSeconds)} · '
                                   '${l10n.exerciseRestBetween(formatDurationMmSs(exercise.restSeconds))}'
                                   '$restFinalPart',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
                                 ),
                                 trailing: canEdit
                                     ? Row(

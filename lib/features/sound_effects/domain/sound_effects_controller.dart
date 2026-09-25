@@ -15,10 +15,12 @@ class SoundEffectsController {
     this._player, {
     SoundEffectsSettings? settings,
     this.catalog = const SfxCatalog(),
+    this.isProAudioUnlocked,
   }) : _settings = settings ?? SoundEffectsSettings.defaults;
 
   final SfxPlayer _player;
   final SfxCatalog catalog;
+  final bool Function()? isProAudioUnlocked;
   SoundEffectsSettings _settings;
 
   final Set<int> _prepTickedSeconds = <int>{};
@@ -147,7 +149,12 @@ class SoundEffectsController {
 
   Future<void> _playSlot(SfxSlot slot) async {
     final preferredId = _settings.soundIdFor(slot);
-    final entry = catalog.resolveOrDefault(preferredId, slot);
+    var entry = catalog.resolveOrDefault(preferredId, slot);
+    final isDefault = entry.id == catalog.defaultId(slot);
+    if (!isDefault && !(isProAudioUnlocked?.call() ?? true)) {
+      // Dynamic fallback to standard beep if Pro pass has expired (R07)
+      entry = catalog.defaultEntry(slot);
+    }
     try {
       await _player.playAsset(entry.assetSourcePath);
     } catch (_) {

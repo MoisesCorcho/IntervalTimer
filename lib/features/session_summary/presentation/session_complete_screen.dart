@@ -6,6 +6,8 @@ import 'package:interval_timer/core/theme/app_theme.dart';
 import 'package:interval_timer/features/achievements/application/achievements_providers.dart';
 import 'package:interval_timer/features/achievements/domain/achievement_def.dart';
 import 'package:interval_timer/features/achievements/presentation/achievements_unlocked_sheet.dart';
+import 'package:interval_timer/features/monetization/application/monetization_providers.dart';
+import 'package:interval_timer/features/monetization/domain/rewarded_benefit.dart';
 import 'package:interval_timer/features/session_summary/application/session_summary_providers.dart';
 import 'package:interval_timer/features/session_summary/domain/session_complete_models.dart';
 import 'package:interval_timer/features/session_summary/presentation/animated_flame_hero.dart';
@@ -142,6 +144,13 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen>
     } else {
       ref.read(achievementsControllerProvider.notifier).clearPendingCelebration();
     }
+
+    // F37 Interstitial Ad post-entrenamiento (respetando 10 min cooldown y pase ad-free)
+    final isAdFree = ref.read(isBenefitUnlockedProvider(RewardedBenefit.adFreePass));
+    if (!isAdFree) {
+      await ref.read(adServiceProvider).showInterstitialIfEligible();
+    }
+
     if (mounted) context.go('/');
   }
 
